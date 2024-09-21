@@ -15,11 +15,22 @@ services:
     build:
       context: ./rails
     command: bash -c "tail -f log/development.log"
+    tty: true
+    stdin_open: true
     volumes:
       - ./rails:/myapp
     ports:
       - 3000:3000
     depends_on:
       - db
+  next:
+    build:
+      dockerfile: ./next/Dockerfile
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./next:/app
+    ports:
+      - "8000:3000"
 volumes:
   mysql_data:

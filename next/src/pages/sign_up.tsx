@@ -80,6 +80,7 @@ const SignUp: NextPage = () => {
           noValidate
           onSubmit={handleSubmit(onSubmit)}
           spacing={4}
+          sx={{ alignItems: 'center' }}
         >
           <Controller
             name="email"
@@ -92,7 +93,7 @@ const SignUp: NextPage = () => {
                 label="メールアドレス"
                 error={fieldState.invalid}
                 helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white' }}
+                sx={{ backgroundColor: 'white', width: '100%' }}
               />
             )}
           />
@@ -107,7 +108,7 @@ const SignUp: NextPage = () => {
                 label="パスワード"
                 error={fieldState.invalid}
                 helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white' }}
+                sx={{ backgroundColor: 'white', width: '100%' }}
               />
             )}
           />
@@ -115,7 +116,7 @@ const SignUp: NextPage = () => {
             variant="contained"
             type="submit"
             loading={isLoading}
-            sx={{ fontWeight: 'bold', color: 'white' }}
+            sx={{ fontWeight: 'bold', color: 'white', width: '20%' }}
           >
             登録する
           </LoadingButton>

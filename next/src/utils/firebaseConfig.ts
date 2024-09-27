@@ -1,4 +1,4 @@
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app'
+import { initializeApp, getApps, getApp } from 'firebase/app'
 import { getAuth, Auth } from 'firebase/auth'
 
 const firebaseConfig = {
@@ -10,12 +10,19 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-let firebaseApp: FirebaseApp
-let auth: Auth
-
-if (typeof window !== 'undefined' && !getApps().length) {
-  firebaseApp = initializeApp(firebaseConfig)
-  auth = getAuth(firebaseApp)
+const getFirebaseApp = () => {
+  if (typeof window !== 'undefined') {
+    if (!getApps().length) {
+      return initializeApp(firebaseConfig)
+    } else {
+      return getApp()
+    }
+  }
+  return null
 }
 
-export { auth }
+const firebaseApp = getFirebaseApp()
+
+const auth = (firebaseApp ? getAuth(firebaseApp) : {}) as Auth
+
+export default auth

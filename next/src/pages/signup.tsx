@@ -2,11 +2,11 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import type { NextPage } from 'next'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { styles } from '@/styles'
-import { auth } from '@/utils/firebaseConfig'
+import auth from '@/utils/firebaseConfig'
 
 type SignUpFormData = {
   email: string
@@ -14,7 +14,8 @@ type SignUpFormData = {
 }
 
 const SignUp: NextPage = () => {
-  // const router = useRouter()
+  const router = useRouter()
+
   const [isLoading, setIsLoading] = useState(false)
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
@@ -42,10 +43,9 @@ const SignUp: NextPage = () => {
   const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
     setIsLoading(true)
     createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user
+      .then(() => {
         alert('登録に成功しました！')
-        console.log(user.uid)
+        router.push('/')
       })
       .catch((error) => {
         let errorMessage = '登録に失敗しました。再度お試しください。'
@@ -72,7 +72,7 @@ const SignUp: NextPage = () => {
             component="h2"
             sx={{ fontSize: 32, color: 'black', fontWeight: 'bold' }}
           >
-            新規登録
+            Nput へようこそ！
           </Typography>
         </Box>
         <Stack
@@ -116,7 +116,12 @@ const SignUp: NextPage = () => {
             variant="contained"
             type="submit"
             loading={isLoading}
-            sx={{ fontWeight: 'bold', color: 'white', width: '20%' }}
+            sx={{
+              fontWeight: 'bold',
+              color: 'white',
+              width: '30%',
+              textTransform: 'none',
+            }}
           >
             登録する
           </LoadingButton>

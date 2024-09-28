@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -9,6 +9,7 @@ import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
 
 type SignUpFormData = {
+  name: string
   email: string
   password: string
 }
@@ -19,10 +20,13 @@ const SignUp: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
-    defaultValues: { email: '', password: '' },
+    defaultValues: { name: '', email: '', password: '' },
   })
 
   const validationRules = {
+    name: {
+      required: 'ユーザー名を入力してください。',
+    },
     email: {
       required: 'メールアドレスを入力してください。',
       pattern: {
@@ -34,8 +38,8 @@ const SignUp: NextPage = () => {
     password: {
       required: 'パスワードを入力してください。',
       minLength: {
-        value: 6,
-        message: 'パスワードは6文字以上にしてください。',
+        value: 8,
+        message: 'パスワードは8文字以上にしてください。',
       },
     },
   }
@@ -43,7 +47,11 @@ const SignUp: NextPage = () => {
   const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
     setIsLoading(true)
     createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then(() => {
+      .then((userCredential) => {
+        const user = userCredential.user
+        updateProfile(user, {
+          displayName: data.name
+        })
         alert('登録に成功しました！')
         router.push('/')
       })
@@ -52,7 +60,7 @@ const SignUp: NextPage = () => {
         if (error.code === 'auth/email-already-in-use') {
           errorMessage = 'このメールアドレスはすでに使用されています。'
         } else if (error.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは6文字以上にしてください。'
+          errorMessage = 'パスワードは8文字以上にしてください。'
         }
         alert(errorMessage)
         setIsLoading(false)
@@ -82,6 +90,21 @@ const SignUp: NextPage = () => {
           spacing={4}
           sx={{ alignItems: 'center' }}
         >
+          <Controller
+            name="name"
+            control={control}
+            rules={validationRules.name}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                type="text"
+                label="ユーザー名"
+                error={fieldState.invalid}
+                helperText={fieldState.error?.message}
+                sx={{ backgroundColor: 'white', width: '100%' }}
+              />
+            )}
+          />
           <Controller
             name="email"
             control={control}

@@ -7,6 +7,8 @@ import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
+import { useIdToken } from 'react-firebase-hooks/auth'
+import axios from 'axios'
 
 type SignUpFormData = {
   name: string
@@ -16,8 +18,8 @@ type SignUpFormData = {
 
 const SignUp: NextPage = () => {
   const router = useRouter()
-
   const [isLoading, setIsLoading] = useState(false)
+  const [idToken] = useIdToken(auth)
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
     defaultValues: { name: '', email: '', password: '' },
@@ -44,15 +46,43 @@ const SignUp: NextPage = () => {
     },
   }
 
-  const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
+  const verifyIdToken = async () => {
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/users'
+
+    const headers = {
+      authorization: `Bearer ${idToken}`,
+    }
+
+    try {
+      const res = await axios.post(url, null, { headers })
+      alert('Railsの登録に成功しました！')
+      await router.push('/') // res.data.idを用いてprofileページへ遷移させる予定
+    } catch (err) {
+      let errorMessage = 'An unknown error occurred';
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          const errorData = err.response.data
+          errorMessage = errorData.message || `Error: ${err.response.status} ${err.response.statusText}`
+        } else if (err.request) {
+          errorMessage = 'Network error. Please check your connection.'
+        }
+      } else {
+        errorMessage = err instanceof Error ? err.message : String(err)
+      }
+      console.error(errorMessage)
+      alert(errorMessage)
+    }
+  }
+
+  const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     setIsLoading(true)
-    createUserWithEmailAndPassword(auth, data.email, data.password)
+    await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user
         updateProfile(user, {
           displayName: data.name
         })
-        alert('登録に成功しました！')
+        alert('Firebaseの登録に成功しました！')
         router.push('/')
       })
       .catch((error) => {
@@ -65,6 +95,7 @@ const SignUp: NextPage = () => {
         alert(errorMessage)
         setIsLoading(false)
       })
+    await verifyIdToken()
   }
 
   return (

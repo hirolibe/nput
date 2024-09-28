@@ -33,8 +33,8 @@ const LogIn: NextPage = () => {
     password: {
       required: 'パスワードを入力してください。',
       minLength: {
-        value: 6,
-        message: 'パスワードは6文字以上にしてください。',
+        value: 8,
+        message: 'パスワードは8文字以上にしてください。',
       },
     },
   }
@@ -49,7 +49,7 @@ const LogIn: NextPage = () => {
       .catch((error) => {
         let errorMessage = 'ログインに失敗しました。再度お試しください。'
         if (error.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは6文字以上にしてください。'
+          errorMessage = 'パスワードは8文字以上にしてください。'
         }
         alert(error.code)
         alert(errorMessage)

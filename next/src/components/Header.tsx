@@ -13,7 +13,7 @@ import {
   MenuItem,
   ListItemIcon,
 } from '@mui/material'
-import axios, { AxiosResponse, AxiosError } from 'axios'
+import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -45,20 +45,31 @@ const Header = () => {
     router.push('/')
   }
 
-  const addNewArticle = () => {
+  const addNewArticle = async () => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/current/notes'
 
     const headers = {
       authorization: `Bearer ${idToken}`,
     }
 
-    axios({ method: 'POST', url: url, headers: headers })
-      .then((res: AxiosResponse) => {
-        router.push('/current/notes/edit/' + res.data.id)
-      })
-      .catch((e: AxiosError<{ error: string }>) => {
-        console.log(e.message)
-      })
+    try {
+      const res = await axios.post(url, null, { headers })
+      router.push('/current/notes/edit/' + res.data.id)
+    } catch (err) {
+      let errorMessage = 'An unknown error occurred';
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          const errorData = err.response.data
+          errorMessage = errorData.message || `Error: ${err.response.status} ${err.response.statusText}`
+        } else if (err.request) {
+          errorMessage = 'Network error. Please check your connection.'
+        }
+      } else {
+        errorMessage = err instanceof Error ? err.message : String(err)
+      }
+      console.error(errorMessage)
+      alert(errorMessage);
+    }
   }
 
   return (
@@ -170,7 +181,7 @@ const Header = () => {
                     </MenuItem>
                   </Link>
                   <Divider />
-                  <Link href="/logout">
+                  <Link href="/">
                     <MenuItem onClick={handleLogout}>
                       <ListItemIcon>
                         <Logout fontSize="small" />

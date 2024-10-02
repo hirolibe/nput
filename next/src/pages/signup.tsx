@@ -1,6 +1,10 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
-import { createUserWithEmailAndPassword, updateProfile, deleteUser } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  deleteUser,
+} from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -48,7 +52,7 @@ const SignUp: NextPage = () => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/users'
     const idToken = await user?.getIdToken()
     const headers = {
-      'Authorization': `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`,
     }
 
     try {
@@ -56,11 +60,13 @@ const SignUp: NextPage = () => {
       alert('Firebaseとデータベースへの登録に成功しました！')
       await router.push('/')
     } catch (err) {
-      let errorMessage = 'An unknown error occurred';
+      let errorMessage = 'An unknown error occurred'
       if (axios.isAxiosError(err)) {
         if (err.response) {
           const errorData = err.response.data
-          errorMessage = errorData.message || `Error: ${err.response.status} ${err.response.statusText}`
+          errorMessage =
+            errorData.message ||
+            `Error: ${err.response.status} ${err.response.statusText}`
         } else if (err.request) {
           errorMessage = 'Network error. Please check your connection.'
         }
@@ -77,7 +83,11 @@ const SignUp: NextPage = () => {
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     setIsLoading(true)
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      )
       const createdUser = userCredential.user
       await updateProfile(createdUser, { displayName: data.name })
       await verifyIdToken(createdUser)

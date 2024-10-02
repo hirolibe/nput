@@ -48,7 +48,7 @@ const Header = () => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/current/notes'
     const idToken = await user?.getIdToken()
     const headers = {
-      'Authorization': `Bearer ${idToken}`,
+      Authorization: `Bearer ${idToken}`,
     }
 
     try {
@@ -133,66 +133,68 @@ const Header = () => {
               </Link>
             </Box>
           )}
-          {/*!tokenLoading && */user && (
-            <Box sx={{ display: 'flex' }}>
-              <IconButton onClick={handleClick} sx={{ p: 0 }}>
-                <Avatar>
-                  {user.photoURL ? user.photoURL : <PersonIcon />}
-                </Avatar>
-              </IconButton>
-              <Box sx={{ ml: 2 }}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  sx={{
-                    color: 'white',
-                    textTransform: 'none',
-                    fontSize: 16,
-                    borderRadius: 2,
-                    width: 120,
-                    boxShadow: 'none',
-                    fontWeight: 'bold',
-                  }}
-                  onClick={addNewArticle}
+          {
+            /*!tokenLoading && */ user && (
+              <Box sx={{ display: 'flex' }}>
+                <IconButton onClick={handleClick} sx={{ p: 0 }}>
+                  <Avatar>
+                    {user.photoURL ? user.photoURL : <PersonIcon />}
+                  </Avatar>
+                </IconButton>
+                <Box sx={{ ml: 2 }}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    sx={{
+                      color: 'white',
+                      textTransform: 'none',
+                      fontSize: 16,
+                      borderRadius: 2,
+                      width: 120,
+                      boxShadow: 'none',
+                      fontWeight: 'bold',
+                    }}
+                    onClick={addNewArticle}
+                  >
+                    ノート作成
+                  </Button>
+                </Box>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
                 >
-                  ノート作成
-                </Button>
+                  <Link href="/current/profiles">
+                    <MenuItem>
+                      <ListItemIcon>
+                        <PersonIcon fontSize="small" />
+                      </ListItemIcon>
+                      マイページ
+                    </MenuItem>
+                  </Link>
+                  <Link href="/current/notes">
+                    <MenuItem>
+                      <ListItemIcon>
+                        <AutoStoriesIcon fontSize="small" />
+                      </ListItemIcon>
+                      ノートの管理
+                    </MenuItem>
+                  </Link>
+                  <Divider />
+                  <Link href="/">
+                    <MenuItem onClick={handleLogout}>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      ログアウト
+                    </MenuItem>
+                  </Link>
+                </Menu>
               </Box>
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-              >
-                <Link href="/current/profiles">
-                  <MenuItem>
-                    <ListItemIcon>
-                      <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    マイページ
-                  </MenuItem>
-                </Link>
-                <Link href="/current/notes">
-                  <MenuItem>
-                    <ListItemIcon>
-                      <AutoStoriesIcon fontSize="small" />
-                    </ListItemIcon>
-                    ノートの管理
-                  </MenuItem>
-                </Link>
-                <Divider />
-                <Link href="/">
-                  <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                      <Logout fontSize="small" />
-                    </ListItemIcon>
-                    ログアウト
-                  </MenuItem>
-                </Link>
-              </Menu>
-            </Box>
-          )}
+            )
+          }
         </Box>
       </Container>
     </AppBar>

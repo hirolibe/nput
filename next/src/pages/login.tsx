@@ -1,5 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
+import { FirebaseError } from 'firebase/app'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -45,12 +46,14 @@ const LogIn: NextPage = () => {
       await signInWithEmailAndPassword(auth, data.email, data.password)
       alert('ログインに成功しました！')
       router.push('/')
-    } catch (err: any) {
+    } catch (err) {
       let errorMessage = 'ログインに失敗しました。再度お試しください。'
-      if (err.code === 'auth/weak-password') {
-        errorMessage = 'パスワードは8文字以上にしてください。'
+
+      if (err instanceof FirebaseError) {
+        if (err.code === 'auth/weak-password') {
+          errorMessage = 'パスワードは8文字以上にしてください。'
+        }
       }
-      alert(err.code)
       alert(errorMessage)
       setIsLoading(false)
     }

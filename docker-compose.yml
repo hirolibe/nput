@@ -3,10 +3,10 @@ services:
   db:
     image: mysql:8.0.32
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: myapp_development
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=myapp_development
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
     ports:
       - "3306:3306"
     volumes:
@@ -14,6 +14,8 @@ services:
   rails:
     build:
       context: ./rails
+    environment:
+      - FIREBASE_PROJECT_ID=nput-auth
     command: bash -c "tail -f log/development.log"
     tty: true
     stdin_open: true
@@ -23,6 +25,7 @@ services:
       - 3000:3000
     depends_on:
       - db
+      - redis
   next:
     build:
       dockerfile: ./next/Dockerfile
@@ -32,5 +35,12 @@ services:
       - ./next:/app
     ports:
       - "8000:3000"
+  redis:
+    image: redis:7.0.11-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 volumes:
   mysql_data:
+  redis_data:

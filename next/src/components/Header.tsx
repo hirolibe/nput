@@ -13,18 +13,17 @@ import {
   MenuItem,
   ListItemIcon,
 } from '@mui/material'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useAuthState, useIdToken } from 'react-firebase-hooks/auth'
+import { useIdToken } from 'react-firebase-hooks/auth'
 import auth from '@/utils/firebaseConfig'
 import { signOut } from 'firebase/auth'
 
 const Header = () => {
-  const [user, loading] = useAuthState(auth)
-  const [idToken] = useIdToken(auth)
+  const [user, loading] = useIdToken(auth)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
@@ -47,20 +46,22 @@ const Header = () => {
 
   const addNewArticle = async () => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/current/notes'
-
+    const idToken = await user?.getIdToken()
     const headers = {
-      authorization: `Bearer ${idToken}`,
+      'Authorization': `Bearer ${idToken}`,
     }
 
     try {
       const res = await axios.post(url, null, { headers })
       router.push('/current/notes/edit/' + res.data.id)
     } catch (err) {
-      let errorMessage = 'An unknown error occurred';
+      let errorMessage = 'An unknown error occurred'
       if (axios.isAxiosError(err)) {
         if (err.response) {
           const errorData = err.response.data
-          errorMessage = errorData.message || `Error: ${err.response.status} ${err.response.statusText}`
+          errorMessage =
+            errorData.message ||
+            `Error: ${err.response.status} ${err.response.statusText}`
         } else if (err.request) {
           errorMessage = 'Network error. Please check your connection.'
         }
@@ -68,7 +69,7 @@ const Header = () => {
         errorMessage = err instanceof Error ? err.message : String(err)
       }
       console.error(errorMessage)
-      alert(errorMessage);
+      alert(errorMessage)
     }
   }
 
@@ -95,103 +96,103 @@ const Header = () => {
               <Image src="/logo.png" width={90} height={40} alt="logo" />
             </Link>
           </Box>
-            {!loading && !user && (
-              <Box>
-                <Link href="/login">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    sx={{
-                      color: 'white',
-                      textTransform: 'none',
-                      fontSize: 16,
-                      borderRadius: 2,
-                      boxShadow: 'none',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    ログイン
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    sx={{
-                      textTransform: 'none',
-                      fontSize: 16,
-                      borderRadius: 2,
-                      boxShadow: 'none',
-                      border: '1.5px solid #3EA8FF',
-                      ml: 2,
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    新規登録
-                  </Button>
-                </Link>
-              </Box>
-            )}
-            {user && (
-              <Box sx={{ display: 'flex' }}>
-                <IconButton onClick={handleClick} sx={{ p: 0 }}>
-                  <Avatar>
-                    {user.photoURL ? user.photoURL : <PersonIcon />}
-                  </Avatar>
-                </IconButton>
-                <Box sx={{ ml: 2 }}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    sx={{
-                      color: 'white',
-                      textTransform: 'none',
-                      fontSize: 16,
-                      borderRadius: 2,
-                      width: 120,
-                      boxShadow: 'none',
-                      fontWeight: 'bold',
-                    }}
-                    onClick={addNewArticle}
-                  >
-                    ノート作成
-                  </Button>
-                </Box>
-                <Menu
-                  anchorEl={anchorEl}
-                  id="account-menu"
-                  open={open}
-                  onClose={handleClose}
-                  onClick={handleClose}
+          {!loading && !user && (
+            <Box>
+              <Link href="/login">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{
+                    color: 'white',
+                    textTransform: 'none',
+                    fontSize: 16,
+                    borderRadius: 2,
+                    boxShadow: 'none',
+                    fontWeight: 'bold',
+                  }}
                 >
-                  <Link href="/current/profiles">
-                    <MenuItem>
-                      <ListItemIcon>
-                        <PersonIcon fontSize="small" />
-                      </ListItemIcon>
-                      マイページ
-                    </MenuItem>
-                  </Link>
-                  <Link href="/current/notes">
-                    <MenuItem>
-                      <ListItemIcon>
-                        <AutoStoriesIcon fontSize="small" />
-                      </ListItemIcon>
-                      ノートの管理
-                    </MenuItem>
-                  </Link>
-                  <Divider />
-                  <Link href="/">
-                    <MenuItem onClick={handleLogout}>
-                      <ListItemIcon>
-                        <Logout fontSize="small" />
-                      </ListItemIcon>
-                      ログアウト
-                    </MenuItem>
-                  </Link>
-                </Menu>
+                  ログイン
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  sx={{
+                    textTransform: 'none',
+                    fontSize: 16,
+                    borderRadius: 2,
+                    boxShadow: 'none',
+                    border: '1.5px solid #3EA8FF',
+                    ml: 2,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  新規登録
+                </Button>
+              </Link>
+            </Box>
+          )}
+          {/*!tokenLoading && */user && (
+            <Box sx={{ display: 'flex' }}>
+              <IconButton onClick={handleClick} sx={{ p: 0 }}>
+                <Avatar>
+                  {user.photoURL ? user.photoURL : <PersonIcon />}
+                </Avatar>
+              </IconButton>
+              <Box sx={{ ml: 2 }}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{
+                    color: 'white',
+                    textTransform: 'none',
+                    fontSize: 16,
+                    borderRadius: 2,
+                    width: 120,
+                    boxShadow: 'none',
+                    fontWeight: 'bold',
+                  }}
+                  onClick={addNewArticle}
+                >
+                  ノート作成
+                </Button>
               </Box>
-            )}
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={open}
+                onClose={handleClose}
+                onClick={handleClose}
+              >
+                <Link href="/current/profiles">
+                  <MenuItem>
+                    <ListItemIcon>
+                      <PersonIcon fontSize="small" />
+                    </ListItemIcon>
+                    マイページ
+                  </MenuItem>
+                </Link>
+                <Link href="/current/notes">
+                  <MenuItem>
+                    <ListItemIcon>
+                      <AutoStoriesIcon fontSize="small" />
+                    </ListItemIcon>
+                    ノートの管理
+                  </MenuItem>
+                </Link>
+                <Divider />
+                <Link href="/">
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    ログアウト
+                  </MenuItem>
+                </Link>
+              </Menu>
+            </Box>
+          )}
         </Box>
       </Container>
     </AppBar>

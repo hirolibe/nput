@@ -1,13 +1,12 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile, deleteUser } from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
-import { useIdToken } from 'react-firebase-hooks/auth'
 import axios from 'axios'
 
 type SignUpFormData = {
@@ -19,7 +18,6 @@ type SignUpFormData = {
 const SignUp: NextPage = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [idToken] = useIdToken(auth)
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
     defaultValues: { name: '', email: '', password: '' },
@@ -46,17 +44,17 @@ const SignUp: NextPage = () => {
     },
   }
 
-  const verifyIdToken = async () => {
+  const verifyIdToken = async (user: any) => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/users'
-
+    const idToken = await user?.getIdToken()
     const headers = {
-      authorization: `Bearer ${idToken}`,
+      'Authorization': `Bearer ${idToken}`,
     }
 
     try {
-      const res = await axios.post(url, null, { headers })
-      alert('Railsの登録に成功しました！')
-      await router.push('/') // res.data.idを用いてprofileページへ遷移させる予定
+      await axios.post(url, null, { headers })
+      alert('Firebaseとデータベースへの登録に成功しました！')
+      await router.push('/')
     } catch (err) {
       let errorMessage = 'An unknown error occurred';
       if (axios.isAxiosError(err)) {
@@ -70,32 +68,29 @@ const SignUp: NextPage = () => {
         errorMessage = err instanceof Error ? err.message : String(err)
       }
       console.error(errorMessage)
+      await deleteUser(user)
       alert(errorMessage)
+      setIsLoading(false)
     }
   }
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     setIsLoading(true)
-    await createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user
-        updateProfile(user, {
-          displayName: data.name
-        })
-        alert('Firebaseの登録に成功しました！')
-        router.push('/')
-      })
-      .catch((error) => {
-        let errorMessage = '登録に失敗しました。再度お試しください。'
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'このメールアドレスはすでに使用されています。'
-        } else if (error.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは8文字以上にしてください。'
-        }
-        alert(errorMessage)
-        setIsLoading(false)
-      })
-    await verifyIdToken()
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
+      const createdUser = userCredential.user
+      await updateProfile(createdUser, { displayName: data.name })
+      await verifyIdToken(createdUser)
+    } catch (err: any) {
+      let errorMessage = '登録に失敗しました。再度お試しください。'
+      if (err.code === 'auth/email-already-in-use') {
+        errorMessage = 'このメールアドレスはすでに使用されています。'
+      } else if (err.code === 'auth/weak-password') {
+        errorMessage = 'パスワードは8文字以上にしてください。'
+      }
+      alert(errorMessage)
+      setIsLoading(false)
+    }
   }
 
   return (

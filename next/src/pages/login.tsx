@@ -39,22 +39,21 @@ const LogIn: NextPage = () => {
     },
   }
 
-  const onSubmit: SubmitHandler<LogInFormData> = (data) => {
+  const onSubmit: SubmitHandler<LogInFormData> = async (data) => {
     setIsLoading(true)
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .then(() => {
-        alert('ログインに成功しました！')
-        router.push('/')
-      })
-      .catch((error) => {
-        let errorMessage = 'ログインに失敗しました。再度お試しください。'
-        if (error.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは8文字以上にしてください。'
-        }
-        alert(error.code)
-        alert(errorMessage)
-        setIsLoading(false)
-      })
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password)
+      alert('ログインに成功しました！')
+      router.push('/')
+    } catch (err: any) {
+      let errorMessage = 'ログインに失敗しました。再度お試しください。'
+      if (err.code === 'auth/weak-password') {
+        errorMessage = 'パスワードは8文字以上にしてください。'
+      }
+      alert(err.code)
+      alert(errorMessage)
+      setIsLoading(false)
+    }
   }
 
   return (

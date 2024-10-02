@@ -3,30 +3,27 @@ class Api::V1::ApplicationController < ApplicationController
 
   private
 
-  def id_token
-    request.headers['Authorization']&.split&.last
-  end
-
-  def authenticate_user!
-    return render json: { error: 'No token provided' }, status: :unauthorized if id_token.blank?
-
-    begin
-      @payload = FirebaseIdToken::Signature.verify(id_token)
-
-      return render json: { error: 'Invalid token' }, status: :unauthorized if @payload.nil? || @payload['sub'].blank?
-
-      @current_user = User.find_or_initialize_by(uid: @payload['sub'])
-
-    rescue
-      render json: { error: 'Invalid token' }, status: :unauthorized
+    def id_token
+      request.headers["Authorization"]&.split&.last
     end
-  end
 
-  def current_user
-    @current_user
-  end
+    def authenticate_user!
+      return render json: { error: "No token provided" }, status: :unauthorized if id_token.blank?
 
-  def current_payload
-    @payload
-  end
+      begin
+        @payload = FirebaseIdToken::Signature.verify(id_token)
+
+        return render json: { error: "Invalid token" }, status: :unauthorized if @payload.nil? || @payload["sub"].blank?
+
+        @current_user = User.find_or_initialize_by(uid: @payload["sub"])
+      rescue
+        render json: { error: "Invalid token" }, status: :unauthorized
+      end
+    end
+
+    attr_reader :current_user
+
+    def current_payload
+      @payload
+    end
 end

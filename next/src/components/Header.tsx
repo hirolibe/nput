@@ -1,6 +1,6 @@
+import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
-import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import {
   AppBar,
   Avatar,
@@ -13,14 +13,14 @@ import {
   MenuItem,
   ListItemIcon,
 } from '@mui/material'
-import axios, { AxiosError } from 'axios'
+import axios, { isAxiosError } from 'axios'
+import { signOut } from 'firebase/auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useIdToken } from 'react-firebase-hooks/auth'
 import auth from '@/utils/firebaseConfig'
-import { signOut } from 'firebase/auth'
 
 const Header = () => {
   const [user, loading] = useIdToken(auth)
@@ -56,7 +56,7 @@ const Header = () => {
       router.push('/current/notes/edit/' + res.data.id)
     } catch (err) {
       let errorMessage = 'An unknown error occurred'
-      if (axios.isAxiosError(err)) {
+      if (isAxiosError(err)) {
         if (err.response) {
           const errorData = err.response.data
           errorMessage =

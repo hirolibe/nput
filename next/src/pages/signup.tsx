@@ -1,9 +1,12 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
+import axios, { isAxiosError } from 'axios'
+import { FirebaseError } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   deleteUser,
+  User,
 } from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -11,7 +14,6 @@ import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
-import axios from 'axios'
 
 type SignUpFormData = {
   name: string
@@ -48,7 +50,7 @@ const SignUp: NextPage = () => {
     },
   }
 
-  const verifyIdToken = async (user: any) => {
+  const verifyIdToken = async (user: User) => {
     const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/users'
     const idToken = await user?.getIdToken()
     const headers = {
@@ -61,7 +63,7 @@ const SignUp: NextPage = () => {
       await router.push('/')
     } catch (err) {
       let errorMessage = 'An unknown error occurred'
-      if (axios.isAxiosError(err)) {
+      if (isAxiosError(err)) {
         if (err.response) {
           const errorData = err.response.data
           errorMessage =
@@ -91,12 +93,15 @@ const SignUp: NextPage = () => {
       const createdUser = userCredential.user
       await updateProfile(createdUser, { displayName: data.name })
       await verifyIdToken(createdUser)
-    } catch (err: any) {
+    } catch (err) {
       let errorMessage = '登録に失敗しました。再度お試しください。'
-      if (err.code === 'auth/email-already-in-use') {
-        errorMessage = 'このメールアドレスはすでに使用されています。'
-      } else if (err.code === 'auth/weak-password') {
-        errorMessage = 'パスワードは8文字以上にしてください。'
+
+      if (err instanceof FirebaseError) {
+        if (err.code === 'auth/email-already-in-use') {
+          errorMessage = 'このメールアドレスはすでに使用されています。'
+        } else if (err.code === 'auth/weak-password') {
+          errorMessage = 'パスワードは8文字以上にしてください。'
+        }
       }
       alert(errorMessage)
       setIsLoading(false)

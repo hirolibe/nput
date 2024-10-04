@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       namespace :auth do
         post "users" => "users#create"
       end
+      resources :users, only: [:show]
     end
   end
 end

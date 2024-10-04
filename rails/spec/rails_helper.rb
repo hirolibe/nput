@@ -32,7 +32,20 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
+# supportディレクトリ内のファイルの読み込み
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+
 RSpec.configure do |config|
+  # FactoryBotの宣言を省略
+  config.include FactoryBot::Syntax::Methods
+
+  # Firebaseのトークン検証のスタブ
+  config.include FirebaseHelpers
+
+  # response.bodyのJSONをパース
+  config.include ResponseHelpers, type: :request
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = Rails.root.join('spec/fixtures')
 

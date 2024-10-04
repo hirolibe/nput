@@ -3,6 +3,9 @@ git_source(:github) {|repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.2"
 
+# レスポンスJSONを制御する
+gem "active_model_serializers"
+
 # railsの起動時間を短縮する（標準gem）
 gem "bootsnap", require: false
 
@@ -28,6 +31,10 @@ gem "rails", "~> 7.0.4"
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
+  # テスト用データを作成する
+  gem "factory_bot_rails"
+  gem "faker"
+
   # pry コンソールを使えるようにする
   gem "pry-byebug"
   gem "pry-doc"

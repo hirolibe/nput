@@ -1,0 +1,7 @@
+ja:
+  activerecord:
+    attributes:
+      note:
+        title: タイトル
+        content: 本文
+        published_at: 公開日時

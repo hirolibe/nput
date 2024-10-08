@@ -1,5 +1,6 @@
 # 自動生成されるものはチェック対象から除外する
 AllCops:
+  SuggestExtensions: false
   Exclude:
     - "node_modules/**/*" # rubocop config/default.yml
     - "vendor/**/*" # rubocop config/default.yml

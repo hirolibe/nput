@@ -31,38 +31,39 @@ const SignUp: NextPage = () => {
 
   const validationRules = {
     name: {
-      required: 'ユーザー名を入力してください。',
+      required: 'ユーザー名を入力してください',
     },
     email: {
-      required: 'メールアドレスを入力してください。',
+      required: 'メールアドレスを入力してください',
       pattern: {
         value:
           /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
-        message: '正しい形式のメールアドレスを入力してください。',
+        message: '正しい形式のメールアドレスを入力してください',
       },
     },
     password: {
-      required: 'パスワードを入力してください。',
+      required: 'パスワードを入力してください',
       minLength: {
         value: 8,
-        message: 'パスワードは8文字以上にしてください。',
+        message: 'パスワードは8文字以上にしてください',
       },
     },
   }
 
-  const verifyIdToken = async (user: User) => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/users'
-    const idToken = await user?.getIdToken()
+  const verifyIdToken = async (createdUser: User) => {
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/registrations'
+    const idToken = await createdUser?.getIdToken()
     const headers = {
       Authorization: `Bearer ${idToken}`,
     }
 
     try {
-      await axios.post(url, null, { headers })
-      alert('Firebaseとデータベースへの登録に成功しました！')
+      const res = await axios.post(url, null, { headers })
+      alert(res.data.message)
       await router.push('/')
     } catch (err) {
-      let errorMessage = 'An unknown error occurred'
+      let errorMessage =
+        '不明なエラーが発生しました　サポートにお問い合わせください'
       if (isAxiosError(err)) {
         if (err.response) {
           const errorData = err.response.data
@@ -70,13 +71,14 @@ const SignUp: NextPage = () => {
             errorData.message ||
             `Error: ${err.response.status} ${err.response.statusText}`
         } else if (err.request) {
-          errorMessage = 'Network error. Please check your connection.'
+          errorMessage =
+            'ネットワークエラーが発生しました　ネットワーク接続を確認してください'
         }
       } else {
         errorMessage = err instanceof Error ? err.message : String(err)
       }
       console.error(errorMessage)
-      await deleteUser(user)
+      await deleteUser(createdUser)
       alert(errorMessage)
       setIsLoading(false)
     }
@@ -94,13 +96,14 @@ const SignUp: NextPage = () => {
       await updateProfile(createdUser, { displayName: data.name })
       await verifyIdToken(createdUser)
     } catch (err) {
-      let errorMessage = '登録に失敗しました。再度お試しください。'
+      let errorMessage =
+        '不明なエラーが発生しました　サポートにお問い合わせください'
 
       if (err instanceof FirebaseError) {
         if (err.code === 'auth/email-already-in-use') {
-          errorMessage = 'このメールアドレスはすでに使用されています。'
+          errorMessage = 'このメールアドレスはすでに使用されています'
         } else if (err.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは8文字以上にしてください。'
+          errorMessage = 'パスワードは8文字以上にしてください'
         }
       }
       alert(errorMessage)

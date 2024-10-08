@@ -55,7 +55,8 @@ const Header = () => {
       const res = await axios.post(url, null, { headers })
       router.push('/current/notes/edit/' + res.data.id)
     } catch (err) {
-      let errorMessage = 'An unknown error occurred'
+      let errorMessage =
+        '不明なエラーが発生しました　サポートにお問い合わせください'
       if (isAxiosError(err)) {
         if (err.response) {
           const errorData = err.response.data
@@ -63,7 +64,8 @@ const Header = () => {
             errorData.message ||
             `Error: ${err.response.status} ${err.response.statusText}`
         } else if (err.request) {
-          errorMessage = 'Network error. Please check your connection.'
+          errorMessage =
+            'ネットワークエラーが発生しました　ネットワーク接続を確認してください'
         }
       } else {
         errorMessage = err instanceof Error ? err.message : String(err)
@@ -137,8 +139,8 @@ const Header = () => {
             /*!tokenLoading && */ user && (
               <Box sx={{ display: 'flex' }}>
                 <IconButton onClick={handleClick} sx={{ p: 0 }}>
-                  <Avatar>
-                    {user.photoURL ? user.photoURL : <PersonIcon />}
+                  <Avatar alt="avatar" src={user.photoURL || undefined}>
+                    {!user.photoURL && <PersonIcon />}
                   </Avatar>
                 </IconButton>
                 <Box sx={{ ml: 2 }}>

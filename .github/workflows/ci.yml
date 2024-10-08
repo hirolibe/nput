@@ -20,8 +20,8 @@ jobs:
         ports:
           - 3306:3306
         env:
-          - MYSQL_ROOT_PASSWORD=password
-          - MYSQL_DATABASE=myapp_test
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: myapp_test
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
       redis:
         image: redis:7.0.11-alpine

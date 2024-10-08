@@ -14,8 +14,8 @@ jobs:
     defaults:
       run:
         working-directory: rails
-    # env:
-    #   REDIS_URL: redis://localhost:6379/0
+    env:
+      REDIS_URL: redis://localhost:6379/0
     services:
       mysql:
         image: mysql:8.0.32

@@ -3,5 +3,5 @@ test:
   encoding: utf8mb4
   username: root
   password: password
-  host: mysql
+  host: 127.0.0.1
   database: myapp_test

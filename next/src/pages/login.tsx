@@ -24,18 +24,18 @@ const LogIn: NextPage = () => {
 
   const validationRules = {
     email: {
-      required: 'メールアドレスを入力してください。',
+      required: 'メールアドレスを入力してください',
       pattern: {
         value:
           /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
-        message: '正しい形式のメールアドレスを入力してください。',
+        message: '正しい形式のメールアドレスを入力してください',
       },
     },
     password: {
-      required: 'パスワードを入力してください。',
+      required: 'パスワードを入力してください',
       minLength: {
         value: 8,
-        message: 'パスワードは8文字以上にしてください。',
+        message: 'パスワードは8文字以上にしてください',
       },
     },
   }
@@ -47,11 +47,19 @@ const LogIn: NextPage = () => {
       alert('ログインに成功しました！')
       router.push('/')
     } catch (err) {
-      let errorMessage = 'ログインに失敗しました。再度お試しください。'
+      let errorMessage =
+        '不明なエラーが発生しました　サポートにお問い合わせください'
 
       if (err instanceof FirebaseError) {
-        if (err.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは8文字以上にしてください。'
+        if (err.code === 'auth/invalid-email') {
+          errorMessage = 'メールアドレスが無効です'
+        } else if (err.code === 'auth/user-not-found') {
+          errorMessage =
+            'このメールアドレスに対応するアカウントが見つかりません'
+        } else if (err.code === 'auth/wrong-password') {
+          errorMessage = 'パスワードが正しくありません'
+        } else if (err.code === 'auth/weak-password') {
+          errorMessage = 'パスワードは8文字以上にしてください'
         }
       }
       alert(errorMessage)

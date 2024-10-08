@@ -1,22 +1,54 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  context "fFactoryBotで生成したUserの場合" do
-    let(:user) { create(:user) }
+  describe "新規作成" do
+    context "全ての値が有効な場合" do
+      subject { create(:user) }
 
-    it "有効なUserレコードが作成される" do
-      expect(user).to be_valid
+      it "正常にレコードを新規作成できる" do
+        expect { subject }.to change { User.count }.by(1)
+      end
+    end
+  end
+
+  describe "バリデーション" do
+    let(:user) { build(:user) }
+    subject { user.valid? }
+
+    context "全ての値が有効な場合" do
+      it "バリデーションが成功する" do
+        expect(subject).to be_truthy
+      end
     end
 
-    it "emailがない場合、無効である" do
-      user.email = nil
-      expect(user).not_to be_valid
-		end
+    context "emailが空の場合" do
+      before { user.email = nil }
 
-		it "emailが重複している場合、無効である" do
-      create(:user, email: "test@example.com")
-      user.email = "test@example.com"
-      expect(user).not_to be_valid
-		end
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).to be_falsy
+        expect(user.errors.full_messages).to eq ["Emailを入力してください"]
+      end
+    end
+
+    context "emailが重複している場合" do
+      before do
+        create(:user, email: "test@example.com")
+        user.email = "test@example.com"
+      end
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).to be_falsy
+        expect(user.errors.full_messages).to eq ["Emailはすでに存在します"]
+      end
+    end
+
+    context "uidが空の場合" do
+      before { user.uid = nil }
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).to be_falsy
+        expect(user.errors.full_messages).to eq ["Uidを入力してください"]
+      end
+    end
   end
 end

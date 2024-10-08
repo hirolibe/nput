@@ -3,27 +3,37 @@ class Api::V1::ApplicationController < ApplicationController
 
   private
 
-    def id_token
+    def firebase_token
       request.headers["Authorization"]&.split&.last
     end
 
+    def verify_token
+      @decoded_token = FirebaseIdToken::Signature.verify(firebase_token)
+    end
+
     def authenticate_user!
-      return render json: { error: "No token provided" }, status: :unauthorized if id_token.blank?
+      if firebase_token.blank?
+        return render json: { error: "ログインしてください" }, status: :bad_request
+      end
 
       begin
-        @payload = FirebaseIdToken::Signature.verify(id_token)
+        verify_token
+      rescue => e
+        Rails.logger.error("Firebase認証エラー: #{e.message}")
+        return render json: { error: e.message }, status: :unauthorized
+      end
 
-        return render json: { error: "Invalid token" }, status: :unauthorized if @payload.nil?
+      if decoded_token.blank?
+        return render json: { error: "認証情報が無効です　ログインし直してください" }, status: :unauthorized
+      end
 
-        @current_user = User.find_or_initialize_by(uid: @payload["sub"])
-      rescue
-        render json: { error: "Invalid token" }, status: :unauthorized
+      @current_user = User.find_by(uid: decoded_token["sub"])
+
+      if @current_user.blank?
+        return render json: { error: "アカウントが見つかりません　新規登録してください" }, status: :unauthorized
       end
     end
 
+    attr_reader :decoded_token
     attr_reader :current_user
-
-    def current_payload
-      @payload
-    end
 end

@@ -14,20 +14,21 @@ jobs:
     defaults:
       run:
         working-directory: rails
+    env:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      REDIS_URL: redis://127.0.0.1:6379/0
     services:
       mysql:
         image: mysql:8.0.32
         ports:
           - 3306:3306
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        # env:
+        #   MYSQL_ALLOW_EMPTY_PASSWORD: yes
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
       redis:
         image: redis:7.0.11-alpine
         ports:
           - 6379:6379
-        env:
-          REDIS_URL: redis://127.0.0.1:6379/0
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout code

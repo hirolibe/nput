@@ -38,7 +38,7 @@ end
 
 RSpec.shared_examples "アカウントエラー" do
   before do
-    headers.merge!({ Authorization: "valid_but_no_account_token" })
+    stub_token_verification.and_return({ "sub" => "no_account_uid" })
   end
 
   it "認証が失敗し、401エラーとエラーメッセージが返る" do

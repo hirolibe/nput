@@ -1,6 +1,4 @@
 class Api::V1::Auth::RegistrationsController < Api::V1::ApplicationController
-  skip_before_action :authenticate_user!
-
   def create
     if firebase_token.blank?
       return render json: { error: "ログインしてください" }, status: :bad_request

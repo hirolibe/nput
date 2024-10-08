@@ -1,6 +1,4 @@
 class Api::V1::ApplicationController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
-
   private
 
     def firebase_token
@@ -30,10 +28,9 @@ class Api::V1::ApplicationController < ApplicationController
       @current_user = User.find_by(uid: decoded_token["sub"])
 
       if @current_user.blank?
-        return render json: { error: "アカウントが見つかりません　新規登録してください" }, status: :unauthorized
+        render json: { error: "アカウントが見つかりません　新規登録してください" }, status: :unauthorized
       end
     end
 
-    attr_reader :decoded_token
-    attr_reader :current_user
+    attr_reader :decoded_token, :current_user
 end

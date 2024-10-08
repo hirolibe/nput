@@ -12,8 +12,9 @@ RSpec.describe Note, type: :model do
   end
 
   describe "バリデーション" do
-    let(:note) { build(:note) }
     subject { note.valid? }
+
+    let(:note) { build(:note) }
 
     context "全ての値が有効な場合" do
       it "バリデーションが成功する" do
@@ -50,7 +51,7 @@ RSpec.describe Note, type: :model do
 
     context "ステータスが未保存かつ、すでに同一ユーザーが未保存ステータスの記事を所有している場合" do
       before do
-        create(:note, user:note.user, status: "unsaved")
+        create(:note, user: note.user, status: "unsaved")
         note.status = "unsaved"
       end
 

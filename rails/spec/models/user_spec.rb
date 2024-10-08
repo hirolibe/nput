@@ -12,8 +12,9 @@ RSpec.describe User, type: :model do
   end
 
   describe "バリデーション" do
-    let(:user) { build(:user) }
     subject { user.valid? }
+
+    let(:user) { build(:user) }
 
     context "全ての値が有効な場合" do
       it "バリデーションが成功する" do

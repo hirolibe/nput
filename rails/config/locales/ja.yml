@@ -1,6 +1,8 @@
 ja:
   activerecord:
     attributes:
+      user:
+        name: ユーザー名
       note:
         title: タイトル
         content: 本文

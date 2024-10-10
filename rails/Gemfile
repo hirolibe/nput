@@ -15,6 +15,9 @@ gem "config"
 # idToken（JWT）を検証する
 gem "firebase_id_token", "~> 3.0.0"
 
+# ページネーション機能を提供する
+gem "kaminari"
+
 # MySQLに接続する
 gem "mysql2", "~> 0.5"
 

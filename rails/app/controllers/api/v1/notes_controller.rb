@@ -8,6 +8,6 @@ class Api::V1::NotesController < Api::V1::ApplicationController
 
   def show
     note = Note.published.find(params[:id])
-    render json: note, serializer: NoteShowSerializer
+    render json: note
   end
 end

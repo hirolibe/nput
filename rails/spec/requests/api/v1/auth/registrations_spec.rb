@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Auth::Registrations", type: :request do
-  describe "GET /api/v1/auth/registrations" do
+  describe "POST /api/v1/auth/registrations" do
     subject { post api_v1_auth_registrations_path, headers: }
 
     let(:headers) { { Authorization: "Bearer token" } }
@@ -28,7 +28,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
 
     context "有効なトークンを受け取り、ユーザー情報を取得できた場合" do
       before do
-        stub_token_verification.and_return({ "email" => Faker::Internet.email, "sub" => Faker::Internet.uuid })
+        stub_token_verification.and_return({ "sub" => Faker::Internet.uuid, "email" => Faker::Internet.email, "name" => Faker::Name.name })
       end
 
       it "201ステータスとユーザー登録成功のメッセージが返る" do

@@ -51,5 +51,14 @@ RSpec.describe User, type: :model do
         expect(user.errors.full_messages).to eq ["Uidを入力してください"]
       end
     end
+
+    context "nameが空の場合" do
+      before { user.name = nil }
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).to be_falsy
+        expect(user.errors.full_messages).to eq ["ユーザー名を入力してください"]
+      end
+    end
   end
 end

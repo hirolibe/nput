@@ -3,7 +3,7 @@ FactoryBot.define do
     user
     title { Faker::Lorem.sentence }
     content { Faker::Lorem.paragraph }
-    published_at { Time.current }
     status { :published }
+    published_at { Time.current }
   end
 end

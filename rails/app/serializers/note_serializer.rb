@@ -1,4 +1,4 @@
 class NoteSerializer < ActiveModel::Serializer
-  attributes :id, :title, :content, :published_at, :updated_at, :author_name
+  attributes :id, :title, :content, :status_jp, :published_date, :updated_date, :author_name
   belongs_to :user, serializer: UserSerializer
 end

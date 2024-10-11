@@ -6,4 +6,11 @@ ja:
       note:
         title: タイトル
         content: 本文
-        published_at: 公開日時
+        status: ステータス
+        published_at: 公開日
+  enums:
+    note:
+      status:
+        unsaved: 未保存
+        draft: 下書き
+        published: 公開中

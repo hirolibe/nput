@@ -90,6 +90,8 @@ GEM
     date (3.3.4)
     deep_merge (1.2.2)
     diff-lcs (1.5.1)
+    enum_help (0.0.19)
+      activesupport (>= 3.0.0)
     erubi (1.13.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
@@ -276,6 +278,7 @@ DEPENDENCIES
   active_model_serializers
   bootsnap
   config
+  enum_help
   factory_bot_rails
   faker
   firebase_id_token (~> 3.0.0)

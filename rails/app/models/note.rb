@@ -16,7 +16,7 @@ class Note < ApplicationRecord
   end
 
   def published_date
-    published_at.strftime("%Y/%m/%d")
+    published_at&.strftime("%Y/%m/%d")
   end
 
   def updated_date

@@ -10,8 +10,8 @@ users.each do |user|
     user.notes.create({
       title: Faker::Lorem.sentence(word_count: 10).chomp("。"),
       content: Faker::Lorem.paragraphs(number: 5).join("\n\n"),
-      published_at: Time.current - rand(1..10).days,
       status: :published,
+      published_at: Time.current - rand(1..10).days,
     })
   end
 end

@@ -22,6 +22,15 @@ RSpec.describe Note, type: :model do
       end
     end
 
+    context "ステータスが空の場合" do
+      before { note.status = "" }
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).to be_falsy
+        expect(note.errors.full_messages).to eq ["ステータスを入力してください"]
+      end
+    end
+
     context "ステータスが公開済かつ、タイトルが空の場合" do
       before { note.title = "" }
 
@@ -45,7 +54,7 @@ RSpec.describe Note, type: :model do
 
       it "バリデーションが失敗し、エラーメッセージが返る" do
         expect(subject).to be_falsy
-        expect(note.errors.full_messages).to eq ["公開日時を入力してください"]
+        expect(note.errors.full_messages).to eq ["公開日を入力してください"]
       end
     end
 

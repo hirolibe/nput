@@ -57,7 +57,7 @@ const SignUp: NextPage = () => {
       Authorization: `Bearer ${idToken}`,
     }
     const data = {
-      displayName: createdUser.displayName,
+      name: createdUser.displayName,
     }
 
     try {

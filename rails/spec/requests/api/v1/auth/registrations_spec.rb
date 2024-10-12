@@ -2,9 +2,10 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Auth::Registrations", type: :request do
   describe "POST /api/v1/auth/registrations" do
-    subject { post api_v1_auth_registrations_path, headers: }
+    subject { post api_v1_auth_registrations_path, params:, headers: }
 
     let(:headers) { { Authorization: "Bearer token" } }
+    let(:params) { { name: Faker::Name.name } }
 
     context "トークンが欠落している場合" do
       include_examples "トークン欠落エラー"
@@ -28,7 +29,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
 
     context "有効なトークンを受け取り、ユーザー情報を取得できた場合" do
       before do
-        stub_token_verification.and_return({ "sub" => Faker::Internet.uuid, "email" => Faker::Internet.email, "name" => Faker::Name.name })
+        stub_token_verification.and_return({ "sub" => Faker::Internet.uuid, "email" => Faker::Internet.email })
       end
 
       it "201ステータスとユーザー登録成功のメッセージが返る" do

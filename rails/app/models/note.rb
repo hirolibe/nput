@@ -3,6 +3,7 @@ class Note < ApplicationRecord
 
   enum :status, { unsaved: 10, draft: 20, published: 30 }
 
+  validates :status, presence: true
   validates :title, :content, :published_at, presence: true, if: :published?
   validate :validate_single_unsaved
 
@@ -10,9 +11,20 @@ class Note < ApplicationRecord
     user.name
   end
 
-  def from_today
+  def status_jp
+    status_i18n
+  end
+
+  def published_date
+    published_at&.strftime("%Y/%m/%d")
+  end
+
+  def updated_date
+    updated_at.strftime("%Y/%m/%d")
+  end
+
+  def from_today # rubocop:disable Metrics/AbcSize
     now = Time.zone.now
-    published_at = self.published_at
 
     months = (now.year - published_at.year) * 12 + now.month - published_at.month - ((now.day >= published_at.day) ? 0 : 1)
     years = months.div(12)

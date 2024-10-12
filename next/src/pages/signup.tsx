@@ -56,9 +56,12 @@ const SignUp: NextPage = () => {
     const headers = {
       Authorization: `Bearer ${idToken}`,
     }
+    const data = {
+      name: createdUser.displayName,
+    }
 
     try {
-      const res = await axios.post(url, null, { headers })
+      const res = await axios.post(url, data, { headers })
       alert(res.data.message)
       await router.push('/')
     } catch (err) {
@@ -72,7 +75,7 @@ const SignUp: NextPage = () => {
             `Error: ${err.response.status} ${err.response.statusText}`
         } else if (err.request) {
           errorMessage =
-            'ネットワークエラーが発生しました　ネットワーク接続を確認してください'
+            'サーバーに接続できません　しばらくしてからもう一度お試しください'
         }
       } else {
         errorMessage = err instanceof Error ? err.message : String(err)

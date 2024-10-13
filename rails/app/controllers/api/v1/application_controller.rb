@@ -6,16 +6,16 @@ class Api::V1::ApplicationController < ApplicationController
     end
 
     def verify_token
-      @decoded_token = FirebaseIdToken::Signature.verify(firebase_token)
+      FirebaseIdToken::Signature.verify(firebase_token)
     end
 
     def authenticate_user!
       if firebase_token.blank?
-        return render json: { error: "ログインしてください" }, status: :bad_request
+        return render json: { error: "トークンが見つかりません　新規登録またはログインしてください" }, status: :bad_request
       end
 
       begin
-        verify_token
+        decoded_token = verify_token
       rescue => e
         Rails.logger.error("Firebase認証エラー: #{e.message}")
         return render json: { error: e.message }, status: :unauthorized
@@ -32,5 +32,5 @@ class Api::V1::ApplicationController < ApplicationController
       end
     end
 
-    attr_reader :decoded_token, :current_user
+    attr_reader :current_user
 end

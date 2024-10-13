@@ -125,4 +125,60 @@ RSpec.describe "Api::V1::Notes", type: :request do
       end
     end
   end
+
+  describe "PATCH api/v1/notes/id" do
+    subject { patch(api_v1_note_path(note_id), headers:, params:) }
+
+    let(:current_user) { create(:user) }
+    let(:current_user_note) { create(:note, title: "タイトル", content: "本文", status: :draft, published_at: 2024 / 10 / 1, user: current_user) }
+    let(:note_id) { current_user_note.id }
+    let(:headers) { { Authorization: "Bearer token" } }
+    let(:params) { { "note": { "title": "更新タイトル", "content": "更新本文", "status": "published", "published_at": "2024/11/1" } } }
+
+    context "トークンが欠落している場合" do
+      include_examples "トークン欠落エラー"
+    end
+
+    context "トークンの有効期限が切れている場合" do
+      include_examples "トークン期限切れエラー"
+    end
+
+    context "無効なトークンを受け取り、ユーザー情報を取得できなかった場合" do
+      include_examples "トークン無効エラー"
+    end
+
+    context "有効なトークンを受け取ったが、データベースにアカウントが存在しなかった場合" do
+      include_examples "アカウントエラー"
+    end
+
+    context "更新するノートのidが、ログインユーザーが作成したノートのidである場合" do
+      before do
+        stub_token_verification.and_return({ "sub" => current_user.uid })
+      end
+
+      it "正常にレコードを更新できる" do
+        expect { subject }.to change { current_user_note.reload.title }.from("タイトル").to("更新タイトル") and
+          change { current_user_note.reload.content }.from("本文").to("更新本文") and
+          change { current_user_note.reload.status }.from("draft").to("published") and
+          change { current_user_note.reload.published_at }.from("2024/10/1").to("2024/11/1")
+        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
+        expect(json_response["user"].keys).to eq ["name", "email"]
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "更新するノートのidが、ログインユーザーが作成したノートのidではない場合" do
+      let(:other_user) { create(:user) }
+      let(:other_user_note) { create(:note, user: other_user) }
+      let(:note_id) { other_user_note.id }
+
+      before do
+        stub_token_verification.and_return({ "sub" => current_user.uid })
+      end
+
+      it "例外が発生する" do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end

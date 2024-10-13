@@ -74,4 +74,55 @@ RSpec.describe "Api::V1::Notes", type: :request do
       end
     end
   end
+
+  describe "POST api/v1/notes" do
+    subject { post(api_v1_notes_path, headers:) }
+
+    let(:headers) { { Authorization: "Bearer token" } }
+    let(:current_user) { create(:user) }
+
+    context "トークンが欠落している場合" do
+      include_examples "トークン欠落エラー"
+    end
+
+    context "トークンの有効期限が切れている場合" do
+      include_examples "トークン期限切れエラー"
+    end
+
+    context "無効なトークンを受け取り、ユーザー情報を取得できなかった場合" do
+      include_examples "トークン無効エラー"
+    end
+
+    context "有効なトークンを受け取ったが、データベースにアカウントが存在しなかった場合" do
+      include_examples "アカウントエラー"
+    end
+
+    context "ログインユーザーに紐づく未保存ステータスの記事が0件の時" do
+      before do
+        stub_token_verification.and_return({ "sub" => current_user.uid })
+      end
+
+      it "未保存ステータスの記事が新規作成される" do
+        expect { subject }.to change { current_user.notes.count }.by(1)
+        expect(response).to have_http_status(:ok)
+        expect(current_user.notes.last).to be_unsaved
+        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
+        expect(json_response["user"].keys).to eq ["name", "email"]
+      end
+    end
+
+    context "ログインユーザーに紐づく未保存ステータスの記事が1件の時" do
+      before do
+        create(:note, user: current_user, status: :unsaved)
+        stub_token_verification.and_return({ "sub" => current_user.uid })
+      end
+
+      it "既存の未保存ステータスの記事が表示される" do
+        expect { subject }.not_to change { current_user.notes.count }
+        expect(response).to have_http_status(:ok)
+        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
+        expect(json_response["user"].keys).to eq ["name", "email"]
+      end
+    end
+  end
 end

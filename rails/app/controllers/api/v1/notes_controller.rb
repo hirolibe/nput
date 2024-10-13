@@ -1,6 +1,6 @@
 class Api::V1::NotesController < Api::V1::ApplicationController
   include Pagination
-  before_action :authenticate_user!, only: [:create, :update]
+  before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
     notes = Note.published.order(created_at: :desc).page(params[:page] || 1).per(10)
@@ -22,6 +22,11 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     filtered_params = note.published_at.present? ? delete_published_at(note_params) : note_params
     note.update!(filtered_params)
     render json: note
+  end
+
+  def destroy
+    note = current_user.notes.find(params[:id])
+    note.destroy!
   end
 
   private

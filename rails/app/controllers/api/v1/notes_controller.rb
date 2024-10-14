@@ -3,7 +3,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
-    notes = Note.published.order(created_at: :desc).page(params[:page] || 1).per(10)
+    notes = Note.published.order(created_at: :desc).page(params[:page] || 1).per(10).includes(:user)
     render json: notes, each_serializer: NoteIndexSerializer, meta: pagination(notes), adapter: :json
   end
 

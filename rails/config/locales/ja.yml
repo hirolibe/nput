@@ -8,6 +8,8 @@ ja:
         content: 本文
         status: ステータス
         published_at: 公開日
+      comment:
+        content: コメント
   enums:
     note:
       status:

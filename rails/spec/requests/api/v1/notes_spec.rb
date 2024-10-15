@@ -16,8 +16,7 @@ RSpec.describe "Api::V1::Notes", type: :request do
         subject
         expect(response).to have_http_status(:ok)
         expect(json_response.keys).to eq ["notes", "meta"]
-        expect(json_response["notes"][0].keys).to eq ["id", "title", "author_name", "from_today", "user"]
-        expect(json_response["notes"][0]["user"].keys).to eq ["name", "email"]
+        expect(json_response["notes"][0].keys).to eq ["id", "title", "author_name", "from_today"]
         expect(json_response["meta"].keys).to eq ["current_page", "total_pages"]
         expect(json_response["meta"]["current_page"]).to eq 1
       end
@@ -30,8 +29,7 @@ RSpec.describe "Api::V1::Notes", type: :request do
         subject
         expect(response).to have_http_status(:ok)
         expect(json_response.keys).to eq ["notes", "meta"]
-        expect(json_response["notes"][0].keys).to eq ["id", "title", "author_name", "from_today", "user"]
-        expect(json_response["notes"][0]["user"].keys).to eq ["name", "email"]
+        expect(json_response["notes"][0].keys).to eq ["id", "title", "author_name", "from_today"]
         expect(json_response["meta"].keys).to eq ["current_page", "total_pages"]
         expect(json_response["meta"]["current_page"]).to eq 2
       end
@@ -41,9 +39,8 @@ RSpec.describe "Api::V1::Notes", type: :request do
   describe "GET /api/v1/notes/:id" do
     subject { get(api_v1_note_path(note_id)) }
 
-    let(:note) { create(:note, status:) }
-
     context "指定したidに対応するレコードが存在する場合" do
+      let(:note) { create(:note, status:) }
       let(:note_id) { note.id }
 
       context "指定したidのレコードのステータスが公開中の場合" do
@@ -52,8 +49,7 @@ RSpec.describe "Api::V1::Notes", type: :request do
         it "200ステータスと指定したidのレコードが返る" do
           subject
           expect(response).to have_http_status(:ok)
-          expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
-          expect(json_response["user"].keys).to eq ["name", "email"]
+          expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name"]
         end
       end
 
@@ -106,8 +102,7 @@ RSpec.describe "Api::V1::Notes", type: :request do
         expect { subject }.to change { current_user.notes.count }.by(1)
         expect(response).to have_http_status(:ok)
         expect(current_user.notes.last).to be_unsaved
-        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
-        expect(json_response["user"].keys).to eq ["name", "email"]
+        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name"]
       end
     end
 
@@ -120,8 +115,7 @@ RSpec.describe "Api::V1::Notes", type: :request do
       it "既存の未保存ステータスの記事が表示される" do
         expect { subject }.not_to change { current_user.notes.count }
         expect(response).to have_http_status(:ok)
-        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
-        expect(json_response["user"].keys).to eq ["name", "email"]
+        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name"]
       end
     end
   end
@@ -161,8 +155,7 @@ RSpec.describe "Api::V1::Notes", type: :request do
           change { current_user_note.reload.content }.from("本文").to("更新本文") and
           change { current_user_note.reload.status }.from("draft").to("published") and
           change { current_user_note.reload.published_at }.from("2024/10/1").to("2024/11/1")
-        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name", "user"]
-        expect(json_response["user"].keys).to eq ["name", "email"]
+        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name"]
         expect(response).to have_http_status(:ok)
       end
     end

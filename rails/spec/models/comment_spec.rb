@@ -16,7 +16,7 @@ RSpec.describe Comment, type: :model do
 
     let(:comment) { build(:comment) }
 
-    context "全ての値が有効な場合" do
+    context "全てのパラメータを正しく入力した場合" do
       it "バリデーションが成功する" do
         expect(subject).to be_truthy
       end

@@ -1,5 +1,5 @@
 class Api::V1::CommentsController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, only: [:create, :destroy]
 
   def index
     note = Note.published.find(params[:note_id])
@@ -16,6 +16,11 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     else
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    comment = current_user.comments.find(params[:id])
+    comment.destroy!
   end
 
   private

@@ -47,3 +47,21 @@ RSpec.shared_examples "アカウントエラー" do
     expect(json_response["error"]).to eq("アカウントが見つかりません　新規登録してください")
   end
 end
+
+RSpec.shared_examples "ユーザー認証エラー" do
+  context "トークンが欠落している場合" do
+    include_examples "トークン欠落エラー"
+  end
+
+  context "トークンの有効期限が切れている場合" do
+    include_examples "トークン期限切れエラー"
+  end
+
+  context "無効なトークンを受け取り、ユーザー情報を取得できなかった場合" do
+    include_examples "トークン無効エラー"
+  end
+
+  context "有効なトークンを受け取ったが、データベースにアカウントが存在しなかった場合" do
+    include_examples "アカウントエラー"
+  end
+end

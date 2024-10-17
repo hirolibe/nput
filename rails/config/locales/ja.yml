@@ -10,6 +10,8 @@ ja:
         published_at: 公開日
       comment:
         content: コメント
+      profile:
+        cheer_points: 保有エールポイント
   enums:
     note:
       status:

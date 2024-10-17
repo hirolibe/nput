@@ -8,10 +8,6 @@ class Note < ApplicationRecord
   validates :title, :content, :published_at, presence: true, if: :published?
   validate :validate_single_unsaved
 
-  def author_name
-    user.name
-  end
-
   def status_jp
     status_i18n
   end

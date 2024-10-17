@@ -17,13 +17,36 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
     end
 
     context "ログインユーザーが作成したノートの場合" do
-      it "正常にレコードを更新できる" do
-        expect { subject }.to change { note.reload.title }.from("タイトル").to("更新タイトル") and
-          change { note.reload.content }.from("本文").to("更新本文") and
-          change { note.reload.status }.from("draft").to("published") and
-          change { note.reload.published_at }.from("2024/10/1").to("2024/11/1")
-        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "author_name"]
-        expect(response).to have_http_status(:ok)
+      context "全てのパラメータを正しく入力した場合" do
+        it "正常にレコードを更新できる" do
+          expect { subject }.to change { note.reload.title }.from("タイトル").to("更新タイトル") and
+            change { note.reload.content }.from("本文").to("更新本文") and
+            change { note.reload.status }.from("draft").to("published") and
+            change { note.reload.published_at }.from("2024/10/1").to("2024/11/1")
+          expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "user"]
+          expect(json_response["user"].keys).to eq ["id", "display_name", "bio", "avatar_url", "sns_link_x", "sns_link_github", "cheer_points"]
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "ステータスが公開中かつタイトルが空の場合" do
+        let(:params) { { "note": { "title": "", "content": "更新本文", "status": "published", "published_at": "2024/11/1" } } }
+
+        it "422ステータスとエラーメッセージが返る" do
+          subject
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(json_response["errors"]).to eq ["タイトルを入力してください"]
+        end
+      end
+
+      context "ステータスが公開中かつ本文が空の場合" do
+        let(:params) { { "note": { "title": "タイトル更新", "content": "", "status": "published", "published_at": "2024/11/1" } } }
+
+        it "422ステータスとエラーメッセージが返る" do
+          subject
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(json_response["errors"]).to eq ["本文を入力してください"]
+        end
       end
     end
 
@@ -31,8 +54,10 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
       let(:other_user) { create(:user) }
       let(:note) { create(:note, user: other_user) }
 
-      it "例外が発生する" do
-        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      it "404エラーとエラーメッセージが返る" do
+        subject
+        expect(response).to have_http_status(:not_found)
+        expect(json_response["error"]).to eq("ノートが見つかりません")
       end
     end
   end

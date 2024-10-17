@@ -3,18 +3,20 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
-    notes = Note.published.order(created_at: :desc).page(params[:page] || 1).per(10).includes(:user)
+    notes = Note.published.order(created_at: :desc).page(params[:page] || 1).per(10).includes(user: :profile)
     render json: notes, each_serializer: NoteIndexSerializer, meta: pagination(notes), adapter: :json
   end
 
   def show
     note = Note.published.find(params[:id])
-    render json: note
+    render json: note, status: :ok
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "ノートが見つかりません" }, status: :not_found
   end
 
   def create
     unsaved_note = current_user.notes.unsaved.first || current_user.notes.create!(status: :unsaved)
-    render json: unsaved_note
+    render json: unsaved_note, status: :ok
   end
 
   def update
@@ -31,11 +33,19 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     else
       render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "ノートが見つかりません" }, status: :not_found
   end
 
   def destroy
     note = current_user.notes.find(params[:id])
-    note.destroy!
+    if note.destroy
+      render json: { message: "ノートが削除されました" }, status: :ok
+    else
+      render json: { error: "ノートの削除に失敗しました" }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "ノートが見つかりません" }, status: :not_found
   end
 
   private

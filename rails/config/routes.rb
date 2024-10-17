@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:index, :create, :destroy]
       end
+      resource :profile, only: [:show]
       namespace :auth do
         post "registrations" => "registrations#create"
       end

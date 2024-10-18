@@ -3,8 +3,10 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
 
   def index
     note = Note.published.find(params[:note_id])
-    comments = note.comments.includes(:user)
+    comments = note.comments.includes(user: :profile)
     render json: comments
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "ノートが見つかりません" }, status: :not_found
   end
 
   def create
@@ -16,11 +18,19 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     else
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "ノートが見つかりません" }, status: :not_found
   end
 
   def destroy
     comment = current_user.comments.find(params[:id])
-    comment.destroy!
+    if comment.destroy
+      render json: { message: "コメントが削除されました" }, status: :ok
+    else
+      render json: { error: "コメントの削除に失敗しました" }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "コメントが見つかりません" }, status: :not_found
   end
 
   private

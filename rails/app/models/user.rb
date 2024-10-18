@@ -7,8 +7,4 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   has_one :profile, dependent: :destroy
-
-  def author_name
-    name
-  end
 end

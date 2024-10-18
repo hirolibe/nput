@@ -16,9 +16,10 @@ RSpec.describe "Api::V1::Notes DELETE /api/v1/notes/:id", type: :request do
         stub_token_verification.and_return({ "sub" => current_user.uid })
       end
 
-      it "正常にレコードを削除でき、204ステータスが返る" do
+      it "正常にレコードを削除でき、200ステータスとメッセージが返る" do
         subject
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["message"]).to eq("ノートが削除されました")
       end
     end
 
@@ -30,8 +31,10 @@ RSpec.describe "Api::V1::Notes DELETE /api/v1/notes/:id", type: :request do
         stub_token_verification.and_return({ "sub" => current_user.uid })
       end
 
-      it "例外が発生する" do
-        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      it "404エラーとエラーメッセージが返る" do
+        subject
+        expect(response).to have_http_status(:not_found)
+        expect(json_response["error"]).to eq("ノートが見つかりません")
       end
     end
   end

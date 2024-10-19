@@ -6,7 +6,7 @@ class Api::V1::ApplicationController < ApplicationController
     end
 
     def verify_token
-      FirebaseIdToken::Certificates.request if FirebaseIdToken::Certificates.blank?
+      FirebaseIdToken::Certificates.request
       FirebaseIdToken::Signature.verify(firebase_token)
     end
 

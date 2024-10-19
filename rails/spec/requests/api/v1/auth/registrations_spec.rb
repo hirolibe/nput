@@ -8,9 +8,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
     let(:params) { { name: Faker::Name.name } }
 
     context "トークンが欠落している場合" do
-      before do
-        headers.merge!({ Authorization: nil })
-      end
+      before { headers.merge!({ Authorization: nil }) }
 
       it "400エラーとエラーメッセージが返る" do
         subject
@@ -24,9 +22,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
     end
 
     context "無効なトークンを受け取り、ユーザー情報を取得できなかった場合" do
-      before do
-        stub_token_verification.and_return(nil)
-      end
+      before { stub_token_verification.and_return(nil) }
 
       it "トークンの検証が失敗し、401エラーとエラーメッセージが返る" do
         subject
@@ -40,9 +36,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
       let(:email) { Faker::Internet.email }
       let(:user) { User.last }
 
-      before do
-        stub_token_verification.and_return({ "sub" => uid, "email" => email })
-      end
+      before { stub_token_verification.and_return({ "sub" => uid, "email" => email }) }
 
       it "201ステータスとユーザー登録成功のメッセージが返る" do
         expect { subject }.to change { User.count }.by(1)

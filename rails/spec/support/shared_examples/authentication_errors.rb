@@ -1,7 +1,5 @@
 RSpec.shared_examples "トークン欠落エラー" do
-  before do
-    headers.merge!({ Authorization: nil })
-  end
+  before { headers.merge!({ Authorization: nil }) }
 
   it "400エラーとエラーメッセージが返る" do
     subject
@@ -25,9 +23,7 @@ RSpec.shared_examples "トークン期限切れエラー" do
 end
 
 RSpec.shared_examples "トークン無効エラー" do
-  before do
-    stub_token_verification.and_return(nil)
-  end
+  before { stub_token_verification.and_return(nil) }
 
   it "トークンの検証が失敗し、401エラーとエラーメッセージが返る" do
     subject
@@ -37,9 +33,7 @@ RSpec.shared_examples "トークン無効エラー" do
 end
 
 RSpec.shared_examples "アカウントエラー" do
-  before do
-    stub_token_verification.and_return({ "sub" => "no_account_uid" })
-  end
+  before { stub_token_verification.and_return({ "sub" => "no_account_uid" }) }
 
   it "認証が失敗し、401エラーとエラーメッセージが返る" do
     subject

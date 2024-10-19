@@ -10,9 +10,7 @@ RSpec.describe "Api::V1::Comments DELETE /api/v1/notes/:note_id/comments/:id", t
   let(:comment_id) { comment.id }
   let(:headers) { { Authorization: "Bearer token" } }
 
-  before do
-    stub_token_verification.and_return({ "sub" => current_user.uid })
-  end
+  before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
   include_examples "ユーザー認証エラー"
 

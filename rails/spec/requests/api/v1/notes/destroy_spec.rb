@@ -12,9 +12,7 @@ RSpec.describe "Api::V1::Notes DELETE /api/v1/notes/:id", type: :request do
 
   context "ユーザー認証に成功した場合" do
     context "ログインユーザーが作成したノートの場合" do
-      before do
-        stub_token_verification.and_return({ "sub" => current_user.uid })
-      end
+      before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
       it "正常にレコードを削除でき、200ステータスとメッセージが返る" do
         subject
@@ -27,9 +25,7 @@ RSpec.describe "Api::V1::Notes DELETE /api/v1/notes/:id", type: :request do
       let(:other_user) { create(:user) }
       let(:note) { create(:note, user: other_user) }
 
-      before do
-        stub_token_verification.and_return({ "sub" => current_user.uid })
-      end
+      before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
       it "404エラーとエラーメッセージが返る" do
         subject

@@ -6,9 +6,7 @@ RSpec.describe "Api::V1::Comments GET /api/v1/notes/:note_id/comments", type: :r
   let(:note) { create(:note) }
   let(:note_id) { note.id }
 
-  before do
-    create_list(:comment, 5, note:)
-  end
+  before { create_list(:comment, 5, note:) }
 
   it "200ステータスとレコード情報が返る" do
     subject

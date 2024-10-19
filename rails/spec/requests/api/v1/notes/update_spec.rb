@@ -12,9 +12,7 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
   include_examples "ユーザー認証エラー"
 
   context "ユーザー認証に成功した場合" do
-    before do
-      stub_token_verification.and_return({ "sub" => current_user.uid })
-    end
+    before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
     context "ログインユーザーが作成したノートの場合" do
       context "全てのパラメータを正しく入力した場合" do

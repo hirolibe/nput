@@ -12,9 +12,7 @@ RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :
   include_examples "ユーザー認証エラー"
 
   context "ユーザー認証に成功した場合" do
-    before do
-      stub_token_verification.and_return({ "sub" => current_user.uid })
-    end
+    before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
     context "ノートが存在する場合" do
       context "全てのパラメータを正しく入力した場合" do

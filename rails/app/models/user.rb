@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  validates :name, presence: true
   validates :email, presence: true, uniqueness: true
   validates :uid, presence: true, uniqueness: true
 
@@ -7,4 +6,12 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   has_one :profile, dependent: :destroy
+
+  after_create :create_profile!
+
+  private
+
+    def create_profile!
+      build_profile.save!
+    end
 end

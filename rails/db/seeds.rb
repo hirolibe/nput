@@ -3,7 +3,7 @@ note_count = 5
 users = []
 
 user_count.times do
-  users.push(User.create!(name: Faker::Name.name, email: Faker::Internet.email, uid: Faker::Internet.uuid))
+  users.push(User.create!(email: Faker::Internet.email, uid: Faker::Internet.uuid))
 end
 
 users.each do |user|
@@ -28,12 +28,11 @@ users.each do |user|
     comment.save!
   end
 
-  user.create_profile({
+  user.profile.update!(
     nickname: Faker::Internet.username,
     bio: Faker::Lorem.sentence,
-    firebase_avatar_url: Faker::Avatar.image,
-    sns_link_x: Faker::Internet.url(host: "x.com", path: "/user_profile"),
-    sns_link_github: Faker::Internet.url(host: "github.com", path: "/user_profile"),
+    x_username: Faker::Internet.username,
+    github_username: Faker::Internet.username,
     cheer_points: Faker::Number.between(from: 0, to: 10),
-  })
+  )
 end

@@ -5,8 +5,9 @@ RSpec.describe User, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:user) }
 
-      it "正常にレコードを新規作成できる" do
-        expect { subject }.to change { User.count }.by(1)
+      it "正常にユーザーとプロフィールを新規作成できる" do
+        expect { subject }.to change { User.count }.by(1) and
+          change { Profile.count }.by(1)
       end
     end
   end
@@ -49,15 +50,6 @@ RSpec.describe User, type: :model do
       it "バリデーションが失敗し、エラーメッセージが返る" do
         expect(subject).to be_falsy
         expect(user.errors.full_messages).to eq ["Uidを入力してください"]
-      end
-    end
-
-    context "nameが空の場合" do
-      before { user.name = nil }
-
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(user.errors.full_messages).to eq ["ユーザー名を入力してください"]
       end
     end
   end

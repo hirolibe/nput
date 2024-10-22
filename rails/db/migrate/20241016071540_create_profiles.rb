@@ -5,9 +5,8 @@ class CreateProfiles < ActiveRecord::Migration[7.0]
 
       t.string :nickname, comment: "ニックネーム"
       t.text :bio, comment: "自己紹介文"
-      t.string :firebase_avatar_url, comment: "Firebaseのアバター画像のURL"
-      t.string :sns_link_x, comment: "SNSリンク（X）"
-      t.string :sns_link_github, comment: "SNSリンク（GitHub）"
+      t.string :x_username, comment: "SNSリンク（X）"
+      t.string :github_username, comment: "SNSリンク（GitHub）"
       t.integer :cheer_points, default: 0, comment: "保有エールポイント（上限10ポイント）"
 
       t.timestamps

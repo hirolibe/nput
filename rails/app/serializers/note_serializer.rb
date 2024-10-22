@@ -1,7 +1,7 @@
 class NoteSerializer < ActiveModel::Serializer
   attributes :id, :title, :content, :status_jp, :published_date, :updated_date
 
-  belongs_to :user, serializer: UserSerializer
+  belongs_to :user
 
   def status_jp
     object.status_i18n

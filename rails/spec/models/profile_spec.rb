@@ -2,9 +2,12 @@ RSpec.describe Profile, type: :model do
   describe "バリデーション" do
     subject { profile.valid? }
 
-    let(:profile) { build(:profile) }
+    let(:user) { create(:user) }
+    let(:profile) { user.profile }
 
-    context "全てのパラメータを正しく入力した場合" do
+    context "保有エールポイントを正しく入力した場合" do
+      before { profile.cheer_points = Faker::Number.between(from: 0, to: 10) }
+
       it "バリデーションが成功する" do
         expect(subject).to be_truthy
       end

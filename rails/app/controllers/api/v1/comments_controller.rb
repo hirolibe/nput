@@ -4,7 +4,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   def index
     note = Note.published.find(params[:note_id])
     comments = note.comments.includes(user: { profile: :avatar_attachment })
-    render json: comments, include: ["user", "user.profile"]
+    render json: comments, include: ["user", "user.profile"], status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートが見つかりません" }, status: :not_found
   end

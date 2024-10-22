@@ -11,7 +11,7 @@ class Api::V1::ProfilesController < Api::V1::ApplicationController
     profile = current_user.profile
 
     if profile.update(profile_params)
-      render json: profile, status: :ok
+      render json: { profile: ProfileSerializer.new(profile), message: "プロフィールを更新しました！" }, status: :ok
     else
       render json: { errors: profile.errors.full_messates }, status: :unprocessable_entity
     end

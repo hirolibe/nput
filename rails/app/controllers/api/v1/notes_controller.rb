@@ -8,7 +8,12 @@ class Api::V1::NotesController < Api::V1::ApplicationController
               order(created_at: :desc).
               page(params[:page] || 1).
               per(10)
-    render json: notes, each_serializer: NoteIndexSerializer, include: ["user", "user.profile"], meta: pagination(notes), adapter: :json
+    render json: notes,
+           each_serializer: NoteIndexSerializer,
+           include: ["user", "user.profile"],
+           meta: pagination(notes),
+           adapter: :json,
+           status: :ok
   end
 
   def show

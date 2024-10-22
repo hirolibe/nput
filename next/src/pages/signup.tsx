@@ -56,12 +56,9 @@ const SignUp: NextPage = () => {
     const headers = {
       Authorization: `Bearer ${idToken}`,
     }
-    const data = {
-      name: createdUser.displayName,
-    }
 
     try {
-      const res = await axios.post(url, data, { headers })
+      const res = await axios.post(url, null, { headers })
       alert(res.data.message)
       await router.push('/')
     } catch (err) {

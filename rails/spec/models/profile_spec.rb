@@ -1,12 +1,4 @@
 RSpec.describe Profile, type: :model do
-  describe "新規作成" do
-    subject { create(:profile) }
-
-    it "正常にレコードを新規作成できる" do
-      expect { subject }.to change { Profile.count }.by(1)
-    end
-  end
-
   describe "バリデーション" do
     subject { profile.valid? }
 

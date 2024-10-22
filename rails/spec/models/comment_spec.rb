@@ -5,7 +5,7 @@ RSpec.describe Comment, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:comment) }
 
-      it "正常にレコードを新規作成できる" do
+      it "正常にコメントを新規作成できる" do
         expect { subject }.to change { Comment.count }.by(1)
       end
     end

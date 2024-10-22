@@ -1,5 +1,6 @@
 class Note < ApplicationRecord
   belongs_to :user
+
   has_many :comments, dependent: :destroy
 
   enum :status, { unsaved: 10, draft: 20, published: 30 }
@@ -12,7 +13,7 @@ class Note < ApplicationRecord
 
     def validate_single_unsaved
       if unsaved? && user.notes.unsaved.exists?
-        errors.add(:base, "未保存の記事は複数保有できません")
+        errors.add(:base, "未保存のノートは複数保有できません")
       end
     end
 end

@@ -14,7 +14,8 @@ RSpec.describe "Api::V1::Notes GET /api/v1/notes/:id", type: :request do
         subject
         expect(response).to have_http_status(:ok)
         expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "user"]
-        expect(json_response["user"].keys).to eq ["id", "display_name", "bio", "avatar_url", "sns_link_x", "sns_link_github", "cheer_points"]
+        expect(json_response["user"].keys).to eq ["id", "profile"]
+        expect(json_response["user"]["profile"].keys).to eq ["id", "nickname", "bio", "x_username", "github_username", "cheer_points", "avatar_url"]
       end
     end
 

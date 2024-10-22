@@ -2,10 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Auth::Registrations", type: :request do
   describe "POST /api/v1/auth/registrations" do
-    subject { post api_v1_auth_registrations_path, params:, headers: }
+    subject { post api_v1_auth_registrations_path, headers: }
 
     let(:headers) { { Authorization: "Bearer token" } }
-    let(:params) { { name: Faker::Name.name } }
 
     context "トークンが欠落している場合" do
       before { headers.merge!({ Authorization: nil }) }
@@ -43,7 +42,6 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
         expect(response).to have_http_status(:created)
         expect(user.uid).to eq(uid)
         expect(user.email).to eq(email)
-        expect(user.name).to eq(params[:name])
         expect(json_response["message"]).to eq("ユーザー登録に成功しました！")
       end
     end

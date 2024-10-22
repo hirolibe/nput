@@ -3,8 +3,8 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
 
   def index
     note = Note.published.find(params[:note_id])
-    comments = note.comments.includes(user: :profile)
-    render json: comments
+    comments = note.comments.includes(user: { profile: :avatar_attachment })
+    render json: comments, include: ["user", "user.profile"]
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートが見つかりません" }, status: :not_found
   end
@@ -14,7 +14,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     comment = note.comments.build(comment_params)
     comment.user = current_user
     if comment.save
-      render json: comment, status: :created
+      render json: { message: "コメントを追加しました！" }, status: :created
     else
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end

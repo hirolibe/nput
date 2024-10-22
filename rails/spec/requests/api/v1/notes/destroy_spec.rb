@@ -14,10 +14,10 @@ RSpec.describe "Api::V1::Notes DELETE /api/v1/notes/:id", type: :request do
     context "ログインユーザーが作成したノートの場合" do
       before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
-      it "正常にレコードを削除でき、200ステータスとメッセージが返る" do
+      it "正常にノートを削除でき、200ステータスとメッセージが返る" do
         subject
         expect(response).to have_http_status(:ok)
-        expect(json_response["message"]).to eq("ノートが削除されました")
+        expect(json_response["message"]).to eq("ノートを削除しました")
       end
     end
 

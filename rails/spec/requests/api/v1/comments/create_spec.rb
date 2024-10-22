@@ -19,8 +19,7 @@ RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :
         it "コメントが新規作成され、201ステータスが返る" do
           expect { subject }.to change { note.comments.count }.by(1)
           expect(response).to have_http_status(:created)
-          expect(json_response.keys).to eq ["id", "content", "from_today", "user"]
-          expect(json_response["user"].keys).to eq ["id", "display_name", "bio", "avatar_url", "sns_link_x", "sns_link_github", "cheer_points"]
+          expect(json_response["message"]).to eq("コメントを追加しました！")
         end
       end
 

@@ -4,12 +4,12 @@ Rails.application.routes.draw do
       get "health_check", to: "health_check#index"
 
       namespace :auth do
-        post "registrations" => "registrations#create"
+        post "registrations", to: "registrations#create"
       end
 
-      resources :users, only: [:show]
+      resource :profile, only: [:show, :update]
 
-      resource :profile, only: [:create, :edit, :update]
+      resources :users, only: [:show]
 
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:index, :create, :destroy]

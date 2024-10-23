@@ -24,11 +24,10 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
 
   def destroy
     comment = current_user.comments.find(params[:id])
-    if comment.destroy
-      render json: { message: "コメントが削除されました" }, status: :ok
-    else
-      render json: { error: "コメントの削除に失敗しました" }, status: :unprocessable_entity
-    end
+    comment.destroy!
+    render json: { message: "コメントを削除しました" }, status: :ok
+  rescue ActiveRecord::RecordNotDestroyed
+    render json: { error: "コメントの削除に失敗しました" }, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
     render json: { error: "コメントが見つかりません" }, status: :not_found
   end

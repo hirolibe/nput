@@ -10,6 +10,8 @@ ja:
         content: コメント
       profile:
         cheer_points: 保有エールポイント
+      cheer:
+        user_id: ユーザー
   enums:
     note:
       status:

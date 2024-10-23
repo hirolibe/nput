@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   has_many :notes, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :cheers, dependent: :destroy
 
   has_one :profile, dependent: :destroy
 

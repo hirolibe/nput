@@ -48,11 +48,10 @@ class Api::V1::NotesController < Api::V1::ApplicationController
 
   def destroy
     note = current_user.notes.find(params[:id])
-    if note.destroy
-      render json: { message: "ノートを削除しました" }, status: :ok
-    else
-      render json: { error: "ノートの削除に失敗しました" }, status: :unprocessable_entity
-    end
+    note.destroy!
+    render json: { message: "ノートを削除しました" }, status: :ok
+  rescue ActiveRecord::RecordNotDestroyed
+    render json: { error: "ノートの削除に失敗しました" }, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートが見つかりません" }, status: :not_found
   end

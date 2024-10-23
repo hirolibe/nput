@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
       resource :profile, only: [:show, :update]
 
-      resources :users, only: [:show]
+      resources :users, only: [:show, :destroy]
 
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:index, :create, :destroy]

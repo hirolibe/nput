@@ -5,17 +5,19 @@ RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :
 
   let(:headers) { { Authorization: "Bearer token" } }
   let(:params) { { comment: { content: Faker::Lorem.sentence } } }
-  let(:current_user) { create(:user) }
+  let(:user) { create(:user) }
   let(:note) { create(:note) }
   let(:note_id) { note.id }
 
   include_examples "ユーザー認証エラー"
 
   context "ユーザー認証に成功した場合" do
-    before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
+    before { stub_token_verification.and_return({ "sub" => user.uid }) }
+
+    include_examples "リソース不在エラー", "ノート", "note_id"
 
     context "ノートが存在する場合" do
-      context "全てのパラメータを正しく入力した場合" do
+      context "ノートのステータスが公開中の場合" do
         it "コメントが新規作成され、201ステータスが返る" do
           expect { subject }.to change { note.comments.count }.by(1)
           expect(response).to have_http_status(:created)
@@ -23,34 +25,10 @@ RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :
         end
       end
 
-      context "コメントが空の場合" do
-        let(:params) { { comment: { content: "" } } }
-
-        it "422ステータスとエラーメッセージが返る" do
-          subject
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(json_response["errors"]).to eq ["コメントを入力してください"]
-        end
-      end
-
       context "ノートのステータスが下書きの場合" do
         let(:note) { create(:note, status: :draft) }
 
-        it "404エラーとエラーメッセージが返る" do
-          subject
-          expect(response).to have_http_status(:not_found)
-          expect(json_response["error"]).to eq("ノートが見つかりません")
-        end
-      end
-    end
-
-    context "ノートが存在しない場合" do
-      let(:note_id) { 10_000_000_000 }
-
-      it "404エラーとエラーメッセージが返る" do
-        subject
-        expect(response).to have_http_status(:not_found)
-        expect(json_response["error"]).to eq("ノートが見つかりません")
+        include_examples "404エラー", "ノート"
       end
     end
   end

@@ -4,9 +4,8 @@ RSpec.describe "Api::V1::Comments DELETE /api/v1/notes/:note_id/comments/:id", t
   subject { delete(api_v1_note_comment_path(note_id, comment_id), headers:) }
 
   let(:user) { create(:user) }
-  let(:note) { create(:note) }
-  let(:note_id) { note.id }
-  let(:comment) { create(:comment, note:, user:) }
+  let(:comment) { create(:comment, user:) }
+  let(:note_id) { comment.note_id }
   let(:comment_id) { comment.id }
   let(:headers) { { Authorization: "Bearer token" } }
 
@@ -15,35 +14,8 @@ RSpec.describe "Api::V1::Comments DELETE /api/v1/notes/:note_id/comments/:id", t
   context "ユーザー認証に成功した場合" do
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
-    context "コメントが存在する場合" do
-      context "ログインユーザーが作成したコメントの場合" do
-        it "正常にコメントを削除でき、200ステータスとメッセージが返る" do
-          subject
-          expect(response).to have_http_status(:ok)
-          expect(json_response["message"]).to eq("コメントを削除しました")
-        end
-      end
+    include_examples "コメントアクセスエラー"
 
-      context "ログインユーザーが作成したコメントではない場合" do
-        let(:other_user) { create(:user) }
-        let(:comment) { create(:comment, note:, user: other_user) }
-
-        it "404エラーとエラーメッセージが返る" do
-          subject
-          expect(response).to have_http_status(:not_found)
-          expect(json_response["error"]).to eq("コメントが見つかりません")
-        end
-      end
-    end
-
-    context "コメントが存在しない場合" do
-      let(:comment_id) { 10_000_000_000 }
-
-      it "404エラーとエラーメッセージが返る" do
-        subject
-        expect(response).to have_http_status(:not_found)
-        expect(json_response["error"]).to eq("コメントが見つかりません")
-      end
-    end
+    include_examples "リソースの削除成功", "コメント"
   end
 end

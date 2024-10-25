@@ -16,7 +16,7 @@ class Api::V1::ProfilesController < Api::V1::ApplicationController
       render json: { errors: profile.errors.full_messates }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "プロフィールが見つかりません" }, status: :not_found
+    render json: { error: "プロフィールにアクセスできません" }, status: :not_found
   end
 
   private

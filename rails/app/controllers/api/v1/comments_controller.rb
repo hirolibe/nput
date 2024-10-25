@@ -6,7 +6,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     comments = note.comments.includes(user: { profile: :avatar_attachment })
     render json: comments, include: ["user", "user.profile"], status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートが見つかりません" }, status: :not_found
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   def create
@@ -19,7 +19,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートが見つかりません" }, status: :not_found
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   def destroy
@@ -29,7 +29,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   rescue ActiveRecord::RecordNotDestroyed
     render json: { error: "コメントの削除に失敗しました" }, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "コメントが見つかりません" }, status: :not_found
+    render json: { error: "コメントにアクセスできません" }, status: :not_found
   end
 
   private

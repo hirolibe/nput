@@ -31,7 +31,7 @@ RSpec.describe Note, type: :model do
       end
     end
 
-    context "ステータスが公開済かつ、タイトルが空の場合" do
+    context "ステータスが公開中かつ、タイトルが空の場合" do
       before { note.title = "" }
 
       it "バリデーションが失敗し、エラーメッセージが返る" do
@@ -40,7 +40,7 @@ RSpec.describe Note, type: :model do
       end
     end
 
-    context "ステータスが公開済かつ、本文が空の場合" do
+    context "ステータスが公開中かつ、本文が空の場合" do
       before { note.content = "" }
 
       it "バリデーションが失敗し、エラーメッセージが返る" do
@@ -49,7 +49,7 @@ RSpec.describe Note, type: :model do
       end
     end
 
-    context "ステータスが公開済かつ、公開日時が空の場合" do
+    context "ステータスが公開中かつ、公開日が空の場合" do
       before { note.published_at = "" }
 
       it "バリデーションが失敗し、エラーメッセージが返る" do

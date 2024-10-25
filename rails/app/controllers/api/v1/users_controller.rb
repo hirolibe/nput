@@ -5,7 +5,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     user = User.find(params[:id])
     render json: user, status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "アカウントが見つかりません" }, status: :not_found
+    render json: { error: "アカウントにアクセスできません" }, status: :not_found
   end
 
   def destroy
@@ -16,7 +16,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     else
       render json: { error: "他のアカウントは削除できません" }, status: :forbidden
     end
-  rescue ActiveRecord::RecordNotDestroyed
-    render json: { error: "アカウントの削除に失敗しました" }, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "アカウントにアクセスできません" }, status: :not_found
   end
 end

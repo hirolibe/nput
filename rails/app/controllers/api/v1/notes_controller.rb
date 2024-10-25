@@ -20,7 +20,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     note = Note.includes(user: { profile: :avatar_attachment }).published.find(params[:id])
     render json: note, include: ["user", "user.profile"], status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートが見つかりません" }, status: :not_found
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   def create
@@ -43,7 +43,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
       render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートが見つかりません" }, status: :not_found
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   def destroy
@@ -53,7 +53,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   rescue ActiveRecord::RecordNotDestroyed
     render json: { error: "ノートの削除に失敗しました" }, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートが見つかりません" }, status: :not_found
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   private

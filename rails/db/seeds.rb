@@ -15,17 +15,15 @@ users.each do |user|
       published_at: Time.current - rand(1..10).days,
     })
   end
-end
 
-notes = Note.all
+  notes = Note.where.not(user_id: user.id)
 
-users.each do |user|
   notes.each do |note|
-    next if user.notes.include?(note)
-
     comment = note.comments.build(content: Faker::Lorem.paragraphs(number: 3).join("\n"))
     comment.user = user
     comment.save!
+
+    note.cheers.create!(user_id: user.id)
   end
 
   user.profile.update!(

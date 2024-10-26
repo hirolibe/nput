@@ -3,6 +3,7 @@ class Note < ApplicationRecord
 
   has_many :comments, dependent: :destroy
   has_many :cheers, dependent: :destroy
+  has_many :cheerers, through: :cheers, source: :user
 
   enum :status, { unsaved: 10, draft: 20, published: 30 }
 

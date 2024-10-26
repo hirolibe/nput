@@ -9,10 +9,14 @@ Rails.application.routes.draw do
 
       resource :profile, only: [:show, :update]
 
-      resources :users, only: [:show, :destroy]
+      resources :users, only: [:show, :destroy] do
+        resources :encouragements, only: [:index]
+      end
 
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:index, :create, :destroy]
+        resources :cheerers, only: [:index]
+        resource :cheer, only: [:show]
       end
     end
   end

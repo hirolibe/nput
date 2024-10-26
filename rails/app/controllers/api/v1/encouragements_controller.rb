@@ -3,7 +3,7 @@ class Api::V1::EncouragementsController < Api::V1::ApplicationController
 
   def index
     user = User.find(params[:user_id])
-    notes = user.cheers.notes.
+    notes = user.cheered_notes.
               includes(user: { profile: { avatar_attachment: :blob } }).
               order("cheers.created_at DESC").
               page(params[:page] || 1).

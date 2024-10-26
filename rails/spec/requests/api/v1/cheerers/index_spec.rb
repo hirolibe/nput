@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Api::V1::Cheerers GET /api/v1/notes/:note_id/cheerers", type: :request do
   subject { get(api_v1_note_cheerers_path(note_id)) }

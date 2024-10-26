@@ -1,13 +1,14 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :request do
-  subject { post(api_v1_note_comments_path(note_id), headers:, params:) }
+RSpec.describe "Api::V1::Cheers GET /api/v1/notes/:note_id/cheer", type: :request do
+  subject { get(api_v1_note_cheer_path(note_id), headers:) }
 
   let(:headers) { { Authorization: "Bearer token" } }
-  let(:params) { { comment: { content: Faker::Lorem.sentence } } }
   let(:user) { create(:user) }
   let(:note) { create(:note) }
   let(:note_id) { note.id }
+
+  before { create(:cheer, user:, note:) }
 
   include_examples "ユーザー認証エラー"
 
@@ -18,10 +19,11 @@ RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :
     include_examples "ノート非公開エラー"
 
     context "ステータスが公開中のノートが存在する場合" do
-      it "コメントが新規作成され、201ステータスが返る" do
-        expect { subject }.to change { note.comments.count }.by(1)
-        expect(response).to have_http_status(:created)
-        expect(json_response["message"]).to eq("コメントを追加しました！")
+      it "200ステータスとチアー状態の情報が返る" do
+        subject
+        expect(response).to have_http_status(:ok)
+        expect(json_response.keys).to eq ["cheer_status"]
+        expect(json_response["cheer_status"]).to be true
       end
     end
   end

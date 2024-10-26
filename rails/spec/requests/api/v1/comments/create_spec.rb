@@ -15,20 +15,13 @@ RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
     include_examples "リソース不在エラー", "ノート", "note_id"
+    include_examples "ノート非公開エラー"
 
-    context "ノートが存在する場合" do
-      context "ノートのステータスが公開中の場合" do
-        it "コメントが新規作成され、201ステータスが返る" do
-          expect { subject }.to change { note.comments.count }.by(1)
-          expect(response).to have_http_status(:created)
-          expect(json_response["message"]).to eq("コメントを追加しました！")
-        end
-      end
-
-      context "ノートのステータスが下書きの場合" do
-        let(:note) { create(:note, status: :draft) }
-
-        include_examples "404エラー", "ノート"
+    context "ステータスが公開中のノートが存在する場合" do
+      it "コメントが新規作成され、201ステータスが返る" do
+        expect { subject }.to change { note.comments.count }.by(1)
+        expect(response).to have_http_status(:created)
+        expect(json_response["message"]).to eq("コメントを追加しました！")
       end
     end
   end

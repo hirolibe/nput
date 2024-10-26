@@ -2,7 +2,7 @@ RSpec.shared_examples "ページネーション付きノート一覧の取得" d
   context "paramsにpageのクエリが含まれていない場合" do
     let(:params) { nil }
 
-    it "200ステータス、1ページ目のレコード、ページ情報が返る" do
+    it "200ステータス、1ページ目のノートの情報、ページの情報が返る" do
       subject
       expect(response).to have_http_status(:ok)
       expect(json_response.keys).to eq ["notes", "meta"]
@@ -17,7 +17,7 @@ RSpec.shared_examples "ページネーション付きノート一覧の取得" d
   context "paramsに存在するpageのクエリを含む場合" do
     let(:params) { { page: 2 } }
 
-    it "200ステータス、該当ページのレコード、ページ情報が返る" do
+    it "200ステータス、該当ページのノートの情報、ページの情報が返る" do
       subject
       expect(response).to have_http_status(:ok)
       expect(json_response.keys).to eq ["notes", "meta"]

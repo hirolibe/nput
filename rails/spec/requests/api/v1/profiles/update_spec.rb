@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Profiles PATCH /api/v1/profile", type: :request do
       stub_token_verification.and_return({ "sub" => user.uid })
     end
 
-    it "プロフィールが更新され、200ステータスが返る" do
+    it "プロフィールが更新され、200ステータスとプロフィールの情報が返る" do
       expect { subject }.to change { profile.reload.nickname }.from(profile.nickname).to("更新後のニックネーム") and
         change { profile.reload.bio }.from(profile.bio).to("更新後の自己紹介") and
         change { profile.reload.x_username }.from(profile.x_username).to("更新後のXのユーザー名") and

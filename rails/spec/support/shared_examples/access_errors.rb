@@ -23,17 +23,16 @@ RSpec.shared_examples "アクセス権限エラー" do |resource_name, resource|
   end
 end
 
-RSpec.shared_examples "ノートアクセスエラー" do
-  include_examples "リソース不在エラー", "ノート", "note_id"
-  include_examples "アクセス権限エラー", "ノート", "note"
-end
+RSpec.shared_examples "ノート非公開エラー" do
+  context "ノートのステータスが未保存の場合" do
+    let(:note) { create(:note, status: :unsaved) }
 
-RSpec.shared_examples "コメントアクセスエラー" do
-  include_examples "リソース不在エラー", "コメント", "comment_id"
-  include_examples "アクセス権限エラー", "コメント", "comment"
-end
+    include_examples "404エラー", "ノート"
+  end
 
-RSpec.shared_examples "アカウントアクセスエラー" do
-  include_examples "リソース不在エラー", "アカウント", "user_id"
-  include_examples "アクセス権限エラー", "アカウント", "user"
+  context "ノートのステータスが下書きの場合" do
+    let(:note) { create(:note, status: :draft) }
+
+    include_examples "404エラー", "ノート"
+  end
 end

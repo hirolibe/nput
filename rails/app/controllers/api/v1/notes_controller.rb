@@ -3,7 +3,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
-    notes = Note.includes(user: { profile: :avatar_attachment }).
+    notes = Note.includes(user: { profile: { avatar_attachment: :blob } }).
               published.
               order(created_at: :desc).
               page(params[:page] || 1).
@@ -17,7 +17,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   end
 
   def show
-    note = Note.includes(user: { profile: :avatar_attachment }).published.find(params[:id])
+    note = Note.published.find(params[:id])
     render json: note, include: ["user", "user.profile"], status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートにアクセスできません" }, status: :not_found

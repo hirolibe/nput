@@ -13,8 +13,8 @@ RSpec.describe "Api::V1::Notes DELETE /api/v1/notes/:id", type: :request do
   context "ユーザー認証に成功した場合" do
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
-    include_examples "ノートアクセスエラー"
-
+    include_examples "リソース不在エラー", "ノート", "note_id"
+    include_examples "アクセス権限エラー", "ノート", "note"
     include_examples "リソースの削除成功", "ノート"
   end
 end

@@ -1,4 +1,4 @@
-class Api::V1::EncouragementsController < Api::V1::ApplicationController
+class Api::V1::CheeredNotesController < Api::V1::ApplicationController
   include Pagination
 
   def index

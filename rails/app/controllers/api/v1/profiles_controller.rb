@@ -13,10 +13,8 @@ class Api::V1::ProfilesController < Api::V1::ApplicationController
     if profile.update(profile_params)
       render json: { profile: ProfileSerializer.new(profile), message: "プロフィールを更新しました！" }, status: :ok
     else
-      render json: { errors: profile.errors.full_messates }, status: :unprocessable_entity
+      render json: { errors: profile.errors.full_messages }, status: :unprocessable_entity
     end
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "プロフィールにアクセスできません" }, status: :not_found
   end
 
   private

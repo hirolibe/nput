@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Cheers GET /api/v1/notes/:note_id/cheer", type: :reques
     include_examples "ノート非公開エラー"
 
     context "ステータスが公開中のノートが存在する場合" do
-      it "200ステータスとチアー状態の情報が返る" do
+      it "200ステータスとエール状態の情報が返る" do
         subject
         expect(response).to have_http_status(:ok)
         expect(json_response.keys).to eq ["cheer_status"]

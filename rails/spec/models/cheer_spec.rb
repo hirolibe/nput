@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Cheer, type: :model do
-  describe "新規作成（ノートへのチアーポイントの付与）" do
+  describe "新規作成（ノートへのエールポイントの付与）" do
     context "全ての値が有効な場合" do
       subject { create(:cheer) }
 
-      it "正常にノートにチアーポイントを付与できる" do
+      it "正常にノートにエールポイントを付与できる" do
         expect { subject }.to change { Note.count }.by(1)
       end
     end
@@ -20,18 +20,18 @@ RSpec.describe Cheer, type: :model do
     let(:note) { create(:note) }
     let(:note_id) { note.id }
 
-    context "ノートにチアーポイントを付与していない場合" do
+    context "ノートにエールポイントを付与していない場合" do
       it "バリデーションが成功する" do
         expect(subject).to be_truthy
       end
     end
 
-    context "すでにノートにチアーポイントを付与している場合" do
+    context "すでにノートにエールポイントを付与している場合" do
       before { create(:cheer, user_id:, note_id:) }
 
       it "バリデーションが失敗し、エラーメッセージが返る" do
         expect(subject).to be_falsy
-        expect(cheer.errors.full_messages).to eq ["ユーザーはすでにこのノートにチアーポイントを付与しています"]
+        expect(cheer.errors.full_messages).to eq ["ユーザーはすでにこのノートにエールポイントを付与しています"]
       end
     end
   end

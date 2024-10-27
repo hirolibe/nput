@@ -26,6 +26,8 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   def create
     unsaved_note = current_user.notes.unsaved.first || current_user.notes.create!(status: :unsaved)
     render json: unsaved_note, status: :ok
+  rescue ActiveRecord::RecordInvalid
+    render json: { error: "ノートの新規作成に失敗しました" }, status: :unprocessable_entity
   end
 
   def update

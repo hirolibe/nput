@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:index, :create, :destroy]
         resources :supporters, only: [:index]
-        resource :cheer, only: [:show, :create]
+        resource :cheer, only: [:show, :create, :destroy]
       end
     end
   end

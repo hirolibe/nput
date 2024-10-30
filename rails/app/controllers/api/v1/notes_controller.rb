@@ -19,7 +19,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   def show
     note = Note.includes(
       comments: { user: { profile: { avatar_attachment: :blob } } },
-      user: { profile: { avatar_attachment: :blob } }
+      user: { profile: { avatar_attachment: :blob } },
     ).published.find(params[:id])
 
     render json: note,

@@ -5,7 +5,7 @@ RSpec.describe User, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:user) }
 
-      it "正常にユーザーとプロフィールを新規作成できる" do
+      it "ユーザーとプロフィールを新規作成できる" do
         expect { subject }.to change { User.count }.by(1) and
           change { Profile.count }.by(1)
       end
@@ -13,44 +13,19 @@ RSpec.describe User, type: :model do
   end
 
   describe "バリデーション" do
-    subject { user.valid? }
-
-    let(:user) { build(:user) }
-
-    context "全てのパラメータを正しく入力した場合" do
-      it "バリデーションが成功する" do
-        expect(subject).to be_truthy
-      end
-    end
-
-    context "emailが空の場合" do
-      before { user.email = nil }
-
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(user.errors.full_messages).to eq ["Emailを入力してください"]
-      end
-    end
+    include_examples "ユーザーのバリデーションエラー"
 
     context "emailが重複している場合" do
+      subject(:record) { build(:user) }
+
       before do
         create(:user, email: "test@example.com")
-        user.email = "test@example.com"
+        record.email = "test@example.com"
       end
 
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(user.errors.full_messages).to eq ["Emailはすでに存在します"]
-      end
+      include_examples "バリデーション失敗", "Emailはすでに存在します"
     end
 
-    context "uidが空の場合" do
-      before { user.uid = nil }
-
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(user.errors.full_messages).to eq ["Uidを入力してください"]
-      end
-    end
+    include_examples "バリデーション成功"
   end
 end

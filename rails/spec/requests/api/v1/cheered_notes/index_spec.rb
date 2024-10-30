@@ -14,6 +14,6 @@ RSpec.describe "Api::V1::CheeredNotes GET /api/v1/users/:user_id/cheered_notes",
   include_examples "リソース不在エラー", "アカウント", "user_id"
 
   context "アカウントが存在する場合" do
-    include_examples "ページネーション付きノート一覧の取得"
+    include_examples "ページネーションのテスト"
   end
 end

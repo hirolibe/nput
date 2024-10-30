@@ -2,6 +2,7 @@ EXPECTED_NOTE_INDEX_KEYS = [
   "id",
   "title",
   "from_today",
+  "cheers_count",
   "user",
 ].freeze
 
@@ -12,6 +13,7 @@ EXPECTED_NOTE_KEYS = [
   "status_jp",
   "published_date",
   "updated_date",
+  "cheers_count",
   "comments",
   "user",
 ].freeze
@@ -27,10 +29,11 @@ EXPECTED_PROFILE_KEYS = [
   "id",
   "nickname",
   "bio",
-  "x_username",
-  "github_username",
+  "x_link",
+  "github_link",
   "cheer_points",
   "avatar_url",
+  "cheers_count",
 ].freeze
 
 EXPECTED_USER_KEYS = [

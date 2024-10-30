@@ -16,7 +16,7 @@ RSpec.describe "Api::V1::Notes POST /api/v1/notes", type: :request do
         expect { subject }.to change { user.notes.count }.by(1)
         expect(response).to have_http_status(:ok)
         expect(user.notes.last).to be_unsaved
-        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "user"]
+        expect(json_response.keys).to eq EXPECTED_NOTE_KEYS
       end
     end
 
@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Notes POST /api/v1/notes", type: :request do
       it "200ステータスと既存の未保存ステータスのノートの情報が返る" do
         expect { subject }.not_to change { user.notes.count }
         expect(response).to have_http_status(:ok)
-        expect(json_response.keys).to eq ["id", "title", "content", "status_jp", "published_date", "updated_date", "user"]
+        expect(json_response.keys).to eq EXPECTED_NOTE_KEYS
       end
     end
   end

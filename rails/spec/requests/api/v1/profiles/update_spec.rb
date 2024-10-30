@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Profiles PATCH /api/v1/profile", type: :request do
         change { profile.reload.cheer_points }.from(profile.cheer_points).to(10)
       expect(response).to have_http_status(:ok)
       expect(json_response.keys).to eq ["profile", "message"]
-      expect(json_response["profile"].keys).to eq ["id", "nickname", "bio", "x_username", "github_username", "cheer_points", "avatar_url"]
+      expect(json_response["profile"].keys).to eq EXPECTED_PROFILE_KEYS
       expect(json_response["message"]).to eq("プロフィールを更新しました！")
     end
   end

@@ -12,8 +12,8 @@ RSpec.describe "Api::V1::Users GET /api/v1/users/:id", type: :request do
     it "200ステータス、プロフィールの情報、ノートの情報が返る" do
       subject
       expect(response).to have_http_status(:ok)
-      expect(json_response.keys).to eq ["id", "profile"]
-      expect(json_response["profile"].keys).to eq ["id", "nickname", "bio", "x_username", "github_username", "cheer_points", "avatar_url"]
+      expect(json_response.keys).to eq EXPECTED_USER_KEYS
+      expect(json_response["profile"].keys).to eq EXPECTED_PROFILE_KEYS
     end
   end
 end

@@ -5,34 +5,26 @@ RSpec.describe Cheer, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:cheer) }
 
-      it "正常にノートにエールポイントを付与できる" do
-        expect { subject }.to change { Note.count }.by(1)
+      it "ノートにエールポイントを付与できる" do
+        expect { subject }.to change { Cheer.count }.by(1)
       end
     end
   end
 
   describe "バリデーション" do
-    subject { cheer.valid? }
+    subject(:record) { build(:cheer, user_id:, note_id:) }
 
-    let(:cheer) { build(:cheer, user_id:, note_id:) }
     let(:user) { create(:user) }
     let(:user_id) { user.id }
     let(:note) { create(:note) }
     let(:note_id) { note.id }
 
-    context "ノートにエールポイントを付与していない場合" do
-      it "バリデーションが成功する" do
-        expect(subject).to be_truthy
-      end
-    end
-
     context "すでにノートにエールポイントを付与している場合" do
       before { create(:cheer, user_id:, note_id:) }
 
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(cheer.errors.full_messages).to eq ["ユーザーはすでにこのノートにエールポイントを付与しています"]
-      end
+      include_examples "バリデーション失敗", "ユーザーはすでにこのノートにエールポイントを付与しています"
     end
+
+    include_examples "バリデーション成功"
   end
 end

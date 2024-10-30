@@ -5,30 +5,14 @@ RSpec.describe Comment, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:comment) }
 
-      it "正常にコメントを新規作成できる" do
+      it "コメントを新規作成できる" do
         expect { subject }.to change { Comment.count }.by(1)
       end
     end
   end
 
   describe "バリデーション" do
-    subject { comment.valid? }
-
-    let(:comment) { build(:comment) }
-
-    context "全てのパラメータを正しく入力した場合" do
-      it "バリデーションが成功する" do
-        expect(subject).to be_truthy
-      end
-    end
-
-    context "コメントが空の場合" do
-      before { comment.content = "" }
-
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(comment.errors.full_messages).to eq ["コメントを入力してください"]
-      end
-    end
+    include_examples "入力必須項目のバリデーションエラー", "comment", "content", "コメント"
+    include_examples "バリデーション成功"
   end
 end

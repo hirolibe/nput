@@ -1,5 +1,5 @@
 class NoteSerializer < ActiveModel::Serializer
-  attributes :id, :title, :content, :status_jp, :published_date, :updated_date
+  attributes :id, :title, :content, :status_jp, :published_date, :updated_date, :cheers_count
 
   has_many :comments
 

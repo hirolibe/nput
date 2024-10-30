@@ -17,8 +17,14 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   end
 
   def show
-    note = Note.published.find(params[:id])
-    render json: note, include: ["user", "user.profile"], status: :ok
+    note = Note.includes(
+      comments: { user: { profile: { avatar_attachment: :blob } } },
+      user: { profile: { avatar_attachment: :blob } },
+    ).published.find(params[:id])
+
+    render json: note,
+           include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile"],
+           status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートにアクセスできません" }, status: :not_found
   end

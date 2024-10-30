@@ -1,31 +1,27 @@
-RSpec.shared_examples "ページネーション付きノート一覧の取得" do
-  context "paramsにpageのクエリが含まれていない場合" do
+RSpec.shared_examples "ノートとページのレスポンス検証" do |page|
+  it "200ステータス、#{page}ページ目のノートとページの情報が返る" do
+    subject
+    expect(response).to have_http_status(:ok)
+    expect(json_response.keys).to eq ["notes", "meta"]
+    expect(json_response["notes"][0].keys).to eq EXPECTED_NOTE_INDEX_KEYS
+    expect(json_response["notes"][0]["user"].keys).to eq EXPECTED_USER_KEYS
+    expect(json_response["notes"][0]["user"]["profile"].keys).to eq EXPECTED_PROFILE_KEYS
+    expect(json_response["meta"].keys).to eq ["current_page", "total_pages"]
+    expect(json_response["meta"]["current_page"]).to eq page
+    expect(json_response["meta"]["total_pages"]).to eq 2
+  end
+end
+
+RSpec.shared_examples "ページネーションのテスト" do
+  context "paramsにpageの値が含まれていない場合" do
     let(:params) { nil }
 
-    it "200ステータス、1ページ目のノートの情報、ページの情報が返る" do
-      subject
-      expect(response).to have_http_status(:ok)
-      expect(json_response.keys).to eq ["notes", "meta"]
-      expect(json_response["notes"][0].keys).to eq ["id", "title", "from_today", "user"]
-      expect(json_response["notes"][0]["user"].keys).to eq ["id", "profile"]
-      expect(json_response["notes"][0]["user"]["profile"].keys).to eq ["id", "nickname", "bio", "x_username", "github_username", "cheer_points", "avatar_url"]
-      expect(json_response["meta"].keys).to eq ["current_page", "total_pages"]
-      expect(json_response["meta"]["current_page"]).to eq 1
-    end
+    include_examples "ノートとページのレスポンス検証", 1
   end
 
-  context "paramsに存在するpageのクエリを含む場合" do
+  context "paramsに含まれるpageの値が2の場合" do
     let(:params) { { page: 2 } }
 
-    it "200ステータス、該当ページのノートの情報、ページの情報が返る" do
-      subject
-      expect(response).to have_http_status(:ok)
-      expect(json_response.keys).to eq ["notes", "meta"]
-      expect(json_response["notes"][0].keys).to eq ["id", "title", "from_today", "user"]
-      expect(json_response["notes"][0]["user"].keys).to eq ["id", "profile"]
-      expect(json_response["notes"][0]["user"]["profile"].keys).to eq ["id", "nickname", "bio", "x_username", "github_username", "cheer_points", "avatar_url"]
-      expect(json_response["meta"].keys).to eq ["current_page", "total_pages"]
-      expect(json_response["meta"]["current_page"]).to eq 2
-    end
+    include_examples "ノートとページのレスポンス検証", 2
   end
 end

@@ -1,34 +1,21 @@
 RSpec.describe Profile, type: :model do
   describe "バリデーション" do
-    subject { profile.valid? }
+    subject(:record) { user.profile }
 
     let(:user) { create(:user) }
-    let(:profile) { user.profile }
-
-    context "保有エールポイントを正しく入力した場合" do
-      before { profile.cheer_points = Faker::Number.between(from: 0, to: 10) }
-
-      it "バリデーションが成功する" do
-        expect(subject).to be_truthy
-      end
-    end
 
     context "保有エールポイントの下限が0を下回っている場合" do
-      before { profile.cheer_points = -1 }
+      before { record.cheer_points = -1 }
 
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(profile.errors.full_messages).to eq ["保有エールポイントは0以上の値にしてください"]
-      end
+      include_examples "バリデーション失敗", "保有エールポイントは0以上の値にしてください"
     end
 
     context "保有エールポイントの上限が10を上回っている場合" do
-      before { profile.cheer_points = 11 }
+      before { record.cheer_points = 11 }
 
-      it "バリデーションが失敗し、エラーメッセージが返る" do
-        expect(subject).to be_falsy
-        expect(profile.errors.full_messages).to eq ["保有エールポイントは10以下の値にしてください"]
-      end
+      include_examples "バリデーション失敗", "保有エールポイントは10以下の値にしてください"
     end
+
+    include_examples "バリデーション成功"
   end
 end

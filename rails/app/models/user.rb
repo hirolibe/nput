@@ -12,7 +12,7 @@ class User < ApplicationRecord
   after_create :create_profile!
 
   def has_cheered?(note)
-    cheers.exists?(note_id: note.id)
+    cheers.exists?(note:)
   end
 
   private

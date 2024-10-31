@@ -10,19 +10,26 @@ class Api::V1::CheersController < Api::V1::ApplicationController
   end
 
   def create
-    note = Note.published.find(params[:note_id])
-
-    if current_user.has_cheered?(note)
-      return render json: { error: "すでにこのノートにエールしています" }, status: :unprocessable_entity
+    unless current_user.profile.cheer_points >= 1
+      return render json: { error: "保有エールポイントが不足しています" }, status: :unprocessable_entity
     end
 
-    if current_user.profile.cheer_points >= 1
-      handle_cheer(note)
-    else
-      render json: { error: "保有エールポイントが不足しています" }, status: :unprocessable_entity
+    note = Note.published.find(params[:note_id])
+
+    ActiveRecord::Base.transaction do
+      current_user.cheers.create!(note:)
+
+      current_user.profile.cheer_points -= 1
+      current_user.profile.save!
+
+      render json: { cheer_status: true }, status: :created
     end
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートにアクセスできません" }, status: :not_found
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotSaved
+    render json: { error: "保有エールポイントの更新に失敗しました" }, status: :unprocessable_entity
   end
 
   def destroy
@@ -40,21 +47,4 @@ class Api::V1::CheersController < Api::V1::ApplicationController
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
-
-  private
-
-    def handle_cheer(note)
-      ActiveRecord::Base.transaction do
-        current_user.cheers.create!(note_id: note.id)
-        current_user.profile.cheer_points -= 1
-
-        raise ActiveRecord::Rollback unless current_user.profile.save
-
-        render json: { cheer_status: true }, status: :created
-      end
-    rescue ActiveRecord::Rollback
-      render json: { error: "保有エールポイントの更新に失敗しました" }, status: :unprocessable_entity
-    rescue ActiveRecord::RecordInvalid
-      render json: { error: "ノートへのエールに失敗しました" }, status: :unprocessable_entity
-    end
 end

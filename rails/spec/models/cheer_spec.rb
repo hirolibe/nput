@@ -22,7 +22,7 @@ RSpec.describe Cheer, type: :model do
     context "すでにノートにエールしている場合" do
       before { create(:cheer, user_id:, note_id:) }
 
-      include_examples "バリデーション失敗", "ユーザーはすでにこのノートにエールしています"
+      include_examples "バリデーション失敗", "すでにこのノートにエールしています"
     end
 
     include_examples "バリデーション成功"

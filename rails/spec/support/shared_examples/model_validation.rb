@@ -1,7 +1,7 @@
 RSpec.shared_examples "バリデーション成功" do
   context "全ての値が有効な場合" do
     it "バリデーションが成功する" do
-      expect(subject).to be_truthy
+      expect(subject).to be_valid
     end
   end
 end

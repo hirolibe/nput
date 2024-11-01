@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_30_044922) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_31_073814) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -85,12 +85,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_30_044922) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "relationships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "follower_id", null: false
+    t.bigint "following_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["follower_id", "following_id"], name: "index_relationships_on_follower_id_and_following_id", unique: true
+    t.index ["follower_id"], name: "index_relationships_on_follower_id"
+    t.index ["following_id"], name: "index_relationships_on_following_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", null: false
     t.string "uid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cheers_count", default: 0, null: false
+    t.integer "followings_count", default: 0, null: false
+    t.integer "followers_count", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
@@ -103,4 +115,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_30_044922) do
   add_foreign_key "comments", "users"
   add_foreign_key "notes", "users"
   add_foreign_key "profiles", "users"
+  add_foreign_key "relationships", "users", column: "follower_id"
+  add_foreign_key "relationships", "users", column: "following_id"
 end

@@ -25,7 +25,6 @@ end
 
 users.each do |user|
   notes = Note.where.not(user_id: user.id)
-
   notes.each do |note|
     comment = note.comments.build(content: Faker::Lorem.paragraphs(number: 3).join("\n"))
     comment.user = user
@@ -41,4 +40,9 @@ users.each do |user|
     github_username: Faker::Internet.username,
     cheer_points: Faker::Number.between(from: 0, to: 10),
   )
+
+  followings = User.where.not(id: user.id)
+  followings.each do |following|
+    user.following_relationships.create!(following_id: following.id)
+  end
 end

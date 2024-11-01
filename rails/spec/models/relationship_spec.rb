@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Relationship, type: :model do
   describe "新規作成（フォロー）" do

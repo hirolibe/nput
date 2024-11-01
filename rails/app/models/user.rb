@@ -3,9 +3,17 @@ class User < ApplicationRecord
   validates :uid, presence: true, uniqueness: true
 
   has_many :notes, dependent: :destroy
+
   has_many :comments, dependent: :destroy
+
   has_many :cheers, dependent: :destroy
   has_many :cheered_notes, through: :cheers, source: :note
+
+  has_many :following_relationships, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
+  has_many :followings, through: :following_relationships, source: :following
+
+  has_many :follower_relationships, class_name: "Relationship", foreign_key: :following_id, dependent: :destroy
+  has_many :followers, through: :follower_relationships, source: :follower
 
   has_one :profile, dependent: :destroy
 
@@ -13,6 +21,10 @@ class User < ApplicationRecord
 
   def has_cheered?(note)
     cheers.exists?(note:)
+  end
+
+  def follow!(user)
+    following_relationships.create!(following_id: user.id)
   end
 
   private

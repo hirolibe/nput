@@ -11,12 +11,14 @@ Rails.application.routes.draw do
 
       resources :users, only: [:show, :destroy] do
         resources :cheered_notes, only: [:index]
+        resources :followings, only: [:index]
+        resource :follow, only: [:show]
       end
 
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:create, :destroy]
         resources :supporters, only: [:index]
-        resource :cheer, only: [:show, :create, :destroy]
+        resource :cheer, only: [:create, :destroy]
       end
     end
   end

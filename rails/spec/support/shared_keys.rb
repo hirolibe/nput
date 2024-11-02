@@ -3,6 +3,7 @@ EXPECTED_NOTE_INDEX_KEYS = [
   "title",
   "from_today",
   "cheers_count",
+  "has_cheered",
   "user",
 ].freeze
 
@@ -14,6 +15,7 @@ EXPECTED_NOTE_KEYS = [
   "published_date",
   "updated_date",
   "cheers_count",
+  "has_cheered",
   "comments",
   "user",
 ].freeze

@@ -26,6 +26,7 @@ class NoteSerializer < ActiveModel::Serializer
 
   def has_cheered
     return nil unless @instance_options[:current_user]
+
     @instance_options[:current_user].has_cheered?(object)
   end
 end

@@ -11,7 +11,7 @@ class Api::V1::ApplicationController < ApplicationController
     end
 
     def fetch_authenticated_current_user
-      unless firebase_token.present?
+      if firebase_token.blank?
         @current_user = nil
         return
       end

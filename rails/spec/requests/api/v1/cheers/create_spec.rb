@@ -14,10 +14,7 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/notes/:note_id/cheer", type: :reque
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
     context "保有エールポイントが0の場合" do
-      before do
-        user.profile.cheer_points = 0
-        user.profile.save!
-      end
+      before { user.profile.update!(cheer_points: 0) }
 
       it "422エラーとエラーメッセージが返る" do
         subject
@@ -26,11 +23,8 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/notes/:note_id/cheer", type: :reque
       end
     end
 
-    context "保有エールポイントが1以上10以下の場合" do
-      before do
-        user.profile.cheer_points = Faker::Number.between(from: 1, to: 10)
-        user.profile.save!
-      end
+    context "保有エールポイントが1の場合" do
+      before { user.profile.update!(cheer_points: 1) }
 
       include_examples "リソース不在エラー", "ノート", "note_id"
       include_examples "ノート非公開エラー"
@@ -46,7 +40,6 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/notes/:note_id/cheer", type: :reque
           expect { subject }.to change { note.cheers.count }.by(1) and
             change { user.profile.cheer_points }.by(-1)
           expect(response).to have_http_status(:created)
-          expect(json_response["cheer_status"]).to be true
         end
       end
     end

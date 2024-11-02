@@ -1,16 +1,8 @@
 class Api::V1::CheersController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:show, :create, :destroy]
-
-  def show
-    note = Note.published.find(params[:note_id])
-    cheer_status = current_user.has_cheered?(note)
-    render json: { cheer_status: }, status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
-  end
+  before_action :authenticate_user!, only: [:create, :destroy]
 
   def create
-    unless current_user.profile.cheer_points >= 1
+    if current_user.profile.cheer_points.zero?
       return render json: { error: "保有エールポイントが不足しています" }, status: :unprocessable_entity
     end
 
@@ -18,12 +10,10 @@ class Api::V1::CheersController < Api::V1::ApplicationController
 
     ActiveRecord::Base.transaction do
       current_user.cheers.create!(note:)
-
-      current_user.profile.cheer_points -= 1
-      current_user.profile.save!
-
-      render json: { cheer_status: true }, status: :created
+      current_user.profile.update!(cheer_points: current_user.profile.cheer_points - 1)
     end
+
+    render status: :created
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートにアクセスできません" }, status: :not_found
   rescue ActiveRecord::RecordInvalid => e
@@ -38,7 +28,7 @@ class Api::V1::CheersController < Api::V1::ApplicationController
 
     if cheer
       cheer.destroy!
-      render json: { cheer_status: false }, status: :ok
+      render status: :ok
     else
       render json: { error: "まだこのノートにエールしていません" }, status: :unprocessable_entity
     end

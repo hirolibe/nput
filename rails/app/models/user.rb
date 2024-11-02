@@ -31,6 +31,10 @@ class User < ApplicationRecord
     cheers.exists?(note:)
   end
 
+  def has_followed?(following)
+    following_relationships.exists?(following:)
+  end
+
   def follow!(user)
     following_relationships.create!(following_id: user.id)
   end

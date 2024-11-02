@@ -1,5 +1,12 @@
 class ProfileSerializer < ActiveModel::Serializer
-  attributes :id, :nickname, :bio, :x_link, :github_link, :cheer_points, :avatar_url, :cheers_count
+  attributes :id,
+             :nickname,
+             :bio,
+             :x_link,
+             :github_link,
+             :cheer_points,
+             :avatar_url,
+             :cheers_count
 
   def x_link
     return unless object.x_username

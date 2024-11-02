@@ -10,9 +10,10 @@ class Api::V1::ApplicationController < ApplicationController
       FirebaseIdToken::Signature.verify(firebase_token)
     end
 
-    def authenticate_user!
+    def fetch_authenticated_current_user
       if firebase_token.blank?
-        return render json: { error: "トークンが見つかりません　新規登録またはログインしてください" }, status: :bad_request
+        @current_user = nil
+        return
       end
 
       begin
@@ -31,6 +32,14 @@ class Api::V1::ApplicationController < ApplicationController
       if @current_user.blank?
         render json: { error: "アカウントが見つかりません　新規登録してください" }, status: :unauthorized
       end
+    end
+
+    def authenticate_user!
+      if firebase_token.blank?
+        return render json: { error: "トークンが見つかりません　新規登録またはログインしてください" }, status: :bad_request
+      end
+
+      fetch_authenticated_current_user
     end
 
     attr_reader :current_user

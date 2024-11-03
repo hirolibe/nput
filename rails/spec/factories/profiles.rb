@@ -4,6 +4,5 @@ FactoryBot.define do
     bio { Faker::Lorem.sentence }
     x_username { Faker::Internet.username }
     github_username { Faker::Internet.username }
-    cheer_points { Faker::Number.between(from: 0, to: 10) }
   end
 end

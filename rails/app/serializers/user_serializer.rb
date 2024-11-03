@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attribute :id
+  attributes :id, :cheer_points, :cheers_count
 
   has_one :profile
 end

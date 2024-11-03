@@ -3,7 +3,9 @@ notes_count_per_user = 5
 users = []
 
 users_count.times do
-  users.push(User.create!(email: Faker::Internet.email, uid: Faker::Internet.uuid))
+  user = User.create!(email: Faker::Internet.email, uid: Faker::Internet.uuid)
+  user.update!(cheer_points: Faker::Number.between(from: 0, to: 10))
+  users.push(user)
 end
 
 total_notes = 0
@@ -25,6 +27,7 @@ end
 
 users.each do |user|
   notes = Note.where.not(user_id: user.id)
+
   notes.each do |note|
     comment = note.comments.build(content: Faker::Lorem.paragraphs(number: 3).join("\n"))
     comment.user = user
@@ -38,7 +41,6 @@ users.each do |user|
     bio: Faker::Lorem.sentence,
     x_username: Faker::Internet.username,
     github_username: Faker::Internet.username,
-    cheer_points: Faker::Number.between(from: 0, to: 10),
   )
 
   followings = User.where.not(id: user.id)

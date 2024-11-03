@@ -1,6 +1,8 @@
 ja:
   activerecord:
     attributes:
+      user:
+        cheer_points: "保有エールポイント"
       note:
         title: "タイトル"
         content: "本文"
@@ -8,8 +10,6 @@ ja:
         published_at: "公開日"
       comment:
         content: "コメント"
-      profile:
-        cheer_points: "保有エールポイント"
       cheer:
         user_id: ""
       relationship:

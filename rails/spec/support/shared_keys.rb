@@ -33,12 +33,12 @@ EXPECTED_PROFILE_KEYS = [
   "bio",
   "x_link",
   "github_link",
-  "cheer_points",
   "avatar_url",
-  "cheers_count",
 ].freeze
 
 EXPECTED_USER_KEYS = [
   "id",
+  "cheer_points",
+  "cheers_count",
   "profile",
 ].freeze

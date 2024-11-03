@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registrations", type: :request do
-  subject { post api_v1_auth_registrations_path, headers: }
+RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", type: :request do
+  subject { post api_v1_auth_registration_path, headers: }
 
   let(:headers) { { Authorization: "Bearer token" } }
 
@@ -41,6 +41,7 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registrations", t
       expect(response).to have_http_status(:created)
       expect(user.uid).to eq(uid)
       expect(user.email).to eq(email)
+      expect(user.cheer_points).to eq(0)
       expect(json_response["message"]).to eq("ユーザー登録に成功しました！")
     end
   end

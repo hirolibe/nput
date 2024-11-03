@@ -4,7 +4,7 @@ class CreateComments < ActiveRecord::Migration[7.0]
       t.references :user, null: false, foreign_key: true
       t.references :note, null: false, foreign_key: true
 
-      t.text :content, null: false
+      t.text :content, null: false, comment: "コメント"
 
       t.timestamps
     end

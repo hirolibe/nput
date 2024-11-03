@@ -4,9 +4,7 @@ class ProfileSerializer < ActiveModel::Serializer
              :bio,
              :x_link,
              :github_link,
-             :cheer_points,
-             :avatar_url,
-             :cheers_count
+             :avatar_url
 
   def x_link
     return unless object.x_username
@@ -24,9 +22,5 @@ class ProfileSerializer < ActiveModel::Serializer
     return unless object.avatar&.attached?
 
     Rails.application.routes.url_helpers.url_for(object.avatar)
-  end
-
-  def cheers_count
-    object.user.cheers_count
   end
 end

@@ -52,7 +52,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_31_073814) do
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "note_id", null: false
-    t.text "content", null: false
+    t.text "content", null: false, comment: "コメント"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["note_id"], name: "index_comments_on_note_id"
@@ -67,7 +67,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_31_073814) do
     t.datetime "published_at", comment: "公開日"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "cheers_count", default: 0, null: false
+    t.integer "cheers_count", default: 0, null: false, comment: "エール獲得合計数"
     t.index ["published_at"], name: "index_notes_on_published_at"
     t.index ["status"], name: "index_notes_on_status"
     t.index ["user_id"], name: "index_notes_on_user_id"
@@ -77,17 +77,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_31_073814) do
     t.bigint "user_id", null: false
     t.string "nickname", comment: "ニックネーム"
     t.text "bio", comment: "自己紹介文"
-    t.string "x_username", comment: "SNSリンク（X）"
-    t.string "github_username", comment: "SNSリンク（GitHub）"
-    t.integer "cheer_points", default: 0, comment: "保有エールポイント（上限10ポイント）"
+    t.string "x_username", comment: "Xのユーザー名"
+    t.string "github_username", comment: "GitHubのユーザー名"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "relationships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "follower_id", null: false
-    t.bigint "following_id", null: false
+    t.bigint "follower_id", null: false, comment: "フォロー元のユーザー"
+    t.bigint "following_id", null: false, comment: "フォロー先のユーザー"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["follower_id", "following_id"], name: "index_relationships_on_follower_id_and_following_id", unique: true
@@ -98,11 +97,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_31_073814) do
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", null: false
     t.string "uid", null: false
+    t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限10ポイント）"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "cheers_count", default: 0, null: false
-    t.integer "followings_count", default: 0, null: false
-    t.integer "followers_count", default: 0, null: false
+    t.integer "cheers_count", default: 0, null: false, comment: "エールした合計回数"
+    t.integer "followings_count", default: 0, null: false, comment: "フォローした数"
+    t.integer "followers_count", default: 0, null: false, comment: "フォロワー数"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end

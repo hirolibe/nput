@@ -1,22 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Supporters GET /api/v1/notes/:note_id/supporters", type: :request do
-  subject { get(api_v1_note_supporters_path(note_id)) }
+  subject { get(api_v1_note_supporters_path(note_id, params)) }
 
   let(:note) { create(:note) }
   let(:note_id) { note.id }
+  let(:params) { nil }
 
-  before { create_list(:cheer, 10, note:) }
+  before { create_list(:cheer, 20, note:) }
 
   include_examples "リソース不在エラー", "ノート", "note_id"
   include_examples "ノート非公開エラー"
-
-  context "ステータスが公開中のノートが存在する場合" do
-    it "200ステータスとユーザーの情報が返る" do
-      subject
-      expect(response).to have_http_status(:ok)
-      expect(json_response[0].keys).to eq EXPECTED_USER_KEYS
-      expect(json_response[0]["profile"].keys).to eq EXPECTED_PROFILE_KEYS
-    end
-  end
+  include_examples "ページネーションのテスト", "アカウント"
 end

@@ -7,13 +7,11 @@ RSpec.describe "Api::V1::CheeredNotes GET /api/v1/users/:user_id/cheered_notes",
   let(:user_id) { user.id }
   let(:params) { nil }
 
-  before do
-    create_list(:cheer, 20, user:)
-  end
+  before { create_list(:cheer, 20, user:) }
 
   include_examples "リソース不在エラー", "アカウント", "user_id"
 
   context "アカウントが存在する場合" do
-    include_examples "ページネーションのテスト"
+    include_examples "ページネーションのテスト", "ノート"
   end
 end

@@ -8,5 +8,5 @@ RSpec.describe "Api::V1::Notes GET /api/v1/notes", type: :request do
     create_list(:note, 1, status: :draft)
   end
 
-  include_examples "ページネーションのテスト"
+  include_examples "ページネーションのテスト", "ノート"
 end

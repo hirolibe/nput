@@ -40,5 +40,8 @@ EXPECTED_USER_KEYS = [
   "id",
   "cheer_points",
   "cheers_count",
+  "followings_count",
+  "followers_count",
+  "has_followed",
   "profile",
 ].freeze

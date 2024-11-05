@@ -51,7 +51,7 @@ const SignUp: NextPage = () => {
   }
 
   const verifyIdToken = async (createdUser: User) => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/registrations'
+    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/registration'
     const idToken = await createdUser?.getIdToken()
     const headers = {
       Authorization: `Bearer ${idToken}`,

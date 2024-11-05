@@ -30,7 +30,7 @@ class Api::V1::CheersController < Api::V1::ApplicationController
       cheer.destroy!
       render status: :ok
     else
-      render json: { error: "まだこのノートにエールしていません" }, status: :unprocessable_entity
+      render json: { error: "このノートにエールしていません" }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotDestroyed
     render json: { error: "エールの削除に失敗しました" }, status: :unprocessable_entity

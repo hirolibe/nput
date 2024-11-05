@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "Api::V1::Relationships POST /api/v1/users/:user_id/relationship", type: :request do
   subject { post(api_v1_user_relationship_path(user_id), headers:) }
 
-  let(:headers) { { Authorization: "Bearer token" } }
   let(:follower) { create(:user) }
   let(:following) { create(:user) }
   let(:user_id) { following.id }
+  let(:headers) { { Authorization: "Bearer token" } }
 
   include_examples "ユーザー認証エラー"
 
@@ -15,13 +15,13 @@ RSpec.describe "Api::V1::Relationships POST /api/v1/users/:user_id/relationship"
 
     include_examples "リソース不在エラー", "アカウント", "user_id"
 
-    context "すでにアカウントをフォローしている状態の場合" do
+    context "すでにアカウントをフォローしている場合" do
       before { follower.following_relationships.create!(following:) }
 
       include_examples "バリデーションエラーのレスポンス検証"
     end
 
-    context "まだアカウントをフォローしていない状態の場合" do
+    context "アカウントをフォローしていない場合" do
       it "アカウントをフォローし、201ステータスが返る" do
         expect { subject }.to change { follower.following_relationships.count }.by(1)
         expect(response).to have_http_status(:created)

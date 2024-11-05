@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "Api::V1::Cheers POST /api/v1/notes/:note_id/cheer", type: :request do
   subject { post(api_v1_note_cheer_path(note_id), headers:) }
 
-  let(:headers) { { Authorization: "Bearer token" } }
   let(:user) { create(:user) }
   let(:note) { create(:note) }
   let(:note_id) { note.id }
+  let(:headers) { { Authorization: "Bearer token" } }
 
   include_examples "ユーザー認証エラー"
 
@@ -29,13 +29,13 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/notes/:note_id/cheer", type: :reque
       include_examples "リソース不在エラー", "ノート", "note_id"
       include_examples "ノート非公開エラー"
 
-      context "ステータスが公開中のノートに、すでにエールしている状態の場合" do
-        before { user.cheers.create!(note_id:) }
+      context "ステータスが公開中のノートに、すでにエールしている場合" do
+        before { user.cheers.create!(note:) }
 
         include_examples "バリデーションエラーのレスポンス検証"
       end
 
-      context "ステータスが公開中のノートに、まだエールしていない状態の場合" do
+      context "ステータスが公開中のノートにエールしていない場合" do
         it "ノートにエールし、保有エールポイントが1減り、201ステータスが返る" do
           expect { subject }.to change { note.cheers.count }.by(1) and
             change { user.cheer_points }.by(-1)

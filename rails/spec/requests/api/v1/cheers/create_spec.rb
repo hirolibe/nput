@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/notes/:note_id/cheer", type: :reque
       end
 
       context "ステータスが公開中のノートに、まだエールしていない状態の場合" do
-        it "ノートにエールし、保有エールポイントが1減り、201ステータスとエール状態の情報が返る" do
+        it "ノートにエールし、保有エールポイントが1減り、201ステータスが返る" do
           expect { subject }.to change { note.cheers.count }.by(1) and
             change { user.cheer_points }.by(-1)
           expect(response).to have_http_status(:created)

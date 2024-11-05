@@ -9,5 +9,5 @@ class Relationship < ApplicationRecord
              inverse_of: :follower_relationships,
              counter_cache: :followers_count
 
-  validates :follower_id, uniqueness: { scope: :following_id, message: "すでにこのユーザーをフォローしています" }
+  validates :follower_id, uniqueness: { scope: :following_id, message: "すでにこのアカウントをフォローしています" }
 end

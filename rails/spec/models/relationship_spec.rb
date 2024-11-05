@@ -5,7 +5,7 @@ RSpec.describe Relationship, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:relationship) }
 
-      it "ユーザーをフォローできる" do
+      it "アカウントをフォローできる" do
         expect { subject }.to change { Relationship.count }.by(1)
       end
     end
@@ -19,10 +19,10 @@ RSpec.describe Relationship, type: :model do
     let(:following) { create(:user) }
     let(:following_id) { following.id }
 
-    context "すでにユーザーをフォローしている場合" do
+    context "すでにアカウントをフォローしている場合" do
       before { create(:relationship, follower_id:, following_id:) }
 
-      include_examples "バリデーション失敗", "すでにこのユーザーをフォローしています"
+      include_examples "バリデーション失敗", "すでにこのアカウントをフォローしています"
     end
 
     include_examples "バリデーション成功"

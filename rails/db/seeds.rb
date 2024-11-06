@@ -1,5 +1,6 @@
 users_count = 5
 notes_count_per_user = 5
+durations_count_per_note = 3
 users = []
 
 users_count.times do
@@ -8,19 +9,21 @@ users_count.times do
   users.push(user)
 end
 
-total_notes = 0
+# rubocop:disable Style/CombinableLoops
+users.each do |user|
+  notes_count_per_user.times do
+    note = user.notes.create!({
+      title: Faker::Lorem.sentence(word_count: 10).chomp("。"),
+      content: Faker::Lorem.paragraphs(number: 5).join("\n\n"),
+      status: :published,
+      published_at: Time.current - rand(1..10).days,
+    })
 
-while total_notes < users_count * notes_count_per_user
-  users.each do |user|
-    notes_count_per_user.times do
-      user.notes.create!({
-        title: Faker::Lorem.sentence(word_count: 10).chomp("。"),
-        content: Faker::Lorem.paragraphs(number: 5).join("\n\n"),
-        status: :published,
-        published_at: Time.current - rand(1..10).days,
+    durations_count_per_note.times do
+      user.durations.create!({
+        note:,
+        duration: rand(300..7200),
       })
-
-      total_notes += 1
     end
   end
 end
@@ -48,3 +51,4 @@ users.each do |user|
     user.following_relationships.create!(following_id: following.id)
   end
 end
+# rubocop:enable Style/CombinableLoops

@@ -6,7 +6,8 @@ class NoteSerializer < ActiveModel::Serializer
              :published_date,
              :updated_date,
              :cheers_count,
-             :has_cheered
+             :has_cheered,
+             :total_duration
 
   has_many :comments
 
@@ -28,5 +29,9 @@ class NoteSerializer < ActiveModel::Serializer
     return nil unless @instance_options[:current_user]
 
     @instance_options[:current_user].has_cheered?(object)
+  end
+
+  def total_duration
+    object.durations.sum(:duration)
   end
 end

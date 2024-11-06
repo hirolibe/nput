@@ -4,6 +4,7 @@ EXPECTED_NOTE_INDEX_KEYS = [
   "from_today",
   "cheers_count",
   "has_cheered",
+  "total_duration",
   "user",
 ].freeze
 
@@ -16,6 +17,7 @@ EXPECTED_NOTE_KEYS = [
   "updated_date",
   "cheers_count",
   "has_cheered",
+  "total_duration",
   "comments",
   "user",
 ].freeze
@@ -43,5 +45,8 @@ EXPECTED_USER_KEYS = [
   "followings_count",
   "followers_count",
   "has_followed",
+  "daily_duration",
+  "monthly_duration",
+  "total_duration",
   "profile",
 ].freeze

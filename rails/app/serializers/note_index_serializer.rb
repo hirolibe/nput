@@ -1,5 +1,5 @@
 class NoteIndexSerializer < ActiveModel::Serializer
-  attributes :id, :title, :from_today, :cheers_count, :has_cheered
+  attributes :id, :title, :from_today, :cheers_count, :has_cheered, :total_duration
 
   belongs_to :user
 
@@ -11,5 +11,9 @@ class NoteIndexSerializer < ActiveModel::Serializer
     return nil unless @instance_options[:current_user]
 
     @instance_options[:current_user].has_cheered?(object)
+  end
+
+  def total_duration
+    instance_options[:total_durations][object.id]
   end
 end

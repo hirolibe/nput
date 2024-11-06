@@ -9,9 +9,13 @@ class Api::V1::CheeredNotesController < Api::V1::ApplicationController
               order("cheers.created_at DESC").
               page(params[:page] || 1).
               per(10)
+
+    total_durations = Duration.where(note_id: notes.map(&:id)).group(:note_id).sum(:duration)
+
     render json: notes,
            each_serializer: NoteIndexSerializer,
            current_user:,
+           total_durations:,
            include: ["user", "user.profile"],
            meta: pagination(notes),
            adapter: :json,

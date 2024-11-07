@@ -14,6 +14,8 @@ ja:
         user_id: ""
       relationship:
         follower_id: ""
+      tag:
+        name: "タグ名"
   enums:
     note:
       status:

@@ -38,10 +38,10 @@ RSpec.describe User, type: :model do
       include_examples "バリデーション失敗", "保有エールポイントは0以上の値にしてください"
     end
 
-    context "保有エールポイントの上限が10を上回っている場合" do
-      before { record.cheer_points = 11 }
+    context "保有エールポイントの上限が50を上回っている場合" do
+      before { record.cheer_points = 51 }
 
-      include_examples "バリデーション失敗", "保有エールポイントは10以下の値にしてください"
+      include_examples "バリデーション失敗", "保有エールポイントは50以下の値にしてください"
     end
 
     include_examples "バリデーション成功"

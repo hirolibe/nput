@@ -5,7 +5,7 @@ users = []
 
 users_count.times do
   user = User.create!(email: Faker::Internet.email, uid: Faker::Internet.uuid)
-  user.update!(cheer_points: Faker::Number.between(from: 0, to: 10))
+  user.update!(cheer_points: Faker::Number.between(from: 0, to: 50))
   users.push(user)
 end
 

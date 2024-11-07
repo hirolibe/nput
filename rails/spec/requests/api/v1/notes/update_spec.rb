@@ -44,7 +44,7 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
               "status": "published",
               "published_at": "2024/11/1",
             },
-            "duration": 300
+            "duration": 300,
           }
         }
 

@@ -107,7 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_05_064511) do
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", null: false
     t.string "uid", null: false
-    t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限10ポイント）"
+    t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限50ポイント）"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cheers_count", default: 0, null: false, comment: "エールした合計回数"

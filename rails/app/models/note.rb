@@ -12,11 +12,23 @@ class Note < ApplicationRecord
   validates :title, :content, :published_at, presence: true, if: :published?
   validate :validate_single_unsaved
 
+  attr_accessor :duration
+
+  after_update :record_duration
+
   private
 
     def validate_single_unsaved
       if unsaved? && user.notes.unsaved.exists?
         errors.add(:base, "未保存のノートは複数保有できません")
       end
+    end
+
+    def record_duration
+      Duration.create!(
+        user:,
+        note: self,
+        duration:,
+      )
     end
 end

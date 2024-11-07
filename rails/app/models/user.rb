@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :uid, presence: true, uniqueness: true
-  validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10 }
+  validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 50 }
 
   has_many :notes, dependent: :destroy
 

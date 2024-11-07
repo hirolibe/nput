@@ -52,6 +52,8 @@ class Api::V1::NotesController < Api::V1::ApplicationController
                         note_params
                       end
 
+    note.duration = params[:duration]
+
     if note.update(filtered_params)
       render json: { note: NoteSerializer.new(note), message: "ノートを更新しました！" }, status: :ok
     else

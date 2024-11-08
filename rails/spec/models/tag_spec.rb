@@ -25,6 +25,12 @@ RSpec.describe Tag, type: :model do
       include_examples "バリデーション失敗", "タグ名はすでに存在します"
     end
 
+    context "タグ名が20文字を超えている場合" do
+      subject(:record) { build(:tag, name: Faker::Lorem.characters(number: 21)) }
+
+      include_examples "バリデーション失敗", "タグ名は20文字以内で入力してください"
+    end
+
     include_examples "バリデーション成功"
   end
 end

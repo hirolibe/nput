@@ -16,6 +16,8 @@ ja:
         follower_id: ""
       tag:
         name: "タグ名"
+      note_tag:
+        note_id: ""
   enums:
     note:
       status:

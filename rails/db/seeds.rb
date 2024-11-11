@@ -1,6 +1,7 @@
 users_count = 5
 notes_count_per_user = 5
-durations_count_per_note = 3
+durations_count_per_note = 5
+tags_count_per_note = 5
 users = []
 
 users_count.times do
@@ -22,7 +23,7 @@ users.each do |user|
     durations_count_per_note.times do
       user.durations.create!({
         note:,
-        duration: rand(300..7200),
+        duration: rand(300..3600),
       })
     end
   end
@@ -52,3 +53,14 @@ users.each do |user|
   end
 end
 # rubocop:enable Style/CombinableLoops
+
+unique_words = Array.new(50) { Faker::Lorem.word }.uniq.first(20)
+existing_tags = unique_words.map {|word| Tag.create!(name: word) }
+
+notes = Note.all
+notes.each do |note|
+  tags_count_per_note.times do
+    tag = existing_tags.sample
+    note.tags << tag unless note.tags.include?(tag)
+  end
+end

@@ -17,10 +17,11 @@ RSpec.describe "Api::V1::Notes GET /api/v1/notes/:id", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response.keys).to eq EXPECTED_NOTE_KEYS
       expect(json_response["comments"][0].keys).to eq EXPECTED_COMMENT_KEYS
-      expect(json_response["comments"][0]["user"].keys).to eq EXPECTED_USER_KEYS
+      expect(json_response["comments"][0]["user"].keys).to eq EXPECTED_BASIC_USER_KEYS
       expect(json_response["comments"][0]["user"]["profile"].keys).to eq EXPECTED_PROFILE_KEYS
-      expect(json_response["user"].keys).to eq EXPECTED_USER_KEYS
+      expect(json_response["user"].keys).to eq EXPECTED_BASIC_USER_KEYS
       expect(json_response["user"]["profile"].keys).to eq EXPECTED_PROFILE_KEYS
+      expect(json_response["tags"][0].keys).to eq EXPECTED_TAG_KEYS
     end
   end
 end

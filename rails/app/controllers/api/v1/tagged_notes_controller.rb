@@ -1,15 +1,15 @@
-class Api::V1::CheeredNotesController < Api::V1::ApplicationController
+class Api::V1::TaggedNotesController < Api::V1::ApplicationController
   include Pagination
   before_action :fetch_authenticated_current_user, only: [:index]
 
   def index
-    user = User.find(params[:user_id])
-    notes = user.cheered_notes.
+    tag = Tag.find(params[:tag_id])
+    notes = tag.notes.
               includes(
                 user: { profile: { avatar_attachment: :blob } },
                 tags: {},
               ).published.
-              order("cheers.created_at DESC").
+              order("notes.published_at DESC").
               page(params[:page] || 1).
               per(10)
 
@@ -24,6 +24,6 @@ class Api::V1::CheeredNotesController < Api::V1::ApplicationController
            adapter: :json,
            status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "アカウントにアクセスできません" }, status: :not_found
+    render json: { error: "タグにアクセスできません" }, status: :not_found
   end
 end

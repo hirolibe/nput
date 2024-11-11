@@ -1,7 +1,9 @@
 class NoteIndexSerializer < ActiveModel::Serializer
   attributes :id, :title, :from_today, :cheers_count, :has_cheered, :total_duration
 
-  belongs_to :user
+  has_many :tags
+
+  belongs_to :user, serializer: BasicUserSerializer
 
   def from_today
     TimeCalculateHelper.time_passed_from(object.published_at)

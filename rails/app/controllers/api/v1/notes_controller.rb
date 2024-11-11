@@ -4,8 +4,10 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
-    notes = Note.includes(user: { profile: { avatar_attachment: :blob } }).
-              published.
+    notes = Note.includes(
+      user: { profile: { avatar_attachment: :blob } },
+      tags: {},
+    ).published.
               order(created_at: :desc).
               page(params[:page] || 1).
               per(10)
@@ -16,7 +18,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
            each_serializer: NoteIndexSerializer,
            current_user:,
            total_durations:,
-           include: ["user", "user.profile"],
+           include: ["user", "user.profile", "tags"],
            meta: pagination(notes),
            adapter: :json,
            status: :ok
@@ -26,11 +28,12 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     note = Note.includes(
       comments: { user: { profile: { avatar_attachment: :blob } } },
       user: { profile: { avatar_attachment: :blob } },
+      tags: {},
     ).published.find(params[:id])
 
     render json: note,
            current_user:,
-           include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile"],
+           include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile", "tags"],
            status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: "ノートにアクセスできません" }, status: :not_found

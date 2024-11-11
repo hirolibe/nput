@@ -21,6 +21,13 @@ Rails.application.routes.draw do
         resources :supporters, only: [:index]
         resource :cheer, only: [:create, :destroy]
       end
+
+      resources :tags, only: [] do
+        collection do
+          get :search
+        end
+        resources :tagged_notes, only: [:index]
+      end
     end
   end
 end

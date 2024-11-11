@@ -12,23 +12,42 @@ RSpec.describe Tag, type: :model do
   end
 
   describe "バリデーション" do
-    include_examples "入力必須項目のバリデーションエラー", "tag", "name", "タグ名"
+    subject(:record) { build(:tag) }
+
+    context "タグ名が空の場合" do
+      before { record.name = "" }
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).not_to be_valid
+        expect(record.errors.full_messages).to eq ["タグ名を入力してください", "タグ名に記号やスペースは使用できません"]
+      end
+    end
 
     context "タグ名が重複している場合" do
-      subject(:record) { build(:tag) }
-
       before do
-        create(:tag, name: "テストタグ")
-        record.name = "テストタグ"
+        create(:tag, name: "Tag")
+        record.name = "Tag"
       end
 
       include_examples "バリデーション失敗", "タグ名はすでに存在します"
     end
 
     context "タグ名が20文字を超えている場合" do
-      subject(:record) { build(:tag, name: Faker::Lorem.characters(number: 21)) }
+      before { record.name = Faker::Lorem.characters(number: 21) }
 
       include_examples "バリデーション失敗", "タグ名は20文字以内で入力してください"
+    end
+
+    context "タグ名に記号を含む場合" do
+      before { record.name = "invalid tag" }
+
+      include_examples "バリデーション失敗", "タグ名に記号やスペースは使用できません"
+    end
+
+    context "タグ名にスペースを含む場合" do
+      before { record.name = "invalid@tag" }
+
+      include_examples "バリデーション失敗", "タグ名に記号やスペースは使用できません"
     end
 
     include_examples "バリデーション成功"

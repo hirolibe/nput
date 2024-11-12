@@ -1,5 +1,4 @@
 class Api::V1::TagsController < Api::V1::ApplicationController
-
   def search
     search_term = params[:query].to_s.strip
     return head :no_content if search_term.blank?

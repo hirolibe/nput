@@ -15,10 +15,6 @@ class Note < ApplicationRecord
   validate :validate_single_unsaved
   validate :tag_limit
 
-  attr_accessor :duration
-
-  after_update :record_duration
-
   private
 
     def validate_single_unsaved
@@ -31,13 +27,5 @@ class Note < ApplicationRecord
       if tags.size > 5
         errors.add(:tags, "タグは5個まで設定できます")
       end
-    end
-
-    def record_duration
-      Duration.create!(
-        user:,
-        note: self,
-        duration:,
-      )
     end
 end

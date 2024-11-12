@@ -10,8 +10,9 @@ class NoteSerializer < ActiveModel::Serializer
              :total_duration
 
   has_many :comments
+  has_many :tags
 
-  belongs_to :user
+  belongs_to :user, serializer: BasicUserSerializer
 
   def status_jp
     object.status_i18n

@@ -5,6 +5,7 @@ EXPECTED_NOTE_INDEX_KEYS = [
   "cheers_count",
   "has_cheered",
   "total_duration",
+  "tags",
   "user",
 ].freeze
 
@@ -19,6 +20,7 @@ EXPECTED_NOTE_KEYS = [
   "has_cheered",
   "total_duration",
   "comments",
+  "tags",
   "user",
 ].freeze
 
@@ -49,4 +51,16 @@ EXPECTED_USER_KEYS = [
   "monthly_duration",
   "total_duration",
   "profile",
+].freeze
+
+EXPECTED_BASIC_USER_KEYS = [
+  "id",
+  "has_followed",
+  "profile",
+].freeze
+
+EXPECTED_TAG_KEYS = [
+  "id",
+  "name",
+  "notes_count",
 ].freeze

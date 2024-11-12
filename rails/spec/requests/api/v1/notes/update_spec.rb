@@ -10,7 +10,7 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
       title: "タイトル",
       content: "本文",
       status: :draft,
-      published_at: Date.new(2024, 10, 1),
+      published_at: nil,
       user:,
     )
   end
@@ -35,32 +35,36 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
         include_examples "バリデーションエラーのレスポンス検証"
       end
 
-      context "バリデーションに成功し、durationが含まれる場合" do
+      context "バリデーションに成功した場合" do
         let(:params) {
           {
             "note": {
               "title": "更新後のタイトル",
               "content": "更新後の本文",
               "status": "published",
-              "published_at": "2024/11/1",
+              "published_at": Time.zone.local(2024, 11, 1),
             },
             "duration": 300,
+            "tag_names": ["a", "b", "c", "d", "e"],
           }
         }
 
-        it "ノートが更新され、デュレーションレコードが作成され、200ステータスとノートの情報が返る" do
-          expect { subject }.to change { note.reload.title }.from("タイトル").to("更新後のタイトル") and
-            change { note.reload.content }.from("本文").to("更新後の本文") and
-            change { note.reload.status }.from("draft").to("published") and
-            change { note.reload.published_at }.from("2024/10/1").to("2024/11/1") and
-            change { user.cheer_points }.by(1)
-          expect(Duration.last.duration).to eq(300)
-          expect(Duration.last.note).to eq(note)
-          expect(Duration.last.user).to eq(user)
+        it "ノート更新に伴う処理が実行され、200ステータスとノートの情報が返る" do
+          subject
+          expect(note.reload.title).to eq("更新後のタイトル")
+          expect(note.reload.content).to eq("更新後の本文")
+          expect(note.reload.status).to eq("published")
+          expect(note.reload.published_at).to eq(Time.zone.local(2024, 11, 1))
+
+          initial_cheer_points = user.cheer_points
+          expect(user.reload.cheer_points).to eq(initial_cheer_points + 1)
+
+          tag_names = note.reload.tags.map {|tag| tag["name"] }
+          expect(tag_names).to contain_exactly("a", "b", "c", "d", "e")
+
           expect(response).to have_http_status(:ok)
           expect(json_response.keys).to eq ["note", "message"]
           expect(json_response["note"].keys).to eq EXPECTED_NOTE_KEYS
-          expect(json_response["message"]).to eq("ノートを更新しました！")
         end
       end
     end

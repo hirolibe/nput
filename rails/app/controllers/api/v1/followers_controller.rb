@@ -10,6 +10,7 @@ class Api::V1::FollowersController < Api::V1::ApplicationController
               page(params[:page] || 1).
               per(10)
     render json: users,
+           each_serializer: BasicUserSerializer,
            current_user:,
            meta: pagination(users),
            adapter: :json,

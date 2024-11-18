@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
   subject { patch(api_v1_note_path(note_id), headers:, params:) }
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, cheer_points: 10) }
   let(:note) do
     create(
       :note,

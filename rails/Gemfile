@@ -12,6 +12,9 @@ gem "bootsnap", require: false
 # 環境毎の設定管理を行う
 gem "config"
 
+# 画像ファイルをダウンロードする
+gem "down"
+
 # enum を日本語化する
 gem "enum_help"
 

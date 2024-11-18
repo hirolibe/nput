@@ -4,18 +4,11 @@ class UserSerializer < ActiveModel::Serializer
              :cheers_count,
              :followings_count,
              :followers_count,
-             :has_followed,
              :daily_duration,
              :monthly_duration,
              :total_duration
 
   has_one :profile
-
-  def has_followed
-    return nil unless @instance_options[:current_user]
-
-    @instance_options[:current_user].has_followed?(object)
-  end
 
   def daily_duration
     object.durations.where(created_at: Time.current.all_day).sum(:duration)

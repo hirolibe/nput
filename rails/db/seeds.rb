@@ -13,19 +13,18 @@ end
 # rubocop:disable Style/CombinableLoops
 users.each do |user|
   notes_count_per_user.times do
-    note = user.notes.create!({
-      title: Faker::Lorem.sentence(word_count: 10).chomp("。"),
+    note = user.notes.build({
+      title: Faker::Lorem.sentence(word_count: 13).chomp("。"),
       content: Faker::Lorem.paragraphs(number: 5).join("\n\n"),
       status: :published,
       published_at: Time.current - rand(1..10).days,
     })
 
     durations_count_per_note.times do
-      user.durations.create!({
-        note:,
-        duration: rand(300..3600),
-      })
+      note.durations.build(duration: rand(300..3600), user:)
     end
+
+    note.save!
   end
 end
 
@@ -46,6 +45,10 @@ users.each do |user|
     x_username: Faker::Internet.username,
     github_username: Faker::Internet.username,
   )
+
+  avatar_url = "https://picsum.photos/300"
+  file = Down.download(avatar_url)
+  user.profile.avatar.attach(io: file, filename: "avatar.jpg", content_type: "image/jpeg")
 
   followings = User.where.not(id: user.id)
   followings.each do |following|

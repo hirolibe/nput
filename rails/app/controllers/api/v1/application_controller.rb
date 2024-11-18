@@ -11,11 +11,6 @@ class Api::V1::ApplicationController < ApplicationController
     end
 
     def fetch_authenticated_current_user
-      if firebase_token.blank?
-        @current_user = nil
-        return
-      end
-
       begin
         decoded_token = verify_token
       rescue => e

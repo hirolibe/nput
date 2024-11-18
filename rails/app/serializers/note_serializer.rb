@@ -6,7 +6,6 @@ class NoteSerializer < ActiveModel::Serializer
              :published_date,
              :updated_date,
              :cheers_count,
-             :has_cheered,
              :total_duration
 
   has_many :comments
@@ -26,13 +25,10 @@ class NoteSerializer < ActiveModel::Serializer
     object.updated_at.strftime("%Y/%m/%d")
   end
 
-  def has_cheered
-    return nil unless @instance_options[:current_user]
-
-    @instance_options[:current_user].has_cheered?(object)
-  end
-
   def total_duration
-    object.durations.sum(:duration)
+    duration_in_seconds = object.durations.sum(:duration)
+    hours = duration_in_seconds / 3600
+    minutes = (duration_in_seconds % 3600) / 60
+    "#{hours}時間#{minutes}分"
   end
 end

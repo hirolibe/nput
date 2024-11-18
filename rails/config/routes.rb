@@ -13,13 +13,14 @@ Rails.application.routes.draw do
         resources :cheered_notes, only: [:index]
         resources :followings, only: [:index]
         resources :followers, only: [:index]
+        resource :follow, only: [:show]
         resource :relationship, only: [:create, :destroy]
       end
 
       resources :notes, only: [:index, :show, :create, :update, :destroy] do
         resources :comments, only: [:create, :destroy]
         resources :supporters, only: [:index]
-        resource :cheer, only: [:create, :destroy]
+        resource :cheer, only: [:show, :create, :destroy]
       end
 
       resources :tags, only: [] do

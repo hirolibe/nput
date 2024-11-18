@@ -7,7 +7,14 @@ FactoryBot.define do
     published_at { Time.current }
 
     transient do
+      with_durations { true }
       with_tags { true }
+    end
+
+    after(:build) do |note, evaluator|
+      if evaluator.with_durations
+        note.durations = build_list(:duration, 3, note:)
+      end
     end
 
     after(:create) do |note, evaluator|

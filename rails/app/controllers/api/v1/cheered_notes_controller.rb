@@ -1,6 +1,5 @@
 class Api::V1::CheeredNotesController < Api::V1::ApplicationController
   include Pagination
-  before_action :fetch_authenticated_current_user, only: [:index]
 
   def index
     user = User.find(params[:user_id])
@@ -17,7 +16,6 @@ class Api::V1::CheeredNotesController < Api::V1::ApplicationController
 
     render json: notes,
            each_serializer: NoteIndexSerializer,
-           current_user:,
            total_durations:,
            include: ["user", "user.profile", "tags"],
            meta: pagination(notes),

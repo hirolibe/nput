@@ -5,8 +5,9 @@ RSpec.describe Note, type: :model do
     context "全ての値が有効な場合" do
       subject { create(:note) }
 
-      it "ノートを新規作成できる" do
-        expect { subject }.to change { Note.count }.by(1)
+      it "ノートとデュレーションを新規作成できる" do
+        expect { subject }.to change { Note.count }.by(1) and
+          change { Duration.count }.by(3)
       end
     end
   end
@@ -27,6 +28,12 @@ RSpec.describe Note, type: :model do
       end
 
       include_examples "バリデーション失敗", "未保存のノートは複数保有できません"
+    end
+
+    context "ステータスが下書きまたは公開中であり、デュレーションレコードが存在しない場合" do
+      subject(:record) { build(:note, with_durations: false) }
+
+      include_examples "バリデーション失敗", "公開されたノートにはデュレーションレコードが必要です"
     end
 
     include_examples "バリデーション成功"

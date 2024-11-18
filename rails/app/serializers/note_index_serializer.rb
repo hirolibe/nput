@@ -1,5 +1,5 @@
 class NoteIndexSerializer < ActiveModel::Serializer
-  attributes :id, :title, :from_today, :cheers_count, :has_cheered, :total_duration
+  attributes :id, :title, :from_today, :cheers_count, :total_duration
 
   has_many :tags
 
@@ -9,13 +9,9 @@ class NoteIndexSerializer < ActiveModel::Serializer
     TimeCalculateHelper.time_passed_from(object.published_at)
   end
 
-  def has_cheered
-    return nil unless @instance_options[:current_user]
-
-    @instance_options[:current_user].has_cheered?(object)
-  end
-
   def total_duration
-    instance_options[:total_durations][object.id]
+    duration_in_seconds = instance_options[:total_durations][object.id]
+    hours = duration_in_seconds / 3600
+    (hours < 1) ? "1h未満" : "#{hours}h"
   end
 end

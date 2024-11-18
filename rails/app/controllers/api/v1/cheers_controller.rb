@@ -1,5 +1,14 @@
 class Api::V1::CheersController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:create, :destroy]
+  before_action :authenticate_user!, only: [:show, :create, :destroy]
+
+  def show
+    note = Note.published.find(params[:note_id])
+    cheer_status = current_user.has_cheered?(note)
+
+    render json: { has_cheered: cheer_status }, status: :ok
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
+  end
 
   def create
     if current_user.cheer_points < 5

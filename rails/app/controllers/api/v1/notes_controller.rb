@@ -1,6 +1,5 @@
 class Api::V1::NotesController < Api::V1::ApplicationController
   include Pagination
-  before_action :fetch_authenticated_current_user, only: [:index, :show]
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
@@ -8,7 +7,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
       user: { profile: { avatar_attachment: :blob } },
       tags: {},
     ).published.
-              order(created_at: :desc).
+              order(published_at: :desc).
               page(params[:page] || 1).
               per(10)
 
@@ -16,7 +15,6 @@ class Api::V1::NotesController < Api::V1::ApplicationController
 
     render json: notes,
            each_serializer: NoteIndexSerializer,
-           current_user:,
            total_durations:,
            include: ["user", "user.profile", "tags"],
            meta: pagination(notes),
@@ -32,7 +30,6 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     ).published.find(params[:id])
 
     render json: note,
-           current_user:,
            include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile", "tags"],
            status: :ok
   rescue ActiveRecord::RecordNotFound

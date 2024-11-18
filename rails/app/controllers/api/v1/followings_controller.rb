@@ -1,6 +1,5 @@
 class Api::V1::FollowingsController < Api::V1::ApplicationController
   include Pagination
-  before_action :fetch_authenticated_current_user, only: [:index]
 
   def index
     follower = User.find(params[:user_id])
@@ -11,7 +10,6 @@ class Api::V1::FollowingsController < Api::V1::ApplicationController
               per(10)
     render json: users,
            each_serializer: BasicUserSerializer,
-           current_user:,
            meta: pagination(users),
            adapter: :json,
            status: :ok

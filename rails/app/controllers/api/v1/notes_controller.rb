@@ -94,9 +94,8 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     end
 
     def add_cheer_points(note)
-      last_duration_value = note.durations.last.duration
       seconds_per_point = 300
-      calculated_points = (last_duration_value / seconds_per_point).floor
+      calculated_points = (params[:duration].to_i / seconds_per_point).floor
 
       max_points = 50
       user = note.user

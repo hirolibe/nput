@@ -1,11 +1,12 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
-import { FirebaseError } from 'firebase/app'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { handleError } from '@/requests/utils/handleError'
 import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
 
@@ -17,6 +18,7 @@ type LogInFormData = {
 const LogIn: NextPage = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [, setSnackbar] = useSnackbarState()
 
   const { handleSubmit, control } = useForm<LogInFormData>({
     defaultValues: { email: '', password: '' },
@@ -44,25 +46,20 @@ const LogIn: NextPage = () => {
     setIsLoading(true)
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
-      alert('ログインに成功しました！')
+      setSnackbar({
+        message: 'ログインに成功しました',
+        severity: 'success',
+        pathname: '/',
+      })
       router.push('/')
     } catch (err) {
-      let errorMessage =
-        '不明なエラーが発生しました　サポートにお問い合わせください'
-
-      if (err instanceof FirebaseError) {
-        if (err.code === 'auth/invalid-email') {
-          errorMessage = 'メールアドレスが無効です'
-        } else if (err.code === 'auth/user-not-found') {
-          errorMessage =
-            'このメールアドレスに対応するアカウントが見つかりません'
-        } else if (err.code === 'auth/wrong-password') {
-          errorMessage = 'パスワードが正しくありません'
-        } else if (err.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは8文字以上にしてください'
-        }
-      }
-      alert(errorMessage)
+      const errorMessage = handleError(err)
+      setSnackbar({
+        message: `${errorMessage}`,
+        severity: 'error',
+        pathname: '/auth/login',
+      })
+    } finally {
       setIsLoading(false)
     }
   }

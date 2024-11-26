@@ -19,19 +19,19 @@ class Api::V1::ApplicationController < ApplicationController
       end
 
       if decoded_token.blank?
-        return render json: { error: "認証情報が無効です　ログインし直してください" }, status: :unauthorized
+        return render json: { error: "認証情報が無効です" }, status: :unauthorized
       end
 
       @current_user = User.find_by(uid: decoded_token["sub"])
 
       if @current_user.blank?
-        render json: { error: "アカウントが見つかりません　新規登録してください" }, status: :unauthorized
+        render json: { error: "アカウントが見つかりません" }, status: :unauthorized
       end
     end
 
     def authenticate_user!
       if firebase_token.blank?
-        return render json: { error: "トークンが見つかりません　新規登録またはログインしてください" }, status: :bad_request
+        return render json: { error: "トークンが見つかりません" }, status: :bad_request
       end
 
       fetch_authenticated_current_user

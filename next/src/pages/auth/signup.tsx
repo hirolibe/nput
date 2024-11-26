@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
-import axios, { isAxiosError } from 'axios'
+import axios from 'axios'
 import { FirebaseError } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
@@ -12,6 +12,8 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { handleError } from '@/requests/utils/handleError'
 import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
 
@@ -24,6 +26,7 @@ type SignUpFormData = {
 const SignUp: NextPage = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [, setSnackbar] = useSnackbarState()
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
     defaultValues: { name: '', email: '', password: '' },
@@ -51,7 +54,7 @@ const SignUp: NextPage = () => {
   }
 
   const verifyIdToken = async (createdUser: User) => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/registration'
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/registration`
     const idToken = await createdUser?.getIdToken()
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -59,27 +62,21 @@ const SignUp: NextPage = () => {
 
     try {
       const res = await axios.post(url, null, { headers })
-      alert(res.data.message)
+      setSnackbar({
+        message: `${res.data.message}`,
+        severity: 'success',
+        pathname: '/',
+      })
       await router.push('/')
     } catch (err) {
-      let errorMessage =
-        '不明なエラーが発生しました　サポートにお問い合わせください'
-      if (isAxiosError(err)) {
-        if (err.response) {
-          const errorData = err.response.data
-          errorMessage =
-            errorData.message ||
-            `Error: ${err.response.status} ${err.response.statusText}`
-        } else if (err.request) {
-          errorMessage =
-            'サーバーに接続できません　しばらくしてからもう一度お試しください'
-        }
-      } else {
-        errorMessage = err instanceof Error ? err.message : String(err)
-      }
-      console.error(errorMessage)
+      const errorMessage = handleError(err)
       await deleteUser(createdUser)
-      alert(errorMessage)
+      setSnackbar({
+        message: `${errorMessage}`,
+        severity: 'error',
+        pathname: '/auth/signup',
+      })
+    } finally {
       setIsLoading(false)
     }
   }

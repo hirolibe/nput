@@ -6,6 +6,8 @@ class ProfileSerializer < ActiveModel::Serializer
              :github_link,
              :avatar_url
 
+  belongs_to :user, serializer: BasicUserSerializer
+
   def x_link
     return unless object.x_username
 

@@ -47,10 +47,10 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     note = current_user.notes.find(params[:id])
 
     ActiveRecord::Base.transaction do
-      note = update_note(note)
       record_duration(note)
       add_cheer_points(note)
       update_tags(note)
+      note = update_note(note)
     end
 
     render json: { note: NoteSerializer.new(note), message: "ノートを更新しました！" }, status: :ok
@@ -71,19 +71,6 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   end
 
   private
-
-    def note_params
-      params.require(:note).permit(:title, :content, :status, :published_at)
-    end
-
-    def filtered_note_params(note)
-      note.published_at.present? ? note_params.except(:published_at) : note_params
-    end
-
-    def update_note(note)
-      note.update!(filtered_note_params(note))
-      note
-    end
 
     def record_duration(note)
       Duration.create!(
@@ -112,5 +99,21 @@ class Api::V1::NotesController < Api::V1::ApplicationController
       return note.tags.clear if params[:tag_names].blank?
 
       note.tags = params[:tag_names].map {|name| Tag.find_or_create_by!(name:) }
+    end
+
+    def prepare_note_params(note)
+      note_params = params.require(:note).permit(:title, :content, :status)
+
+      if note_params[:status] == "published" && note.published_at.blank?
+        note_params[:published_at] = Time.current
+      end
+
+      note_params
+    end
+
+    def update_note(note)
+      note_params = prepare_note_params(note)
+      note.update!(note_params)
+      note
     end
 end

@@ -1,9 +1,9 @@
-// pages/_app.tsx
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { AppProps } from 'next/app'
-import Header from '@/components/Header'
+import Header from '@/components/common/Header'
+import Snackbar from '@/components/common/Snackbar'
 import '@/styles/destyle.css'
 import { AuthProvider } from '@/contexts/AuthContext' // AuthProviderのインポート
 import createEmotionCache from '@/styles/createEmotionCache'
@@ -22,10 +22,10 @@ export default function MyApp(props: MyAppProps): JSX.Element {
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
         <AuthProvider>
-          {/* AuthProviderで全体を囲む */}
           <CssBaseline />
           <Header />
           <Component {...pageProps} />
+          <Snackbar />
         </AuthProvider>
       </ThemeProvider>
     </CacheProvider>

@@ -1,7 +1,7 @@
 class Api::V1::Auth::RegistrationsController < Api::V1::ApplicationController
   def create
     if firebase_token.blank?
-      return render json: { error: "トークンが見つかりません　新規登録し直してください" }, status: :bad_request
+      return render json: { error: "トークンが見つかりません" }, status: :bad_request
     end
 
     begin
@@ -12,7 +12,7 @@ class Api::V1::Auth::RegistrationsController < Api::V1::ApplicationController
     end
 
     if decoded_token.blank?
-      return render json: { error: "認証情報が無効です　登録し直してください" }, status: :unauthorized
+      return render json: { error: "認証情報が無効です" }, status: :unauthorized
     end
 
     user = User.new(uid: decoded_token["sub"])

@@ -1,13 +1,13 @@
 import { Box, Grid, Container, Pagination } from '@mui/material'
-import camelcaseKeys from 'camelcase-keys'
 import type { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useSWR from 'swr'
-import Error from '@/components/Error'
-import NoteCard from '@/components/NoteCard'
-import NoteCardSkeleton from '@/components/NoteCardSkeleton'
-import { fetcher } from '@/utils/fetcher'
+import Error from '@/components/common/Error'
+import NoteCard from '@/components/note/NoteCard'
+import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
+import { useNotes } from '@/hooks/useNotes'
+import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { handleError } from '@/requests/utils/handleError'
 
 type NoteIndexProps = {
   id: number
@@ -31,11 +31,21 @@ type NoteIndexProps = {
 const Index: NextPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? Number(router.query.page) : 1
-  const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/notes/?page=' + page
-  const { data, error } = useSWR(url, fetcher)
+  const { data, error, isLoading } = useNotes(page)
+  const [, setSnackbar] = useSnackbarState()
 
-  if (error) return <Error />
-  if (!data)
+  if (error) {
+    const errorMessage = handleError(error)
+    setSnackbar({
+      message: `${errorMessage}`,
+      severity: 'error',
+      pathname: `${router.pathname}`,
+    })
+
+    return <Error />
+  }
+
+  if (isLoading)
     return (
       <Box sx={{ backgroundColor: '#e6f2ff', minHeight: '100vh' }}>
         <Container maxWidth="md" sx={{ pt: 6 }}>
@@ -50,20 +60,20 @@ const Index: NextPage = () => {
       </Box>
     )
 
-  const notes = camelcaseKeys(data.notes, { deep: true })
-  const meta = camelcaseKeys(data.meta)
+  const notes = data?.notes
+  const meta = data?.meta
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push('/?page=' + value)
+    router.push(`/?page=${value}`)
   }
 
   return (
     <Box sx={{ backgroundColor: '#e6f2ff', minHeight: '100vh' }}>
       <Container maxWidth="md" sx={{ pt: 6 }}>
         <Grid container spacing={4}>
-          {notes.map((note: NoteIndexProps, i: number) => (
+          {notes?.map((note: NoteIndexProps, i: number) => (
             <Grid item key={i} xs={12}>
-              <Link href={'/notes/' + note.id}>
+              <Link href={`/notes/${note.id}`}>
                 <NoteCard
                   id={note.id}
                   title={note.title}
@@ -84,8 +94,8 @@ const Index: NextPage = () => {
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
           <Pagination
-            count={meta.totalPages}
-            page={meta.currentPage}
+            count={meta?.totalPages}
+            page={meta?.currentPage}
             onChange={handleChange}
           />
         </Box>

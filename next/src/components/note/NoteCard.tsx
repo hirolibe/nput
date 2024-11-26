@@ -10,12 +10,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import axios from 'axios'
-import camelcaseKeys from 'camelcase-keys'
-import Image from 'next/image'
-import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
-import { handleError } from '@/utils/errorHandler'
+import React from 'react'
+import CheerStatus from './CheerStatus'
 
 type NoteCardProps = {
   id: number
@@ -36,39 +32,9 @@ const NoteCard = (props: NoteCardProps) => {
   const omit = (text: string) => (len: number) => (ellipsis: string) =>
     text.length >= len ? text.slice(0, len - ellipsis.length) + ellipsis : text
 
-  const handleTagClick = (e: React.MouseEvent) => {
+  const stopEventPropagation = (e: React.MouseEvent) => {
     e.stopPropagation()
   }
-
-  const { idToken } = useAuth()
-  console.log(idToken)
-
-  const [hasCheered, setHasCheered] = useState(false)
-
-  const url =
-    process.env.NEXT_PUBLIC_API_BASE_URL + '/notes/' + props.id + '/cheer'
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (idToken) {
-        const headers = {
-          Authorization: `Bearer ${idToken}`,
-        }
-
-        try {
-          const res = await axios.get(url, { headers })
-          const data = camelcaseKeys(res.data)
-          setHasCheered(data.hasCheered)
-        } catch (err) {
-          handleError(err)
-        }
-      } else {
-        setHasCheered(false)
-      }
-    }
-
-    fetchData()
-  }, [idToken])
 
   return (
     <Card>
@@ -86,7 +52,11 @@ const NoteCard = (props: NoteCardProps) => {
         </Typography>
         <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
           {props.tags.map((tag, i: number) => (
-            <Link key={i} href={'/tags/' + tag.id} onClick={handleTagClick}>
+            <Link
+              key={i}
+              href={`/tags/${tag.id}`}
+              onClick={stopEventPropagation}
+            >
               <Chip
                 label={tag.name}
                 variant="outlined"
@@ -101,13 +71,13 @@ const NoteCard = (props: NoteCardProps) => {
           ))}
         </Stack>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Link href={'/users/' + props.userId} onClick={handleTagClick}>
+          <Link href={`/users/${props.userId}`} onClick={stopEventPropagation}>
             <Avatar src={props.avatarUrl} sx={{ mr: 2 }} />
           </Link>
           <Stack>
             <Link
-              href={'/users/' + props.userId}
-              onClick={handleTagClick}
+              href={`/users/${props.userId}`}
+              onClick={stopEventPropagation}
               sx={{
                 textDecoration: 'none',
               }}
@@ -143,22 +113,7 @@ const NoteCard = (props: NoteCardProps) => {
               </Stack>
 
               <Stack direction="row" spacing={0.5} alignItems="center">
-                {!hasCheered && (
-                  <Image
-                    src="/megaphone-outlined.svg"
-                    alt="Cheer Icon"
-                    width={16}
-                    height={16}
-                  />
-                )}
-                {hasCheered && (
-                  <Image
-                    src="/megaphone-filled.svg"
-                    alt="Cheer Icon"
-                    width={16}
-                    height={16}
-                  />
-                )}
+                <CheerStatus noteId={props.id} />
                 <Typography sx={{ fontSize: 12 }}>
                   {props.cheersCount}
                 </Typography>

@@ -33,7 +33,17 @@ RSpec.describe Note, type: :model do
     context "ステータスが下書きまたは公開中であり、デュレーションレコードが存在しない場合" do
       subject(:record) { build(:note, with_durations: false) }
 
-      include_examples "バリデーション失敗", "公開されたノートにはデュレーションレコードが必要です"
+      include_examples "バリデーション失敗", "下書きまたは公開中のノートにはデュレーションレコードが必要です"
+    end
+
+    context "タグを6個以上設定した場合" do
+      subject(:record) { build(:note) }
+
+      before do
+        record.tags = create_list(:tag, 6)
+      end
+
+      include_examples "バリデーション失敗", "タグは5個まで設定できます"
     end
 
     include_examples "バリデーション成功"

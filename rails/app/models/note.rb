@@ -13,8 +13,8 @@ class Note < ApplicationRecord
   validates :status, presence: true
   validates :title, :content, :published_at, presence: true, if: :published?
   validate :validate_single_unsaved
-  validate :tag_limit
   validate :validate_durations
+  validate :tag_limit
 
   private
 
@@ -24,15 +24,15 @@ class Note < ApplicationRecord
       end
     end
 
-    def tag_limit
-      if tags.size > 5
-        errors.add(:tags, "タグは5個まで設定できます")
+    def validate_durations
+      if !unsaved? && durations.blank?
+        errors.add(:durations, "下書きまたは公開中のノートにはデュレーションレコードが必要です")
       end
     end
 
-    def validate_durations
-      if !unsaved? && durations.blank?
-        errors.add(:durations, "公開されたノートにはデュレーションレコードが必要です")
+    def tag_limit
+      if tags.size > 5
+        errors.add(:tags, "タグは5個まで設定できます")
       end
     end
 end

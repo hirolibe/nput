@@ -9,6 +9,7 @@ ja:
         status: "ステータス"
         published_at: "公開日"
         durations: ""
+        tags: ""
       comment:
         content: "コメント"
       cheer:

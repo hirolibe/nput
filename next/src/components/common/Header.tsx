@@ -3,7 +3,6 @@ import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import {
   AppBar,
-  Avatar,
   Box,
   Button,
   Container,
@@ -12,25 +11,32 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Avatar,
+  Alert,
 } from '@mui/material'
 import axios from 'axios'
 import { signOut } from 'firebase/auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { useIdToken } from 'react-firebase-hooks/auth'
-import { handleError } from '@/utils/errorHandler'
+import React, { useState } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { useProfile } from '@/hooks/useProfile'
+import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { handleError } from '@/requests/utils/handleError'
 import auth from '@/utils/firebaseConfig'
 
 const Header = () => {
-  const [user, loading] = useIdToken(auth)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
+  const { idToken, isAuthLoading } = useAuth()
+  const { data, error } = useProfile(idToken || undefined)
+  const profileErrorMessage = handleError(error)
+  const [, setSnackbar] = useSnackbarState()
 
-  const hideHeaderPathnames = ['/current/notes/edit/[id]']
-  if (hideHeaderPathnames.includes(router.pathname)) return <></>
+  const hideHeaderPathnames = ['/notes/[id]/edit']
+  if (hideHeaderPathnames.includes(router.pathname)) return
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -45,24 +51,29 @@ const Header = () => {
       await signOut(auth)
       router.push('/')
     } catch (err) {
-      const errorMessage =
-        '不明なエラーが発生しました　サポートにお問い合わせください'
-      alert(errorMessage)
+      const errorMessage = handleError(err)
+      setSnackbar({
+        message: `${errorMessage}`,
+        severity: 'error',
+        pathname: `${router.pathname}`,
+      })
     }
   }
 
   const addNewArticle = async () => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL + '/notes'
-    const idToken = await user?.getIdToken()
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    }
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes`
+    const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
       const res = await axios.post(url, null, { headers })
-      router.push('/current/notes/edit/' + res.data.id)
+      router.push(`/notes/${res.data.id}/edit`)
     } catch (err) {
-      handleError(err)
+      const errorMessage = handleError(err)
+      setSnackbar({
+        message: `${errorMessage}`,
+        severity: 'error',
+        pathname: `${router.pathname}`,
+      })
     }
   }
 
@@ -89,9 +100,10 @@ const Header = () => {
               <Image src="/logo.png" width={90} height={40} alt="logo" />
             </Link>
           </Box>
-          {!loading && !user && (
+          {error && <Alert severity="error">{profileErrorMessage}</Alert>}
+          {!isAuthLoading && !idToken && (
             <Box>
-              <Link href="/login">
+              <Link href="/auth/login">
                 <Button
                   color="primary"
                   variant="contained"
@@ -107,7 +119,7 @@ const Header = () => {
                   ログイン
                 </Button>
               </Link>
-              <Link href="/signup">
+              <Link href="/auth/signup">
                 <Button
                   color="primary"
                   variant="outlined"
@@ -126,12 +138,10 @@ const Header = () => {
               </Link>
             </Box>
           )}
-          {user && (
+          {data && (
             <Box sx={{ display: 'flex' }}>
               <IconButton onClick={handleClick} sx={{ p: 0 }}>
-                <Avatar alt="avatar" src={user.photoURL || undefined}>
-                  {!user.photoURL && <PersonIcon />}
-                </Avatar>
+                <Avatar alt="avatar" src={data.avatarUrl} />
               </IconButton>
               <Box sx={{ ml: 2 }}>
                 <Button
@@ -158,7 +168,7 @@ const Header = () => {
                 onClose={handleClose}
                 onClick={handleClose}
               >
-                <Link href="/current/profiles">
+                <Link href={`/users/${data?.user.id}`}>
                   <MenuItem>
                     <ListItemIcon>
                       <PersonIcon fontSize="small" />
@@ -166,7 +176,7 @@ const Header = () => {
                     マイページ
                   </MenuItem>
                 </Link>
-                <Link href="/current/notes">
+                <Link href="/dashboard">
                   <MenuItem>
                     <ListItemIcon>
                       <AutoStoriesIcon fontSize="small" />

@@ -4,21 +4,21 @@ RSpec.shared_examples "トークン欠落エラー" do
   it "400エラーとエラーメッセージが返る" do
     subject
     expect(response).to have_http_status(:bad_request)
-    expect(json_response["error"]).to eq("トークンが見つかりません　新規登録またはログインしてください")
+    expect(json_response["error"]).to eq("トークンが見つかりません")
   end
 end
 
 RSpec.shared_examples "トークン期限切れエラー" do
   before do
     allow(Rails.logger).to receive(:error)
-    stub_token_verification.and_raise(StandardError, "トークンが期限切れです　ログインし直してください")
+    stub_token_verification.and_raise(StandardError, "トークンが期限切れです")
   end
 
   it "トークンの検証が失敗し、401エラーとエラーメッセージが返る" do
     subject
     expect(response).to have_http_status(:unauthorized)
-    expect(Rails.logger).to have_received(:error).with("Firebase認証エラー: トークンが期限切れです　ログインし直してください")
-    expect(json_response["error"]).to eq("トークンが期限切れです　ログインし直してください")
+    expect(Rails.logger).to have_received(:error).with("Firebase認証エラー: トークンが期限切れです")
+    expect(json_response["error"]).to eq("トークンが期限切れです")
   end
 end
 
@@ -28,7 +28,7 @@ RSpec.shared_examples "トークン無効エラー" do
   it "トークンの検証が失敗し、401エラーとエラーメッセージが返る" do
     subject
     expect(response).to have_http_status(:unauthorized)
-    expect(json_response["error"]).to eq("認証情報が無効です　ログインし直してください")
+    expect(json_response["error"]).to eq("認証情報が無効です")
   end
 end
 
@@ -38,7 +38,7 @@ RSpec.shared_examples "アカウントエラー" do
   it "認証が失敗し、401エラーとエラーメッセージが返る" do
     subject
     expect(response).to have_http_status(:unauthorized)
-    expect(json_response["error"]).to eq("アカウントが見つかりません　新規登録してください")
+    expect(json_response["error"]).to eq("アカウントが見つかりません")
   end
 end
 

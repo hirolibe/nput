@@ -1,5 +1,14 @@
 class Api::V1::RelationshipsController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:create, :destroy]
+  before_action :authenticate_user!, only: [:show, :create, :destroy]
+
+  def show
+    following = User.find(params[:user_id])
+    follow_status = current_user.has_followed?(following)
+
+    render json: { has_followed: follow_status }, status: :ok
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "アカウントにアクセスできません" }, status: :not_found
+  end
 
   def create
     following = User.find(params[:user_id])

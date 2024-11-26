@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     })
     return () => unsubscribe()
-  }, [])
+  }, [router, setSnackbar])
 
   return (
     <AuthContext.Provider

@@ -55,7 +55,7 @@ const LogIn: NextPage = () => {
     } catch (err) {
       const errorMessage = handleError(err)
       setSnackbar({
-        message: `${errorMessage}`,
+        message: `${errorMessage} ログインし直してください`,
         severity: 'error',
         pathname: '/auth/login',
       })

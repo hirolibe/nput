@@ -30,8 +30,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter()
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout
-
     const handleTokenRefreshError = (error: unknown) => {
       setIdToken(null)
       const errorMessage = handleError(error)
@@ -44,12 +42,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (user) {
+      if (user) {
+        try {
           const token = await user.getIdToken()
           setIdToken(token)
 
-          intervalId = setInterval(
+          const tokenRefreshInterval = setInterval(
             async () => {
               try {
                 const refreshedToken = await user.getIdToken(true)
@@ -60,19 +58,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             },
             60 * 60 * 1000,
           )
-        } else {
-          setIdToken(null)
+
+          return () => clearInterval(tokenRefreshInterval)
+        } catch (error) {
+          handleTokenRefreshError(error)
+        } finally {
+          setIsAuthLoading(false)
         }
-      } catch (error) {
-        handleTokenRefreshError(error)
-      } finally {
+      } else {
+        setIdToken(null)
         setIsAuthLoading(false)
       }
     })
 
     return () => {
       unsubscribe()
-      if (intervalId) clearInterval(intervalId)
     }
   }, [router, setSnackbar])
 

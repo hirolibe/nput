@@ -1,7 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
 import axios from 'axios'
-import { FirebaseError } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -60,25 +59,8 @@ const SignUp: NextPage = () => {
       Authorization: `Bearer ${idToken}`,
     }
 
-    try {
-      const res = await axios.post(url, null, { headers })
-      setSnackbar({
-        message: `${res.data.message}`,
-        severity: 'success',
-        pathname: '/',
-      })
-      await router.push('/')
-    } catch (err) {
-      const errorMessage = handleError(err)
-      await deleteUser(createdUser)
-      setSnackbar({
-        message: `${errorMessage}`,
-        severity: 'error',
-        pathname: '/auth/signup',
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    const res = await axios.post(url, null, { headers })
+    return res.data.message
   }
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
@@ -91,19 +73,27 @@ const SignUp: NextPage = () => {
       )
       const createdUser = userCredential.user
       await updateProfile(createdUser, { displayName: data.name })
-      await verifyIdToken(createdUser)
-    } catch (err) {
-      let errorMessage =
-        '不明なエラーが発生しました　サポートにお問い合わせください'
 
-      if (err instanceof FirebaseError) {
-        if (err.code === 'auth/email-already-in-use') {
-          errorMessage = 'このメールアドレスはすでに使用されています'
-        } else if (err.code === 'auth/weak-password') {
-          errorMessage = 'パスワードは8文字以上にしてください'
-        }
+      const message = await verifyIdToken(createdUser)
+      setSnackbar({
+        message,
+        severity: 'success',
+        pathname: '/',
+      })
+      await router.push('/')
+    } catch (err) {
+      const errorMessage = handleError(err)
+
+      if (auth.currentUser) {
+        await deleteUser(auth.currentUser)
       }
-      alert(errorMessage)
+
+      setSnackbar({
+        message: `${errorMessage} 登録し直してください`,
+        severity: 'error',
+        pathname: '/auth/signup',
+      })
+    } finally {
       setIsLoading(false)
     }
   }

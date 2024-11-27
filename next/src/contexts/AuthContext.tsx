@@ -30,28 +30,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter()
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout
+
+    const handleTokenRefreshError = (error: unknown) => {
+      setIdToken(null)
+      const errorMessage = handleError(error)
+      setSnackbar({
+        message: `${errorMessage} ログインし直してください`,
+        severity: 'error',
+        pathname: `/auth/login`,
+      })
+      router.push(`/auth/login`)
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
           const token = await user.getIdToken()
           setIdToken(token)
+
+          intervalId = setInterval(
+            async () => {
+              try {
+                const refreshedToken = await user.getIdToken(true)
+                setIdToken(refreshedToken)
+              } catch (error) {
+                handleTokenRefreshError(error)
+              }
+            },
+            60 * 60 * 1000,
+          )
         } else {
           setIdToken(null)
         }
       } catch (error) {
-        setIdToken(null)
-        const errorMessage = handleError(error)
-        setSnackbar({
-          message: `${errorMessage} ログインし直してください`,
-          severity: 'error',
-          pathname: `/auth/login`,
-        })
-        router.push(`/auth/login`)
+        handleTokenRefreshError(error)
       } finally {
         setIsAuthLoading(false)
       }
     })
-    return () => unsubscribe()
+
+    return () => {
+      unsubscribe()
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [router, setSnackbar])
 
   return (

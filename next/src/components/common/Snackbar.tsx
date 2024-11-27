@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 
-const ResultSnackbar = () => {
+const NotificationSnackbar = () => {
   const router = useRouter()
   const [snackbar, setSnackbar] = useSnackbarState()
   const [open, setOpen] = useState(false)
@@ -52,4 +52,4 @@ const ResultSnackbar = () => {
   )
 }
 
-export default ResultSnackbar
+export default NotificationSnackbar

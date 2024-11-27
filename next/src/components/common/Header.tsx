@@ -2,17 +2,17 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import {
+  Alert,
   AppBar,
+  Avatar,
   Box,
   Button,
   Container,
   Divider,
   IconButton,
+  ListItemIcon,
   Menu,
   MenuItem,
-  ListItemIcon,
-  Avatar,
-  Alert,
 } from '@mui/material'
 import axios from 'axios'
 import { signOut } from 'firebase/auth'
@@ -31,7 +31,7 @@ const Header = () => {
   const open = Boolean(anchorEl)
   const router = useRouter()
   const { idToken, isAuthLoading } = useAuth()
-  const { data, error } = useProfile(idToken || undefined)
+  const { data, error } = useProfile(idToken)
   const profileErrorMessage = handleError(error)
   const [, setSnackbar] = useSnackbarState()
 

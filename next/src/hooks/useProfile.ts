@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
-import { ProfileResponse } from '@/requests/types/profileResponse'
-import { fetcher } from '@/requests/utils/fetcher'
+import { ProfileResponse } from '@/types/profile'
+import { fetcher } from '@/utils/fetcher'
 
 export const useProfile = (idToken?: string | null) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`

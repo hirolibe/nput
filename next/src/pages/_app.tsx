@@ -5,7 +5,7 @@ import { AppProps } from 'next/app'
 import Header from '@/components/common/Header'
 import Snackbar from '@/components/common/Snackbar'
 import '@/styles/destyle.css'
-import { AuthProvider } from '@/contexts/AuthContext' // AuthProviderのインポート
+import { AuthProvider } from '@/providers/AuthProvider'
 import createEmotionCache from '@/styles/createEmotionCache'
 import theme from '@/styles/theme'
 

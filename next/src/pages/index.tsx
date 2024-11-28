@@ -7,26 +7,8 @@ import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
 import { useNotes } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/requests/utils/handleError'
-
-type NoteIndexProps = {
-  id: number
-  title: string
-  fromToday: string
-  cheersCount: number
-  totalDuration: string
-  user: {
-    id: number
-    profile: {
-      nickname: string
-      avatarUrl: string
-    }
-  }
-  tags: {
-    id: number
-    name: string
-  }[]
-}
+import { BasicNoteResponse } from '@/types/note'
+import { handleError } from '@/utils/handleError'
 
 const Index: NextPage = () => {
   const router = useRouter()
@@ -71,7 +53,7 @@ const Index: NextPage = () => {
     <Box sx={{ backgroundColor: '#e6f2ff', minHeight: '100vh' }}>
       <Container maxWidth="md" sx={{ pt: 6 }}>
         <Grid container spacing={4}>
-          {notes?.map((note: NoteIndexProps, i: number) => (
+          {notes?.map((note: BasicNoteResponse, i: number) => (
             <Grid item key={i} xs={12}>
               <Link href={`/notes/${note.id}`}>
                 <NoteCard
@@ -80,9 +62,7 @@ const Index: NextPage = () => {
                   fromToday={note.fromToday}
                   cheersCount={note.cheersCount}
                   totalDuration={note.totalDuration}
-                  userId={note.user.id}
-                  userName={note.user.profile.nickname}
-                  avatarUrl={note.user.profile.avatarUrl}
+                  user={note.user}
                   tags={note.tags.map((tag) => ({
                     id: tag.id,
                     name: tag.name,

@@ -12,23 +12,9 @@ import {
 } from '@mui/material'
 import React from 'react'
 import CheerStatus from './CheerStatus'
+import { BasicNoteResponse } from '@/types/note'
 
-type NoteCardProps = {
-  id: number
-  title: string
-  fromToday: string
-  cheersCount: number
-  totalDuration: string
-  userId: number
-  userName: string
-  avatarUrl: string
-  tags: {
-    id: number
-    name: string
-  }[]
-}
-
-const NoteCard = (props: NoteCardProps) => {
+const NoteCard = (props: BasicNoteResponse) => {
   const omit = (text: string) => (len: number) => (ellipsis: string) =>
     text.length >= len ? text.slice(0, len - ellipsis.length) + ellipsis : text
 
@@ -71,12 +57,12 @@ const NoteCard = (props: NoteCardProps) => {
           ))}
         </Stack>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Link href={`/users/${props.userId}`} onClick={stopEventPropagation}>
-            <Avatar src={props.avatarUrl} sx={{ mr: 2 }} />
+          <Link href={`/users/${props.user.id}`} onClick={stopEventPropagation}>
+            <Avatar src={props.user.profile.avatarUrl} sx={{ mr: 2 }} />
           </Link>
           <Stack>
             <Link
-              href={`/users/${props.userId}`}
+              href={`/users/${props.user.id}`}
               onClick={stopEventPropagation}
               sx={{
                 textDecoration: 'none',
@@ -92,7 +78,7 @@ const NoteCard = (props: NoteCardProps) => {
                   },
                 }}
               >
-                {props.userName}
+                {props.user.profile.nickname}
               </Typography>
             </Link>
             <Stack

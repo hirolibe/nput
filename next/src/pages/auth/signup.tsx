@@ -12,9 +12,9 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/utils/handleError'
 import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
+import { handleError } from '@/utils/handleError'
 
 type SignUpFormData = {
   name: string

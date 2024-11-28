@@ -20,11 +20,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/requests/utils/handleError'
 import auth from '@/utils/firebaseConfig'
+import { handleError } from '@/utils/handleError'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

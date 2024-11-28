@@ -1,27 +1,11 @@
 import { onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'next/router'
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from 'react'
+import { useEffect, useState } from 'react'
+import { AuthContext } from '@/contexts/AuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/requests/utils/handleError'
+import { AuthProviderProps } from '@/types/auth'
 import auth from '@/utils/firebaseConfig'
-
-interface AuthContextProps {
-  idToken: string | null
-  isAuthLoading: boolean
-  setIsAuthLoading: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-interface AuthProviderProps {
-  children: ReactNode
-}
-
-const AuthContext = createContext<AuthContextProps | undefined>(undefined)
+import { handleError } from '@/utils/handleError'
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [idToken, setIdToken] = useState<string | null>(null)
@@ -41,23 +25,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       router.push(`/auth/login`)
     }
 
+    const intervalTime = 60 * 60 * 1000
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           const token = await user.getIdToken()
           setIdToken(token)
 
-          const tokenRefreshInterval = setInterval(
-            async () => {
-              try {
-                const refreshedToken = await user.getIdToken(true)
-                setIdToken(refreshedToken)
-              } catch (error) {
-                handleTokenRefreshError(error)
-              }
-            },
-            60 * 60 * 1000,
-          )
+          const tokenRefreshInterval = setInterval(async () => {
+            try {
+              const refreshedToken = await user.getIdToken(true)
+              setIdToken(refreshedToken)
+            } catch (error) {
+              handleTokenRefreshError(error)
+            }
+          }, intervalTime)
 
           return () => clearInterval(tokenRefreshInterval)
         } catch (error) {
@@ -87,12 +69,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       {children}
     </AuthContext.Provider>
   )
-}
-
-export const useAuth = (): AuthContextProps => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
 }

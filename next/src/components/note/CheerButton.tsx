@@ -10,10 +10,9 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 export interface CheerButtonProps {
-  isCheerStatusLoading: boolean
   cheerState: {
-    isCheered: boolean
-    setIsCheered: Dispatch<SetStateAction<boolean>>
+    isCheered: boolean | undefined
+    setIsCheered: Dispatch<SetStateAction<boolean | undefined>>
     cheersCount: number
     setCheersCount: Dispatch<SetStateAction<number>>
   }
@@ -23,10 +22,9 @@ export interface CheerButtonProps {
 }
 
 export const CheerButton = ({
-  isCheerStatusLoading,
   cheerState,
   boxParams,
-  backgroundColor = '#EDF2F7',
+  backgroundColor = 'backgroundColor.icon',
   cheerIconSize,
 }: CheerButtonProps) => {
   const router = useRouter()
@@ -118,18 +116,18 @@ export const CheerButton = ({
             sx={{
               width: '100%',
               height: '100%',
-              backgroundColor: backgroundColor || '#EDF2F7',
+              backgroundColor: backgroundColor,
               border: 'none',
               boxShadow: 'none',
               '&:hover': {
-                backgroundColor: '#E0E0E0',
+                backgroundColor: 'backgroundColor.hover',
               },
               '&:active': {
-                backgroundColor: backgroundColor || '#EDF2F7',
+                backgroundColor: backgroundColor,
               },
             }}
           >
-            {!isAuthLoading && !isCheerStatusLoading && (
+            {isCheered !== undefined && (
               <AnimatedIconWrapper isAnimated={isAnimated}>
                 <CheerIcon isCheered={isCheered} size={cheerIconSize} />
               </AnimatedIconWrapper>

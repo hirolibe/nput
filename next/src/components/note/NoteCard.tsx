@@ -13,7 +13,6 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import StopPropagationLink from '../common/StopPropagationLink'
 import { CheerIcon } from './CheerIcon'
-import { useAuth } from '@/hooks/useAuth'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { BasicNoteData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -23,14 +22,11 @@ const NoteCard = (props: BasicNoteData) => {
   const omit = (text: string) => (len: number) => (ellipsis: string) =>
     text.length >= len ? text.slice(0, len - ellipsis.length) + ellipsis : text
 
-  const { idToken, isAuthLoading } = useAuth()
-  const { cheerStatusData, cheerStatusError, isCheerStatusLoading } =
-    useCheerStatus({
-      authorName: props.user.name,
-      noteId: props.id,
-      idToken,
-    })
-  const [isCheered, setIsCheered] = useState(false)
+  const { cheerStatusData, cheerStatusError } = useCheerStatus({
+    authorName: props.user.name,
+    noteId: props.id,
+  })
+  const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
 
@@ -82,7 +78,7 @@ const NoteCard = (props: BasicNoteData) => {
                 variant="outlined"
                 sx={{
                   '&:hover': {
-                    backgroundColor: '#f0f0f0',
+                    backgroundColor: 'backgroundColor.hover',
                   },
                   fontSize: '0.75rem',
                 }}
@@ -121,7 +117,7 @@ const NoteCard = (props: BasicNoteData) => {
                 </Typography>
               </Stack>
               <Stack direction="row" spacing={0.5} alignItems="center">
-                {isAuthLoading || isCheerStatusLoading ? (
+                {isCheered === undefined ? (
                   <Box sx={{ width: 16 }}></Box>
                 ) : (
                   <CheerIcon isCheered={isCheered} size={16} />

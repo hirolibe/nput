@@ -2,6 +2,13 @@ import { red } from '@mui/material/colors'
 import { createTheme } from '@mui/material/styles'
 
 declare module '@mui/material/styles' {
+  interface PaletteOptions {
+    backgroundColor: {
+      main: string
+      icon: string
+      hover: string
+    }
+  }
   interface TypeText {
     light: string
   }
@@ -18,8 +25,14 @@ const theme = createTheme({
     error: {
       main: red.A400,
     },
+    divider: '#acbcc7',
+    backgroundColor: {
+      main: '#e6f2ff',
+      icon: '#EDF2F7',
+      hover: '#E0E0E0',
+    },
     text: {
-      light: '#8F9FAA', // カスタムカラーとして薄い文字色を追加
+      light: '#6E7B85',
     },
   },
   breakpoints: {

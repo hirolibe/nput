@@ -7,17 +7,13 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 export interface FollowButtonProps {
-  isFollowStatusLoading: boolean
   followState: {
-    isFollowed: boolean
-    setIsFollowed: Dispatch<SetStateAction<boolean>>
+    isFollowed: boolean | undefined
+    setIsFollowed: Dispatch<SetStateAction<boolean | undefined>>
   }
 }
 
-export const FollowButton = ({
-  isFollowStatusLoading,
-  followState,
-}: FollowButtonProps) => {
+export const FollowButton = ({ followState }: FollowButtonProps) => {
   const router = useRouter()
   const { name, id } = router.query
   const [nameString] = [name, id].map((value) =>
@@ -69,7 +65,7 @@ export const FollowButton = ({
     }
   }
 
-  if (isFollowStatusLoading) return
+  if (isFollowed === undefined) return
 
   return (
     <>

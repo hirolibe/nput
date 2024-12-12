@@ -29,7 +29,9 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
   const [nameString, idString] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
-  const { profileData } = useProfile(idToken)
+  const { profileData } = useProfile()
+  const currentUserName = profileData?.user.name
+
   const [comments, setComments] = useState<CommentData[]>(
     noteData?.comments || [],
   )
@@ -89,61 +91,72 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
       <Divider sx={{ mb: 3 }} />
 
       {/* コメント一覧 */}
-      {comments?.map((comment: CommentData, i: number) => (
-        <Box key={i}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 1,
-            }}
-          >
-            {/* コメント投稿者のプロフィール・投稿日 */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {/* プロフィール */}
-              <Box sx={{ mr: 2 }}>
-                <Avatar
-                  alt={comment.user.profile.nickname || comment.user.name}
-                  src={comment.user.profile.avatarUrl}
-                />
-              </Box>
-              <Typography sx={{ fontWeight: 'bold', mr: 1 }}>
-                <Link href={`/${comment?.user.name}`}>
-                  {comment.user.profile.nickname || comment.user.name}
-                </Link>
-              </Typography>
+      {comments?.map((comment: CommentData, i: number) => {
+        const {
+          user: {
+            name: commenterName,
+            profile: {
+              nickname: commenterNickname,
+              avatarUrl: commenterAvatarUrl,
+            },
+          },
+        } = comment
+        return (
+          <Box key={i}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 1,
+              }}
+            >
+              {/* コメント投稿者のプロフィール・投稿日 */}
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {/* プロフィール */}
+                <Box sx={{ mr: 2 }}>
+                  <Avatar
+                    alt={commenterNickname || commenterName}
+                    src={commenterAvatarUrl}
+                  />
+                </Box>
+                <Typography sx={{ fontWeight: 'bold', mr: 1 }}>
+                  <Link href={`/${commenterName}`}>
+                    {commenterNickname || commenterName}
+                  </Link>
+                </Typography>
 
-              {/* 投稿日 */}
-              <Typography sx={{ fontSize: 12, color: '#8F9FAA' }}>
-                {comment.fromToday}
-              </Typography>
+                {/* 投稿日 */}
+                <Typography sx={{ fontSize: 12, color: 'text.light' }}>
+                  {comment.fromToday}
+                </Typography>
+              </Box>
+
+              {/* コメント削除ボタン */}
+              {commenterName === currentUserName && (
+                <IconButton onClick={() => handleDeleteComment(comment.id)}>
+                  <DeleteOutlineIcon />
+                </IconButton>
+              )}
             </Box>
 
-            {/* コメント削除ボタン */}
-            {comment.user.name === profileData?.user.name && (
-              <IconButton onClick={() => handleDeleteComment(comment.id)}>
-                <DeleteOutlineIcon />
-              </IconButton>
-            )}
-          </Box>
+            {/* コメント内容 */}
+            <Box sx={{ fontSize: { xs: '14px', sm: '16px' } }}>
+              <MarkdownText content={comment.content} />
+            </Box>
+            <Divider sx={{ my: 5 }} />
 
-          {/* コメント内容 */}
-          <Box sx={{ fontSize: { xs: '14px', sm: '16px' } }}>
-            <MarkdownText content={comment.content} />
+            {/* コメント削除の確認画面 */}
+            <ConfirmationDialog
+              open={open}
+              onClose={handleClose}
+              onConfirm={handleConfirm}
+              message={'コメントを削除しますか？'}
+              confirmText="実行"
+            />
           </Box>
-          <Divider sx={{ my: 5 }} />
-
-          {/* コメント削除の確認画面 */}
-          <ConfirmationDialog
-            open={open}
-            onClose={handleClose}
-            onConfirm={handleConfirm}
-            message={'コメントを削除しますか？'}
-            confirmText="実行"
-          />
-        </Box>
-      ))}
+        )
+      })}
 
       {/* コメント入力フォーム */}
       <CommentForm addComment={addComment} />

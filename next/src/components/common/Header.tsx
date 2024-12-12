@@ -31,7 +31,7 @@ const Header = () => {
   const open = Boolean(anchorEl)
   const router = useRouter()
   const { idToken, isAuthLoading } = useAuth()
-  const { data } = useProfile(idToken)
+  const { profileData } = useProfile(idToken)
   const [, setSnackbar] = useSnackbarState()
 
   const hideHeaderPathnames = [
@@ -64,7 +64,7 @@ const Header = () => {
   }
 
   const addNewNote = async () => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${data?.user.name}/notes`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${profileData?.user.name}/notes`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
@@ -140,12 +140,12 @@ const Header = () => {
               </Link>
             </Box>
           )}
-          {data && idToken && (
+          {profileData && idToken && (
             <Box sx={{ display: 'flex' }}>
               <IconButton onClick={handleClick} sx={{ p: 0 }}>
                 <Avatar
-                  alt={data.nickname || data.user.name}
-                  src={data.avatarUrl}
+                  alt={profileData.nickname || profileData.user.name}
+                  src={profileData.avatarUrl}
                 />
               </IconButton>
               <Box sx={{ ml: 2, display: { xs: 'none', sm: 'block' } }}>
@@ -172,7 +172,7 @@ const Header = () => {
                 onClose={handleClose}
                 onClick={handleClose}
               >
-                <Link href={`/${data?.user.name}`}>
+                <Link href={`/${profileData?.user.name}`}>
                   <MenuItem>
                     <ListItemIcon>
                       <PersonIcon fontSize="small" />

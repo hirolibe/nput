@@ -12,15 +12,15 @@ import { handleError } from '@/utils/handleError'
 const Index: NextPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? String(router.query.page) : 1
-  const { data, error } = useNotes(page)
+  const { notesData, notesError } = useNotes(page)
 
-  if (error) {
-    const { statusCode, errorMessage } = handleError(error)
+  if (notesError) {
+    const { statusCode, errorMessage } = handleError(notesError)
 
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!data)
+  if (!notesData)
     return (
       <Box css={styles.pageMinHeight} sx={{ backgroundColor: '#e6f2ff' }}>
         <Container maxWidth="md" sx={{ pt: 6 }}>
@@ -36,8 +36,8 @@ const Index: NextPage = () => {
       </Box>
     )
 
-  const notes = data?.notes
-  const meta = data?.meta
+  const notes = notesData?.notes
+  const meta = notesData?.meta
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     router.push(`/?page=${value}`)

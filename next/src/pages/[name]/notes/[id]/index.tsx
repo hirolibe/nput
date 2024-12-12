@@ -38,7 +38,7 @@ const NoteDetail: NextPage = () => {
   )
 
   // ノートのデータ取得・管理
-  const { data: noteData, error: noteError } = useNote({
+  const { noteData, noteError } = useNote({
     authorName: nameString,
     noteId: idString,
   })
@@ -47,15 +47,12 @@ const NoteDetail: NextPage = () => {
   }, [noteData])
 
   // エール状態のデータ取得・管理
-  const {
-    data: cheerStatusData,
-    error: cheerStatusError,
-    isLoading: isCheerStatusLoading,
-  } = useCheerStatus({
-    authorName: nameString,
-    noteId: idString,
-    idToken,
-  })
+  const { cheerStatusData, cheerStatusError, isCheerStatusLoading } =
+    useCheerStatus({
+      authorName: nameString,
+      noteId: idString,
+      idToken,
+    })
   const [isCheered, setIsCheered] = useState(false)
   const [cheersCount, setCheersCount] = useState(0)
   const cheerState = {
@@ -79,14 +76,11 @@ const NoteDetail: NextPage = () => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   // フォロー状態のデータ取得・管理
-  const {
-    data: followStatusData,
-    error: followStatusError,
-    isLoading: isFollowStatusLoading,
-  } = useFollowStatus({
-    authorName: nameString,
-    idToken,
-  })
+  const { followStatusData, followStatusError, isFollowStatusLoading } =
+    useFollowStatus({
+      authorName: nameString,
+      idToken,
+    })
   const [isFollowed, setIsFollowed] = useState(false)
   const followState = {
     isFollowed,
@@ -138,6 +132,7 @@ const NoteDetail: NextPage = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             borderTop: '0.5px solid #acbcc7',
+            borderBottom: '0.5px solid #acbcc7',
             height: 60,
             px: 6,
             backgroundColor: 'white',
@@ -172,7 +167,7 @@ const NoteDetail: NextPage = () => {
 
         {/* タイトル */}
         <Container maxWidth="lg">
-          <Box sx={{ pt: 6, pb: { xs: 3, sm: 6 } }}>
+          <Box sx={{ pt: 6, pb: { xs: 3, sm: 6 }, px: 5 }}>
             <Box sx={{ maxWidth: 840, m: 'auto' }}>
               <Typography
                 component="h2"
@@ -315,11 +310,17 @@ const NoteDetail: NextPage = () => {
             <Box
               sx={{
                 display: { xs: 'none', md: 'block' },
-                width: 300,
                 minWidth: 300,
               }}
             >
-              <Card sx={{ p: '20px', boxShadow: 'none', borderRadius: '12px' }}>
+              <Card
+                sx={{
+                  boxShadow: 'none',
+                  borderRadius: '12px',
+                  minHeight: 200,
+                  p: '20px 30px',
+                }}
+              >
                 <AuthorInfo
                   noteData={noteData}
                   isFollowStatusLoading={isFollowStatusLoading}

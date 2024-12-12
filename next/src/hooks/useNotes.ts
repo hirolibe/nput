@@ -33,13 +33,15 @@ export const useNotes = (page: string | number) => {
     ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes/?page=${page}`
     : `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes`
 
-  const { data, error }: SWRResponse<PagenatedNotesData> = useSWR(
-    [url, undefined],
-    fetcher,
-  )
+  const {
+    data: notesData,
+    error: notesError,
+    isLoading: isNotesLoading,
+  }: SWRResponse<PagenatedNotesData> = useSWR([url, undefined], fetcher)
 
   return {
-    data,
-    error,
+    notesData,
+    notesError,
+    isNotesLoading,
   }
 }

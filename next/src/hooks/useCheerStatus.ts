@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 
@@ -17,14 +18,33 @@ export const useCheerStatus = ({
   idToken,
 }: UseCheerStatusParams) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
-  const { data, error, isLoading }: SWRResponse<CheerStatusData> = useSWR(
+  const {
+    data: cheerStatusData,
+    error,
+    isLoading: isCheerStatusLoading,
+  }: SWRResponse<CheerStatusData> = useSWR(
     authorName && noteId && idToken ? [url, idToken] : null,
     fetcher,
   )
 
+  const [cheerStatusError, setCheerStatusError] = useState<Error | undefined>(
+    undefined,
+  )
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setCheerStatusError(error)
+      }, 10000)
+      return () => clearTimeout(timer)
+    } else {
+      setCheerStatusError(undefined)
+    }
+  }, [error])
+
   return {
-    data,
-    error,
-    isLoading,
+    cheerStatusData,
+    cheerStatusError,
+    isCheerStatusLoading,
   }
 }

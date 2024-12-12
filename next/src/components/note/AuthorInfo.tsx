@@ -10,7 +10,9 @@ import Link from 'next/link'
 import { Dispatch, SetStateAction } from 'react'
 import { FaGithub, FaXTwitter } from 'react-icons/fa6'
 import { FollowButton } from '../common/FollowButton'
+import { useAuth } from '@/hooks/useAuth'
 import { NoteData } from '@/hooks/useNote'
+import { useProfile } from '@/hooks/useProfile'
 import { goToAuthorX, goToAuthorGithub } from '@/utils/socialLinkHandlers'
 
 export interface AuthorInfoProps {
@@ -27,65 +29,87 @@ export const AuthorInfo = ({
   isFollowStatusLoading,
   followState,
 }: AuthorInfoProps) => {
+  const authorName = noteData?.user.name
+  const {
+    nickname: authorNickname,
+    avatarUrl: authorAvatarUrl,
+    xLink: authorXLink,
+    githubLink: authorGithubLink,
+    bio: authorBio,
+  } = noteData.user.profile
+
+  const { idToken, isAuthLoading } = useAuth()
+  const { profileData, isProfileLoading } = useProfile(idToken)
+  const currentUserName = profileData?.user.name
+
+  if (isAuthLoading || isFollowStatusLoading || isProfileLoading) return
+
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Link href={`/${noteData?.user.name}`}>
+        <Link href={`/${authorName}`}>
           <Avatar
-            alt={noteData?.user.profile.nickname || noteData?.user.name}
-            src={noteData?.user.profile.avatarUrl}
-            sx={{ width: 60, height: 60, mr: 2 }}
+            alt={authorNickname || authorName}
+            src={authorAvatarUrl}
+            sx={{ width: 80, height: 80, mr: 2 }}
           />
         </Link>
-        <Stack>
-          <Typography sx={{ fontSize: 16, fontWeight: 'bold', pb: 0.3 }}>
-            <Link href={`/${noteData?.user.name}`}>
-              {noteData?.user.profile.nickname || noteData?.user.name}
-            </Link>
+        <Stack spacing={1}>
+          <Typography sx={{ fontSize: 20, fontWeight: 'bold', pb: 0.3 }}>
+            <Link href={`/${authorName}`}>{authorNickname || authorName}</Link>
           </Typography>
-          <Stack direction="row" sx={{ alignItems: 'center', height: '40px' }}>
+
+          {authorName !== currentUserName && (
             <FollowButton
               isFollowStatusLoading={isFollowStatusLoading}
               followState={followState}
             />
-            {noteData?.user.profile.xLink && (
-              <Tooltip title={`${noteData.user.profile.nickname}さんのXリンク`}>
-                <IconButton
-                  onClick={goToAuthorX(noteData.user.profile.xLink)}
-                  sx={{
-                    width: '40px',
-                    height: '40px',
-                    border: 'none',
-                    boxShadow: 'none',
-                  }}
-                >
-                  <FaXTwitter size={24} />
-                </IconButton>
-              </Tooltip>
-            )}
-            {noteData?.user.profile.githubLink && (
-              <Tooltip
-                title={`${noteData.user.profile.nickname}さんのGitHubリンク`}
-              >
-                <IconButton
-                  onClick={goToAuthorGithub(noteData.user.profile.githubLink)}
-                  sx={{
-                    width: '40px',
-                    height: '40px',
-                    border: 'none',
-                    boxShadow: 'none',
-                  }}
-                >
-                  <FaGithub size={24} />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Stack>
+          )}
+
+          {(authorXLink || authorGithubLink) && (
+            <Stack
+              direction="row"
+              sx={{ alignItems: 'center', height: '40px' }}
+            >
+              {authorXLink && (
+                <Tooltip title={`${authorNickname}さんのXリンク`}>
+                  <IconButton
+                    onClick={goToAuthorX(authorXLink)}
+                    sx={{
+                      width: '40px',
+                      height: '40px',
+                      border: 'none',
+                      boxShadow: 'none',
+                    }}
+                  >
+                    <FaXTwitter size={24} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {authorGithubLink && (
+                <Tooltip title={`${authorNickname}さんのGitHubリンク`}>
+                  <IconButton
+                    onClick={goToAuthorGithub(authorGithubLink)}
+                    sx={{
+                      width: '40px',
+                      height: '40px',
+                      border: 'none',
+                      boxShadow: 'none',
+                    }}
+                  >
+                    <FaGithub size={24} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Stack>
+          )}
         </Stack>
       </Box>
-      {noteData?.user.profile.bio && (
+      {authorBio && (
         <Box sx={{ mt: 2 }}>
-          <Typography>{noteData?.user.profile.bio}</Typography>
+          <Typography sx={{ fontSize: { xs: '14px', sm: '16px' } }}>
+            {authorBio}
+          </Typography>
         </Box>
       )}
     </>

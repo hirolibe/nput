@@ -6,9 +6,9 @@ RSpec.shared_examples "404エラー" do |resource_name|
   end
 end
 
-RSpec.shared_examples "リソース不在エラー" do |resource_name, resource_id|
+RSpec.shared_examples "リソース不在エラー" do |resource_name, column|
   context "#{resource_name}が存在しない場合" do
-    let(resource_id.to_sym) { 10_000_000_000 }
+    let(column.to_sym) { 1_000_000_000 }
 
     include_examples "404エラー", resource_name
   end

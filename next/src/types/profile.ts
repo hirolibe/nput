@@ -1,4 +1,4 @@
-export type UpdateProfilePayload = {
+export interface UpdateProfilePayload {
   nickname?: string
   bio?: string
   xUsername?: string

@@ -23,19 +23,9 @@ RSpec.shared_examples "入力必須項目のバリデーションエラー" do |
   end
 end
 
-USER_COLUMNS = {
-  "email": "Email",
-  "uid": "Uid",
-}.freeze
-
-RSpec.shared_examples "ユーザーのバリデーションエラー" do
-  USER_COLUMNS.each do |column, column_name|
-    include_examples "入力必須項目のバリデーションエラー", "user", column, column_name
-  end
-end
-
 NOTE_COLUMNS = {
   "title": "タイトル",
+  "description": "概要",
   "content": "本文",
   "published_at": "公開日",
 }.freeze

@@ -1,9 +1,10 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Notes PATCH /api/v1/notes/id", type: :request do
-  subject { patch(api_v1_note_path(note_id), headers:, params:) }
+RSpec.describe "Api::V1::Notes PATCH /api/v1/:name/notes/id", type: :request do
+  subject { patch(api_v1_user_note_path(name, note_id), headers:, params:) }
 
   let(:user) { create(:user, cheer_points: 10) }
+  let(:name) { user.name }
   let(:note) { create(:note, user:) }
   let(:note_id) { note.id }
   let(:headers) { { Authorization: "Bearer token" } }

@@ -1,4 +1,4 @@
-export type UpdateNotePayload = {
+export interface UpdateNotePayload {
   note: {
     title?: string
     content?: string

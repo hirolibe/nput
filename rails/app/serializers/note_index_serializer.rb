@@ -1,5 +1,5 @@
 class NoteIndexSerializer < ActiveModel::Serializer
-  attributes :id, :title, :from_today, :cheers_count, :total_duration
+  attributes :id, :title, :description, :from_today, :cheers_count, :total_duration
 
   has_many :tags
 

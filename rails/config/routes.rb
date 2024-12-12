@@ -9,25 +9,33 @@ Rails.application.routes.draw do
 
       resource :profile, only: [:show, :update]
 
-      resources :users, only: [:show, :destroy] do
+      resources :notes, only: [:index]
+
+      get "/:name", to: "users#show", as: :user
+      delete "/:name", to: "users#destroy", as: :delete_user
+
+      scope ":name", as: :user do
+        resources :notes, only: [:show, :create, :update, :destroy] do
+          resources :comments, only: [:create, :destroy]
+          resources :supporters, only: [:index]
+          resource :cheer, only: [:show, :create, :destroy]
+        end
         resources :cheered_notes, only: [:index]
         resources :followings, only: [:index]
         resources :followers, only: [:index]
         resource :relationship, only: [:show, :create, :destroy]
       end
 
-      resources :notes, only: [:index, :show, :create, :update, :destroy] do
-        resources :comments, only: [:create, :destroy]
-        resources :supporters, only: [:index]
-        resource :cheer, only: [:show, :create, :destroy]
-      end
-
-      resources :tags, only: [] do
+      resources :tags, only: [], param: :name do
         collection do
           get :search
         end
-        resources :tagged_notes, only: [:index]
+        member do
+          resources :tagged_notes, only: [:index]
+        end
       end
+
+      resources :image_uploads, only: [:create]
     end
   end
 end

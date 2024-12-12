@@ -16,7 +16,7 @@ RSpec.describe "Api::V1::Profiles GET /api/v1/profile", type: :request do
       expect(response).to have_http_status(:ok)
       expected_keys_with_user = EXPECTED_PROFILE_KEYS + ["user"]
       expect(json_response.keys).to eq expected_keys_with_user
-      expect(json_response["user"].keys).to eq ["id"]
+      expect(json_response["user"].keys).to eq ["name"]
     end
   end
 end

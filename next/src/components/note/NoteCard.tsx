@@ -6,35 +6,48 @@ import {
   Card,
   CardContent,
   Chip,
-  Link,
   Stack,
   Typography,
 } from '@mui/material'
-import React from 'react'
-import CheerStatus from './CheerStatus'
+import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
+import StopPropagationLink from '../common/StopPropagationLink'
+import { CheerIcon } from './CheerIcon'
+import { useAuth } from '@/hooks/useAuth'
+import { useCheerStatus } from '@/hooks/useCheerStatus'
+import { BasicNoteData } from '@/hooks/useNotes'
+import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { handleError } from '@/utils/handleError'
 
-type NoteCardProps = {
-  id: number
-  title: string
-  fromToday: string
-  cheersCount: number
-  totalDuration: string
-  userId: number
-  userName: string
-  avatarUrl: string
-  tags: {
-    id: number
-    name: string
-  }[]
-}
-
-const NoteCard = (props: NoteCardProps) => {
+const NoteCard = (props: BasicNoteData) => {
   const omit = (text: string) => (len: number) => (ellipsis: string) =>
     text.length >= len ? text.slice(0, len - ellipsis.length) + ellipsis : text
 
-  const stopEventPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
+  const { idToken, isAuthLoading } = useAuth()
+  const { cheerStatusData, cheerStatusError, isCheerStatusLoading } =
+    useCheerStatus({
+      authorName: props.user.name,
+      noteId: props.id,
+      idToken,
+    })
+  const [isCheered, setIsCheered] = useState(false)
+  const router = useRouter()
+  const [, setSnackbar] = useSnackbarState()
+
+  useEffect(() => {
+    if (cheerStatusError) {
+      const { errorMessage } = handleError(cheerStatusError)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+    }
+  }, [cheerStatusError, router.pathname, setSnackbar])
+
+  useEffect(() => {
+    if (cheerStatusData) setIsCheered(cheerStatusData.hasCheered)
+  }, [cheerStatusData])
 
   return (
     <Card>
@@ -43,20 +56,27 @@ const NoteCard = (props: NoteCardProps) => {
           component="h3"
           sx={{
             mb: 1,
-            fontSize: 20,
+            fontSize: { xs: 16, sm: 20 },
             fontWeight: 'bold',
             lineHeight: 1.5,
           }}
         >
           {omit(props.title)(40)('...')}
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            mb: 1,
+          }}
+        >
           {props.tags.map((tag, i: number) => (
-            <Link
-              key={i}
-              href={`/tags/${tag.id}`}
-              onClick={stopEventPropagation}
-            >
+            <StopPropagationLink key={i} href={`/tags/${tag.name}`}>
               <Chip
                 label={tag.name}
                 variant="outlined"
@@ -67,34 +87,23 @@ const NoteCard = (props: NoteCardProps) => {
                   fontSize: '0.75rem',
                 }}
               />
-            </Link>
+            </StopPropagationLink>
           ))}
         </Stack>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Link href={`/users/${props.userId}`} onClick={stopEventPropagation}>
-            <Avatar src={props.avatarUrl} sx={{ mr: 2 }} />
-          </Link>
+          <StopPropagationLink href={`/${props.user.name}`}>
+            <Avatar
+              alt={props.user.profile.nickname || props.user.name}
+              src={props.user.profile.avatarUrl}
+              sx={{ mr: 2 }}
+            />
+          </StopPropagationLink>
           <Stack>
-            <Link
-              href={`/users/${props.userId}`}
-              onClick={stopEventPropagation}
-              sx={{
-                textDecoration: 'none',
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: 12,
-                  color: 'black',
-                  display: 'inline',
-                  '&:hover': {
-                    textDecoration: 'underline',
-                  },
-                }}
-              >
-                {props.userName}
-              </Typography>
-            </Link>
+            <Typography sx={{ fontSize: 12 }}>
+              <StopPropagationLink href={`/${props.user.name}`}>
+                {props.user.profile.nickname || props.user.name}
+              </StopPropagationLink>
+            </Typography>
             <Stack
               direction="row"
               spacing={2}
@@ -111,9 +120,12 @@ const NoteCard = (props: NoteCardProps) => {
                   {props.totalDuration}
                 </Typography>
               </Stack>
-
               <Stack direction="row" spacing={0.5} alignItems="center">
-                <CheerStatus noteId={props.id} />
+                {isAuthLoading || isCheerStatusLoading ? (
+                  <Box sx={{ width: 16 }}></Box>
+                ) : (
+                  <CheerIcon isCheered={isCheered} size={16} />
+                )}
                 <Typography sx={{ fontSize: 12 }}>
                   {props.cheersCount}
                 </Typography>

@@ -17,26 +17,28 @@ export interface ProfileData {
 export const useProfile = (idToken?: string | null) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`
 
-  const { data, error }: SWRResponse<ProfileData> = useSWR(
-    idToken && [url, idToken],
-    fetcher,
-  )
+  const {
+    data: profileData,
+    error,
+    isLoading: isProfileLoading,
+  }: SWRResponse<ProfileData> = useSWR(idToken && [url, idToken], fetcher)
 
-  const [delayedError, setDelayedError] = useState<Error | undefined>(undefined)
+  const [profileError, setProfileError] = useState<Error | undefined>(undefined)
 
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
-        setDelayedError(error)
+        setProfileError(error)
       }, 10000)
       return () => clearTimeout(timer)
     } else {
-      setDelayedError(undefined)
+      setProfileError(undefined)
     }
   }, [error])
 
   return {
-    data,
-    error: delayedError,
+    profileData,
+    profileError,
+    isProfileLoading,
   }
 }

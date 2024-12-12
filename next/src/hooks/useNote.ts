@@ -7,7 +7,7 @@ export interface UseNoteParams {
 }
 
 export interface CommentData {
-  id?: number
+  id: number
   content: string
   fromToday: string
   user: {
@@ -48,13 +48,18 @@ export interface NoteData {
 export const useNote = ({ authorName, noteId }: UseNoteParams) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}`
 
-  const { data, error }: SWRResponse<NoteData> = useSWR(
+  const {
+    data: noteData,
+    error: noteError,
+    isLoading: isNoteLoading,
+  }: SWRResponse<NoteData> = useSWR(
     authorName && noteId ? [url, undefined] : null,
     fetcher,
   )
 
   return {
-    data,
-    error,
+    noteData,
+    noteError,
+    isNoteLoading,
   }
 }

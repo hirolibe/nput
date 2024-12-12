@@ -24,29 +24,30 @@ const NoteCard = (props: BasicNoteData) => {
     text.length >= len ? text.slice(0, len - ellipsis.length) + ellipsis : text
 
   const { idToken, isAuthLoading } = useAuth()
-  const { data, error, isLoading } = useCheerStatus({
-    authorName: props.user.name,
-    noteId: props.id,
-    idToken,
-  })
+  const { cheerStatusData, cheerStatusError, isCheerStatusLoading } =
+    useCheerStatus({
+      authorName: props.user.name,
+      noteId: props.id,
+      idToken,
+    })
   const [isCheered, setIsCheered] = useState(false)
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
 
   useEffect(() => {
-    if (error) {
-      const { errorMessage } = handleError(error)
+    if (cheerStatusError) {
+      const { errorMessage } = handleError(cheerStatusError)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
         pathname: router.pathname,
       })
     }
-  }, [error, router.pathname, setSnackbar])
+  }, [cheerStatusError, router.pathname, setSnackbar])
 
   useEffect(() => {
-    if (data) setIsCheered(data.hasCheered)
-  }, [data])
+    if (cheerStatusData) setIsCheered(cheerStatusData.hasCheered)
+  }, [cheerStatusData])
 
   return (
     <Card>
@@ -120,7 +121,7 @@ const NoteCard = (props: BasicNoteData) => {
                 </Typography>
               </Stack>
               <Stack direction="row" spacing={0.5} alignItems="center">
-                {isAuthLoading || isLoading ? (
+                {isAuthLoading || isCheerStatusLoading ? (
                   <Box sx={{ width: 16 }}></Box>
                 ) : (
                   <CheerIcon isCheered={isCheered} size={16} />

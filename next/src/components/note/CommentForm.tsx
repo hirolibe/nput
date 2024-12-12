@@ -31,7 +31,7 @@ const CommentForm = ({
     string | string[] | undefined
   >(undefined)
   const { idToken } = useAuth()
-  const { data: profileData } = useProfile(idToken)
+  const { profileData } = useProfile(idToken)
   const { name, id } = router.query
   const [nameString, idString] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
@@ -55,11 +55,13 @@ const CommentForm = ({
   }
 
   const buttonStyles = ({ isActive, primary, textLight }: ButtonStyles) => ({
-    px: 2,
+    height: { xs: '30px', sm: '40px' },
     borderRadius: '50px',
+    fontSize: { xs: '10px', sm: '16px' },
     fontWeight: 'bold',
     backgroundColor: isActive ? primary : '#fff',
     color: isActive ? '#fff' : textLight,
+    px: { xs: 1, sm: 2 },
     '&:hover': {
       backgroundColor: isActive ? primary : '#fff',
       color: isActive ? '#fff' : primary,
@@ -105,11 +107,18 @@ const CommentForm = ({
         <Avatar
           alt={profileData?.nickname || profileData?.user.name}
           src={profileData?.avatarUrl}
-          sx={{ mr: 1 }}
+          sx={{ mr: 3 }}
         />
-        <Typography sx={{ mr: 3 }}>コメントする</Typography>
+        {/* <Typography sx={{ mr: 3 }}>コメントする</Typography> */}
         {/* モード切り替えボタン */}
-        <Box sx={{ display: 'flex', gap: 1, height: '40px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            height: '40px',
+          }}
+        >
           <Button
             onClick={() => handleViewMode('edit')}
             sx={buttonStyles({
@@ -157,6 +166,11 @@ const CommentForm = ({
                   setComment(e.target.value)
                 }}
                 value={comment}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '14px', sm: '16px' },
+                  },
+                }}
               />
             )}
           />
@@ -183,7 +197,12 @@ const CommentForm = ({
                   height: '114px',
                 }}
               >
-                <Typography sx={{ color: 'text.light' }}>
+                <Typography
+                  sx={{
+                    color: 'text.light',
+                    fontSize: { xs: '14px', sm: '16px' },
+                  }}
+                >
                   コメントが入力されていません
                 </Typography>
               </Box>

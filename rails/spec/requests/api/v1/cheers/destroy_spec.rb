@@ -1,9 +1,10 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Cheers DELETE /api/v1/notes/:note_id/cheer", type: :request do
-  subject { delete(api_v1_note_cheer_path(note_id), headers:) }
+RSpec.describe "Api::V1::Cheers DELETE /api/v1/:name/notes/:note_id/cheer", type: :request do
+  subject { delete(api_v1_user_note_cheer_path(name, note_id), headers:) }
 
   let(:user) { create(:user) }
+  let(:name) { user.name }
   let(:note) { create(:note) }
   let(:note_id) { note.id }
   let(:headers) { { Authorization: "Bearer token" } }

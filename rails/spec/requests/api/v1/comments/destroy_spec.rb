@@ -1,9 +1,10 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Comments DELETE /api/v1/notes/:note_id/comments/:id", type: :request do
-  subject { delete(api_v1_note_comment_path(note_id, comment_id), headers:) }
+RSpec.describe "Api::V1::Comments DELETE /api/v1/:name/notes/:note_id/comments/:id", type: :request do
+  subject { delete(api_v1_user_note_comment_path(name, note_id, comment_id), headers:) }
 
   let(:user) { create(:user) }
+  let(:name) { user.name }
   let(:comment) { create(:comment, user:) }
   let(:note_id) { comment.note_id }
   let(:comment_id) { comment.id }

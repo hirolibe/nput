@@ -2,11 +2,12 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import type { NextPage } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
@@ -65,12 +66,12 @@ const LogIn: NextPage = () => {
   }
 
   return (
-    <Box
-      css={styles.pageMinHeight}
-      sx={{
-        backgroundColor: '#EDF2F7',
-      }}
-    >
+    <Container maxWidth="md" sx={{ pt: 6 }}>
+      <Box>
+        <Link href="/">
+          <Image src="/logo.png" width={90} height={40} alt="logo" />
+        </Link>
+      </Box>
       <Container maxWidth="sm">
         <Box sx={{ mb: 4, pt: 4 }}>
           <Typography
@@ -130,9 +131,16 @@ const LogIn: NextPage = () => {
           >
             Nput にログイン
           </LoadingButton>
+          <Typography>
+            アカウントをお持ちでない場合は
+            <Typography component="span" sx={{ textDecoration: 'underline' }}>
+              <Link href="/auth/signup">新規登録</Link>
+            </Typography>
+            から
+          </Typography>
         </Stack>
       </Container>
-    </Box>
+    </Container>
   )
 }
 

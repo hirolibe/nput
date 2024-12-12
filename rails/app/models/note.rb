@@ -8,10 +8,13 @@ class Note < ApplicationRecord
   has_many :note_tags, dependent: :destroy
   has_many :tags, through: :note_tags
 
+  has_many_attached :images
+
   enum :status, { unsaved: 10, draft: 20, published: 30 }
 
   validates :status, presence: true
-  validates :title, :content, :published_at, presence: true, if: :published?
+  validates :title, :description, :content, :published_at, presence: true, if: :published?
+  validates :description, length: { maximum: 200 }
   validate :validate_single_unsaved
   validate :validate_durations
   validate :tag_limit

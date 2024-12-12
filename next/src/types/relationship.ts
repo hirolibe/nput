@@ -1,3 +1,3 @@
-export interface RelationshipResponse {
+export interface RelationshipData {
   hasFollowed: boolean
 }

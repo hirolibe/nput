@@ -1,11 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Notes GET /api/v1/notes/:id", type: :request do
-  subject { get(api_v1_note_path(note_id)) }
+RSpec.describe "Api::V1::Notes GET /api/v1/:name/notes/:id", type: :request do
+  subject { get(api_v1_user_note_path(name, note_id)) }
 
   let(:note) { create(:note) }
+  let(:name) { note.user.name }
   let(:note_id) { note.id }
 
+  include_examples "リソース不在エラー", "アカウント", "name"
   include_examples "リソース不在エラー", "ノート", "note_id"
   include_examples "ノート非公開エラー"
 

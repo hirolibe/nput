@@ -1,44 +1,68 @@
 import { isAxiosError, AxiosError } from 'axios'
 import { FirebaseError } from 'firebase/app'
 
-const handleAxiosError = (err: AxiosError): string => {
-  type ErrorData = { message?: string; error?: string }
+const handleAxiosError = (
+  err: AxiosError,
+): { statusCode: number | null; errorMessage: string | null } => {
+  type ErrorResponse = { error?: string; errors?: string[] }
 
-  const isErrorData = (data: unknown): data is ErrorData => {
+  const isErrorResponse = (data: unknown): data is ErrorResponse => {
     return (
       typeof data === 'object' &&
       data !== null &&
-      ('message' in data || 'error' in data)
+      ('error' in data || 'errors' in data)
     )
   }
 
   if (err.response) {
     const { data, status } = err.response
-    if (isErrorData(data)) {
-      return (
-        data.message ||
-        `Error: ${status} ${data.error || '不明なエラーが発生しました'}`
-      )
+    if (isErrorResponse(data)) {
+      const errorMessage = data.error || data.errors?.join(' ')
+
+      return {
+        statusCode: status,
+        errorMessage: errorMessage || null,
+      }
     }
-    return `Error: ${status} サーバーから予期しない応答がありました`
+
+    return {
+      statusCode: status,
+      errorMessage: `サーバーから予期しない応答がありました`,
+    }
   }
 
   if (err.request) {
-    return 'ネットワークエラーが発生しました　ネットワーク接続を確認してください'
+    return {
+      statusCode: 0,
+      errorMessage: 'ネットワークエラーが発生しました',
+    }
   }
 
-  return 'リクエストの設定に問題があります'
+  return {
+    statusCode: 500,
+    errorMessage: '不明なエラーが発生しました',
+  }
 }
 
-const handleFirebaseError = (err: FirebaseError): string => {
+const handleFirebaseError = (
+  err: FirebaseError,
+): { statusCode: number; errorMessage: string } => {
   if (err.code === 'auth/invalid-credential') {
-    return '認証情報が無効です'
+    return {
+      statusCode: 401,
+      errorMessage: '認証情報が無効です',
+    }
   }
 
-  return `Firebaseエラー: ${err.message}`
+  return {
+    statusCode: 400,
+    errorMessage: err.message,
+  }
 }
 
-export const handleError = (err: unknown): string => {
+export const handleError = (
+  err: unknown,
+): { statusCode: number | null; errorMessage: string | null } => {
   if (isAxiosError(err)) {
     console.error(err)
     return handleAxiosError(err)
@@ -50,11 +74,17 @@ export const handleError = (err: unknown): string => {
   }
 
   if (err instanceof Error) {
-    console.error(err.message)
-    return err.message
+    console.error(err)
+    return {
+      statusCode: 500,
+      errorMessage: err.message,
+    }
   }
 
   console.error(String(err))
 
-  return '不明なエラーが発生しました　サポートにお問い合わせください'
+  return {
+    statusCode: 500,
+    errorMessage: '不明なエラーが発生しました',
+  }
 }

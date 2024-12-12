@@ -5,31 +5,24 @@ import { useRouter } from 'next/router'
 import Error from '@/components/common/Error'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
-import { useNotes } from '@/hooks/useNotes'
-import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { BasicNoteResponse } from '@/types/note'
+import { useNotes, BasicNoteData } from '@/hooks/useNotes'
+import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
 const Index: NextPage = () => {
   const router = useRouter()
-  const page = 'page' in router.query ? Number(router.query.page) : 1
-  const { data, error, isLoading } = useNotes(page)
-  const [, setSnackbar] = useSnackbarState()
+  const page = 'page' in router.query ? String(router.query.page) : 1
+  const { data, error } = useNotes(page)
 
   if (error) {
-    const errorMessage = handleError(error)
-    setSnackbar({
-      message: `${errorMessage}`,
-      severity: 'error',
-      pathname: `${router.pathname}`,
-    })
+    const { statusCode, errorMessage } = handleError(error)
 
-    return <Error />
+    return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (isLoading)
+  if (!data)
     return (
-      <Box sx={{ backgroundColor: '#e6f2ff', minHeight: '100vh' }}>
+      <Box css={styles.pageMinHeight} sx={{ backgroundColor: '#e6f2ff' }}>
         <Container maxWidth="md" sx={{ pt: 6 }}>
           <Grid container spacing={4}>
             {Array.from({ length: 10 }).map((_, i) => (
@@ -39,6 +32,7 @@ const Index: NextPage = () => {
             ))}
           </Grid>
         </Container>
+        <Box sx={{ height: '128px' }}></Box>
       </Box>
     )
 
@@ -50,12 +44,15 @@ const Index: NextPage = () => {
   }
 
   return (
-    <Box sx={{ backgroundColor: '#e6f2ff', minHeight: '100vh' }}>
+    <Box css={styles.pageMinHeight} sx={{ backgroundColor: '#e6f2ff' }}>
       <Container maxWidth="md" sx={{ pt: 6 }}>
         <Grid container spacing={4}>
-          {notes?.map((note: BasicNoteResponse, i: number) => (
+          {notes?.map((note: BasicNoteData, i: number) => (
             <Grid item key={i} xs={12}>
-              <Link href={`/notes/${note.id}`}>
+              <Link
+                href={`/${note.user.name}/notes/${note.id}`}
+                css={styles.noUnderline}
+              >
                 <NoteCard
                   id={note.id}
                   title={note.title}

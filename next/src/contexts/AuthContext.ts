@@ -1,6 +1,11 @@
 import { createContext } from 'react'
-import { AuthContextProps } from '@/types/auth'
 
-export const AuthContext = createContext<AuthContextProps | undefined>(
+export interface AuthContextState {
+  idToken: string | undefined
+  isAuthLoading: boolean
+  setIsAuthLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const AuthContext = createContext<AuthContextState | undefined>(
   undefined,
 )

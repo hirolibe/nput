@@ -1,18 +1,45 @@
 import useSWR, { SWRResponse } from 'swr'
-import { PagenatedNotesResponse } from '@/types/note'
 import { fetcher } from '@/utils/fetcher'
 
-export const useNotes = (page?: number) => {
-  const url = page
-    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes`
-    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes/?page=${page}`
+export interface BasicNoteData {
+  id: number
+  title: string
+  fromToday: string
+  cheersCount: number
+  totalDuration: string
+  user: {
+    name: string
+    profile: {
+      nickname: string
+      avatarUrl: string
+    }
+  }
+  tags: {
+    id: number
+    name: string
+  }[]
+}
 
-  const { data, error, isLoading }: SWRResponse<PagenatedNotesResponse> =
-    useSWR([url, undefined], fetcher)
+export interface PagenatedNotesData {
+  notes: BasicNoteData[]
+  meta: {
+    totalPages: number
+    currentPage: number
+  }
+}
+
+export const useNotes = (page: string | number) => {
+  const url = page
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes/?page=${page}`
+    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes`
+
+  const { data, error }: SWRResponse<PagenatedNotesData> = useSWR(
+    [url, undefined],
+    fetcher,
+  )
 
   return {
     data,
     error,
-    isLoading,
   }
 }

@@ -2,9 +2,12 @@ ja:
   activerecord:
     attributes:
       user:
+        email: "メールアドレス"
+        name: "ユーザー名"
         cheer_points: "保有エールポイント"
       note:
         title: "タイトル"
+        description: "概要"
         content: "本文"
         status: "ステータス"
         published_at: "公開日"

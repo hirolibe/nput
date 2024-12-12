@@ -1,6 +1,14 @@
 class User < ApplicationRecord
-  validates :email, presence: true, uniqueness: true
   validates :uid, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: { message: "%<value>sはすでに存在します" }
+  validates :name,
+            presence: true,
+            uniqueness: { message: "%<value>sはすでに存在します" },
+            format: {
+              with: /\A[a-zA-Z0-9_](?:[a-zA-Z0-9_-]*[a-zA-Z0-9_])?\z/,
+              message: "は半角英数字と記号（ _ と - ）のみ使用可能で、- は先頭と末尾に使用できません",
+            },
+            length: { maximum: 20 }
   validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 50 }
 
   has_many :notes, dependent: :destroy

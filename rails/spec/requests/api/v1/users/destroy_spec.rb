@@ -1,22 +1,22 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Users DELETE /api/v1/users/:id", type: :request do
-  subject { delete(api_v1_user_path(user_id), headers:) }
+RSpec.describe "Api::V1::Users DELETE /api/v1/:name", type: :request do
+  subject { delete(api_v1_delete_user_path(name), headers:) }
 
   let(:headers) { { Authorization: "Bearer token" } }
   let(:user) { create(:user) }
-  let(:user_id) { user.id }
+  let(:name) { user.name }
 
   include_examples "ユーザー認証エラー"
 
   context "ユーザー認証に成功した場合" do
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
-    include_examples "リソース不在エラー", "アカウント", "user_id"
+    include_examples "リソース不在エラー", "アカウント", "name"
 
     context "ログインユーザーが作成したアカウントではない場合" do
       let(:other_user) { create(:user) }
-      let(:user_id) { other_user.id }
+      let(:name) { other_user.name }
 
       it "403エラーとエラーメッセージが返る" do
         subject

@@ -2,7 +2,6 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import {
-  Alert,
   AppBar,
   Avatar,
   Box,
@@ -20,6 +19,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
+import StopPropagationLink from './StopPropagationLink'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -31,11 +31,14 @@ const Header = () => {
   const open = Boolean(anchorEl)
   const router = useRouter()
   const { idToken, isAuthLoading } = useAuth()
-  const { data, error } = useProfile(idToken)
-  const profileErrorMessage = handleError(error)
+  const { data } = useProfile(idToken)
   const [, setSnackbar] = useSnackbarState()
 
-  const hideHeaderPathnames = ['/notes/[id]/edit']
+  const hideHeaderPathnames = [
+    '/auth/signup',
+    '/auth/login',
+    '/notes/[id]/edit',
+  ]
   if (hideHeaderPathnames.includes(router.pathname)) return
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -51,28 +54,28 @@ const Header = () => {
       await signOut(auth)
       router.push('/')
     } catch (err) {
-      const errorMessage = handleError(err)
+      const { errorMessage } = handleError(err)
       setSnackbar({
-        message: `${errorMessage}`,
+        message: errorMessage,
         severity: 'error',
-        pathname: `${router.pathname}`,
+        pathname: router.pathname,
       })
     }
   }
 
-  const addNewArticle = async () => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes`
+  const addNewNote = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${data?.user.name}/notes`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
       const res = await axios.post(url, null, { headers })
       router.push(`/notes/${res.data.id}/edit`)
     } catch (err) {
-      const errorMessage = handleError(err)
+      const { errorMessage } = handleError(err)
       setSnackbar({
-        message: `${errorMessage}`,
+        message: errorMessage,
         severity: 'error',
-        pathname: `${router.pathname}`,
+        pathname: router.pathname,
       })
     }
   }
@@ -87,7 +90,7 @@ const Header = () => {
         py: '12px',
       }}
     >
-      <Container maxWidth="lg" sx={{ px: 2 }}>
+      <Container maxWidth="lg" sx={{ px: 4 }}>
         <Box
           sx={{
             display: 'flex',
@@ -96,11 +99,10 @@ const Header = () => {
           }}
         >
           <Box>
-            <Link href="/">
+            <StopPropagationLink href="/">
               <Image src="/logo.png" width={90} height={40} alt="logo" />
-            </Link>
+            </StopPropagationLink>
           </Box>
-          {error && <Alert severity="error">{profileErrorMessage}</Alert>}
           {!isAuthLoading && !idToken && (
             <Box>
               <Link href="/auth/login">
@@ -109,7 +111,6 @@ const Header = () => {
                   variant="contained"
                   sx={{
                     color: 'white',
-                    textTransform: 'none',
                     fontSize: 16,
                     borderRadius: 2,
                     boxShadow: 'none',
@@ -124,13 +125,14 @@ const Header = () => {
                   color="primary"
                   variant="outlined"
                   sx={{
-                    textTransform: 'none',
                     fontSize: 16,
                     borderRadius: 2,
-                    boxShadow: 'none',
                     border: '1px solid #3EA8FF',
                     ml: 2,
                     fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    },
                   }}
                 >
                   新規登録
@@ -138,25 +140,27 @@ const Header = () => {
               </Link>
             </Box>
           )}
-          {data && (
+          {data && idToken && (
             <Box sx={{ display: 'flex' }}>
               <IconButton onClick={handleClick} sx={{ p: 0 }}>
-                <Avatar alt="avatar" src={data.avatarUrl} />
+                <Avatar
+                  alt={data.nickname || data.user.name}
+                  src={data.avatarUrl}
+                />
               </IconButton>
-              <Box sx={{ ml: 2 }}>
+              <Box sx={{ ml: 2, display: { xs: 'none', sm: 'block' } }}>
                 <Button
+                  onClick={addNewNote}
                   color="primary"
                   variant="contained"
                   sx={{
                     color: 'white',
-                    textTransform: 'none',
                     fontSize: 16,
                     borderRadius: 2,
                     width: 120,
                     boxShadow: 'none',
                     fontWeight: 'bold',
                   }}
-                  onClick={addNewArticle}
                 >
                   ノート作成
                 </Button>
@@ -168,7 +172,7 @@ const Header = () => {
                 onClose={handleClose}
                 onClick={handleClose}
               >
-                <Link href={`/users/${data?.user.id}`}>
+                <Link href={`/${data?.user.name}`}>
                   <MenuItem>
                     <ListItemIcon>
                       <PersonIcon fontSize="small" />

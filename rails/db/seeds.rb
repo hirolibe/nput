@@ -5,9 +5,22 @@ tags_count_per_note = 5
 users = []
 
 users_count.times do
-  user = User.create!(email: Faker::Internet.email, uid: Faker::Internet.uuid)
-  user.update!(cheer_points: Faker::Number.between(from: 0, to: 50))
-  users.push(user)
+  loop do
+    generated_name = Faker::Internet.username(specifier: 3..20)
+    next if User.exists?(name: generated_name) ||
+            !generated_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) ||
+            generated_name.start_with?("-") ||
+            generated_name.end_with?("-")
+
+    user = User.create!(
+      uid: Faker::Internet.uuid,
+      email: Faker::Internet.email,
+      name: generated_name,
+      cheer_points: Faker::Number.between(from: 0, to: 50),
+    )
+    users.push(user)
+    break
+  end
 end
 
 # rubocop:disable Style/CombinableLoops
@@ -15,6 +28,7 @@ users.each do |user|
   notes_count_per_user.times do
     note = user.notes.build({
       title: Faker::Lorem.sentence(word_count: 13).chomp("。"),
+      description: Faker::Lorem.paragraph(sentence_count: 10),
       content: Faker::Lorem.paragraphs(number: 5).join("\n\n"),
       status: :published,
       published_at: Time.current - rand(1..10).days,

@@ -1,11 +1,12 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Comments POST /api/v1/notes/:note_id/comments", type: :request do
-  subject { post(api_v1_note_comments_path(note_id), headers:, params:) }
+RSpec.describe "Api::V1::Comments POST /api/v1/:name/notes/:note_id/comments", type: :request do
+  subject { post(api_v1_user_note_comments_path(name, note_id), headers:, params:) }
 
   let(:headers) { { Authorization: "Bearer token" } }
   let(:params) { { comment: { content: Faker::Lorem.sentence } } }
   let(:user) { create(:user) }
+  let(:name) { user.name }
   let(:note) { create(:note) }
   let(:note_id) { note.id }
 

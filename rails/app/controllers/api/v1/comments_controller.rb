@@ -5,6 +5,7 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     note = Note.published.find(params[:note_id])
     comment = note.comments.build(comment_params)
     comment.user = current_user
+    attach_images(comment, params[:image_signed_ids])
     if comment.save
       render json: comment, include: ["user", "user.profile"], status: :created
     else

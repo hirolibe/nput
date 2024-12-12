@@ -138,6 +138,10 @@ a {
   background-color: transparent;
   text-decoration: none;
   color: inherit;
+  display: inline;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /**

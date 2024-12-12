@@ -80,6 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
   create_table "notes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", comment: "タイトル"
+    t.string "description", limit: 200, comment: "概要"
     t.text "content", comment: "本文"
     t.integer "status", default: 10, null: false, comment: "ステータス（10:未保存, 20:下書き, 30:公開中）"
     t.datetime "published_at", comment: "公開日"
@@ -121,8 +122,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "email", null: false
     t.string "uid", null: false
+    t.string "email", null: false
+    t.string "name", limit: 20, null: false
     t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限50ポイント）"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -130,6 +132,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
     t.integer "followings_count", default: 0, null: false, comment: "フォローした数"
     t.integer "followers_count", default: 0, null: false, comment: "フォロワー数"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 

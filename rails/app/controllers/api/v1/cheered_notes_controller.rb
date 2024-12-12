@@ -2,7 +2,7 @@ class Api::V1::CheeredNotesController < Api::V1::ApplicationController
   include Pagination
 
   def index
-    user = User.find(params[:user_id])
+    user = User.find_by!(name: params[:name])
     notes = user.cheered_notes.
               includes(
                 user: { profile: { avatar_attachment: :blob } },

@@ -15,13 +15,12 @@ class Api::V1::Auth::RegistrationsController < Api::V1::ApplicationController
       return render json: { error: "認証情報が無効です" }, status: :unauthorized
     end
 
-    user = User.new(uid: decoded_token["sub"])
-    user.email = decoded_token["email"]
+    user = User.new(uid: decoded_token["sub"], email: decoded_token["email"], name: params[:name])
 
     if user.save
       render json: { message: "ユーザー登録に成功しました！" }, status: :created
     else
-      render json: user.errors, status: :unprocessable_entity
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 end

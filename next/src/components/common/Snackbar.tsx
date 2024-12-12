@@ -24,30 +24,41 @@ const NotificationSnackbar = () => {
     }
     setOpen(false)
     setTimeout(() => {
-      setSnackbar({ message: null, severity: null, pathname: null })
+      setSnackbar({
+        message: null,
+        severity: null,
+        pathname: null,
+        autoHideDuration: 4000,
+      })
     }, 400)
   }
 
   return (
     <>
-      <Snackbar
-        open={open}
-        autoHideDuration={4000}
-        TransitionComponent={Fade}
-        transitionDuration={{
-          enter: 400,
-          exit: 400,
-        }}
-        onClose={handleClose}
-      >
-        <Alert
+      {snackbar.message && snackbar.severity && (
+        <Snackbar
+          open={open}
+          autoHideDuration={
+            snackbar.autoHideDuration === undefined
+              ? 4000
+              : snackbar.autoHideDuration
+          }
+          TransitionComponent={Fade}
+          transitionDuration={{
+            enter: 400,
+            exit: 400,
+          }}
           onClose={handleClose}
-          severity={snackbar.severity || undefined}
-          sx={{ width: '100%' }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleClose}
+            severity={snackbar.severity || undefined}
+            sx={{ width: '100%' }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      )}
     </>
   )
 }

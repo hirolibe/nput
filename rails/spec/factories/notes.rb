@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :note do
     user
     title { Faker::Lorem.sentence }
+    description { Faker::Lorem.paragraph[0..199] }
     content { Faker::Lorem.paragraph }
     status { :published }
     published_at { Time.current }

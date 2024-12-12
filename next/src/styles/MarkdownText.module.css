@@ -1,0 +1,74 @@
+/* MarkdownText.module.css */
+.markdownText {
+  /* ベーススタイル */
+  font-family: sans-serif;
+  line-height: 1.6;
+  color: #333;
+  overflow-wrap: break-word;
+}
+
+/* 見出し */
+.markdownText h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.5rem;
+}
+
+.markdownText h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.5rem;
+}
+
+/* リスト */
+.markdownText ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdownText ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdownText li {
+  margin-bottom: 0.5rem;
+}
+
+/* 引用 */
+.markdownText blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 1rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+/* リンク */
+.markdownText a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.markdownText a:hover {
+  text-decoration: underline;
+}
+
+/* コードブロック */
+.markdownText code {
+  font-family: monospace;
+  background-color: #f4f4f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.markdownText pre {
+  border-radius: 4px;
+  overflow: auto;
+}

@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Container, TextField, Typography, Stack } from '@mui/material'
+import { Box, Container, Stack, TextField, Typography } from '@mui/material'
 import axios from 'axios'
 import {
   createUserWithEmailAndPassword,
@@ -8,11 +8,12 @@ import {
   User,
 } from 'firebase/auth'
 import type { NextPage } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
@@ -34,6 +35,19 @@ const SignUp: NextPage = () => {
   const validationRules = {
     name: {
       required: 'ユーザー名を入力してください',
+      minLength: {
+        value: 3,
+        message: 'ユーザー名は3文字以上で入力してください',
+      },
+      maxLength: {
+        value: 20,
+        message: 'ユーザー名は20文字以内で入力してください',
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9_](?:[a-zA-Z0-9_-]*[a-zA-Z0-9_])?$/,
+        message:
+          'ユーザー名は半角英数字と記号（ _ と - ）のみ使用可能で、- は先頭と末尾に使用できません',
+      },
     },
     email: {
       required: 'メールアドレスを入力してください',
@@ -59,7 +73,11 @@ const SignUp: NextPage = () => {
       Authorization: `Bearer ${idToken}`,
     }
 
-    const res = await axios.post(url, null, { headers })
+    const res = await axios.post(
+      url,
+      { name: createdUser.displayName },
+      { headers },
+    )
     return res.data.message
   }
 
@@ -71,18 +89,19 @@ const SignUp: NextPage = () => {
         data.email,
         data.password,
       )
+
       const createdUser = userCredential.user
       await updateProfile(createdUser, { displayName: data.name })
+      await verifyIdToken(createdUser)
 
-      const message = await verifyIdToken(createdUser)
       setSnackbar({
-        message,
+        message: '新規登録に成功しました',
         severity: 'success',
         pathname: '/',
       })
       await router.push('/')
     } catch (err) {
-      const errorMessage = handleError(err)
+      const { errorMessage } = handleError(err)
 
       if (auth.currentUser) {
         await deleteUser(auth.currentUser)
@@ -99,12 +118,12 @@ const SignUp: NextPage = () => {
   }
 
   return (
-    <Box
-      css={styles.pageMinHeight}
-      sx={{
-        backgroundColor: '#EDF2F7',
-      }}
-    >
+    <Container maxWidth="md" sx={{ pt: 6 }}>
+      <Box>
+        <Link href="/">
+          <Image src="/logo.png" width={90} height={40} alt="logo" />
+        </Link>
+      </Box>
       <Container maxWidth="sm">
         <Box sx={{ mb: 4, pt: 4 }}>
           <Typography
@@ -174,14 +193,20 @@ const SignUp: NextPage = () => {
               fontWeight: 'bold',
               color: 'white',
               width: '30%',
-              textTransform: 'none',
             }}
           >
-            登録する
+            新規登録する
           </LoadingButton>
+          <Typography>
+            アカウントをお持ちの場合は
+            <Typography component="span" sx={{ textDecoration: 'underline' }}>
+              <Link href="/auth/login">ログイン</Link>
+            </Typography>
+            から
+          </Typography>
         </Stack>
       </Container>
-    </Box>
+    </Container>
   )
 }
 

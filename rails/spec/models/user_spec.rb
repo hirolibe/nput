@@ -13,17 +13,46 @@ RSpec.describe User, type: :model do
   end
 
   describe "バリデーション" do
-    include_examples "ユーザーのバリデーションエラー"
+    subject(:record) { build(:user) }
 
-    context "emailが重複している場合" do
-      subject(:record) { build(:user) }
+    include_examples "入力必須項目のバリデーションエラー", "user", "email", "メールアドレス"
 
+    context "入力必須項目、入力パターン、最大文字数に関するバリデーションエラー" do
+      context "ユーザー名が空の場合" do
+        before { record.name = "" }
+
+        it "バリデーションが失敗し、エラーメッセージが返る" do
+          expect(subject).not_to be_valid
+          expect(record.errors.full_messages).to eq ["ユーザー名を入力してください", "ユーザー名は半角英数字と記号（ _ と - ）のみ使用可能で、- は先頭と末尾に使用できません"]
+        end
+      end
+
+      context "ユーザー名が20文字を超える場合" do
+        before { record.name = Faker::Lorem.characters(number: 21) }
+
+        it "バリデーションが失敗し、エラーメッセージが返る" do
+          expect(subject).not_to be_valid
+          expect(record.errors.full_messages).to eq ["ユーザー名は20文字以内で入力してください"]
+        end
+      end
+    end
+
+    context "メールアドレスが重複している場合" do
       before do
         create(:user, email: "test@example.com")
         record.email = "test@example.com"
       end
 
-      include_examples "バリデーション失敗", "Emailはすでに存在します"
+      include_examples "バリデーション失敗", "メールアドレスtest@example.comはすでに存在します"
+    end
+
+    context "ユーザー名が重複している場合" do
+      before do
+        create(:user, name: "John")
+        record.name = "John"
+      end
+
+      include_examples "バリデーション失敗", "ユーザー名Johnはすでに存在します"
     end
 
     context "保有エールポイントが空の場合" do

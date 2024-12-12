@@ -2,7 +2,7 @@ class Api::V1::RelationshipsController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:show, :create, :destroy]
 
   def show
-    following = User.find(params[:user_id])
+    following = User.find_by!(name: params[:name])
     follow_status = current_user.has_followed?(following)
 
     render json: { has_followed: follow_status }, status: :ok
@@ -11,8 +11,9 @@ class Api::V1::RelationshipsController < Api::V1::ApplicationController
   end
 
   def create
-    following = User.find(params[:user_id])
+    following = User.find_by!(name: params[:name])
     current_user.following_relationships.create!(following:)
+
     render status: :created
   rescue ActiveRecord::RecordNotFound
     render json: { error: "アカウントにアクセスできません" }, status: :not_found
@@ -21,7 +22,7 @@ class Api::V1::RelationshipsController < Api::V1::ApplicationController
   end
 
   def destroy
-    following = User.find(params[:user_id])
+    following = User.find_by!(name: params[:name])
     relationship = current_user.following_relationships.find_by(following_id: following.id)
 
     if relationship
@@ -30,9 +31,9 @@ class Api::V1::RelationshipsController < Api::V1::ApplicationController
     else
       render json: { error: "このアカウントをフォローしていません" }, status: :unprocessable_entity
     end
-  rescue ActiveRecord::RecordNotDestroyed
-    render json: { error: "フォローの解除に失敗しました" }, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotFound
     render json: { error: "アカウントにアクセスできません" }, status: :not_found
+  rescue ActiveRecord::RecordNotDestroyed
+    render json: { error: "フォローの解除に失敗しました" }, status: :unprocessable_entity
   end
 end

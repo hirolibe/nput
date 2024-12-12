@@ -2,7 +2,7 @@ class Api::V1::TaggedNotesController < Api::V1::ApplicationController
   include Pagination
 
   def index
-    tag = Tag.find(params[:tag_id])
+    tag = Tag.find_by!(name: params[:name])
     notes = tag.notes.
               includes(
                 user: { profile: { avatar_attachment: :blob } },

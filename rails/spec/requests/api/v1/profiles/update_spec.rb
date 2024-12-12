@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Profiles PATCH /api/v1/profile", type: :request do
       expect(json_response.keys).to eq ["profile", "message"]
       expected_keys_with_user = EXPECTED_PROFILE_KEYS + ["user"]
       expect(json_response["profile"].keys).to eq expected_keys_with_user
-      expect(json_response["profile"]["user"].keys).to eq ["id"]
+      expect(json_response["profile"]["user"].keys).to eq ["name"]
       expect(json_response["message"]).to eq("プロフィールを更新しました！")
     end
   end

@@ -15,6 +15,15 @@ RSpec.describe Note, type: :model do
   describe "バリデーション" do
     include_examples "入力必須項目のバリデーションエラー", "note", "status", "ステータス"
 
+    context "概要が200文字を超える場合" do
+      before { record.description = Faker::Lorem.paragraph(sentence_count: 30) }
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).not_to be_valid
+        expect(record.errors.full_messages).to eq ["概要は200文字以内で入力してください"]
+      end
+    end
+
     context "ステータスが公開中の場合" do
       include_examples "ノートのバリデーションエラー"
     end

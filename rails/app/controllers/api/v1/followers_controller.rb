@@ -2,12 +2,13 @@ class Api::V1::FollowersController < Api::V1::ApplicationController
   include Pagination
 
   def index
-    following = User.find(params[:user_id])
+    following = User.find_by!(name: params[:name])
     users = following.followers.
               includes(profile: { avatar_attachment: :blob }).
               order("relationships.created_at DESC").
               page(params[:page] || 1).
               per(10)
+
     render json: users,
            each_serializer: BasicUserSerializer,
            meta: pagination(users),

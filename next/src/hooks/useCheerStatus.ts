@@ -1,12 +1,24 @@
 import useSWR, { SWRResponse } from 'swr'
-import { CheerResponse } from '@/types/cheer'
 import { fetcher } from '@/utils/fetcher'
 
-export const useCheerStatus = (noteId: number, idToken?: string) => {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes/${noteId}/cheer`
+export interface UseCheerStatusParams {
+  authorName: string | undefined
+  noteId: string | number | undefined
+  idToken?: string | null
+}
 
-  const { data, error, isLoading }: SWRResponse<CheerResponse> = useSWR(
-    idToken && [url, idToken],
+export interface CheerStatusData {
+  hasCheered: boolean
+}
+
+export const useCheerStatus = ({
+  authorName,
+  noteId,
+  idToken,
+}: UseCheerStatusParams) => {
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
+  const { data, error, isLoading }: SWRResponse<CheerStatusData> = useSWR(
+    authorName && noteId && idToken ? [url, idToken] : null,
     fetcher,
   )
 

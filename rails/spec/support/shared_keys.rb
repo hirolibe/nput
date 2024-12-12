@@ -1,6 +1,7 @@
 EXPECTED_NOTE_INDEX_KEYS = [
   "id",
   "title",
+  "description",
   "from_today",
   "cheers_count",
   "total_duration",
@@ -11,6 +12,7 @@ EXPECTED_NOTE_INDEX_KEYS = [
 EXPECTED_NOTE_KEYS = [
   "id",
   "title",
+  "description",
   "content",
   "status_jp",
   "published_date",
@@ -39,7 +41,7 @@ EXPECTED_PROFILE_KEYS = [
 ].freeze
 
 EXPECTED_USER_KEYS = [
-  "id",
+  "name",
   "cheer_points",
   "cheers_count",
   "followings_count",
@@ -51,7 +53,7 @@ EXPECTED_USER_KEYS = [
 ].freeze
 
 EXPECTED_BASIC_USER_KEYS = [
-  "id",
+  "name",
   "profile",
 ].freeze
 

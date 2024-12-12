@@ -23,17 +23,23 @@ class Api::V1::NotesController < Api::V1::ApplicationController
   end
 
   def show
-    note = Note.includes(
-      comments: { user: { profile: { avatar_attachment: :blob } } },
-      user: { profile: { avatar_attachment: :blob } },
-      tags: {},
-    ).published.find(params[:id])
+    user = User.find_by(name: params[:name])
+    unless user
+      return render json: { error: "アカウントにアクセスできません" }, status: :not_found
+    end
 
-    render json: note,
-           include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile", "tags"],
-           status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
+    note = user.notes.includes(
+      comments: { user: { profile: { avatar_attachment: :blob } } },
+      tags: {},
+    ).published.find_by(id: params[:id])
+
+    if note
+      render json: note,
+             include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile", "tags"],
+             status: :ok
+    else
+      render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
   end
 
   def create
@@ -102,7 +108,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     end
 
     def prepare_note_params(note)
-      note_params = params.require(:note).permit(:title, :content, :status)
+      note_params = params.require(:note).permit(:title, :description, :content, :status)
 
       if note_params[:status] == "published" && note.published_at.blank?
         note_params[:published_at] = Time.current

@@ -16,7 +16,7 @@ class Api::V1::ImageUploadsController < Api::V1::ApplicationController
 
   private
 
-  def valid_image_type?(content_type)
-    %w(image/png image/jpg image/jpeg image/gif).include?(content_type)
-  end
+    def valid_image_type?(content_type)
+      %w[image/png image/jpg image/jpeg image/gif].include?(content_type)
+    end
 end

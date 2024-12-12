@@ -56,7 +56,9 @@ class Api::V1::NotesController < Api::V1::ApplicationController
       record_duration(note)
       add_cheer_points(note)
       update_tags(note)
-      note = update_note(note)
+
+      note_params = prepare_note_params(note)
+      note.update!(note_params)
     end
 
     render json: { note: NoteSerializer.new(note), message: "ノートを更新しました！" }, status: :ok
@@ -115,11 +117,5 @@ class Api::V1::NotesController < Api::V1::ApplicationController
       end
 
       note_params
-    end
-
-    def update_note(note)
-      note_params = prepare_note_params(note)
-      note.update!(note_params)
-      note
     end
 end

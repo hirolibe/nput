@@ -19,7 +19,6 @@ import { CheerButton } from '@/components/note/CheerButton'
 import CommentCard from '@/components/note/CommentCard'
 import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
-import { useAuth } from '@/hooks/useAuth'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { useNote } from '@/hooks/useNote'
@@ -29,7 +28,6 @@ import { handleError } from '@/utils/handleError'
 
 const NoteDetail: NextPage = () => {
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
 
   const router = useRouter()
   const { name, id } = router.query
@@ -47,13 +45,11 @@ const NoteDetail: NextPage = () => {
   }, [noteData])
 
   // エール状態のデータ取得・管理
-  const { cheerStatusData, cheerStatusError, isCheerStatusLoading } =
-    useCheerStatus({
-      authorName: nameString,
-      noteId: idString,
-      idToken,
-    })
-  const [isCheered, setIsCheered] = useState(false)
+  const { cheerStatusData, cheerStatusError } = useCheerStatus({
+    authorName: nameString,
+    noteId: idString,
+  })
+  const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const [cheersCount, setCheersCount] = useState(0)
   const cheerState = {
     isCheered,
@@ -62,7 +58,7 @@ const NoteDetail: NextPage = () => {
     setCheersCount,
   }
   useEffect(() => {
-    if (cheerStatusData) setIsCheered(cheerStatusData.hasCheered)
+    setIsCheered(cheerStatusData.hasCheered)
   }, [cheerStatusData])
   useEffect(() => {
     if (cheerStatusError) {
@@ -76,29 +72,17 @@ const NoteDetail: NextPage = () => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   // フォロー状態のデータ取得・管理
-  const { followStatusData, followStatusError, isFollowStatusLoading } =
-    useFollowStatus({
-      authorName: nameString,
-      idToken,
-    })
-  const [isFollowed, setIsFollowed] = useState(false)
+  const { followStatusData } = useFollowStatus({
+    authorName: nameString,
+  })
+  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined)
   const followState = {
     isFollowed,
     setIsFollowed,
   }
   useEffect(() => {
-    if (followStatusData) setIsFollowed(followStatusData.hasFollowed)
+    setIsFollowed(followStatusData.hasFollowed)
   }, [followStatusData])
-  useEffect(() => {
-    if (followStatusError) {
-      const { errorMessage } = handleError(followStatusError)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: router.pathname,
-      })
-    }
-  }, [followStatusError, router.pathname, setSnackbar])
 
   // 画面表示
   if (noteError) {
@@ -120,7 +104,7 @@ const NoteDetail: NextPage = () => {
       {/* ページ */}
       <Box
         css={styles.pageMinHeight}
-        sx={{ backgroundColor: '#EDF2F7', pb: 6 }}
+        sx={{ backgroundColor: 'backgroundColor.main', pb: 6 }}
       >
         {/* エールボタン・プロフィール（画面小） */}
         <Box
@@ -131,8 +115,8 @@ const NoteDetail: NextPage = () => {
             display: { xs: 'flex', xl: 'none' },
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderTop: '0.5px solid #acbcc7',
-            borderBottom: '0.5px solid #acbcc7',
+            borderTop: (theme) => `0.5px solid ${theme.palette.divider}`,
+            borderBottom: (theme) => `0.5px solid ${theme.palette.divider}`,
             height: 60,
             px: 6,
             backgroundColor: 'white',
@@ -140,7 +124,6 @@ const NoteDetail: NextPage = () => {
         >
           {/* エールボタン */}
           <CheerButton
-            isCheerStatusLoading={isCheerStatusLoading}
             cheerState={cheerState}
             boxParams={{ flexDirection: 'row', gap: 1 }}
           />
@@ -187,7 +170,7 @@ const NoteDetail: NextPage = () => {
                 display: { sm: 'flex' },
                 justifyContent: 'center',
                 alignItems: 'center',
-                color: '#6e7b85',
+                color: 'text.light',
                 fontSize: 16,
               }}
             >
@@ -216,11 +199,7 @@ const NoteDetail: NextPage = () => {
               }}
             >
               <Stack spacing={1}>
-                <CheerButton
-                  isCheerStatusLoading={isCheerStatusLoading}
-                  cheerState={cheerState}
-                  backgroundColor="white"
-                />
+                <CheerButton cheerState={cheerState} backgroundColor="white" />
                 <SocialShareIcon />
               </Stack>
             </Box>
@@ -257,7 +236,7 @@ const NoteDetail: NextPage = () => {
                           variant="outlined"
                           sx={{
                             '&:hover': {
-                              backgroundColor: '#f0f0f0',
+                              backgroundColor: 'backgroundColor.hover',
                             },
                             fontSize: '12px',
                           }}
@@ -284,7 +263,6 @@ const NoteDetail: NextPage = () => {
                   }}
                 >
                   <CheerButton
-                    isCheerStatusLoading={isCheerStatusLoading}
                     cheerState={cheerState}
                     boxParams={{ flexDirection: 'row', gap: 1 }}
                   />
@@ -295,11 +273,7 @@ const NoteDetail: NextPage = () => {
                 <Divider sx={{ mb: 5 }} />
 
                 {/* プロフィール */}
-                <AuthorInfo
-                  noteData={noteData}
-                  isFollowStatusLoading={isFollowStatusLoading}
-                  followState={followState}
-                />
+                <AuthorInfo noteData={noteData} followState={followState} />
               </Card>
 
               {/* コメント */}
@@ -321,11 +295,7 @@ const NoteDetail: NextPage = () => {
                   p: '20px 30px',
                 }}
               >
-                <AuthorInfo
-                  noteData={noteData}
-                  isFollowStatusLoading={isFollowStatusLoading}
-                  followState={followState}
-                />
+                <AuthorInfo noteData={noteData} followState={followState} />
               </Card>
             </Box>
           </Box>

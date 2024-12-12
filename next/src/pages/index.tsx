@@ -22,7 +22,10 @@ const Index: NextPage = () => {
 
   if (!notesData)
     return (
-      <Box css={styles.pageMinHeight} sx={{ backgroundColor: '#e6f2ff' }}>
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ backgroundColor: 'backgroundColor.main' }}
+      >
         <Container maxWidth="md" sx={{ pt: 6 }}>
           <Grid container spacing={4}>
             {Array.from({ length: 10 }).map((_, i) => (
@@ -44,7 +47,10 @@ const Index: NextPage = () => {
   }
 
   return (
-    <Box css={styles.pageMinHeight} sx={{ backgroundColor: '#e6f2ff' }}>
+    <Box
+      css={styles.pageMinHeight}
+      sx={{ backgroundColor: 'backgroundColor.main' }}
+    >
       <Container maxWidth="md" sx={{ pt: 6 }}>
         <Grid container spacing={4}>
           {notes?.map((note: BasicNoteData, i: number) => (

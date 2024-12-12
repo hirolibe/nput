@@ -31,7 +31,7 @@ const CommentForm = ({
     string | string[] | undefined
   >(undefined)
   const { idToken } = useAuth()
-  const { profileData } = useProfile(idToken)
+  const { profileData } = useProfile()
   const { name, id } = router.query
   const [nameString, idString] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
@@ -59,12 +59,12 @@ const CommentForm = ({
     borderRadius: '50px',
     fontSize: { xs: '10px', sm: '16px' },
     fontWeight: 'bold',
-    backgroundColor: isActive ? primary : '#fff',
-    color: isActive ? '#fff' : textLight,
+    backgroundColor: isActive ? primary : 'white',
+    color: isActive ? 'white' : textLight,
     px: { xs: 1, sm: 2 },
     '&:hover': {
-      backgroundColor: isActive ? primary : '#fff',
-      color: isActive ? '#fff' : primary,
+      backgroundColor: isActive ? primary : 'white',
+      color: isActive ? 'white' : primary,
     },
   })
 

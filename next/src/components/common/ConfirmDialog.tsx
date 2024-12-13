@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import React from 'react'
 
-interface ConfirmationDialogProps {
+interface ConfirmDialogProps {
   open: boolean
   onClose: () => void
   onConfirm: () => void
@@ -22,7 +22,7 @@ interface ConfirmationDialogProps {
   confirmColor?: 'error' | 'primary' | 'secondary' | 'warning'
 }
 
-const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
+const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   open,
   onClose,
   onConfirm,
@@ -88,4 +88,4 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   )
 }
 
-export default ConfirmationDialog
+export default ConfirmDialog

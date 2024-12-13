@@ -35,8 +35,6 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
   const { profileData } = useProfile()
   const currentUserName = profileData?.user.name
 
-  if (followState.isFollowed === undefined || profileData === undefined) return
-
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -44,22 +42,18 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
           <Avatar
             alt={authorNickname || authorName}
             src={authorAvatarUrl}
-            sx={{ width: 80, height: 80, mr: 2 }}
+            sx={{ width: 60, height: 60, mr: 1 }}
           />
         </Link>
-        <Stack spacing={1}>
-          <Typography sx={{ fontSize: 20, fontWeight: 'bold', pb: 0.3 }}>
+        <Stack>
+          <Typography sx={{ fontSize: 20, fontWeight: 'bold' }}>
             <Link href={`/${authorName}`}>{authorNickname || authorName}</Link>
           </Typography>
 
-          {authorName !== currentUserName && (
-            <FollowButton followState={followState} />
-          )}
-
-          {(authorXLink || authorGithubLink) && (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Stack
               direction="row"
-              sx={{ alignItems: 'center', height: '40px' }}
+              sx={{ alignItems: 'center', height: '40px', mr: 1 }}
             >
               {authorXLink && (
                 <Tooltip title={`${authorNickname}さんのXリンク`}>
@@ -92,7 +86,12 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
                 </Tooltip>
               )}
             </Stack>
-          )}
+            {followState.isFollowed !== undefined &&
+              profileData !== undefined &&
+              authorName !== currentUserName && (
+                <FollowButton followState={followState} />
+              )}
+          </Box>
         </Stack>
       </Box>
       {authorBio && (

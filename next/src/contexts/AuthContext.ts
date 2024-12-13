@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 export interface AuthContextState {
-  idToken: string | undefined
+  idToken: string | null | undefined
   isAuthLoading: boolean
   setIsAuthLoading: React.Dispatch<React.SetStateAction<boolean>>
 }

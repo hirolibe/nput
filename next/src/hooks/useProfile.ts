@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
+import { useAuth } from './useAuth'
 import { fetcher } from '@/utils/fetcher'
 
 export interface ProfileData {
@@ -14,17 +15,20 @@ export interface ProfileData {
   }
 }
 
-export const useProfile = (idToken?: string | null) => {
+export const useProfile = () => {
+  const { idToken, isAuthLoading } = useAuth()
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`
 
   const {
-    data: profileData,
+    data,
     error,
     isLoading: isProfileLoading,
-  }: SWRResponse<ProfileData> = useSWR(idToken && [url, idToken], fetcher)
+  }: SWRResponse<ProfileData | null> = useSWR(
+    idToken && [url, idToken],
+    fetcher,
+  )
 
   const [profileError, setProfileError] = useState<Error | undefined>(undefined)
-
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -37,7 +41,12 @@ export const useProfile = (idToken?: string | null) => {
   }, [error])
 
   return {
-    profileData,
+    profileData:
+      !isAuthLoading && !isProfileLoading && data
+        ? data
+        : !isAuthLoading && !isProfileLoading && !data
+          ? null
+          : undefined,
     profileError,
     isProfileLoading,
   }

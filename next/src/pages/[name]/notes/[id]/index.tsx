@@ -58,7 +58,7 @@ const NoteDetail: NextPage = () => {
     setCheersCount,
   }
   useEffect(() => {
-    setIsCheered(cheerStatusData.hasCheered)
+    setIsCheered(cheerStatusData)
   }, [cheerStatusData])
   useEffect(() => {
     if (cheerStatusError) {
@@ -81,7 +81,7 @@ const NoteDetail: NextPage = () => {
     setIsFollowed,
   }
   useEffect(() => {
-    setIsFollowed(followStatusData.hasFollowed)
+    setIsFollowed(followStatusData)
   }, [followStatusData])
 
   // 画面表示
@@ -291,8 +291,8 @@ const NoteDetail: NextPage = () => {
                 sx={{
                   boxShadow: 'none',
                   borderRadius: '12px',
-                  minHeight: 200,
-                  p: '20px 30px',
+                  // minHeight: 150,
+                  p: '20px 25px',
                 }}
               >
                 <AuthorInfo noteData={noteData} followState={followState} />

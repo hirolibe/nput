@@ -17,9 +17,12 @@ type LogInFormData = {
 }
 
 const LogIn: NextPage = () => {
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [, setSnackbar] = useSnackbarState()
+
+  const router = useRouter()
+  const { previousPath } = router.query
+  const redirectPath = typeof previousPath === 'string' ? previousPath : '/'
 
   const { handleSubmit, control } = useForm<LogInFormData>({
     defaultValues: { email: '', password: '' },
@@ -50,9 +53,9 @@ const LogIn: NextPage = () => {
       setSnackbar({
         message: 'ログインに成功しました',
         severity: 'success',
-        pathname: '/',
+        pathname: redirectPath,
       })
-      router.push('/')
+      await router.push(redirectPath)
     } catch (err) {
       const errorMessage = handleError(err)
       setSnackbar({

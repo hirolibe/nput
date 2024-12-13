@@ -42,7 +42,7 @@ const NoteCard = (props: BasicNoteData) => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   useEffect(() => {
-    if (cheerStatusData) setIsCheered(cheerStatusData.hasCheered)
+    setIsCheered(cheerStatusData)
   }, [cheerStatusData])
 
   return (

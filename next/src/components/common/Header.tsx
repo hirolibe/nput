@@ -30,9 +30,9 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
-  const { idToken, isAuthLoading } = useAuth()
-  const { profileData } = useProfile(idToken)
   const [, setSnackbar] = useSnackbarState()
+  const { idToken } = useAuth()
+  const { profileData } = useProfile()
 
   const hideHeaderPathnames = [
     '/auth/signup',
@@ -103,7 +103,7 @@ const Header = () => {
               <Image src="/logo.png" width={90} height={40} alt="logo" />
             </StopPropagationLink>
           </Box>
-          {!isAuthLoading && !idToken && (
+          {profileData === null && (
             <Box>
               <Link href="/auth/login">
                 <Button
@@ -127,7 +127,7 @@ const Header = () => {
                   sx={{
                     fontSize: 16,
                     borderRadius: 2,
-                    border: '1px solid #3EA8FF',
+                    border: '1px solid primary',
                     ml: 2,
                     fontWeight: 'bold',
                     '&:hover': {
@@ -140,7 +140,7 @@ const Header = () => {
               </Link>
             </Box>
           )}
-          {profileData && idToken && (
+          {profileData && (
             <Box sx={{ display: 'flex' }}>
               <IconButton onClick={handleClick} sx={{ p: 0 }}>
                 <Avatar

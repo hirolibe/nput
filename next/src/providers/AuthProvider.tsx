@@ -1,4 +1,4 @@
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { onIdTokenChanged } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { useEffect, useState, ReactNode } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
@@ -11,22 +11,21 @@ export interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [idToken, setIdToken] = useState<string | undefined>(undefined)
+  const [idToken, setIdToken] = useState<string | null | undefined>(undefined)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
       if (user) {
         try {
           const token = await user.getIdToken()
           setIdToken(token)
         } catch (error) {
-          await signOut(auth)
           const { errorMessage } = handleError(error)
           setSnackbar({
-            message: `${errorMessage} ログインし直してください`,
+            message: `${errorMessage}`,
             severity: 'error',
             pathname: `/auth/login`,
           })
@@ -35,7 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsAuthLoading(false)
         }
       } else {
-        setIdToken(undefined)
+        setIdToken(null)
         setIsAuthLoading(false)
       }
     })
@@ -43,7 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => {
       unsubscribe()
     }
-  }, [router, setSnackbar])
+  }, [isAuthLoading, router, setSnackbar])
 
   return (
     <AuthContext.Provider

@@ -10,25 +10,19 @@ import Link from 'next/link'
 import { Dispatch, SetStateAction } from 'react'
 import { FaGithub, FaXTwitter } from 'react-icons/fa6'
 import { FollowButton } from '../common/FollowButton'
-import { useAuth } from '@/hooks/useAuth'
 import { NoteData } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { goToAuthorX, goToAuthorGithub } from '@/utils/socialLinkHandlers'
 
 export interface AuthorInfoProps {
   noteData: NoteData
-  isFollowStatusLoading: boolean
   followState: {
-    isFollowed: boolean
-    setIsFollowed: Dispatch<SetStateAction<boolean>>
+    isFollowed: boolean | undefined
+    setIsFollowed: Dispatch<SetStateAction<boolean | undefined>>
   }
 }
 
-export const AuthorInfo = ({
-  noteData,
-  isFollowStatusLoading,
-  followState,
-}: AuthorInfoProps) => {
+export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
   const authorName = noteData?.user.name
   const {
     nickname: authorNickname,
@@ -38,11 +32,10 @@ export const AuthorInfo = ({
     bio: authorBio,
   } = noteData.user.profile
 
-  const { idToken, isAuthLoading } = useAuth()
-  const { profileData, isProfileLoading } = useProfile(idToken)
+  const { profileData } = useProfile()
   const currentUserName = profileData?.user.name
 
-  if (isAuthLoading || isFollowStatusLoading || isProfileLoading) return
+  if (followState.isFollowed === undefined || profileData === undefined) return
 
   return (
     <>
@@ -60,10 +53,7 @@ export const AuthorInfo = ({
           </Typography>
 
           {authorName !== currentUserName && (
-            <FollowButton
-              isFollowStatusLoading={isFollowStatusLoading}
-              followState={followState}
-            />
+            <FollowButton followState={followState} />
           )}
 
           {(authorXLink || authorGithubLink) && (

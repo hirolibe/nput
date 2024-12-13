@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
+import { useAuth } from './useAuth'
 import { fetcher } from '@/utils/fetcher'
 
 export interface UseCheerStatusParams {
   authorName: string | undefined
   noteId: string | number | undefined
-  idToken?: string | null
 }
 
 export interface CheerStatusData {
@@ -15,11 +15,11 @@ export interface CheerStatusData {
 export const useCheerStatus = ({
   authorName,
   noteId,
-  idToken,
 }: UseCheerStatusParams) => {
+  const { idToken, isAuthLoading } = useAuth()
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
   const {
-    data: cheerStatusData,
+    data,
     error,
     isLoading: isCheerStatusLoading,
   }: SWRResponse<CheerStatusData> = useSWR(
@@ -43,7 +43,10 @@ export const useCheerStatus = ({
   }, [error])
 
   return {
-    cheerStatusData,
+    cheerStatusData:
+      !isAuthLoading && !isCheerStatusLoading && data
+        ? data
+        : { hasCheered: false },
     cheerStatusError,
     isCheerStatusLoading,
   }

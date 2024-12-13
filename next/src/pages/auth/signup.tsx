@@ -24,9 +24,11 @@ type SignUpFormData = {
 }
 
 const SignUp: NextPage = () => {
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [, setSnackbar] = useSnackbarState()
+  const router = useRouter()
+  const { previousPath } = router.query
+  const redirectPath = typeof previousPath === 'string' ? previousPath : '/'
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
     defaultValues: { name: '', email: '', password: '' },
@@ -97,9 +99,9 @@ const SignUp: NextPage = () => {
       setSnackbar({
         message: '新規登録に成功しました',
         severity: 'success',
-        pathname: '/',
+        pathname: redirectPath,
       })
-      await router.push('/')
+      await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)
 

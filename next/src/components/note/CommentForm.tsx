@@ -1,11 +1,19 @@
 import { LoadingButton } from '@mui/lab'
-import { Avatar, Box, Button, Typography, TextField } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  Button,
+  Stack,
+  Typography,
+  TextField,
+} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import AuthLinks from '../auth/AuthLinks'
 import ImageUploadButton from '../common/ImageUploadButton'
 import MarkdownText from './MarkdownText'
 import { useAuth } from '@/hooks/useAuth'
@@ -73,7 +81,7 @@ const CommentForm = ({
   }
 
   const onSubmit: SubmitHandler<SignUpFormData> = async () => {
-    if (!comment.trim() || !profileData) return
+    if (!comment.trim()) return
 
     setIsLoading(true)
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${nameString}/notes/${idString}/comments`
@@ -101,147 +109,159 @@ const CommentForm = ({
   }
 
   return (
-    <Box>
-      {/* コメント投稿ヘッダー */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Avatar
-          alt={profileData?.nickname || profileData?.user.name}
-          src={profileData?.avatarUrl}
-          sx={{ mr: 3 }}
-        />
-        {/* <Typography sx={{ mr: 3 }}>コメントする</Typography> */}
-        {/* モード切り替えボタン */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            height: '40px',
-          }}
-        >
-          <Button
-            onClick={() => handleViewMode('edit')}
-            sx={buttonStyles({
-              isActive: viewMode === 'edit',
-              primary: theme.palette.primary.main,
-              textLight: theme.palette.text.light,
-            })}
-          >
-            エディタ
-          </Button>
-          <Button
-            onClick={() => handleViewMode('preview')}
-            sx={buttonStyles({
-              isActive: viewMode === 'preview',
-              primary: theme.palette.primary.main,
-              textLight: theme.palette.text.light,
-            })}
-          >
-            プレビュー
-          </Button>
-        </Box>
-      </Box>
+    <>
+      {!idToken && (
+        <Stack spacing={2} sx={{ alignItems: 'center' }}>
+          <Typography sx={{ color: 'text.light' }}>
+            ログインまたは新規登録してコメントする
+          </Typography>
+          <AuthLinks />
+        </Stack>
+      )}
+      {idToken && (
+        <Box>
+          {/* コメント投稿ヘッダー */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Avatar
+              alt={profileData?.nickname || profileData?.user.name}
+              src={profileData?.avatarUrl}
+              sx={{ mr: 3 }}
+            />
 
-      {/* コメントフォーム */}
-      <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
-        {/* 入力欄 */}
-        {viewMode === 'edit' ? (
-          <Controller
-            name="content"
-            control={control}
-            defaultValue=""
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                placeholder="ノートにコメントする"
-                fullWidth
-                multiline
-                rows={5}
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-                variant="outlined"
-                inputRef={textareaRef}
-                onChange={(e) => {
-                  field.onChange(e)
-                  setComment(e.target.value)
-                }}
-                value={comment}
-                sx={{
-                  '& .MuiInputBase-input': {
-                    fontSize: { xs: '14px', sm: '16px' },
-                  },
-                }}
-              />
-            )}
-          />
-        ) : (
-          // プレビュー画面
-          <Box
-            sx={{
-              p: 2,
-              border: '1px solid',
-              borderColor: 'grey.400',
-              borderRadius: 1,
-              minHeight: '148px',
-              overflowWrap: 'break-word',
-            }}
-          >
-            {comment ? (
-              <MarkdownText content={comment} />
-            ) : (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '114px',
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: 'text.light',
-                    fontSize: { xs: '14px', sm: '16px' },
-                  }}
-                >
-                  コメントが入力されていません
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        )}
-
-        {/* 画像追加ボタン・投稿ボタン */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <ImageUploadButton
-            setImageSignedIds={setImageSignedIds}
-            isMultiple={true}
-            setContent={setComment}
-            preCursorText={preCursorText}
-            postCursorText={postCursorText}
-          />
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-            <LoadingButton
-              variant="contained"
-              type="submit"
-              loading={isLoading}
-              disabled={!comment?.trim()}
+            {/* モード切り替えボタン */}
+            <Box
               sx={{
-                fontWeight: 'bold',
-                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                height: '40px',
               }}
             >
-              投稿する
-            </LoadingButton>
+              <Button
+                onClick={() => handleViewMode('edit')}
+                sx={buttonStyles({
+                  isActive: viewMode === 'edit',
+                  primary: theme.palette.primary.main,
+                  textLight: theme.palette.text.light,
+                })}
+              >
+                エディタ
+              </Button>
+              <Button
+                onClick={() => handleViewMode('preview')}
+                sx={buttonStyles({
+                  isActive: viewMode === 'preview',
+                  primary: theme.palette.primary.main,
+                  textLight: theme.palette.text.light,
+                })}
+              >
+                プレビュー
+              </Button>
+            </Box>
+          </Box>
+
+          {/* コメントフォーム */}
+          <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
+            {/* 入力欄 */}
+            {viewMode === 'edit' ? (
+              <Controller
+                name="content"
+                control={control}
+                defaultValue=""
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    placeholder="ノートにコメントする"
+                    fullWidth
+                    multiline
+                    rows={5}
+                    error={fieldState.invalid}
+                    helperText={fieldState.error?.message}
+                    variant="outlined"
+                    inputRef={textareaRef}
+                    onChange={(e) => {
+                      field.onChange(e)
+                      setComment(e.target.value)
+                    }}
+                    value={comment}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        fontSize: { xs: '14px', sm: '16px' },
+                      },
+                    }}
+                  />
+                )}
+              />
+            ) : (
+              // プレビュー画面
+              <Box
+                sx={{
+                  p: 2,
+                  border: '1px solid',
+                  borderColor: 'grey.400',
+                  borderRadius: 1,
+                  minHeight: '148px',
+                  overflowWrap: 'break-word',
+                }}
+              >
+                {comment ? (
+                  <MarkdownText content={comment} />
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '114px',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: 'text.light',
+                        fontSize: { xs: '14px', sm: '16px' },
+                      }}
+                    >
+                      コメントが入力されていません
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            )}
+
+            {/* 画像追加ボタン・投稿ボタン */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <ImageUploadButton
+                setImageSignedIds={setImageSignedIds}
+                isMultiple={true}
+                setContent={setComment}
+                preCursorText={preCursorText}
+                postCursorText={postCursorText}
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                <LoadingButton
+                  variant="contained"
+                  type="submit"
+                  loading={isLoading}
+                  disabled={!comment?.trim()}
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'white',
+                  }}
+                >
+                  投稿する
+                </LoadingButton>
+              </Box>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </Box>
+      )}
+    </>
   )
 }
 

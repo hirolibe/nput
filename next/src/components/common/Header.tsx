@@ -19,6 +19,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
+import AuthLinks from '../auth/AuthLinks'
 import StopPropagationLink from './StopPropagationLink'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
@@ -31,7 +32,7 @@ const Header = () => {
   const open = Boolean(anchorEl)
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
+  const { idToken, isAuthLoading } = useAuth()
   const { profileData } = useProfile()
 
   const hideHeaderPathnames = [
@@ -103,43 +104,7 @@ const Header = () => {
               <Image src="/logo.png" width={90} height={40} alt="logo" />
             </StopPropagationLink>
           </Box>
-          {profileData === null && (
-            <Box>
-              <Link href="/auth/login">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  sx={{
-                    color: 'white',
-                    fontSize: 16,
-                    borderRadius: 2,
-                    boxShadow: 'none',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  ログイン
-                </Button>
-              </Link>
-              <Link href="/auth/signup">
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  sx={{
-                    fontSize: 16,
-                    borderRadius: 2,
-                    border: '1px solid primary',
-                    ml: 2,
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                    },
-                  }}
-                >
-                  新規登録
-                </Button>
-              </Link>
-            </Box>
-          )}
+          {!isAuthLoading && !idToken && <AuthLinks />}
           {profileData && (
             <Box sx={{ display: 'flex' }}>
               <IconButton onClick={handleClick} sx={{ p: 0 }}>

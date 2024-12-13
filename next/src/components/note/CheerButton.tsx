@@ -2,9 +2,10 @@ import { Avatar, Box, IconButton, Typography } from '@mui/material'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, Dispatch, SetStateAction } from 'react'
+import LoginDialog from '../auth/LoginDialog'
+import ConfirmDialog from '../common/ConfirmDialog'
 import AnimatedIconWrapper from './AnimatedIconWrapper'
 import { CheerIcon } from './CheerIcon'
-import ConfirmationDialog from '@/components/common/ConfirmationDialog'
 import { useAuth } from '@/hooks/useAuth'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
@@ -35,7 +36,8 @@ export const CheerButton = ({
   const { idToken, isAuthLoading } = useAuth()
   const [, setSnackbar] = useSnackbarState()
   const [isAnimated, setIsAnimated] = useState(false)
-  const [open, setOpen] = useState(false)
+  const [openLoginDialog, setOpenLoginDialog] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${nameString}/notes/${idString}/cheer`
@@ -45,11 +47,8 @@ export const CheerButton = ({
     if (isAuthLoading) return
 
     if (!idToken) {
-      setSnackbar({
-        message: 'ログインしてください',
-        severity: 'error',
-        pathname: router.pathname,
-      })
+      setOpenLoginDialog(true)
+      return
     }
 
     if (!isCheered) {
@@ -70,16 +69,8 @@ export const CheerButton = ({
         })
       }
     } else {
-      handleOpen()
+      setOpenConfirmDialog(true)
     }
-  }
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
   }
 
   const handleConfirm = async () => {
@@ -95,8 +86,13 @@ export const CheerButton = ({
         pathname: router.pathname,
       })
     } finally {
-      setOpen(false)
+      setOpenConfirmDialog(false)
     }
+  }
+
+  const handleClose = () => {
+    setOpenLoginDialog(false)
+    setOpenConfirmDialog(false)
   }
 
   return (
@@ -137,8 +133,10 @@ export const CheerButton = ({
         <Typography sx={{ fontSize: 12 }}>{cheersCount}</Typography>
       </Box>
 
-      <ConfirmationDialog
-        open={open}
+      <LoginDialog open={openLoginDialog} onClose={handleClose} />
+
+      <ConfirmDialog
+        open={openConfirmDialog}
         onClose={handleClose}
         onConfirm={handleConfirm}
         message={

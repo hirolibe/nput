@@ -22,15 +22,25 @@ export const useCheerStatus = ({
     data,
     error,
     isLoading: isCheerStatusLoading,
-  }: SWRResponse<CheerStatusData> = useSWR(
+  }: SWRResponse<CheerStatusData | undefined> = useSWR(
     authorName && noteId && idToken ? [url, idToken] : null,
     fetcher,
   )
 
+  const [cheerStatusData, setCheerStatusData] = useState<
+    CheerStatusData | undefined
+  >(undefined)
+  useEffect(() => {
+    if (!isAuthLoading && !isCheerStatusLoading && data) {
+      setCheerStatusData(data)
+    } else if (!isAuthLoading && !idToken) {
+      setCheerStatusData({ hasCheered: false })
+    }
+  }, [isAuthLoading, isCheerStatusLoading, data, idToken])
+
   const [cheerStatusError, setCheerStatusError] = useState<Error | undefined>(
     undefined,
   )
-
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -43,10 +53,7 @@ export const useCheerStatus = ({
   }, [error])
 
   return {
-    cheerStatusData:
-      !isAuthLoading && !isCheerStatusLoading && data
-        ? data
-        : { hasCheered: false },
+    cheerStatusData: cheerStatusData?.hasCheered,
     cheerStatusError,
     isCheerStatusLoading,
   }

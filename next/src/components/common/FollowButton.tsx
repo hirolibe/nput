@@ -1,7 +1,8 @@
 import { Button } from '@mui/material'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
+import LoginDialog from '../auth/LoginDialog'
 import { useAuth } from '@/hooks/useAuth'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
@@ -21,6 +22,7 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
   )
   const { idToken, isAuthLoading } = useAuth()
   const [, setSnackbar] = useSnackbarState()
+  const [openLoginDialog, setOpenLoginDialog] = useState(false)
 
   const { isFollowed, setIsFollowed } = followState
 
@@ -31,11 +33,8 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
     if (isAuthLoading) return
 
     if (!idToken) {
-      setSnackbar({
-        message: 'ログインしてください',
-        severity: 'error',
-        pathname: router.pathname,
-      })
+      setOpenLoginDialog(true)
+      return
     }
 
     try {
@@ -49,6 +48,10 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
         pathname: router.pathname,
       })
     }
+  }
+
+  const handleClose = () => {
+    setOpenLoginDialog(false)
   }
 
   const handleUnFollow = async () => {
@@ -74,14 +77,14 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
           onClick={handleFollow}
           variant="outlined"
           sx={{
-            fontSize: 13,
+            fontSize: 12,
             color: 'black',
             borderRadius: 2,
             boxShadow: 'none',
             border: '1px solid black',
             fontWeight: 'bold',
             height: '30px',
-            width: '100px',
+            width: '95px',
             '&:hover': {
               borderColor: 'black',
               backgroundColor: 'rgba(0, 0, 0, 0.1)',
@@ -97,13 +100,13 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
           onClick={handleUnFollow}
           variant="contained"
           sx={{
-            fontSize: 13,
+            fontSize: 12,
             color: 'white',
             borderRadius: 2,
             boxShadow: 'none',
             fontWeight: 'bold',
             height: '30px',
-            width: '100px',
+            width: '95px',
             '&:hover': {
               borderColor: 'primary',
             },
@@ -113,6 +116,7 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
           フォロー中
         </Button>
       )}
+      <LoginDialog open={openLoginDialog} onClose={handleClose} />
     </>
   )
 }

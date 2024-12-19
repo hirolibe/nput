@@ -104,7 +104,7 @@ const NoteDetail: NextPage = () => {
       {/* ページ */}
       <Box
         css={styles.pageMinHeight}
-        sx={{ backgroundColor: 'backgroundColor.main', pb: 6 }}
+        sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}
       >
         {/* エールボタン・プロフィール（画面小） */}
         <Box
@@ -151,7 +151,14 @@ const NoteDetail: NextPage = () => {
         {/* タイトル */}
         <Container maxWidth="lg">
           <Box sx={{ pt: 6, pb: { xs: 3, sm: 6 }, px: 5 }}>
-            <Box sx={{ maxWidth: 840, m: 'auto' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                maxWidth: 840,
+                m: 'auto',
+              }}
+            >
               <Typography
                 component="h2"
                 sx={{
@@ -176,13 +183,17 @@ const NoteDetail: NextPage = () => {
             >
               <Typography>投稿日：{noteData?.publishedDate}</Typography>
               <Typography>最終更新日：{noteData?.updatedDate}</Typography>
-              <Typography>作成時間：{noteData?.totalDuration}</Typography>
+              <Typography>
+                作成時間：
+                {Math.floor(noteData?.totalDuration / 3600)}時間
+                {Math.floor((noteData?.totalDuration % 3600) / 60)}分
+              </Typography>
             </Stack>
           </Box>
         </Container>
 
         {/* ボタン・コンテンツ */}
-        <Container maxWidth="lg" sx={{ position: 'relative', px: 5 }}>
+        <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
           <Box
             sx={{
@@ -206,9 +217,16 @@ const NoteDetail: NextPage = () => {
           </Box>
 
           {/* コンテンツ */}
-          <Box sx={{ display: 'flex', width: '100%', gap: '0 40px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+              gap: '0 40px',
+            }}
+          >
             {/* タグ・本文・ボタン・プロフィール・コメント */}
-            <Box sx={{ width: '100%', maxWidth: '810px' }}>
+            <Box sx={{ width: '100%', maxWidth: '780px' }}>
               {/* タグ・本文・ボタン・プロフィール */}
               <Card
                 sx={{
@@ -219,32 +237,35 @@ const NoteDetail: NextPage = () => {
                 }}
               >
                 {/* タグ */}
-                <Box
-                  sx={{
-                    overflowX: 'auto',
-                    whiteSpace: 'nowrap',
-                    '&::-webkit-scrollbar': {
-                      display: 'none',
-                    },
-                  }}
-                >
-                  <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                    {noteData?.tags?.map((tag, i: number) => (
-                      <Link key={i} href={`/tags/${tag.name}`}>
-                        <Chip
-                          label={tag.name}
-                          variant="outlined"
-                          sx={{
-                            '&:hover': {
-                              backgroundColor: 'backgroundColor.hover',
-                            },
-                            fontSize: '12px',
-                          }}
-                        />
-                      </Link>
-                    ))}
-                  </Stack>
-                </Box>
+                {noteData?.tags?.length !== 0 && (
+                  <Box
+                    sx={{
+                      overflowX: 'auto',
+                      whiteSpace: 'nowrap',
+                      mb: 3,
+                      '&::-webkit-scrollbar': {
+                        display: 'none',
+                      },
+                    }}
+                  >
+                    <Stack direction="row" spacing={1}>
+                      {noteData?.tags?.map((tag, i: number) => (
+                        <Link key={i} href={`/tags/${tag.name}`}>
+                          <Chip
+                            label={tag.name}
+                            variant="outlined"
+                            sx={{
+                              '&:hover': {
+                                backgroundColor: 'backgroundColor.hover',
+                              },
+                              fontSize: '12px',
+                            }}
+                          />
+                        </Link>
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
 
                 {/* 本文 */}
                 <Box sx={{ fontSize: { xs: '14px', sm: '16px' }, mb: 5 }}>
@@ -291,7 +312,6 @@ const NoteDetail: NextPage = () => {
                 sx={{
                   boxShadow: 'none',
                   borderRadius: '12px',
-                  // minHeight: 150,
                   p: '20px 25px',
                 }}
               >

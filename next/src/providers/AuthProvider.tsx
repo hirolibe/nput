@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
       if (user) {
         try {
-          const token = await user.getIdToken()
+          const token = await user.getIdToken(true)
           setIdToken(token)
         } catch (error) {
           const { errorMessage } = handleError(error)

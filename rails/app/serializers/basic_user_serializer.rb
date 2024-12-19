@@ -1,5 +1,5 @@
 class BasicUserSerializer < ActiveModel::Serializer
-  attributes :name
+  attributes :name, :cheer_points
 
   has_one :profile
 end

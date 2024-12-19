@@ -11,7 +11,7 @@ class Api::V1::CheersController < Api::V1::ApplicationController
   end
 
   def create
-    if current_user.cheer_points < 5
+    if current_user.cheer_points < 360
       return render json: { error: "保有エールポイントが不足しています" }, status: :unprocessable_entity
     end
 
@@ -19,7 +19,7 @@ class Api::V1::CheersController < Api::V1::ApplicationController
 
     ActiveRecord::Base.transaction do
       current_user.cheers.create!(note:)
-      current_user.update!(cheer_points: current_user.cheer_points - 5)
+      current_user.update!(cheer_points: current_user.cheer_points - 360)
     end
 
     render status: :created

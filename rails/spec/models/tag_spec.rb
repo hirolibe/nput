@@ -19,7 +19,7 @@ RSpec.describe Tag, type: :model do
 
       it "バリデーションが失敗し、エラーメッセージが返る" do
         expect(subject).not_to be_valid
-        expect(record.errors.full_messages).to eq ["タグ名を入力してください", "タグ名に記号やスペースは使用できません"]
+        expect(record.errors.full_messages).to eq ["タグ名を入力してください", "タグ名に記号、スペース、全角の英数字は使用できません"]
       end
     end
 
@@ -41,13 +41,13 @@ RSpec.describe Tag, type: :model do
     context "タグ名に記号を含む場合" do
       before { record.name = "invalid tag" }
 
-      include_examples "バリデーション失敗", "タグ名に記号やスペースは使用できません"
+      include_examples "バリデーション失敗", "タグ名に記号、スペース、全角の英数字は使用できません"
     end
 
     context "タグ名にスペースを含む場合" do
       before { record.name = "invalid@tag" }
 
-      include_examples "バリデーション失敗", "タグ名に記号やスペースは使用できません"
+      include_examples "バリデーション失敗", "タグ名に記号、スペース、全角の英数字は使用できません"
     end
 
     include_examples "バリデーション成功"

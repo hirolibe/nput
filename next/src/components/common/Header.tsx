@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   IconButton,
   ListItemIcon,
   Menu,
@@ -64,8 +63,8 @@ const Header = () => {
     }
   }
 
-  const addNewNote = async () => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${profileData?.user.name}/notes`
+  const handleAddNewNote = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
@@ -115,7 +114,7 @@ const Header = () => {
               </IconButton>
               <Box sx={{ ml: 2, display: { xs: 'none', sm: 'block' } }}>
                 <Button
-                  onClick={addNewNote}
+                  onClick={handleAddNewNote}
                   color="primary"
                   variant="contained"
                   sx={{
@@ -153,7 +152,6 @@ const Header = () => {
                     ノートの管理
                   </MenuItem>
                 </Link>
-                <Divider />
                 <Link href="/">
                   <MenuItem onClick={handleLogout}>
                     <ListItemIcon>

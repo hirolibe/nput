@@ -27,9 +27,6 @@ class NoteSerializer < ActiveModel::Serializer
   end
 
   def total_duration
-    duration_in_seconds = object.durations.sum(:duration)
-    hours = duration_in_seconds / 3600
-    minutes = (duration_in_seconds % 3600) / 60
-    "#{hours}時間#{minutes}分"
+    object.durations.sum(:duration)
   end
 end

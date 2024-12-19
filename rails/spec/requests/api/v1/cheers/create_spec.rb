@@ -14,8 +14,8 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/:name/notes/:note_id/cheer", type: 
   context "ユーザー認証に成功した場合" do
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
-    context "保有エールポイントが5ポイント未満の場合" do
-      before { user.update!(cheer_points: rand(0..4)) }
+    context "保有エールポイントが360ポイント未満の場合" do
+      before { user.update!(cheer_points: rand(0..359)) }
 
       it "422エラーとエラーメッセージが返る" do
         subject
@@ -24,8 +24,8 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/:name/notes/:note_id/cheer", type: 
       end
     end
 
-    context "保有エールポイントが5ポイント以上の場合" do
-      before { user.update!(cheer_points: rand(5..50)) }
+    context "保有エールポイントが360ポイント以上の場合" do
+      before { user.update!(cheer_points: rand(360..3600)) }
 
       include_examples "リソース不在エラー", "ノート", "note_id"
       include_examples "ノート非公開エラー"
@@ -37,7 +37,7 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/:name/notes/:note_id/cheer", type: 
       end
 
       context "ステータスが公開中のノートにエールしていない場合" do
-        it "ノートにエールし、保有エールポイントが5ポイント減り、201ステータスが返る" do
+        it "ノートにエールし、保有エールポイントが360ポイント減り、201ステータスが返る" do
           expect { subject }.to change { note.cheers.count }.by(1).
                                   and change { user.reload.cheer_points }.by(-5)
           expect(response).to have_http_status(:created)

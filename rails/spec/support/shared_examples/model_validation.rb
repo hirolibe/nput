@@ -25,7 +25,6 @@ end
 
 NOTE_COLUMNS = {
   "title": "タイトル",
-  "description": "概要",
   "content": "本文",
   "published_at": "公開日",
 }.freeze

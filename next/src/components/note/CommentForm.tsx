@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import AuthLinks from '../auth/AuthLinks'
 import ImageUploadButton from '../common/ImageUploadButton'
@@ -51,10 +51,31 @@ const CommentForm = ({
   const theme = useTheme()
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const textarea = textareaRef.current
-  const cursorPosition = textarea?.selectionStart
-  const preCursorText = comment?.slice(0, cursorPosition)
-  const postCursorText = comment?.slice(cursorPosition)
+  const [cursorPosition, setCursorPosition] = useState<number | null>(null)
+  const [preCursorText, setPreCursorText] = useState<string>('')
+  const [postCursorText, setPostCursorText] = useState<string>('')
+
+  useEffect(() => {
+    setPreCursorText(comment?.slice(0, cursorPosition ?? undefined))
+    setPostCursorText(comment?.slice(cursorPosition ?? undefined))
+  }, [comment, cursorPosition, setPreCursorText, setPostCursorText])
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setComment(e.target.value)
+    const position = textareaRef.current?.selectionStart || 0
+    setCursorPosition(position)
+  }
+
+  const updateCursorPosition = () => {
+    const position = textareaRef.current?.selectionStart || 0
+    setCursorPosition(position)
+  }
+
+  const handleViewMode = (mode: 'edit' | 'preview') => {
+    setViewMode(mode)
+  }
 
   type ButtonStyles = {
     isActive: boolean
@@ -75,10 +96,6 @@ const CommentForm = ({
       color: isActive ? 'white' : primary,
     },
   })
-
-  const handleViewMode = (mode: 'edit' | 'preview') => {
-    setViewMode(mode)
-  }
 
   const onSubmit: SubmitHandler<SignUpFormData> = async () => {
     if (!comment.trim()) return
@@ -181,8 +198,10 @@ const CommentForm = ({
                     inputRef={textareaRef}
                     onChange={(e) => {
                       field.onChange(e)
-                      setComment(e.target.value)
+                      handleChange(e)
                     }}
+                    onClick={updateCursorPosition}
+                    onKeyUp={updateCursorPosition}
                     value={comment}
                     sx={{
                       '& .MuiInputBase-input': {
@@ -242,6 +261,7 @@ const CommentForm = ({
                 setContent={setComment}
                 preCursorText={preCursorText}
                 postCursorText={postCursorText}
+                hoverIconColor={true}
               />
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
                 <LoadingButton

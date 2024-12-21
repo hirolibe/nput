@@ -1,8 +1,6 @@
 import { onIdTokenChanged } from 'firebase/auth'
-import { useRouter } from 'next/router'
 import { useEffect, useState, ReactNode } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
-import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
@@ -13,8 +11,6 @@ export interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [idToken, setIdToken] = useState<string | null | undefined>(undefined)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
-  const [, setSnackbar] = useSnackbarState()
-  const router = useRouter()
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
@@ -23,13 +19,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           const token = await user.getIdToken()
           setIdToken(token)
         } catch (error) {
-          const { errorMessage } = handleError(error)
-          setSnackbar({
-            message: `${errorMessage}`,
-            severity: 'error',
-            pathname: `/auth/login`,
-          })
-          router.push(`/auth/login`)
+          handleError(error)
         } finally {
           setIsAuthLoading(false)
         }
@@ -39,17 +29,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     })
 
-    return () => {
-      unsubscribe()
-    }
-  }, [isAuthLoading, router, setSnackbar])
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    const refreshToken = setInterval(
+      async () => {
+        const currentUser = auth.currentUser
+        if (currentUser) {
+          const token = await currentUser.getIdToken(true)
+          setIdToken(token)
+        }
+      },
+      45 * 60 * 1000,
+    )
+
+    return () => clearInterval(refreshToken)
+  }, [])
 
   return (
     <AuthContext.Provider
       value={{
         idToken,
         isAuthLoading,
-        setIsAuthLoading,
       }}
     >
       {children}

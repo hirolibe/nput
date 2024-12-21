@@ -16,7 +16,7 @@ users_count.times do
       uid: Faker::Internet.uuid,
       email: Faker::Internet.email,
       name: generated_name,
-      cheer_points: Faker::Number.between(from: 0, to: 50),
+      cheer_points: Faker::Number.between(from: 0, to: 3600),
     )
     users.push(user)
     break
@@ -35,7 +35,7 @@ users.each do |user|
     })
 
     durations_count_per_note.times do
-      note.durations.build(duration: rand(300..3600), user:)
+      note.durations.build(duration: rand(10..600), user:)
     end
 
     note.save!

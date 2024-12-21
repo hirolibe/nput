@@ -54,6 +54,7 @@ EXPECTED_USER_KEYS = [
 
 EXPECTED_BASIC_USER_KEYS = [
   "name",
+  "cheer_points",
   "profile",
 ].freeze
 

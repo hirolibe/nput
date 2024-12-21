@@ -27,7 +27,7 @@ export interface NoteData {
   publishedDate?: string
   updatedDate: string
   cheersCount: number
-  totalDuration: string
+  totalDuration: number
   comments?: CommentData[]
   tags?: {
     id: number

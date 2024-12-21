@@ -15,7 +15,6 @@ interface MarkdownTextProps {
 }
 
 interface CustomCodeProps {
-  inline?: boolean
   className?: string
   children?: React.ReactNode
 }
@@ -26,14 +25,25 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({
 }) => {
   const customComponents: Components = {
     code(props: CustomCodeProps) {
-      const { inline, className, children } = props
+      const { className, children } = props
+      const isInline = !String(children).includes('\n')
+      if (isInline) {
+        return <code className={className}>{children}</code>
+      }
+
       const match = /language-(\w+)/.exec(className || '')
-      return !inline && match ? (
+      if (!match) {
+        return (
+          <SyntaxHighlighter style={oneDark} language={'plaintext'}>
+            {String(children).replace(/\n$/, '')}
+          </SyntaxHighlighter>
+        )
+      }
+
+      return (
         <SyntaxHighlighter style={oneDark} language={match[1]}>
           {String(children).replace(/\n$/, '')}
         </SyntaxHighlighter>
-      ) : (
-        <code className={className}>{children}</code>
       )
     },
     img({ src, alt = 'image', width }) {

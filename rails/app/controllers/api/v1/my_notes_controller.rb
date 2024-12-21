@@ -4,8 +4,9 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
 
   def index
     notes = current_user.notes.
-              includes(tags: {}).
-              order(created_at: :desc).
+              includes(
+                tags: {},
+              ).order(created_at: :desc).
               page(params[:page] || 1).
               per(10)
 
@@ -14,7 +15,7 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
     render json: notes,
            each_serializer: NoteIndexSerializer,
            total_durations:,
-           include: ["tags"],
+           include: ["user", "user.profile", "tags"],
            meta: pagination(notes),
            adapter: :json,
            status: :ok
@@ -22,12 +23,13 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
 
   def show
     note = current_user.notes.includes(
+      comments: { user: { profile: { avatar_attachment: :blob } } },
       tags: {},
     ).find_by(id: params[:id])
 
     if note
       render json: note,
-             include: ["user", "tags"],
+             include: ["comments", "comments.user", "comments.user.profile", "user", "user.profile", "tags"],
              status: :ok
     else
       render json: { error: "ノートにアクセスできません" }, status: :not_found

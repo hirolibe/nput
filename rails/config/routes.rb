@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       delete "/:name", to: "users#destroy", as: :delete_user
 
       scope ":name", as: :user do
-        resources :notes, only: [:show, :create, :update, :destroy] do
+        resources :notes, only: [:show] do
           resources :comments, only: [:create, :destroy]
           resources :supporters, only: [:index]
           resource :cheer, only: [:show, :create, :destroy]

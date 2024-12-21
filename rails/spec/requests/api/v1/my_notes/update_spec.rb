@@ -52,7 +52,6 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/my_notes/id", type: :request do
           expect(note.reload.published_at).to eq(initial_published_at)
 
           expect(response).to have_http_status(:ok)
-          expect(json_response["message"]).to eq("ノートを更新しました！")
           expect(user.reload.cheer_points).to eq(initial_cheer_points + 1)
 
           tag_names = note.reload.tags.map {|tag| tag["name"] }

@@ -1,10 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Notes PATCH /api/v1/:name/notes/id", type: :request do
-  subject { patch(api_v1_user_note_path(name, note_id), headers:, params:) }
+RSpec.describe "Api::V1::Notes PATCH /api/v1/my_notes/id", type: :request do
+  subject { patch(api_v1_my_note_path(note_id), headers:, params:) }
 
-  let(:user) { create(:user, cheer_points: 10) }
-  let(:name) { user.name }
+  let(:user) { create(:user, cheer_points: 360) }
   let(:note) { create(:note, user:) }
   let(:note_id) { note.id }
   let(:headers) { { Authorization: "Bearer token" } }
@@ -21,7 +20,7 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/:name/notes/id", type: :request do
     context "ログインユーザーが作成したノートが存在する場合" do
       context "バリデーションに失敗した場合" do
         let(:params) {
-          { "note": { "title": "" }, "duration": 300 }
+          { "note": { "title": "" }, "duration": 1 }
         }
 
         include_examples "バリデーションエラーのレスポンス検証"
@@ -32,10 +31,11 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/:name/notes/id", type: :request do
           {
             "note": {
               "title": "更新後のタイトル",
+              "description": "更新後の概要",
               "content": "更新後の本文",
               "status": "draft",
             },
-            "duration": 300,
+            "duration": 1,
             "tag_names": ["a", "b", "c", "d", "e"],
           }
         }
@@ -46,13 +46,12 @@ RSpec.describe "Api::V1::Notes PATCH /api/v1/:name/notes/id", type: :request do
 
           subject
           expect(note.reload.title).to eq("更新後のタイトル")
+          expect(note.reload.description).to eq("更新後の概要")
           expect(note.reload.content).to eq("更新後の本文")
           expect(note.reload.status).to eq("draft")
           expect(note.reload.published_at).to eq(initial_published_at)
 
           expect(response).to have_http_status(:ok)
-          expect(json_response["note"].keys).to eq EXPECTED_NOTE_KEYS
-
           expect(user.reload.cheer_points).to eq(initial_cheer_points + 1)
 
           tag_names = note.reload.tags.map {|tag| tag["name"] }

@@ -13,7 +13,7 @@ class Note < ApplicationRecord
   enum :status, { unsaved: 10, draft: 20, published: 30 }
 
   validates :status, presence: true
-  validates :title, :description, :content, :published_at, presence: true, if: :published?
+  validates :title, :content, :published_at, presence: true, if: :published?
   validates :description, length: { maximum: 200 }
   validate :validate_single_unsaved
   validate :validate_durations

@@ -62,7 +62,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
       <DialogActions
         sx={{
-          padding: 2,
+          pb: 2,
           justifyContent: 'space-between',
           px: 6,
         }}

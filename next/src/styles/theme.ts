@@ -4,13 +4,14 @@ import { createTheme } from '@mui/material/styles'
 declare module '@mui/material/styles' {
   interface PaletteOptions {
     backgroundColor: {
-      main: string
+      page: string
       icon: string
       hover: string
     }
   }
   interface TypeText {
     light: string
+    placeholder: string
   }
 }
 
@@ -27,12 +28,13 @@ const theme = createTheme({
     },
     divider: '#acbcc7',
     backgroundColor: {
-      main: '#e6f2ff',
+      page: '#e6f2ff',
       icon: '#EDF2F7',
       hover: '#E0E0E0',
     },
     text: {
       light: '#6E7B85',
+      placeholder: '#9E9E9E',
     },
   },
   breakpoints: {

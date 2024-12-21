@@ -10,12 +10,14 @@ Rails.application.routes.draw do
       resource :profile, only: [:show, :update]
 
       resources :notes, only: [:index]
+      resources :my_notes, only: [:index, :show, :create, :update, :destroy]
+      resources :tags, only: [:index]
 
       get "/:name", to: "users#show", as: :user
       delete "/:name", to: "users#destroy", as: :delete_user
 
       scope ":name", as: :user do
-        resources :notes, only: [:show, :create, :update, :destroy] do
+        resources :notes, only: [:show] do
           resources :comments, only: [:create, :destroy]
           resources :supporters, only: [:index]
           resource :cheer, only: [:show, :create, :destroy]
@@ -27,9 +29,6 @@ Rails.application.routes.draw do
       end
 
       resources :tags, only: [], param: :name do
-        collection do
-          get :search
-        end
         member do
           resources :tagged_notes, only: [:index]
         end

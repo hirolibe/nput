@@ -24,7 +24,7 @@ const Index: NextPage = () => {
     return (
       <Box
         css={styles.pageMinHeight}
-        sx={{ backgroundColor: 'backgroundColor.main' }}
+        sx={{ backgroundColor: 'backgroundColor.page' }}
       >
         <Container maxWidth="md" sx={{ pt: 6 }}>
           <Grid container spacing={4}>
@@ -49,7 +49,7 @@ const Index: NextPage = () => {
   return (
     <Box
       css={styles.pageMinHeight}
-      sx={{ backgroundColor: 'backgroundColor.main' }}
+      sx={{ backgroundColor: 'backgroundColor.page' }}
     >
       <Container maxWidth="md" sx={{ pt: 6 }}>
         <Grid container spacing={4}>

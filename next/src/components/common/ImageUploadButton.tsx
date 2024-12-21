@@ -1,4 +1,4 @@
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined'
 import { IconButton } from '@mui/material'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
@@ -14,6 +14,8 @@ interface ImageUploadButtonProps {
   setContent?: Dispatch<SetStateAction<string>>
   preCursorText?: string
   postCursorText?: string
+  backgroundColor?: boolean
+  hoverIconColor?: boolean
 }
 
 const ImageUploadButton = (props: ImageUploadButtonProps) => {
@@ -26,6 +28,8 @@ const ImageUploadButton = (props: ImageUploadButtonProps) => {
     setContent,
     preCursorText,
     postCursorText,
+    backgroundColor,
+    hoverIconColor,
   } = props
 
   const handleUploadImages = () => {
@@ -105,13 +109,23 @@ const ImageUploadButton = (props: ImageUploadButtonProps) => {
   }
 
   return (
-    <IconButton onClick={handleUploadImages} sx={{ p: 0 }}>
-      <AddPhotoAlternateIcon
+    <IconButton
+      onClick={handleUploadImages}
+      sx={{
+        backgroundColor: backgroundColor ? 'white' : undefined,
+        '&:hover': {
+          backgroundColor: backgroundColor
+            ? 'backgroundColor.hover'
+            : 'transparent',
+        },
+      }}
+    >
+      <AddPhotoAlternateOutlinedIcon
         sx={{
-          fontSize: '30px',
+          fontSize: '25px',
           color: 'text.light',
           '&:hover': {
-            color: 'black',
+            color: hoverIconColor ? 'black' : undefined,
           },
         }}
       />

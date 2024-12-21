@@ -8,7 +8,7 @@ type ErrorProps = {
 const Error = ({ statusCode, errorMessage }: ErrorProps) => {
   return (
     <Container maxWidth="md">
-      <Stack sx={{ p: 3, textAlign: 'center' }} spacing={3}>
+      <Stack spacing={3} sx={{ p: 3, textAlign: 'center' }}>
         {statusCode !== 0 && <Typography variant="h1">{statusCode}</Typography>}
         {errorMessage && <Typography variant="h5">{errorMessage}</Typography>}
         {statusCode === 404 && (

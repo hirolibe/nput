@@ -24,7 +24,7 @@ export const useProfile = () => {
     error,
     isLoading: isProfileLoading,
   }: SWRResponse<ProfileData | null | undefined> = useSWR(
-    idToken && [url, idToken],
+    idToken ? [url, idToken] : null,
     fetcher,
   )
 

@@ -9,7 +9,7 @@ class User < ApplicationRecord
               message: "は半角英数字と記号（ _ と - ）のみ使用可能で、- は先頭と末尾に使用できません",
             },
             length: { maximum: 20 }
-  validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 50 }
+  validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 3600 }
 
   has_many :notes, dependent: :destroy
 

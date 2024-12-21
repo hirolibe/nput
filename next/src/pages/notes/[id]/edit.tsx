@@ -26,6 +26,7 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
 import ImageUploadButton from '@/components/common/ImageUploadButton'
 import Loading from '@/components/common/Loading'
@@ -36,10 +37,9 @@ import { useAuth } from '@/hooks/useAuth'
 import { useMyNote } from '@/hooks/useMyNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
+import { useTimeTracking } from '@/hooks/useTimeTracking'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
-import ConfirmDialog from '@/components/common/ConfirmDialog'
-import { useTimeTracking } from '@/hooks/useTimeTracking'
 
 type NoteProps = {
   title: string
@@ -75,12 +75,15 @@ const EditNote: NextPage = () => {
   const [maxLengthError, setMaxLengthError] = useState<boolean>(false)
   const [maxTagsError, setMaxTagsError] = useState<boolean>(false)
   const [formatError, setFormatError] = useState<boolean>(false)
-  const [selectedTags, setSelectedTags] = useState<string[] | undefined>([])
   const [charCount, setCharCount] = useState<number>(0)
   const [openSidebar, setOpenSidebar] = useState<boolean>(false)
   const [content, setContent] = useState<string>('')
+  const [inputTags, setInputTags] = useState<string[]>([])
+  const [inputValue, setInputValue] = useState<string>('')
+
   const [remainingSeconds, setRemainingSeconds] = useState<number>(0)
-  const [previousSessionSeconds, setPreviousSessionSeconds] = useState<number>(0)
+  const [previousSessionSeconds, setPreviousSessionSeconds] =
+    useState<number>(0)
   const [cheerPoints, setCheersPoints] = useState<number>(0)
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
@@ -96,7 +99,8 @@ const EditNote: NextPage = () => {
   }, [content, cursorPosition, setPreCursorText, setPostCursorText])
 
   useEffect(() => {
-    const updatedPoints = (noteData?.user.cheerPoints ?? 0) + Math.floor(sessionSeconds)
+    const updatedPoints =
+      (noteData?.user.cheerPoints ?? 0) + Math.floor(sessionSeconds)
     setCheersPoints(updatedPoints)
   }, [noteData, sessionSeconds, setCheersPoints])
 
@@ -106,6 +110,37 @@ const EditNote: NextPage = () => {
     setContent(e.target.value)
     const position = textareaRef.current?.selectionStart || 0
     setCursorPosition(position)
+  }
+
+  const handleInputChange = (newInputValue: string) => {
+    setFormatError(false)
+    setMaxLengthError(false)
+    setMaxTagsError(false)
+
+    if (!newInputValue) {
+      setInputValue('')
+      return
+    }
+
+    const formatRegex = /^[a-zA-Z0-9ａ-ｚＡ-Ｚ０-９ぁ-んァ-ン一-龯]+$/
+    if (!formatRegex.test(newInputValue)) {
+      setFormatError(true)
+      return
+    }
+
+    const maxTagLength = 20
+    if (newInputValue.length > maxTagLength) {
+      setMaxLengthError(true)
+      return
+    }
+
+    const maxTags = 5
+    if (inputTags.length >= maxTags) {
+      setMaxTagsError(true)
+      return
+    }
+
+    setInputValue(newInputValue)
   }
 
   const updateCursorPosition = () => {
@@ -127,9 +162,10 @@ const EditNote: NextPage = () => {
     }
   }, [noteData])
 
-  const { handleSubmit, control, reset, watch, formState } = useForm<NoteFormData>({
-    defaultValues: note,
-  })
+  const { handleSubmit, control, reset, watch, formState } =
+    useForm<NoteFormData>({
+      defaultValues: note,
+    })
   const { isDirty } = formState
 
   useEffect(() => {
@@ -139,6 +175,7 @@ const EditNote: NextPage = () => {
       reset(note)
       setContent(note.content)
       setStatusChecked(note.status == '公開中')
+      setInputTags(note.tags)
       setIsFetched(true)
     }
   }, [noteData, note, reset, setIsFetched])
@@ -170,7 +207,8 @@ const EditNote: NextPage = () => {
     const headers = { Authorization: `Bearer ${idToken}` }
 
     const status = statusChecked ? 'published' : 'draft'
-    const workDuration = remainingSeconds + sessionSeconds - previousSessionSeconds
+    const workDuration =
+      remainingSeconds + sessionSeconds - previousSessionSeconds
 
     const patchData = {
       note: { ...data, status: status, image_signed_ids: imageSignedIds },
@@ -246,7 +284,7 @@ const EditNote: NextPage = () => {
           pl: { xs: 2, sm: 9 },
           pr: 9,
           transition: 'margin 0.2s',
-          marginRight: openSidebar ? '500px' : 0,
+          marginRight: openSidebar ? '400px' : 0,
         }}
       >
         <AppBar
@@ -262,7 +300,7 @@ const EditNote: NextPage = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               transition: 'margin 0.2s',
-              marginRight: openSidebar ? '500px' : 0,
+              marginRight: openSidebar ? '400px' : 0,
             }}
           >
             <Box sx={{ maxWidth: 35 }}>
@@ -272,28 +310,25 @@ const EditNote: NextPage = () => {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box>
-                <Stack
-                  direction={'row'}
-                  spacing={4}
-                  sx={{ mr: 4 }}
-                >
+                <Stack direction={'row'} spacing={4} sx={{ mr: 4 }}>
                   <Box
                     sx={{
-                      display: { xs: 'none', md: openSidebar ? 'none' : 'flex' },
+                      display: {
+                        xs: 'none',
+                        md: openSidebar ? 'none' : 'flex',
+                      },
                       alignItems: 'center',
                     }}
                   >
                     <CheerIcon
-                      isCheered={
-                        ((cheerPoints ?? 0) >= 360) ? true : false
-                      }
+                      isCheered={(cheerPoints ?? 0) >= 360 ? true : false}
                     />
                     <Typography
                       sx={{
                         fontWeight:
-                          ((cheerPoints ?? 0) >= 3600) ? 'bold' : 'normal',
+                          (cheerPoints ?? 0) >= 3600 ? 'bold' : 'normal',
                         ml: 1,
-                        mr: 4
+                        mr: 4,
                       }}
                     >
                       {Math.floor(cheerPoints ?? 0) >= 3600
@@ -302,9 +337,12 @@ const EditNote: NextPage = () => {
                     </Typography>
 
                     <Typography sx={{ mr: 1 }}>Total</Typography>
-                    <TimeTracker seconds={(noteData?.totalDuration ?? 0) + sessionSeconds} />
+                    <TimeTracker
+                      seconds={(noteData?.totalDuration ?? 0) + sessionSeconds}
+                    />
                   </Box>
-                  <Box sx={{
+                  <Box
+                    sx={{
                       display: { xs: undefined, md: 'flex' },
                       alignItems: 'center',
                       textAlign: 'center',
@@ -336,7 +374,10 @@ const EditNote: NextPage = () => {
                   <Typography sx={{ fontSize: { xs: 13, md: 15 } }}>
                     公開設定
                   </Typography>
-                  <Switch checked={statusChecked} onChange={toggleStatusChecked} />
+                  <Switch
+                    checked={statusChecked}
+                    onChange={toggleStatusChecked}
+                  />
                 </Box>
                 <LoadingButton
                   variant={statusChecked ? 'contained' : 'outlined'}
@@ -447,7 +488,7 @@ const EditNote: NextPage = () => {
                   backgroundColor: 'white',
                   width: '100%',
                   maxWidth: '700px',
-                  minHeight: '600px',
+                  minHeight: '650px',
                   px: 2,
                   py: '13.5px',
                   mb: 1,
@@ -493,7 +534,8 @@ const EditNote: NextPage = () => {
                       <Box
                         sx={{
                           fontSize: { xs: 14, md: 16 },
-                        }}>
+                        }}
+                      >
                         <MarkdownText content={content} />
                       </Box>
                     ) : (
@@ -599,7 +641,10 @@ const EditNote: NextPage = () => {
           sx={{
             borderTop: 'none',
             flexShrink: 0,
-            '& .MuiDrawer-paper': { width: { xs: '100%', md: '500px' }, boxSizing: 'border-box' },
+            '& .MuiDrawer-paper': {
+              width: { xs: '100%', md: '400px' },
+              boxSizing: 'border-box',
+            },
           }}
         >
           <Box
@@ -623,7 +668,10 @@ const EditNote: NextPage = () => {
           </Box>
           <Divider />
 
-          <Box css={styles.pageMinHeight} style={{ width: '100%', padding: 20 }}>
+          <Box
+            css={styles.pageMinHeight}
+            style={{ width: '100%', padding: 20 }}
+          >
             <Stack spacing={3}>
               {/* タグ入力フィールド */}
               <Box>
@@ -637,7 +685,7 @@ const EditNote: NextPage = () => {
                     border: '1px solid',
                     borderRadius: '8px',
                     borderColor: 'divider',
-                    p: 1,
+                    p: 2,
                   }}
                 >
                   <Controller
@@ -649,39 +697,28 @@ const EditNote: NextPage = () => {
                         multiple
                         freeSolo
                         options={tagsData?.map((tag) => tag.name)}
-                        value={field.value}
+                        value={inputTags}
                         onChange={(_, newTagNames) => {
-                          field.onChange(newTagNames)
-                          const maxTagLength = 20
-                          const formatRegex = /^[a-zA-Z0-9ぁ-んァ-ン一-龯]+$/
-                          const maxTags = 5
-                          const hasLongTag = newTagNames.some(
-                            (tag) => tag.length > maxTagLength,
-                          )
-                          const ngTag = newTagNames.some(
-                            (tag) => !formatRegex.test(tag),
-                          )
+                          setFormatError(false)
+                          setMaxLengthError(false)
+                          if (maxTagsError) {
+                            setMaxTagsError(false)
+                            return
+                          }
 
-                          if (hasLongTag) {
-                            setMaxLengthError(true)
-                            return
-                          }
-                          if (ngTag) {
-                            setFormatError(true)
-                            return
-                          }
-                          if (newTagNames.length > maxTags) {
+                          if (newTagNames.length > 5) {
                             setMaxTagsError(true)
                             return
                           }
-                          setMaxLengthError(false)
-                          setFormatError(false)
-                          setMaxTagsError(false)
+
+                          setInputTags(newTagNames)
                         }}
                         renderTags={(value, getTagProps) => (
                           <Box>
                             {value.map((option, index) => {
-                              const { key, ...tagProps } = getTagProps({ index })
+                              const { key, ...tagProps } = getTagProps({
+                                index,
+                              })
                               return (
                                 <Chip
                                   label={option}
@@ -700,44 +737,55 @@ const EditNote: NextPage = () => {
                           </Box>
                         )}
                         renderOption={(props, option) => {
-                          const tag = tagsData.find((tag) => tag.name === option)
-                          if (tag?.notesCount === 0) return
+                          const tag = tagsData.find(
+                            (tag) => tag.name === option,
+                          )
+
                           return (
                             <li {...props}>
-                              {option} {tag ? `(${tag.notesCount})` : ''}
+                              {option}{' '}
+                              {tag?.notesCount ? `(${tag.notesCount})` : ''}
                             </li>
                           )
                         }}
+                        inputValue={inputValue}
+                        onInputChange={(_, value) => handleInputChange(value)}
                         renderInput={(params) => (
                           <TextField
                             {...params}
                             placeholder={
-                              (selectedTags?.length ?? 0) < 5
+                              !inputTags.length
                                 ? 'タグは5つまで登録できます'
                                 : ''
                             }
-                            error={maxLengthError || maxTagsError || formatError}
+                            error={
+                              maxTagsError || formatError || maxLengthError
+                            }
                             helperText={
-                              maxLengthError
-                                ? 'タグの最大文字数は20文字です'
-                                : maxTagsError
-                                  ? 'タグは最大5つまで登録できます'
-                                  : formatError
-                                    ? 'タグに記号、スペース、全角の英数字は使用できません'
-                                    : ''
+                              (maxTagsError &&
+                                'タグは最大5つまで登録できます') ||
+                              (formatError &&
+                                'タグに記号とスペースは使用できません') ||
+                              (maxLengthError && 'タグの最大文字数は20文字です')
                             }
                             sx={{
+                              '& .MuiInputBase-root': {
+                                p: 0,
+                              },
+                              '& .MuiOutlinedInput-input': {
+                                p: 0,
+                                minWidth: '200px',
+                              },
                               '& .MuiOutlinedInput-notchedOutline': {
                                 border: 'none',
                               },
-                              '& .MuiInputBase-root': {
-                                padding: 0,
-                              },
-                              '& .MuiOutlinedInput-input': {
-                                padding: 0,
+                              '& .MuiFormHelperText-root': {
+                                position: 'absolute',
+                                top: '-52px',
+                                left: '36px',
+                                color: 'error',
                               },
                             }}
-                            disabled={(selectedTags?.length ?? 0) >= 5}
                           />
                         )}
                       />
@@ -780,7 +828,7 @@ const EditNote: NextPage = () => {
                           placeholder="ノートの概要を入力してください"
                           multiline
                           fullWidth
-                          rows={8}
+                          rows={12}
                           onChange={(e) => {
                             field.onChange(e)
                             setCharCount(e.target.value.length)
@@ -812,7 +860,7 @@ const EditNote: NextPage = () => {
         open={openConfirmDialog}
         onClose={handleClose}
         onConfirm={handleConfirm}
-        message={"変更内容を保存せずに編集を終了しますか？"}
+        message={'変更内容を保存せずに編集を終了しますか？'}
         confirmText="終了"
       />
     </>

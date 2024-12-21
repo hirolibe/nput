@@ -6,5 +6,5 @@ class Tag < ApplicationRecord
             presence: true,
             uniqueness: true,
             length: { maximum: 20, message: "は20文字以内で入力してください" },
-            format: { with: /\A[a-zA-Z0-9ぁ-んァ-ン一-龯]+\z/, message: "に記号、スペース、全角の英数字は使用できません" }
+            format: { with: /\A[a-zA-Z0-9ａ-ｚＡ-Ｚ０-９ぁ-んァ-ン一-龯]+\z/, message: "に記号とスペースは使用できません" }
 end

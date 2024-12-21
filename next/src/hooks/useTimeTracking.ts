@@ -1,5 +1,4 @@
-import { useEffect } from "react"
-import { useState } from "react"
+import { useEffect, useState } from 'react'
 
 export const useTimeTracking = () => {
   const [sessionSeconds, setSessionSeconds] = useState<number>(0)
@@ -13,6 +12,6 @@ export const useTimeTracking = () => {
   }, [setSessionSeconds])
 
   return {
-    sessionSeconds
+    sessionSeconds,
   }
 }

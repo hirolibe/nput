@@ -30,7 +30,7 @@ export const CheerButton = ({
 }: CheerButtonProps) => {
   const router = useRouter()
   const { name, id } = router.query
-  const [nameString, idString] = [name, id].map((value) =>
+  const [authorName, noteId] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
   const { idToken, isAuthLoading } = useAuth()
@@ -40,7 +40,7 @@ export const CheerButton = ({
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
 
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${nameString}/notes/${idString}/cheer`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }
 
   const handleCheer = async () => {

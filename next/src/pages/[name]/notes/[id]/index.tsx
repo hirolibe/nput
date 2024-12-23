@@ -1,3 +1,4 @@
+import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
   Box,
@@ -5,10 +6,12 @@ import {
   Chip,
   Container,
   Divider,
+  IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material'
-import type { NextPage } from 'next'
+import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -22,32 +25,37 @@ import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { useNote } from '@/hooks/useNote'
+import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
 const NoteDetail: NextPage = () => {
   const [, setSnackbar] = useSnackbarState()
+  const [isDraft, setIsDraft] = useState<boolean>(false)
 
   const router = useRouter()
   const { name, id } = router.query
-  const [nameString, idString] = [name, id].map((value) =>
+  const [authorName, noteId] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
 
-  // ノートのデータ取得・管理
-  const { noteData, noteError } = useNote({
-    authorName: nameString,
-    noteId: idString,
-  })
+  const { profileData } = useProfile()
+  const currentUserName = profileData?.user.name
+
+  // ノートのデータ管理
+  const { noteData, noteError } = useNote({ authorName, noteId })
   useEffect(() => {
-    if (noteData) setCheersCount(noteData.cheersCount)
+    if (noteData) {
+      setCheersCount(noteData.cheersCount)
+      setIsDraft(noteData.statusJp === '下書き')
+    }
   }, [noteData])
 
   // エール状態のデータ取得・管理
   const { cheerStatusData, cheerStatusError } = useCheerStatus({
-    authorName: nameString,
-    noteId: idString,
+    authorName,
+    noteId,
   })
   const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const [cheersCount, setCheersCount] = useState(0)
@@ -72,9 +80,7 @@ const NoteDetail: NextPage = () => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   // フォロー状態のデータ取得・管理
-  const { followStatusData } = useFollowStatus({
-    authorName: nameString,
-  })
+  const { followStatusData } = useFollowStatus({ authorName })
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined)
   const followState = {
     isFollowed,
@@ -84,7 +90,6 @@ const NoteDetail: NextPage = () => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
 
-  // 画面表示
   if (noteError) {
     const { statusCode, errorMessage } = handleError(noteError)
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
@@ -101,11 +106,26 @@ const NoteDetail: NextPage = () => {
         </Helmet>
       </HelmetProvider>
 
-      {/* ページ */}
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}
       >
+        {/* 下書き表示 */}
+        {isDraft && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '60px',
+              backgroundColor: 'backgroundColor.draft',
+              color: 'white',
+            }}
+          >
+            <Typography sx={{ fontWeight: 'bold' }}>下書きを表示中</Typography>
+          </Box>
+        )}
+
         {/* エールボタン・プロフィール（画面小） */}
         <Box
           sx={{
@@ -123,10 +143,28 @@ const NoteDetail: NextPage = () => {
           }}
         >
           {/* エールボタン */}
-          <CheerButton
-            cheerState={cheerState}
-            boxParams={{ flexDirection: 'row', gap: 1 }}
-          />
+          {authorName && authorName !== currentUserName ? (
+            <CheerButton
+              cheerState={cheerState}
+              boxParams={{ flexDirection: 'row', gap: 1 }}
+            />
+          ) : (
+            <Link href={`/dashboard/notes/${noteId}/edit/`}>
+              <Avatar sx={{ width: '50px', height: '50px' }}>
+                <Tooltip title="編集する">
+                  <IconButton
+                    sx={{
+                      backgroundColor: 'backgroundColor.icon',
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              </Avatar>
+            </Link>
+          )}
           <Box
             sx={{
               display: { xs: 'flex', md: 'none' },
@@ -164,10 +202,11 @@ const NoteDetail: NextPage = () => {
                 sx={{
                   fontSize: { xs: 24, sm: 36 },
                   fontWeight: 'bold',
+                  color: noteData?.title ? 'black' : 'text.placeholder',
                   mb: 2,
                 }}
               >
-                {noteData?.title}
+                {noteData?.title || 'No title'}
               </Typography>
             </Box>
             <Stack
@@ -181,7 +220,9 @@ const NoteDetail: NextPage = () => {
                 fontSize: 16,
               }}
             >
-              <Typography>投稿日：{noteData?.publishedDate}</Typography>
+              {!isDraft && (
+                <Typography>投稿日：{noteData?.publishedDate}</Typography>
+              )}
               <Typography>最終更新日：{noteData?.updatedDate}</Typography>
               <Typography>
                 作成時間：
@@ -195,26 +236,57 @@ const NoteDetail: NextPage = () => {
         {/* ボタン・コンテンツ */}
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
-          <Box
-            sx={{
-              position: 'absolute',
-              height: '100%',
-              left: '-50px',
-              display: { xs: 'none', xl: 'block' },
-            }}
-          >
+          {!isDraft && (
             <Box
               sx={{
-                position: 'sticky',
-                top: '50px',
+                position: 'absolute',
+                height: '100%',
+                left: '-50px',
+                display: { xs: 'none', xl: 'block' },
               }}
             >
-              <Stack spacing={1}>
-                <CheerButton cheerState={cheerState} backgroundColor="white" />
-                <SocialShareIcon />
-              </Stack>
+              <Box
+                sx={{
+                  position: 'sticky',
+                  top: '50px',
+                }}
+              >
+                <Stack spacing={1}>
+                  {name && name !== currentUserName ? (
+                    <CheerButton
+                      cheerState={cheerState}
+                      backgroundColor="white"
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: '100%',
+                      }}
+                    >
+                      <Link href={`/dashboard/notes/${noteId}/edit/`}>
+                        <Avatar sx={{ width: '50px', height: '50px' }}>
+                          <Tooltip title="編集する">
+                            <IconButton
+                              sx={{
+                                backgroundColor: 'white',
+                                width: '100%',
+                                height: '100%',
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Avatar>
+                      </Link>
+                    </Box>
+                  )}
+                  <SocialShareIcon />
+                </Stack>
+              </Box>
             </Box>
-          </Box>
+          )}
 
           {/* コンテンツ */}
           <Box
@@ -283,13 +355,34 @@ const NoteDetail: NextPage = () => {
                     mb: 5,
                   }}
                 >
-                  <CheerButton
-                    cheerState={cheerState}
-                    boxParams={{ flexDirection: 'row', gap: 1 }}
-                  />
-                  <Box>
-                    <SocialShareIcon />
-                  </Box>
+                  {name && name !== currentUserName ? (
+                    <CheerButton
+                      cheerState={cheerState}
+                      boxParams={{ flexDirection: 'row', gap: 1 }}
+                    />
+                  ) : (
+                    <Link href={`/dashboard/notes/${noteId}/edit/`}>
+                      <Avatar sx={{ width: '50px', height: '50px' }}>
+                        <Tooltip title="編集する">
+                          <IconButton
+                            sx={{
+                              backgroundColor: 'backgroundColor.icon',
+                              width: '100%',
+                              height: '100%',
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Avatar>
+                    </Link>
+                  )}
+
+                  {!isDraft && (
+                    <Box>
+                      <SocialShareIcon />
+                    </Box>
+                  )}
                 </Box>
                 <Divider sx={{ mb: 5 }} />
 
@@ -298,7 +391,15 @@ const NoteDetail: NextPage = () => {
               </Card>
 
               {/* コメント */}
-              <CommentCard noteData={noteData} />
+              {!isDraft ? (
+                <CommentCard noteData={noteData} />
+              ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Typography sx={{ fontWeight: 'bold', color: 'text.light' }}>
+                    このノートは下書きです
+                  </Typography>
+                </Box>
+              )}
             </Box>
 
             {/* プロフィール（サイドバー） */}

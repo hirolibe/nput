@@ -37,7 +37,7 @@ const Header = () => {
   const hideHeaderPathnames = [
     '/auth/signup',
     '/auth/login',
-    '/notes/[id]/edit',
+    '/dashboard/notes/[id]/edit',
   ]
   if (hideHeaderPathnames.includes(router.pathname)) return
 
@@ -69,7 +69,7 @@ const Header = () => {
 
     try {
       const res = await axios.post(url, null, { headers })
-      router.push(`/notes/${res.data.id}/edit`)
+      router.push(`/dashboard/notes/${res.data.id}/edit`)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -106,13 +106,16 @@ const Header = () => {
           {!isAuthLoading && !idToken && <AuthLinks />}
           {profileData && (
             <Box sx={{ display: 'flex' }}>
-              <IconButton onClick={handleClick} sx={{ p: 0 }}>
+              <IconButton
+                onClick={handleClick}
+                sx={{ display: { xs: 'none', sm: 'block' }, p: 0 }}
+              >
                 <Avatar
                   alt={profileData.nickname || profileData.user.name}
                   src={profileData.avatarUrl}
                 />
               </IconButton>
-              <Box sx={{ ml: 2, display: { xs: 'none', sm: 'block' } }}>
+              <Box sx={{ ml: 2 }}>
                 <Button
                   onClick={handleAddNewNote}
                   color="primary"

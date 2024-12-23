@@ -34,6 +34,7 @@ import { CheerIcon } from '@/components/note/CheerIcon'
 import MarkdownText from '@/components/note/MarkdownText'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuth } from '@/hooks/useAuth'
+import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useMyNote } from '@/hooks/useMyNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
@@ -57,6 +58,8 @@ type NoteFormData = {
 }
 
 const EditNote: NextPage = () => {
+  useEnsureAuth()
+
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuth()
   const router = useRouter()
@@ -227,6 +230,8 @@ const EditNote: NextPage = () => {
         severity: 'success',
         pathname: router.pathname,
       })
+
+      reset(data)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -258,11 +263,10 @@ const EditNote: NextPage = () => {
 
   if (noteError) {
     const { statusCode, errorMessage } = handleError(noteError)
-
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!isFetched) {
+  if (!idToken || !isFetched) {
     return (
       <Box
         css={styles.pageMinHeight}
@@ -388,7 +392,7 @@ const EditNote: NextPage = () => {
                     fontWeight: 'bold',
                     fontSize: { xs: 14, md: 16 },
                     border: statusChecked ? 'none' : '2px solid',
-                    width: '120px',
+                    width: { xs: '115px', md: '120px' },
                     height: '40px',
                   }}
                 >
@@ -406,7 +410,7 @@ const EditNote: NextPage = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            pt: 11,
+            pt: 3,
             pb: 3,
           }}
         >
@@ -488,7 +492,7 @@ const EditNote: NextPage = () => {
                   backgroundColor: 'white',
                   width: '100%',
                   maxWidth: '700px',
-                  minHeight: '650px',
+                  minHeight: '600px',
                   px: 2,
                   py: '13.5px',
                   mb: 1,

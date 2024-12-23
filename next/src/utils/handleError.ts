@@ -54,6 +54,13 @@ const handleFirebaseError = (
     }
   }
 
+  if (err.code === 'auth/network-request-failed') {
+    return {
+      statusCode: 503,
+      errorMessage: 'ネットワークエラーが発生しました',
+    }
+  }
+
   return {
     statusCode: 400,
     errorMessage: err.message,

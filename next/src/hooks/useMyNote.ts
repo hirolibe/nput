@@ -1,31 +1,10 @@
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuth } from './useAuth'
+import { UseNoteParams, NoteData } from './useNote'
 import { fetcher } from '@/utils/fetcher'
 
-export interface UseMyNoteParams {
-  noteId?: string | number
-}
-
-export interface MyNoteData {
-  id: number
-  title?: string
-  description?: string
-  content?: string
-  statusJp: '未保存' | '下書き' | '公開中'
-  publishedDate?: string
-  updatedDate: string
-  totalDuration: number
-  user: {
-    cheerPoints: number
-  }
-  tags?: {
-    id: number
-    name: string
-  }[]
-}
-
-export const useMyNote = ({ noteId }: UseMyNoteParams) => {
+export const useMyNote = ({ noteId }: UseNoteParams) => {
   const { idToken, isAuthLoading } = useAuth()
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteId}`
 
@@ -33,12 +12,12 @@ export const useMyNote = ({ noteId }: UseMyNoteParams) => {
     data,
     error,
     isLoading: isNoteLoading,
-  }: SWRResponse<MyNoteData> = useSWR(
+  }: SWRResponse<NoteData> = useSWR(
     idToken && noteId ? [url, idToken] : null,
     fetcher,
   )
 
-  const [noteData, setNoteData] = useState<MyNoteData | null | undefined>(
+  const [noteData, setNoteData] = useState<NoteData | null | undefined>(
     undefined,
   )
   useEffect(() => {
@@ -50,6 +29,7 @@ export const useMyNote = ({ noteId }: UseMyNoteParams) => {
   }, [isAuthLoading, isNoteLoading, data, idToken])
 
   const [noteError, setNoteError] = useState<Error | undefined>(undefined)
+
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {

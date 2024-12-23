@@ -4,9 +4,10 @@ import {
   Box,
   Container,
   Divider,
+  IconButton,
+  Pagination,
   Tooltip,
   Typography,
-  IconButton,
 } from '@mui/material'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -29,6 +30,13 @@ const Dashboard: NextPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? String(router.query.page) : 1
   const { notesData, notesError } = useMyNotes(page)
+
+  const notes = notesData?.notes
+  const meta = notesData?.meta
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    router.push(`/dashboard/?page=${value}`)
+  }
 
   if (notesError) {
     const { statusCode, errorMessage } = handleError(notesError)
@@ -62,7 +70,16 @@ const Dashboard: NextPage = () => {
           </Typography>
         </Box>
 
-        {notesData?.notes.map((note: BasicNoteData, i: number) => (
+        {!notes?.length && (
+          <Box
+            sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+          >
+            <Typography sx={{ fontSize: 18, color: 'text.placeholder' }}>
+              ノートがありません
+            </Typography>
+          </Box>
+        )}
+        {notes?.map((note: BasicNoteData, i: number) => (
           <>
             <Box
               key={i}
@@ -74,7 +91,7 @@ const Dashboard: NextPage = () => {
               }}
             >
               <Link
-                href={`/dashboard/notes/${note.id}`}
+                href={`/${note.user.name}/notes/${note.id}`}
                 css={styles.noUnderline}
                 style={{ display: 'block', width: '100%' }}
               >
@@ -125,24 +142,29 @@ const Dashboard: NextPage = () => {
                 >
                   {note.statusJp}
                 </Box>
-                <Box>
-                  <Link href={`/dashboard/notes/${note.id}/edit/`}>
-                    <Avatar>
-                      <Tooltip title="編集する">
-                        <IconButton
-                          sx={{ backgroundColor: 'backgroundColor.icon' }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Avatar>
-                  </Link>
-                </Box>
+                <Link href={`/dashboard/notes/${note.id}/edit/`}>
+                  <Avatar>
+                    <Tooltip title="編集する">
+                      <IconButton
+                        sx={{ backgroundColor: 'backgroundColor.icon' }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Avatar>
+                </Link>
               </Box>
             </Box>
             <Divider sx={{ mb: 1 }} />
           </>
         ))}
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+          <Pagination
+            count={meta?.totalPages}
+            page={meta?.currentPage}
+            onChange={handleChange}
+          />
+        </Box>
       </Container>
     </Box>
   )

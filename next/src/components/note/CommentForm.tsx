@@ -41,7 +41,7 @@ const CommentForm = ({
   const { idToken } = useAuth()
   const { profileData } = useProfile()
   const { name, id } = router.query
-  const [nameString, idString] = [name, id].map((value) =>
+  const [authorName, noteId] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
   const { handleSubmit, control } = useForm<SignUpFormData>({
@@ -101,7 +101,7 @@ const CommentForm = ({
     if (!comment.trim()) return
 
     setIsLoading(true)
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${nameString}/notes/${idString}/comments`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/comments`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {

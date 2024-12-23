@@ -26,7 +26,7 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
   const { name, id } = router.query
-  const [nameString, idString] = [name, id].map((value) =>
+  const [authorName, noteId] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
   const { profileData } = useProfile()
@@ -51,7 +51,7 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
   const handleConfirm = async () => {
     if (!commentIdToDelete) return
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${nameString}/notes/${idString}/comments/${commentIdToDelete}`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/comments/${commentIdToDelete}`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {

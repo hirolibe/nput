@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
+import { useAuth } from './useAuth'
+import { useProfile } from './useProfile'
 import { fetcher } from '@/utils/fetcher'
 
 export interface UseNoteParams {
@@ -48,16 +51,47 @@ export interface NoteData {
 }
 
 export const useNote = ({ authorName, noteId }: UseNoteParams) => {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}`
+  const { idToken, isAuthLoading } = useAuth()
+  const { profileData, isProfileLoading } = useProfile()
+
+  const urlPath =
+    !authorName || authorName === profileData?.user.name
+      ? `my_notes/${noteId}`
+      : `${authorName}/notes/${noteId}`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${urlPath}`
 
   const {
-    data: noteData,
-    error: noteError,
+    data,
+    error,
     isLoading: isNoteLoading,
   }: SWRResponse<NoteData> = useSWR(
-    authorName && noteId ? [url, undefined] : null,
+    isAuthLoading || profileData === undefined
+      ? null
+      : [url, idToken ?? undefined],
     fetcher,
   )
+
+  const [noteData, setNoteData] = useState<NoteData | null | undefined>(
+    undefined,
+  )
+  useEffect(() => {
+    if (!isAuthLoading && !isProfileLoading && !isNoteLoading) {
+      setNoteData(data ?? null)
+    }
+  }, [isAuthLoading, isProfileLoading, isNoteLoading, data])
+
+  const [noteError, setNoteError] = useState<Error | undefined>(undefined)
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setNoteError(error)
+      }, 10000)
+      return () => clearTimeout(timer)
+    } else {
+      setNoteError(undefined)
+    }
+  }, [error])
 
   return {
     noteData,

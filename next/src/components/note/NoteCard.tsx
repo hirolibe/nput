@@ -17,11 +17,9 @@ import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { BasicNoteData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
+import { omit } from '@/utils/omit'
 
 const NoteCard = (props: BasicNoteData) => {
-  const omit = (text: string) => (len: number) => (ellipsis: string) =>
-    text.length >= len ? text.slice(0, len - ellipsis.length) + ellipsis : text
-
   const { cheerStatusData, cheerStatusError } = useCheerStatus({
     authorName: props.user.name,
     noteId: props.id,

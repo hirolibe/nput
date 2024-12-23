@@ -22,6 +22,7 @@ export interface CommentData {
 export interface NoteData {
   id: number
   title?: string
+  description?: string
   content?: string
   statusJp: '未保存' | '下書き' | '公開中'
   publishedDate?: string
@@ -35,6 +36,7 @@ export interface NoteData {
   }[]
   user: {
     name: string
+    cheerPoints: number
     profile: {
       nickname?: string
       bio?: string

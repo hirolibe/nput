@@ -57,9 +57,9 @@ const LogIn: NextPage = () => {
       })
       await router.push(redirectPath)
     } catch (err) {
-      const errorMessage = handleError(err)
+      const { errorMessage } = handleError(err)
       setSnackbar({
-        message: `${errorMessage} ログインし直してください`,
+        message: errorMessage,
         severity: 'error',
         pathname: '/auth/login',
       })

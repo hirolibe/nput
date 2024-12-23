@@ -2,18 +2,15 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Error from '@/components/common/Error'
 import NoteDetail from '@/components/note/NoteDetail'
-import { useNote } from '@/hooks/useNote'
+import { useMyNote } from '@/hooks/useMyNote'
 import { handleError } from '@/utils/handleError'
 
-const PublicNoteDetail: NextPage = () => {
+const MyNoteDetail: NextPage = () => {
   const router = useRouter()
-  const { name, id } = router.query
-  const [nameString, idString] = [name, id].map((value) =>
-    typeof value === 'string' ? value : undefined,
-  )
+  const { id } = router.query
+  const idString = typeof id === 'string' ? id : undefined
 
-  const { noteData, noteError } = useNote({
-    authorName: nameString,
+  const { noteData, noteError } = useMyNote({
     noteId: idString,
   })
 
@@ -24,7 +21,9 @@ const PublicNoteDetail: NextPage = () => {
 
   if (!noteData) return <></>
 
-  return <NoteDetail noteData={noteData} />
+  return (
+    <NoteDetail noteData={noteData} isDraft={noteData.statusJp === '下書き'} />
+  )
 }
 
-export default PublicNoteDetail
+export default MyNoteDetail

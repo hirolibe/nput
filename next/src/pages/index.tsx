@@ -9,7 +9,7 @@ import { useNotes, BasicNoteData } from '@/hooks/useNotes'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
-const Index: NextPage = () => {
+const PublicNotes: NextPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? String(router.query.page) : 1
   const { notesData, notesError } = useNotes(page)
@@ -87,4 +87,4 @@ const Index: NextPage = () => {
   )
 }
 
-export default Index
+export default PublicNotes

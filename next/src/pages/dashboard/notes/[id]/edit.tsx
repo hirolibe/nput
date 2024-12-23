@@ -34,7 +34,8 @@ import { CheerIcon } from '@/components/note/CheerIcon'
 import MarkdownText from '@/components/note/MarkdownText'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuth } from '@/hooks/useAuth'
-import { useMyNote } from '@/hooks/useMyNote'
+import useEnsureAuth from '@/hooks/useAuthenticationCheck'
+import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
 import { useTimeTracking } from '@/hooks/useTimeTracking'
@@ -57,14 +58,15 @@ type NoteFormData = {
 }
 
 const EditNote: NextPage = () => {
+  useEnsureAuth()
+
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuth()
   const router = useRouter()
   const { id } = router.query
-  const idString = typeof id === 'string' ? id : undefined
-  const { noteData, noteError } = useMyNote({
-    noteId: idString,
-  })
+  const noteId = typeof id === 'string' ? id : undefined
+  const { noteData, noteError } = useNote({ noteId })
+
   const { tagsData } = useTags()
   const { sessionSeconds } = useTimeTracking()
 
@@ -227,6 +229,8 @@ const EditNote: NextPage = () => {
         severity: 'success',
         pathname: router.pathname,
       })
+
+      reset(data)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -258,11 +262,10 @@ const EditNote: NextPage = () => {
 
   if (noteError) {
     const { statusCode, errorMessage } = handleError(noteError)
-
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!isFetched) {
+  if (!idToken || !isFetched) {
     return (
       <Box
         css={styles.pageMinHeight}
@@ -388,7 +391,7 @@ const EditNote: NextPage = () => {
                     fontWeight: 'bold',
                     fontSize: { xs: 14, md: 16 },
                     border: statusChecked ? 'none' : '2px solid',
-                    width: '120px',
+                    width: { xs: '115px', md: '120px' },
                     height: '40px',
                   }}
                 >

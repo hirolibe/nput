@@ -4,7 +4,9 @@ import { fetcher } from '@/utils/fetcher'
 export interface BasicNoteData {
   id: number
   title: string
+  description?: string
   fromToday: string
+  statusJp?: '未保存' | '下書き' | '公開中'
   cheersCount: number
   totalDuration: string
   user: {

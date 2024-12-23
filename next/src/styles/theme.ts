@@ -7,6 +7,7 @@ declare module '@mui/material/styles' {
       page: string
       icon: string
       hover: string
+      draft: string
     }
   }
   interface TypeText {
@@ -31,6 +32,7 @@ const theme = createTheme({
       page: '#e6f2ff',
       icon: '#EDF2F7',
       hover: '#E0E0E0',
+      draft: '#9E9E9E',
     },
     text: {
       light: '#6E7B85',

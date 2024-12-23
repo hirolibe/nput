@@ -6,7 +6,8 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
     notes = current_user.notes.
               includes(
                 tags: {},
-              ).order(created_at: :desc).
+              ).where(status: [:published, :draft]).
+              order(created_at: :desc).
               page(params[:page] || 1).
               per(10)
 

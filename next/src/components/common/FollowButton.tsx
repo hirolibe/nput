@@ -16,17 +16,16 @@ export interface FollowButtonProps {
 
 export const FollowButton = ({ followState }: FollowButtonProps) => {
   const router = useRouter()
-  const { name, id } = router.query
-  const [nameString] = [name, id].map((value) =>
-    typeof value === 'string' ? value : undefined,
-  )
+  const { name } = router.query
+  const authorName = typeof name === 'string' ? name : undefined
+
   const { idToken, isAuthLoading } = useAuth()
   const [, setSnackbar] = useSnackbarState()
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
 
   const { isFollowed, setIsFollowed } = followState
 
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${nameString}/relationship`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/relationship`
   const headers = { Authorization: `Bearer ${idToken}` }
 
   const handleFollow = async () => {

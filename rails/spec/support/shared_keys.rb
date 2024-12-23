@@ -2,6 +2,7 @@ EXPECTED_NOTE_INDEX_KEYS = [
   "id",
   "title",
   "description",
+  "status_jp",
   "from_today",
   "cheers_count",
   "total_duration",

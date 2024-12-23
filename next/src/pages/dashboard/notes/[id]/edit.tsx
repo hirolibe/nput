@@ -35,7 +35,7 @@ import MarkdownText from '@/components/note/MarkdownText'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuth } from '@/hooks/useAuth'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
-import { useMyNote } from '@/hooks/useMyNote'
+import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
 import { useTimeTracking } from '@/hooks/useTimeTracking'
@@ -64,10 +64,9 @@ const EditNote: NextPage = () => {
   const { idToken } = useAuth()
   const router = useRouter()
   const { id } = router.query
-  const idString = typeof id === 'string' ? id : undefined
-  const { noteData, noteError } = useMyNote({
-    noteId: idString,
-  })
+  const noteId = typeof id === 'string' ? id : undefined
+  const { noteData, noteError } = useNote({ noteId })
+
   const { tagsData } = useTags()
   const { sessionSeconds } = useTimeTracking()
 
@@ -410,7 +409,7 @@ const EditNote: NextPage = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            pt: 3,
+            pt: 11,
             pb: 3,
           }}
         >
@@ -492,7 +491,7 @@ const EditNote: NextPage = () => {
                   backgroundColor: 'white',
                   width: '100%',
                   maxWidth: '700px',
-                  minHeight: '600px',
+                  minHeight: '650px',
                   px: 2,
                   py: '13.5px',
                   mb: 1,

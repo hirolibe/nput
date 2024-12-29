@@ -44,28 +44,6 @@ const PublicNotes: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!notesData)
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ backgroundColor: 'backgroundColor.page' }}
-      >
-        <Container maxWidth="md" sx={{ pt: 4 }}>
-          <Typography>
-            最新記事一覧
-          </Typography>
-          <Grid container spacing={4}>
-            {Array.from({ length: 10 }).map((_, i) => (
-              <Grid item key={i} xs={12}>
-                <NoteCardSkeleton key={i} />
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-        <Box sx={{ height: '128px' }}></Box>
-      </Box>
-    )
-
   const notes = notesData?.notes
   const meta = notesData?.meta
 
@@ -83,6 +61,13 @@ const PublicNotes: NextPage = () => {
           新着記事一覧
         </Typography>
         <Grid container spacing={4}>
+          {!notesData && (
+            Array.from({ length: 10 }).map((_, i) => (
+              <Grid item key={i} xs={12}>
+                <NoteCardSkeleton key={i} />
+              </Grid>
+            ))
+          )}
           {notes?.map((note: BasicNoteData, i: number) => (
             <Grid item key={i} xs={12}>
               <Card>

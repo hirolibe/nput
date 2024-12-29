@@ -15,13 +15,17 @@ import { useState } from 'react'
 import Error from '@/components/common/Error'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
-import { useNotes, BasicNoteData } from '@/hooks/useNotes'
+import { BasicNoteData } from '@/hooks/useNotes'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
+import { useTaggedNotes } from '@/hooks/useTaggedNotes'
 
 const TaggedNotes: NextPage = () => {
   const router = useRouter()
-  const { notesData, notesError } = useNotes()
+  const { name } = router.query
+  const tagName = typeof name === 'string' ? name : undefined
+
+  const { notesData, notesError } = useTaggedNotes()
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
@@ -44,28 +48,6 @@ const TaggedNotes: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!notesData)
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ backgroundColor: 'backgroundColor.page' }}
-      >
-        <Container maxWidth="md" sx={{ pt: 4 }}>
-          <Typography>
-            最新記事一覧
-          </Typography>
-          <Grid container spacing={4}>
-            {Array.from({ length: 10 }).map((_, i) => (
-              <Grid item key={i} xs={12}>
-                <NoteCardSkeleton key={i} />
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-        <Box sx={{ height: '128px' }}></Box>
-      </Box>
-    )
-
   const notes = notesData?.notes
   const meta = notesData?.meta
 
@@ -80,9 +62,16 @@ const TaggedNotes: NextPage = () => {
     >
       <Container maxWidth="md" sx={{ pt: 4 }}>
         <Typography component={'h2'} sx={{ textAlign: 'center', fontSize: '28px', fontWeight: 'bold', mb: 3 }}>
-          新着記事一覧
+          「{tagName}」記事一覧
         </Typography>
         <Grid container spacing={4}>
+          {!notesData && (
+            Array.from({ length: 10 }).map((_, i) => (
+              <Grid item key={i} xs={12}>
+                <NoteCardSkeleton key={i} />
+              </Grid>
+            ))
+          )}
           {notes?.map((note: BasicNoteData, i: number) => (
             <Grid item key={i} xs={12}>
               <Card>

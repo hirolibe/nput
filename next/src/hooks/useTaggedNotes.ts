@@ -3,35 +3,6 @@ import useSWR, { SWRResponse } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 import { PagenatedNotesData } from './useNotes'
 
-export interface BasicNoteData {
-  id: number
-  title: string
-  description?: string
-  fromToday: string
-  statusJp?: '未保存' | '下書き' | '公開中'
-  cheersCount: number
-  totalDuration: string
-  user: {
-    name: string
-    profile: {
-      nickname: string
-      avatarUrl: string
-    }
-  }
-  tags: {
-    id: number
-    name: string
-  }[]
-}
-
-export interface PagenatedNotesData {
-  notes: BasicNoteData[]
-  meta: {
-    totalPages: number
-    currentPage: number
-  }
-}
-
 export const useTaggedNotes = () => {
   const router = useRouter()
   const { name } = router.query

@@ -56,6 +56,12 @@ const UsersIndex: NextPage = () => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
 
+  const [changedFollowingsCount, setChangedFollowingsCount] = useState<number | undefined>(0)
+
+  useEffect(() => {
+    setChangedFollowingsCount(userData?.followingsCount)
+  }, [userData?.followingsCount])
+
   if (userError) {
     const { statusCode, errorMessage } = handleError(userError)
     return <Error statusCode={statusCode} errorMessage={errorMessage} />

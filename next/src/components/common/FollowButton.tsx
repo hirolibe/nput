@@ -16,7 +16,11 @@ export interface FollowButtonProps {
   width?: number
 }
 
-export const FollowButton = ({ userName, followState, width }: FollowButtonProps) => {
+export const FollowButton = ({
+  userName,
+  followState,
+  width,
+}: FollowButtonProps) => {
   const router = useRouter()
 
   const { idToken, isAuthLoading } = useAuth()

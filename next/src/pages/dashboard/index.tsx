@@ -59,13 +59,13 @@ const Dashboard: NextPage = () => {
       css={styles.pageMinHeight}
       sx={{
         backgroundColor: 'backgroundColor.page',
-        pb: 6,
+        pb: 5,
       }}
     >
-      <Container maxWidth="md" sx={{ pt: 6, px: { xs: 2, md: 4 } }}>
+      <Container maxWidth="md" sx={{ pt: 5, px: { xs: 2, md: 4 } }}>
         <Card
           sx={{
-            minHeight: '550px',
+            minHeight: '578px',
             px: { xs: 2, md: 6 },
             pt: 4,
           }}
@@ -75,7 +75,7 @@ const Dashboard: NextPage = () => {
               component="h2"
               sx={{
                 textAlign: 'center',
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: 'bold',
               }}
             >

@@ -20,6 +20,7 @@ import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import CheeredNotes from '@/components/user/CheeredNotes'
 import DurationStatus from '@/components/user/DurationStatus'
+import Followers from '@/components/user/Followers'
 import Followings from '@/components/user/Followings'
 import { UserInfo } from '@/components/user/UserInfo'
 import UserNotes from '@/components/user/UserNotes'
@@ -27,7 +28,6 @@ import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { useUser } from '@/hooks/useUser'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
-import Followers from '@/components/user/Followers'
 
 const UsersIndex: NextPage = () => {
   const router = useRouter()
@@ -36,8 +36,14 @@ const UsersIndex: NextPage = () => {
   const { userData, userError } = useUser()
 
   const data = [
-    { label: '今日', value: Math.floor((userData?.dailyDurations?.[6] ?? 0) / 3600) },
-    { label: '今月', value: Math.floor((userData?.monthlyDurations?.[6] ?? 0) / 3600) },
+    {
+      label: '今日',
+      value: Math.floor((userData?.dailyDurations?.[6] ?? 0) / 3600),
+    },
+    {
+      label: '今月',
+      value: Math.floor((userData?.monthlyDurations?.[6] ?? 0) / 3600),
+    },
     { label: '合計', value: Math.floor((userData?.totalDuration ?? 0) / 3600) },
   ]
 
@@ -56,7 +62,9 @@ const UsersIndex: NextPage = () => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
 
-  const [changedFollowingsCount, setChangedFollowingsCount] = useState<number | undefined>(0)
+  const [changedFollowingsCount, setChangedFollowingsCount] = useState<
+    number | undefined
+  >(0)
 
   useEffect(() => {
     setChangedFollowingsCount(userData?.followingsCount)
@@ -219,8 +227,12 @@ const UsersIndex: NextPage = () => {
                 <Tab
                   label={
                     <>
-                      <Box sx={{ display: { sm: 'none' }, textAlign: 'center' }}>
-                        投稿した<br />ノート
+                      <Box
+                        sx={{ display: { sm: 'none' }, textAlign: 'center' }}
+                      >
+                        投稿した
+                        <br />
+                        ノート
                       </Box>
                       <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         投稿したノート
@@ -243,8 +255,12 @@ const UsersIndex: NextPage = () => {
                 <Tab
                   label={
                     <>
-                      <Box sx={{ display: { sm: 'none' }, textAlign: 'center' }}>
-                        エールした<br />ノート
+                      <Box
+                        sx={{ display: { sm: 'none' }, textAlign: 'center' }}
+                      >
+                        エールした
+                        <br />
+                        ノート
                       </Box>
                       <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         エールしたノート

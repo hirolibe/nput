@@ -16,9 +16,9 @@ import Error from '@/components/common/Error'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
 import { BasicNoteData } from '@/hooks/useNotes'
+import { useTaggedNotes } from '@/hooks/useTaggedNotes'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
-import { useTaggedNotes } from '@/hooks/useTaggedNotes'
 
 const TaggedNotes: NextPage = () => {
   const router = useRouter()
@@ -61,17 +61,24 @@ const TaggedNotes: NextPage = () => {
       sx={{ backgroundColor: 'backgroundColor.page' }}
     >
       <Container maxWidth="md" sx={{ pt: 4 }}>
-        <Typography component={'h2'} sx={{ textAlign: 'center', fontSize: '28px', fontWeight: 'bold', mb: 3 }}>
-          「{tagName}」記事一覧
+        <Typography
+          component={'h2'}
+          sx={{
+            textAlign: 'center',
+            fontSize: 24,
+            fontWeight: 'bold',
+            mb: 3,
+          }}
+        >
+          「{tagName}」ノート一覧
         </Typography>
         <Grid container spacing={4}>
-          {!notesData && (
+          {!notesData &&
             Array.from({ length: 10 }).map((_, i) => (
               <Grid item key={i} xs={12}>
                 <NoteCardSkeleton key={i} />
               </Grid>
-            ))
-          )}
+            ))}
           {notes?.map((note: BasicNoteData, i: number) => (
             <Grid item key={i} xs={12}>
               <Card>

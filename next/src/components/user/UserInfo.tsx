@@ -56,7 +56,7 @@ export const UserInfo = ({
   const router = useRouter()
 
   const handleEditProfile = () => {
-    router.push({ pathname: '/auth/login' })
+    router.push({ pathname: '/settings/profile' })
   }
 
   return (
@@ -218,7 +218,11 @@ export const UserInfo = ({
           profileData !== undefined &&
           name !== currentUserName && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <FollowButton userName={name} followState={followState} width={200} />
+              <FollowButton
+                userName={name}
+                followState={followState}
+                width={200}
+              />
             </Box>
           )}
 

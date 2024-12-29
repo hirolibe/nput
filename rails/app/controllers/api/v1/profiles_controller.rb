@@ -9,6 +9,7 @@ class Api::V1::ProfilesController < Api::V1::ApplicationController
 
   def update
     profile = current_user.profile
+    profile.avatar.attach(params[:image_signed_id])
 
     if profile.update(profile_params)
       render json: { profile: ProfileSerializer.new(profile), message: "プロフィールを更新しました！" }, status: :ok

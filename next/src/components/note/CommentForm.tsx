@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import AuthLinks from '../auth/AuthLinks'
-import ImageUploadButton from '../common/ImageUploadButton'
+import UploadImagesButton from '../common/UploadImagesButton'
 import MarkdownText from './MarkdownText'
 import { useAuth } from '@/hooks/useAuth'
 import { CommentData } from '@/hooks/useNote'
@@ -22,7 +22,7 @@ import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-type SignUpFormData = {
+type CommentFormData = {
   content: string
 }
 
@@ -44,7 +44,7 @@ const CommentForm = ({
   const [authorName, noteId] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
-  const { handleSubmit, control } = useForm<SignUpFormData>({
+  const { handleSubmit, control } = useForm<CommentFormData>({
     defaultValues: { content: '' },
   })
   const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit')
@@ -97,19 +97,16 @@ const CommentForm = ({
     },
   })
 
-  const onSubmit: SubmitHandler<SignUpFormData> = async () => {
+  const onSubmit: SubmitHandler<CommentFormData> = async () => {
     if (!comment.trim()) return
 
     setIsLoading(true)
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/comments`
+    const commentData = { content: comment, image_signed_ids: imageSignedIds }
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
-      const res = await axios.post(
-        url,
-        { content: comment, image_signed_ids: imageSignedIds },
-        { headers },
-      )
+      const res = await axios.post(url, commentData, { headers })
       const newComment = camelcaseKeys(res.data, { deep: true })
       addComment(newComment)
       setComment('')
@@ -255,7 +252,7 @@ const CommentForm = ({
                 alignItems: 'center',
               }}
             >
-              <ImageUploadButton
+              <UploadImagesButton
                 setImageSignedIds={setImageSignedIds}
                 isMultiple={true}
                 setContent={setComment}

@@ -30,8 +30,8 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
-import ImageUploadButton from '@/components/common/ImageUploadButton'
 import Loading from '@/components/common/Loading'
+import UploadImagesButton from '@/components/common/UploadImagesButton'
 import MarkdownText from '@/components/note/MarkdownText'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuth } from '@/hooks/useAuth'
@@ -176,6 +176,7 @@ const EditNote: NextPage = () => {
       setContent(note.content)
       setStatusChecked(note.status == '公開中')
       setInputTags(note.tags)
+
       setIsFetched(true)
     }
   }, [noteData, note, reset, setIsFetched])
@@ -204,19 +205,17 @@ const EditNote: NextPage = () => {
     setIsLoading(true)
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${id}`
-    const headers = { Authorization: `Bearer ${idToken}` }
 
     const status = statusChecked ? 'published' : 'draft'
     const workDuration =
       remainingSeconds + sessionSeconds - previousSessionSeconds
-
     const patchData = {
       note: { ...data, status: status, image_signed_ids: imageSignedIds },
       tag_names: inputTags,
       duration: workDuration,
     }
 
-    console.log(patchData.tag_names)
+    const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
       const res = await axios.patch(url, patchData, { headers })
@@ -646,14 +645,16 @@ const EditNote: NextPage = () => {
                     </Tooltip>
                     {!isPreviewActive && (
                       <Tooltip title="画像を追加">
-                        <ImageUploadButton
-                          setImageSignedIds={setImageSignedIds}
-                          isMultiple={true}
-                          setContent={setContent}
-                          preCursorText={preCursorText}
-                          postCursorText={postCursorText}
-                          backgroundColor={true}
-                        />
+                        <Box tabIndex={0}>
+                          <UploadImagesButton
+                            setImageSignedIds={setImageSignedIds}
+                            isMultiple={true}
+                            setContent={setContent}
+                            preCursorText={preCursorText}
+                            postCursorText={postCursorText}
+                            backgroundColor={true}
+                          />
+                        </Box>
                       </Tooltip>
                     )}
                     <Tooltip title="ノートを削除">

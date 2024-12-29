@@ -7,7 +7,9 @@ export interface ProfileData {
   id?: number
   nickname?: string
   bio?: string
+  xUsername?: string
   xLink?: string
+  githubUsername?: string
   githubLink?: string
   avatarUrl?: string
   user: {

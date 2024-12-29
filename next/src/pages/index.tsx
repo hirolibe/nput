@@ -57,17 +57,24 @@ const PublicNotes: NextPage = () => {
       sx={{ backgroundColor: 'backgroundColor.page' }}
     >
       <Container maxWidth="md" sx={{ pt: 4 }}>
-        <Typography component={'h2'} sx={{ textAlign: 'center', fontSize: '28px', fontWeight: 'bold', mb: 3 }}>
+        <Typography
+          component={'h2'}
+          sx={{
+            textAlign: 'center',
+            fontSize: 24,
+            fontWeight: 'bold',
+            mb: 3,
+          }}
+        >
           新着記事一覧
         </Typography>
         <Grid container spacing={4}>
-          {!notesData && (
+          {!notesData &&
             Array.from({ length: 10 }).map((_, i) => (
               <Grid item key={i} xs={12}>
                 <NoteCardSkeleton key={i} />
               </Grid>
-            ))
-          )}
+            ))}
           {notes?.map((note: BasicNoteData, i: number) => (
             <Grid item key={i} xs={12}>
               <Card>

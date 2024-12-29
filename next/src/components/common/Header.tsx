@@ -17,7 +17,7 @@ import { signOut } from 'firebase/auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AuthLinks from '../auth/AuthLinks'
 import StopPropagationLink from './StopPropagationLink'
 import { useAuth } from '@/hooks/useAuth'
@@ -33,6 +33,11 @@ const Header = () => {
   const [, setSnackbar] = useSnackbarState()
   const { idToken, isAuthLoading } = useAuth()
   const { profileData, isProfileLoading } = useProfile()
+
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    setAvatarUrl(profileData?.avatarUrl)
+  }, [setAvatarUrl, profileData?.avatarUrl])
 
   const hideHeaderPathnames = [
     '/auth/signup',
@@ -112,7 +117,7 @@ const Header = () => {
               <IconButton onClick={handleClick} sx={{ p: 0 }}>
                 <Avatar
                   alt={profileData.nickname || profileData.user.name}
-                  src={profileData.avatarUrl}
+                  src={avatarUrl}
                 />
               </IconButton>
               <Box sx={{ ml: 2 }}>

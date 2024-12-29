@@ -2,7 +2,9 @@ class ProfileSerializer < ActiveModel::Serializer
   attributes :id,
              :nickname,
              :bio,
+             :x_username,
              :x_link,
+             :github_username,
              :github_link,
              :avatar_url
 

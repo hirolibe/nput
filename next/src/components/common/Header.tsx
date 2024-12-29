@@ -32,7 +32,7 @@ const Header = () => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
   const { idToken, isAuthLoading } = useAuth()
-  const { profileData } = useProfile()
+  const { profileData, isProfileLoading } = useProfile()
 
   const hideHeaderPathnames = [
     '/auth/signup',
@@ -103,13 +103,13 @@ const Header = () => {
               <Image src="/logo.png" width={90} height={40} alt="logo" />
             </StopPropagationLink>
           </Box>
-          {!isAuthLoading && !idToken && <AuthLinks />}
+          {!isAuthLoading &&
+            !idToken &&
+            !isProfileLoading &&
+            profileData === null && <AuthLinks />}
           {profileData && (
             <Box sx={{ display: 'flex' }}>
-              <IconButton
-                onClick={handleClick}
-                sx={{ display: { xs: 'none', sm: 'block' }, p: 0 }}
-              >
+              <IconButton onClick={handleClick} sx={{ p: 0 }}>
                 <Avatar
                   alt={profileData.nickname || profileData.user.name}
                   src={profileData.avatarUrl}

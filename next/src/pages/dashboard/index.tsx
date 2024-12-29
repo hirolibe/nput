@@ -2,6 +2,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
   Box,
+  Card,
   Container,
   Divider,
   IconButton,
@@ -28,9 +29,7 @@ const Dashboard: NextPage = () => {
   const { idToken } = useAuth()
 
   const router = useRouter()
-  const page = 'page' in router.query ? String(router.query.page) : 1
-  const { notesData, notesError } = useMyNotes(page)
-
+  const { notesData, notesError } = useMyNotes()
   const notes = notesData?.notes
   const meta = notesData?.meta
 
@@ -59,112 +58,144 @@ const Dashboard: NextPage = () => {
     <Box
       css={styles.pageMinHeight}
       sx={{
-        borderTop: '0.5px solid #acbcc7',
-        pb: 8,
+        backgroundColor: 'backgroundColor.page',
+        pb: 6,
       }}
     >
-      <Container maxWidth="sm" sx={{ pt: 6, px: 4 }}>
-        <Box sx={{ mb: 4 }}>
-          <Typography component="h2" sx={{ fontSize: 32, fontWeight: 'bold' }}>
-            記事の管理
-          </Typography>
-        </Box>
-
-        {!notes?.length && (
-          <Box
-            sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
-          >
-            <Typography sx={{ fontSize: 18, color: 'text.placeholder' }}>
-              ノートがありません
-            </Typography>
-          </Box>
-        )}
-        {notes?.map((note: BasicNoteData, i: number) => (
-          <>
-            <Box
-              key={i}
+      <Container maxWidth="md" sx={{ pt: 6, px: { xs: 2, md: 4 } }}>
+        <Card
+          sx={{
+            minHeight: '550px',
+            px: { xs: 2, md: 6 },
+            pt: 4,
+          }}
+        >
+          <Box sx={{ mb: 4 }}>
+            <Typography
+              component="h2"
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                minHeight: 80,
+                textAlign: 'center',
+                fontSize: 20,
+                fontWeight: 'bold',
               }}
             >
-              <Link
-                href={`/${note.user.name}/notes/${note.id}`}
-                css={styles.noUnderline}
-                style={{ display: 'block', width: '100%' }}
-              >
-                <Box sx={{ width: '100%', pr: 3, mb: 1 }}>
-                  <Typography
-                    component="h3"
-                    sx={{
-                      fontSize: { xs: 16, sm: 18 },
-                      color: note.title ? 'black' : 'text.placeholder',
-                      fontWeight: 'bold',
-                      width: '100%',
-                      mb: 1,
-                    }}
-                  >
-                    {note.title ? omit(note.title)(25)('...') : 'No title'}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: 10, sm: 12 },
-                      color: 'text.light',
-                      width: '100%',
-                    }}
-                  >
-                    {`作成日：${note.fromToday}  作成時間：${note.totalDuration}`}
-                  </Typography>
-                </Box>
-              </Link>
+              ノートの管理
+            </Typography>
+          </Box>
+
+          {!notes?.length && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                minHeight: '250px',
+                mt: 20,
+              }}
+            >
+              <Typography sx={{ fontSize: 18, color: 'text.placeholder' }}>
+                ノートがありません
+              </Typography>
+            </Box>
+          )}
+          {notes?.map((note: BasicNoteData, i: number) => (
+            <>
               <Box
+                key={i}
                 sx={{
-                  minWidth: 100,
-                  display: 'flex',
+                  display: { sm: 'flex' },
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  minHeight: 80,
+                  mx: { xs: 2, md: 8 },
                 }}
               >
+                <Link
+                  href={`/${note.user.name}/notes/${note.id}`}
+                  css={styles.noUnderline}
+                  style={{ display: 'block', width: '100%' }}
+                >
+                  <Box sx={{ width: '100%', pr: { sm: 3 }, mb: 1 }}>
+                    <Typography
+                      component="h3"
+                      sx={{
+                        fontSize: { xs: 16, sm: 18 },
+                        color: note.title ? 'black' : 'text.placeholder',
+                        fontWeight: 'bold',
+                        width: '100%',
+                        mb: 1,
+                      }}
+                    >
+                      {note.title ? omit(note.title)(35)('...') : 'No title'}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: 10, sm: 12 },
+                        color: 'text.light',
+                        width: '100%',
+                      }}
+                    >
+                      作成日：{note.fromToday} &nbsp;&nbsp;&nbsp;&nbsp;
+                      作成時間：{note.totalDuration}
+                    </Typography>
+                  </Box>
+                </Link>
                 <Box
                   sx={{
-                    fontSize: 12,
-                    border: '1px solid',
-                    borderColor:
-                      note.statusJp == '下書き' ? 'text.light' : 'primary.main',
-                    p: '4px',
-                    borderRadius: 1,
-                    color:
-                      note.statusJp == '下書き' ? 'text.light' : 'primary.main',
-                    fontWeight: 'bold',
+                    minWidth: 100,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: { xs: 1, sm: 0 },
                   }}
                 >
-                  {note.statusJp}
+                  <Box
+                    sx={{
+                      fontSize: 12,
+                      border: '1px solid',
+                      borderColor:
+                        note.statusJp == '下書き'
+                          ? 'text.light'
+                          : 'primary.main',
+                      p: '4px',
+                      borderRadius: 2,
+                      color:
+                        note.statusJp == '下書き'
+                          ? 'text.light'
+                          : 'primary.main',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {note.statusJp}
+                  </Box>
+                  <Link href={`/dashboard/notes/${note.id}/edit/`}>
+                    <Avatar>
+                      <Tooltip title="編集する">
+                        <IconButton
+                          sx={{ backgroundColor: 'backgroundColor.icon' }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Avatar>
+                  </Link>
                 </Box>
-                <Link href={`/dashboard/notes/${note.id}/edit/`}>
-                  <Avatar>
-                    <Tooltip title="編集する">
-                      <IconButton
-                        sx={{ backgroundColor: 'backgroundColor.icon' }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Avatar>
-                </Link>
               </Box>
+              <Divider sx={{ mb: 1 }} />
+            </>
+          ))}
+          {!notes?.length ? (
+            <></>
+          ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+              <Pagination
+                count={meta?.totalPages}
+                page={meta?.currentPage}
+                onChange={handleChange}
+              />
             </Box>
-            <Divider sx={{ mb: 1 }} />
-          </>
-        ))}
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-          <Pagination
-            count={meta?.totalPages}
-            page={meta?.currentPage}
-            onChange={handleChange}
-          />
-        </Box>
+          )}
+        </Card>
       </Container>
     </Box>
   )

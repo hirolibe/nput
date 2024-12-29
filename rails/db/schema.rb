@@ -79,7 +79,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
 
   create_table "notes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "title", comment: "タイトル"
+    t.string "title", limit: 70, comment: "タイトル"
     t.string "description", limit: 200, comment: "概要"
     t.text "content", comment: "本文"
     t.integer "status", default: 10, null: false, comment: "ステータス（10:未保存, 20:下書き, 30:公開中）"
@@ -94,8 +94,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
 
   create_table "profiles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "nickname", comment: "ニックネーム"
-    t.text "bio", comment: "自己紹介文"
+    t.string "nickname", limit: 30, comment: "ニックネーム"
+    t.string "bio", limit: 120, comment: "自己紹介文"
     t.string "x_username", comment: "Xのユーザー名"
     t.string "github_username", comment: "GitHubのユーザー名"
     t.datetime "created_at", null: false
@@ -125,7 +125,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
     t.string "uid", null: false
     t.string "email", null: false
     t.string "name", limit: 20, null: false
-    t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限50ポイント）"
+    t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限3600ポイント）"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cheers_count", default: 0, null: false, comment: "エールした合計回数"

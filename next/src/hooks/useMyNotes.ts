@@ -1,11 +1,15 @@
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuth } from './useAuth'
 import { PagenatedNotesData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
 
-export const useMyNotes = (page: string | number) => {
+export const useMyNotes = () => {
   const { idToken, isAuthLoading } = useAuth()
+
+  const router = useRouter()
+  const page = 'page' in router.query ? String(router.query.page) : 1
 
   const url = page
     ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/?page=${page}`

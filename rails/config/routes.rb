@@ -22,6 +22,7 @@ Rails.application.routes.draw do
           resources :supporters, only: [:index]
           resource :cheer, only: [:show, :create, :destroy]
         end
+        resources :user_notes, only: [:index]
         resources :cheered_notes, only: [:index]
         resources :followings, only: [:index]
         resources :followers, only: [:index]

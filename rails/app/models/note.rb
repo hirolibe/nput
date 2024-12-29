@@ -14,6 +14,7 @@ class Note < ApplicationRecord
 
   validates :status, presence: true
   validates :title, :content, :published_at, presence: true, if: :published?
+  validates :title, length: { maximum: 70 }
   validates :description, length: { maximum: 200 }
   validate :validate_single_unsaved
   validate :validate_durations

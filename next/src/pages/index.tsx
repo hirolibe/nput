@@ -1,7 +1,17 @@
-import { Box, Grid, Container, Pagination } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import {
+  Box,
+  Card,
+  Container,
+  Divider,
+  Grid,
+  Modal,
+  Pagination,
+  Typography,
+} from '@mui/material'
 import type { NextPage } from 'next'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import Error from '@/components/common/Error'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
@@ -11,8 +21,22 @@ import { handleError } from '@/utils/handleError'
 
 const PublicNotes: NextPage = () => {
   const router = useRouter()
-  const page = 'page' in router.query ? String(router.query.page) : 1
-  const { notesData, notesError } = useNotes(page)
+  const { notesData, notesError } = useNotes()
+
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [title, setTitle] = useState<string | undefined>(undefined)
+  const [description, setDescription] = useState<string | undefined>(undefined)
+
+  const handleOpenDescription = (id: number) => {
+    const note = notesData?.notes.find((note) => note.id === id)
+    setTitle(note?.title)
+    setDescription(note?.description)
+    setIsOpen(true)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
 
   if (notesError) {
     const { statusCode, errorMessage } = handleError(notesError)
@@ -26,7 +50,10 @@ const PublicNotes: NextPage = () => {
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page' }}
       >
-        <Container maxWidth="md" sx={{ pt: 6 }}>
+        <Container maxWidth="md" sx={{ pt: 4 }}>
+          <Typography>
+            最新記事一覧
+          </Typography>
           <Grid container spacing={4}>
             {Array.from({ length: 10 }).map((_, i) => (
               <Grid item key={i} xs={12}>
@@ -51,17 +78,18 @@ const PublicNotes: NextPage = () => {
       css={styles.pageMinHeight}
       sx={{ backgroundColor: 'backgroundColor.page' }}
     >
-      <Container maxWidth="md" sx={{ pt: 6 }}>
+      <Container maxWidth="md" sx={{ pt: 4 }}>
+        <Typography component={'h2'} sx={{ textAlign: 'center', fontSize: '28px', fontWeight: 'bold', mb: 3 }}>
+          新着記事一覧
+        </Typography>
         <Grid container spacing={4}>
           {notes?.map((note: BasicNoteData, i: number) => (
             <Grid item key={i} xs={12}>
-              <Link
-                href={`/${note.user.name}/notes/${note.id}`}
-                css={styles.noUnderline}
-              >
+              <Card>
                 <NoteCard
                   id={note.id}
                   title={note.title}
+                  description={note.description}
                   fromToday={note.fromToday}
                   cheersCount={note.cheersCount}
                   totalDuration={note.totalDuration}
@@ -70,11 +98,48 @@ const PublicNotes: NextPage = () => {
                     id: tag.id,
                     name: tag.name,
                   }))}
+                  handleOpenDescription={handleOpenDescription}
                 />
-              </Link>
+              </Card>
             </Grid>
           ))}
         </Grid>
+
+        <Modal open={isOpen} onClose={handleClose}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: 'white',
+              px: 3,
+              pt: 2,
+              pb: 3,
+              borderRadius: 2,
+              boxShadow: 24,
+              width: '600px',
+              maxWidth: '90%',
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <CloseIcon
+                onClick={handleClose}
+                sx={{
+                  cursor: 'pointer',
+                  opacity: 0.7,
+                  '&:hover': { opacity: 1 },
+                }}
+              />
+            </Box>
+            <Typography sx={{ fontSize: 18, fontWeight: 'bold', px: 3, mb: 1 }}>
+              {title}
+            </Typography>
+            <Divider sx={{ mx: 3, mb: 3 }} />
+            <Typography sx={{ px: 4, mb: 2 }}>{description}</Typography>
+          </Box>
+        </Modal>
+
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
           <Pagination
             count={meta?.totalPages}

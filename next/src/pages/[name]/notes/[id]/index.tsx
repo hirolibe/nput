@@ -17,6 +17,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
+import Loading from '@/components/common/Loading'
 import { AuthorInfo } from '@/components/note/AuthorInfo'
 import { CheerButton } from '@/components/note/CheerButton'
 import CommentCard from '@/components/note/CommentCard'
@@ -44,7 +45,7 @@ const NoteDetail: NextPage = () => {
   const currentUserName = profileData?.user.name
 
   // ノートのデータ管理
-  const { noteData, noteError } = useNote({ authorName, noteId })
+  const { noteData, noteError } = useNote()
   useEffect(() => {
     if (noteData) {
       setCheersCount(noteData.cheersCount)
@@ -80,7 +81,7 @@ const NoteDetail: NextPage = () => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   // フォロー状態のデータ取得・管理
-  const { followStatusData } = useFollowStatus({ authorName })
+  const { followStatusData } = useFollowStatus(authorName)
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined)
   const followState = {
     isFollowed,
@@ -95,7 +96,16 @@ const NoteDetail: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!noteData) return <></>
+  if (!noteData) {
+    return (
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <Loading />
+      </Box>
+    )
+  }
 
   return (
     <>
@@ -171,18 +181,10 @@ const NoteDetail: NextPage = () => {
               alignItems: 'center',
             }}
           >
-            <Box sx={{ mr: 2 }}>
-              <Avatar
-                alt={noteData?.user.profile.nickname || noteData?.user.name}
-                src={noteData?.user.profile.avatarUrl}
-              />
-            </Box>
-            {/* プロフィール */}
-            <Typography sx={{ fontWeight: 'bold' }}>
-              <Link href={`/${noteData?.user.name}`}>
-                {noteData?.user.profile.nickname || noteData?.user.name}
-              </Link>
-            </Typography>
+            <Avatar
+              alt={noteData?.user.profile.nickname || noteData?.user.name}
+              src={noteData?.user.profile.avatarUrl}
+            />
           </Box>
         </Box>
 
@@ -210,8 +212,8 @@ const NoteDetail: NextPage = () => {
               </Typography>
             </Box>
             <Stack
-              direction={{ sm: 'row' }}
-              spacing={{ sm: 2 }}
+              direction={{ md: 'row' }}
+              spacing={{ md: 2 }}
               sx={{
                 display: { sm: 'flex' },
                 justifyContent: 'center',
@@ -248,7 +250,7 @@ const NoteDetail: NextPage = () => {
               <Box
                 sx={{
                   position: 'sticky',
-                  top: '50px',
+                  top: '190px',
                 }}
               >
                 <Stack spacing={1}>
@@ -303,7 +305,7 @@ const NoteDetail: NextPage = () => {
               <Card
                 sx={{
                   boxShadow: 'none',
-                  borderRadius: '12px',
+                  borderRadius: 2,
                   p: 5,
                   mb: 3,
                 }}
@@ -412,8 +414,9 @@ const NoteDetail: NextPage = () => {
               <Card
                 sx={{
                   boxShadow: 'none',
-                  borderRadius: '12px',
+                  borderRadius: 2,
                   p: '20px 25px',
+                  maxWidth: '370px',
                 }}
               >
                 <AuthorInfo noteData={noteData} followState={followState} />

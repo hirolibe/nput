@@ -4,7 +4,7 @@ import { useAuth } from './useAuth'
 import { fetcher } from '@/utils/fetcher'
 
 export interface ProfileData {
-  id: number
+  id?: number
   nickname?: string
   bio?: string
   xLink?: string
@@ -12,6 +12,7 @@ export interface ProfileData {
   avatarUrl?: string
   user: {
     name: string
+    cheerPoints: number
   }
 }
 

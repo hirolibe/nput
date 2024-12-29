@@ -8,16 +8,16 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 export interface FollowButtonProps {
+  userName: string | undefined
   followState: {
     isFollowed: boolean | undefined
     setIsFollowed: Dispatch<SetStateAction<boolean | undefined>>
   }
+  width?: number
 }
 
-export const FollowButton = ({ followState }: FollowButtonProps) => {
+export const FollowButton = ({ userName, followState, width }: FollowButtonProps) => {
   const router = useRouter()
-  const { name } = router.query
-  const authorName = typeof name === 'string' ? name : undefined
 
   const { idToken, isAuthLoading } = useAuth()
   const [, setSnackbar] = useSnackbarState()
@@ -25,7 +25,7 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
 
   const { isFollowed, setIsFollowed } = followState
 
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/relationship`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userName}/relationship`
   const headers = { Authorization: `Bearer ${idToken}` }
 
   const handleFollow = async () => {
@@ -71,50 +71,27 @@ export const FollowButton = ({ followState }: FollowButtonProps) => {
 
   return (
     <>
-      {!isFollowed && (
-        <Button
-          onClick={handleFollow}
-          variant="outlined"
-          sx={{
-            fontSize: 12,
-            color: 'black',
-            borderRadius: 2,
-            boxShadow: 'none',
-            border: '1px solid black',
-            fontWeight: 'bold',
-            height: '30px',
-            width: '95px',
-            '&:hover': {
-              borderColor: 'black',
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            },
-            mr: 1,
-          }}
-        >
-          フォロー
-        </Button>
-      )}
-      {isFollowed && (
-        <Button
-          onClick={handleUnFollow}
-          variant="contained"
-          sx={{
-            fontSize: 12,
-            color: 'white',
-            borderRadius: 2,
-            boxShadow: 'none',
-            fontWeight: 'bold',
-            height: '30px',
-            width: '95px',
-            '&:hover': {
-              borderColor: 'primary',
-            },
-            mr: 1,
-          }}
-        >
-          フォロー中
-        </Button>
-      )}
+      <Button
+        onClick={!isFollowed ? handleFollow : handleUnFollow}
+        variant={!isFollowed ? 'outlined' : 'contained'}
+        sx={{
+          fontSize: 12,
+          color: !isFollowed ? 'black' : 'white',
+          borderRadius: 2,
+          boxShadow: 'none',
+          border: !isFollowed ? '1px solid black' : 'none',
+          fontWeight: 'bold',
+          height: '30px',
+          width: width ?? '95px',
+          '&:hover': {
+            borderColor: !isFollowed ? 'black' : 'primary',
+            backgroundColor: !isFollowed ? '#E0E0E0' : 'none',
+          },
+          mr: 1,
+        }}
+      >
+        {!isFollowed ? 'フォロー' : 'フォロー中'}
+      </Button>
       <LoginDialog open={openLoginDialog} onClose={handleClose} />
     </>
   )

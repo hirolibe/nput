@@ -3,23 +3,19 @@ import useSWR, { SWRResponse } from 'swr'
 import { useAuth } from './useAuth'
 import { fetcher } from '@/utils/fetcher'
 
-export interface UseFollowStatusParams {
-  authorName: string | undefined
-}
-
 export interface FollowStatusData {
   hasFollowed: boolean
 }
 
-export const useFollowStatus = ({ authorName }: UseFollowStatusParams) => {
+export const useFollowStatus = (name: string | undefined) => {
   const { idToken, isAuthLoading } = useAuth()
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/relationship`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${name}/relationship`
   const {
     data,
     error,
     isLoading: isFollowStatusLoading,
   }: SWRResponse<FollowStatusData | undefined> = useSWR(
-    authorName && idToken ? [url, idToken] : null,
+    name && idToken ? [url, idToken] : null,
     fetcher,
   )
 

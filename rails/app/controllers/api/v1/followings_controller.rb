@@ -7,7 +7,7 @@ class Api::V1::FollowingsController < Api::V1::ApplicationController
               includes(profile: { avatar_attachment: :blob }).
               order("relationships.created_at DESC").
               page(params[:page] || 1).
-              per(10)
+              per(40)
 
     render json: users,
            each_serializer: BasicUserSerializer,

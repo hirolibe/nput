@@ -218,7 +218,7 @@ const CommentForm = ({
                   p: 2,
                   border: '1px solid',
                   borderColor: 'grey.400',
-                  borderRadius: 1,
+                  borderRadius: 2,
                   minHeight: '148px',
                   overflowWrap: 'break-word',
                 }}

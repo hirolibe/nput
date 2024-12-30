@@ -38,7 +38,7 @@ users.each do |user|
       note.durations.build(
         duration: rand(720..3600),
         user:,
-        created_at: Time.current - rand(0..210).days
+        created_at: Time.current - rand(0..210).days,
       )
     end
 

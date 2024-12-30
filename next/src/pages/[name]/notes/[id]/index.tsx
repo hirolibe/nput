@@ -181,10 +181,12 @@ const NoteDetail: NextPage = () => {
               alignItems: 'center',
             }}
           >
-            <Avatar
-              alt={noteData?.user.profile.nickname || noteData?.user.name}
-              src={noteData?.user.profile.avatarUrl}
-            />
+            <Link href={`/${noteData?.user.name}`}>
+              <Avatar
+                alt={noteData?.user.profile.nickname || noteData?.user.name}
+                src={noteData?.user.profile.avatarUrl}
+              />
+            </Link>
           </Box>
         </Box>
 

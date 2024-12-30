@@ -16,7 +16,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import AuthLinks from '../auth/AuthLinks'
 import UploadImagesButton from '../common/UploadImagesButton'
 import MarkdownText from './MarkdownText'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { CommentData } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -38,7 +38,7 @@ const CommentForm = ({
   const [imageSignedIds, setImageSignedIds] = useState<
     string | string[] | undefined
   >(undefined)
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const { profileData } = useProfile()
   const { name, id } = router.query
   const [authorName, noteId] = [name, id].map((value) =>

@@ -4,7 +4,7 @@ import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
 import { Dispatch, SetStateAction } from 'react'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
@@ -21,7 +21,7 @@ interface UploadImagesButtonProps {
 const UploadImagesButton = (props: UploadImagesButtonProps) => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const {
     setImageSignedIds,
     setContent,
@@ -108,6 +108,8 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
       onClick={handleUploadImages}
       sx={{
         backgroundColor: backgroundColor ? 'white' : undefined,
+        width: '46px',
+        height: '46px',
         '&:hover': {
           backgroundColor: backgroundColor
             ? 'backgroundColor.hover'

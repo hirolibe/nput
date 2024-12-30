@@ -5,13 +5,11 @@ import { FollowButton } from '../common/FollowButton'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 
 const UserCard = (props: UserData) => {
   const router = useRouter()
 
-  const { idToken } = useAuth()
   const { profileData } = useProfile()
   const currentUserName = profileData?.user.name
 

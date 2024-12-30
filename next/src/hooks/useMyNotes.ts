@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
-import { useAuth } from './useAuth'
+import { useAuthContext } from './useAuthContext'
 import { PagenatedNotesData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
 
 export const useMyNotes = () => {
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
 
   const router = useRouter()
   const page = 'page' in router.query ? String(router.query.page) : 1

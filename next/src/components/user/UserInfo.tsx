@@ -205,7 +205,13 @@ export const UserInfo = ({
       {/* 自己紹介文 */}
       {userBio && (
         <Box sx={{ mt: 1, px: { xs: 0, sm: 10, md: 0 } }}>
-          <Typography sx={{ fontSize: { xs: '14px', sm: '16px' } }}>
+          <Typography
+            sx={{
+              fontSize: { xs: '14px', sm: '16px' },
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+            }}
+          >
             {userBio}
           </Typography>
         </Box>

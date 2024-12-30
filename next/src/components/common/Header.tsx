@@ -17,27 +17,26 @@ import { signOut } from 'firebase/auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import AuthLinks from '../auth/AuthLinks'
+import CheerPoints from './CheerPoints'
 import StopPropagationLink from './StopPropagationLink'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
+import { useProfileContext } from '@/hooks/useProfileContext'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const { profileData, isProfileLoading } = useProfile()
 
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
-  useEffect(() => {
-    setAvatarUrl(profileData?.avatarUrl)
-  }, [setAvatarUrl, profileData?.avatarUrl])
+  const { avatarUrl } = useProfileContext()
 
   const hideHeaderPathnames = [
     '/auth/signup',
@@ -114,18 +113,23 @@ const Header = () => {
             profileData === null && <AuthLinks />}
           {profileData && (
             <Box sx={{ display: 'flex' }}>
-              <IconButton onClick={handleClick} sx={{ p: 0 }}>
+              <IconButton
+                onClick={handleClick}
+                sx={{ p: 0, mr: { xs: 1.5, sm: 2 } }}
+              >
                 <Avatar
                   alt={profileData.nickname || profileData.user.name}
                   src={avatarUrl}
                 />
               </IconButton>
-              <Box sx={{ ml: 2 }}>
+              <CheerPoints size={26} />
+              <Box sx={{ ml: { xs: 1, sm: 2 } }}>
                 <Button
                   onClick={handleAddNewNote}
                   color="primary"
                   variant="contained"
                   sx={{
+                    display: { xs: 'none', sm: 'block' },
                     color: 'white',
                     fontSize: 16,
                     borderRadius: 2,
@@ -135,6 +139,26 @@ const Header = () => {
                   }}
                 >
                   ノート作成
+                </Button>
+                <Button
+                  onClick={handleAddNewNote}
+                  color="primary"
+                  variant="contained"
+                  sx={{
+                    display: { sm: 'none' },
+                    textAlign: 'center',
+                    color: 'white',
+                    fontSize: 14,
+                    lineHeight: 1.2,
+                    borderRadius: 2,
+                    width: 80,
+                    boxShadow: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  ノート
+                  <br />
+                  作成
                 </Button>
               </Box>
               <Menu

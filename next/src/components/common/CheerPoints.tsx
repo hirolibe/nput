@@ -1,50 +1,40 @@
 import { Box, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
 import { CheerIcon } from '../note/CheerIcon'
-import { useProfile } from '@/hooks/useProfile'
-import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/utils/handleError'
+import { useProfileContext } from '@/hooks/useProfileContext'
 
 type CheerPointsProps = {
-  addedCheerPoints: number
+  addedCheerPoints?: number
   size?: number
 }
 
 const CheerPoints = (props: CheerPointsProps) => {
   const { addedCheerPoints, size } = props
-
-  const [, setSnackbar] = useSnackbarState()
-  const router = useRouter()
-
-  const { profileData, profileError } = useProfile()
-  const cheerPoints = profileData?.user.cheerPoints
-
-  if (profileError) {
-    const { errorMessage } = handleError(profileError)
-    setSnackbar({
-      message: errorMessage,
-      severity: 'error',
-      pathname: router.pathname,
-    })
-  }
+  const { cheerPoints } = useProfileContext()
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '60px' }}>
       <CheerIcon
-        isCheered={(cheerPoints ?? 0) + addedCheerPoints >= 360 ? true : false}
+        isCheered={
+          (cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 360 ? true : false
+        }
         size={size}
       />
-      <Typography
-        sx={{
-          fontWeight:
-            (cheerPoints ?? 0) + addedCheerPoints >= 3600 ? 'bold' : 'normal',
-          ml: 0.5,
-        }}
-      >
-        {(cheerPoints ?? 0) + addedCheerPoints >= 3600
-          ? 'Max'
-          : `× ${Math.floor(((cheerPoints ?? 0) + addedCheerPoints) / 360)}`}
-      </Typography>
+      {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 3600 && (
+        <Typography
+          sx={{
+            fontSize: 12,
+            fontWeight: 'bold',
+            ml: 0.5,
+          }}
+        >
+          Max
+        </Typography>
+      )}
+      {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) < 3600 && (
+        <Typography sx={{ ml: 0.5 }} >
+          × {Math.floor(((cheerPoints ?? 0) + (addedCheerPoints ?? 0)) / 360)}
+        </Typography>
+      )}
     </Box>
   )
 }

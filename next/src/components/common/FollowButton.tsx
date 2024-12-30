@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Dispatch, SetStateAction, useState } from 'react'
 import LoginDialog from '../auth/LoginDialog'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
@@ -23,7 +23,7 @@ export const FollowButton = ({
 }: FollowButtonProps) => {
   const router = useRouter()
 
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
 

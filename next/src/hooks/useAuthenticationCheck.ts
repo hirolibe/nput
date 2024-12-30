@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useSnackbarState } from './useSnackbarState'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 
 const useEnsureAuth = () => {
   const router = useRouter()
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
-import { useAuth } from './useAuth'
+import { useAuthContext } from './useAuthContext'
 import { useProfile } from './useProfile'
 import { fetcher } from '@/utils/fetcher'
 
@@ -47,7 +47,7 @@ export interface NoteData {
 }
 
 export const useNote = () => {
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const router = useRouter()
   const { name, id } = router.query
   const [authorName, noteId] = [name, id].map((value) =>

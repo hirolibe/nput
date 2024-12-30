@@ -90,7 +90,10 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
               {followState.isFollowed !== undefined &&
                 profileData !== undefined &&
                 authorName !== currentUserName && (
-                  <FollowButton userName={authorName} followState={followState} />
+                  <FollowButton
+                    userName={authorName}
+                    followState={followState}
+                  />
                 )}
             </Box>
           )}

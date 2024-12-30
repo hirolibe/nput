@@ -2,28 +2,17 @@ import { Avatar, Box, Button, Typography } from '@mui/material'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
-import { useState, Dispatch, SetStateAction, useEffect } from 'react'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
+import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-type UploadAvatarButtonProps = {
-  nickname?: string
-  avatarUrl?: string
-  userName?: string
-  setImageSignedId?: Dispatch<SetStateAction<string | undefined>>
-}
-
-const UploadAvatarButton = (props: UploadAvatarButtonProps) => {
+const UploadAvatarButton = () => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
-
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
-
-  useEffect(() => {
-    setAvatarUrl(props.avatarUrl)
-  }, [setAvatarUrl, props.avatarUrl])
+  const { idToken } = useAuthContext()
+  const { currentUserName, currentUserNickname, avatarUrl, setAvatarUrl } =
+    useProfileContext()
 
   const handleUploadAvatar = () => {
     const input = document.createElement('input')
@@ -47,13 +36,13 @@ const UploadAvatarButton = (props: UploadAvatarButtonProps) => {
 
       try {
         const imageSignedId = await uploadImage(image)
-        const imageUrl = `http://localhost:3000/rails/active_storage/blobs/redirect/${imageSignedId}/${image.name}`
+        await attachAvatarImage(imageSignedId)
 
-        props.setImageSignedId?.(imageSignedId)
+        const imageUrl = `http://localhost:3000/rails/active_storage/blobs/redirect/${imageSignedId}/${image.name}`
         setAvatarUrl(imageUrl)
 
         setSnackbar({
-          message: 'アップロードが完了しました',
+          message: '画像を更新しました',
           severity: 'success',
           pathname: router.pathname,
         })
@@ -73,19 +62,26 @@ const UploadAvatarButton = (props: UploadAvatarButtonProps) => {
     formData.append('image', image)
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads`
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    }
+    const headers = { Authorization: `Bearer ${idToken}` }
+
     const res = await axios.post(url, formData, { headers })
     const data = camelcaseKeys(res.data, { deep: true })
     const signedId = data.signedId
     return signedId
   }
 
+  const attachAvatarImage = async (imageSignedId: string | undefined) => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads/attach_avatar`
+    const imageIdData = { image_signed_id: imageSignedId }
+    const headers = { Authorization: `Bearer ${idToken}` }
+    await axios.post(url, imageIdData, { headers })
+  }
+
   return (
     <Button
       onClick={handleUploadAvatar}
       variant={'outlined'}
+      disableRipple
       sx={{
         color: 'text.light',
         border: 'none',
@@ -100,7 +96,7 @@ const UploadAvatarButton = (props: UploadAvatarButtonProps) => {
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <Avatar
-          alt={props.nickname || props.userName}
+          alt={currentUserNickname || currentUserName}
           src={avatarUrl}
           sx={{
             width: 90,

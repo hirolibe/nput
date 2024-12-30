@@ -6,9 +6,10 @@ import LoginDialog from '../auth/LoginDialog'
 import ConfirmDialog from '../common/ConfirmDialog'
 import AnimatedIconWrapper from './AnimatedIconWrapper'
 import { CheerIcon } from './CheerIcon'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
+import { useProfileContext } from '@/hooks/useProfileContext'
 
 export interface CheerButtonProps {
   cheerState: {
@@ -33,12 +34,13 @@ export const CheerButton = ({
   const [authorName, noteId] = [name, id].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
   const [isAnimated, setIsAnimated] = useState(false)
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
+  const { setCheerPoints } = useProfileContext()
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }
@@ -56,6 +58,7 @@ export const CheerButton = ({
         await axios.post(url, null, { headers })
         setIsCheered?.(true)
         setCheersCount?.((prev) => (prev ?? 0) + 1)
+        setCheerPoints?.((prev) => (prev ?? 0) - 360)
         setIsAnimated?.(true)
         setTimeout(() => {
           setIsAnimated?.(false)

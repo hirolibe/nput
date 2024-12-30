@@ -1,7 +1,5 @@
-import { profile } from 'console'
 import { LoadingButton } from '@mui/lab'
 import {
-  Avatar,
   Box,
   Card,
   Container,
@@ -11,15 +9,13 @@ import {
 } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
-import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import UploadAvatarButton from '@/components/common/UploadAvatarButton'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -37,16 +33,12 @@ const EditProfile: NextPage = () => {
   useEnsureAuth()
 
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const router = useRouter()
   const { profileData, profileError } = useProfile()
 
   const [isFetched, setIsFetched] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const [imageSignedId, setImageSignedId] = useState<string | undefined>(
-    undefined,
-  )
 
   const { handleSubmit, control, reset } = useForm<ProfileFormData>({
     defaultValues: { ...profileData },
@@ -80,7 +72,7 @@ const EditProfile: NextPage = () => {
     setIsLoading(true)
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`
-    const patchData = { profile: { ...data }, image_signed_id: imageSignedId }
+    const patchData = { profile: { ...data } }
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
@@ -149,12 +141,7 @@ const EditProfile: NextPage = () => {
 
           {/* アバター画像 */}
           <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <UploadAvatarButton
-              nickname={profileData?.nickname}
-              avatarUrl={profileData?.avatarUrl}
-              userName={profileData?.user.name}
-              setImageSignedId={setImageSignedId}
-            />
+            <UploadAvatarButton />
           </Box>
 
           <Stack

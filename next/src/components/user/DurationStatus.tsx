@@ -15,7 +15,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { useState } from 'react'
 import { Bar } from 'react-chartjs-2'
 
-// Chart.jsの登録
 Chart.register(
   ArcElement,
   BarElement,

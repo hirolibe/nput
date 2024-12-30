@@ -34,7 +34,7 @@ import Loading from '@/components/common/Loading'
 import UploadImagesButton from '@/components/common/UploadImagesButton'
 import MarkdownText from '@/components/note/MarkdownText'
 import TimeTracker from '@/components/note/TimeTracker'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -62,7 +62,7 @@ const EditNote: NextPage = () => {
   useEnsureAuth()
 
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const router = useRouter()
   const { id } = router.query
   const noteId = typeof id === 'string' ? id : undefined
@@ -161,6 +161,21 @@ const EditNote: NextPage = () => {
       tags: noteData?.tags?.map((tag) => tag.name) ?? [],
     }
   }, [noteData])
+
+  const validationRules = {
+    title: {
+      maxLength: {
+        value: 70,
+        message: '70文字以内で入力してください',
+      },
+    },
+    description: {
+      maxLength: {
+        value: 200,
+        message: '200文字以内で入力してください',
+      },
+    },
+  }
 
   const { handleSubmit, control, reset, watch, formState } =
     useForm<NoteFormData>({
@@ -440,12 +455,7 @@ const EditNote: NextPage = () => {
                 <Controller
                   name="title"
                   control={control}
-                  rules={{
-                    maxLength: {
-                      value: 70,
-                      message: '70文字以内で入力してください',
-                    },
-                  }}
+                  rules={validationRules.title}
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
@@ -635,6 +645,8 @@ const EditNote: NextPage = () => {
                         onClick={toggleSidebar}
                         sx={{
                           backgroundColor: 'white',
+                          width: '46px',
+                          height: '46px',
                           '&:hover': {
                             backgroundColor: 'backgroundColor.hover',
                           },
@@ -662,6 +674,8 @@ const EditNote: NextPage = () => {
                         onClick={() => handleDeleteNote(noteId)}
                         sx={{
                           backgroundColor: 'white',
+                          width: '46px',
+                          height: '46px',
                           '&:hover': {
                             backgroundColor: 'backgroundColor.hover',
                           },
@@ -872,12 +886,7 @@ const EditNote: NextPage = () => {
                   <Controller
                     name="description"
                     control={control}
-                    rules={{
-                      maxLength: {
-                        value: 200,
-                        message: '200文字以内で入力してください',
-                      },
-                    }}
+                    rules={validationRules.description}
                     render={({ field, fieldState }) => (
                       <>
                         <TextField

@@ -14,14 +14,14 @@ import { useState } from 'react'
 import ConfirmDialog from '../common/ConfirmDialog'
 import CommentForm from './CommentForm'
 import MarkdownText from './MarkdownText'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { CommentData, NoteData } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const CommentCard = ({ noteData }: { noteData: NoteData }) => {
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const [open, setOpen] = useState(false)
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()

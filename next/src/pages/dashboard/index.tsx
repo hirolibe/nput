@@ -15,7 +15,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useMyNotes } from '@/hooks/useMyNotes'
 import { BasicNoteData } from '@/hooks/useNotes'
@@ -26,7 +26,7 @@ import { omit } from '@/utils/omit'
 const Dashboard: NextPage = () => {
   useEnsureAuth()
 
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
 
   const router = useRouter()
   const { notesData, notesError } = useMyNotes()

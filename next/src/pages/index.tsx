@@ -128,7 +128,16 @@ const PublicNotes: NextPage = () => {
               {title}
             </Typography>
             <Divider sx={{ mx: 3, mb: 3 }} />
-            <Typography sx={{ px: 4, mb: 2 }}>{description}</Typography>
+            <Typography
+              sx={{
+                px: 4,
+                mb: 2,
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}
+            >
+              {description}
+            </Typography>
           </Box>
         </Modal>
 

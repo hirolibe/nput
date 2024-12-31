@@ -60,7 +60,7 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({
             style={{
               maxWidth: '100%',
               height: 'auto',
-              borderRadius: '8px',
+              borderRadius: 2,
             }}
             unoptimized
           />

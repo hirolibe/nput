@@ -121,16 +121,20 @@ const SignUp: NextPage = () => {
 
   return (
     <Container maxWidth="md" sx={{ pt: 6 }}>
-      <Box>
+      <Box sx={{ px: 2 }}>
         <Link href="/">
           <Image src="/logo.png" width={90} height={40} alt="logo" />
         </Link>
       </Box>
       <Container maxWidth="sm">
-        <Box sx={{ mb: 4, pt: 4 }}>
+        <Box sx={{ textAlign: { xs: 'center', sm: 'start' }, mb: 4, pt: 4 }}>
           <Typography
             component="h2"
-            sx={{ fontSize: 32, color: 'black', fontWeight: 'bold' }}
+            sx={{
+              fontSize: { xs: 28, sm: 32 },
+              color: 'black',
+              fontWeight: 'bold',
+            }}
           >
             Nput へようこそ！
           </Typography>
@@ -192,16 +196,20 @@ const SignUp: NextPage = () => {
             type="submit"
             loading={isLoading}
             sx={{
+              fontSize: { xs: 14, sm: 16 },
               fontWeight: 'bold',
               color: 'white',
-              width: '30%',
+              width: '170px',
             }}
           >
             新規登録する
           </LoadingButton>
-          <Typography>
+          <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>
             アカウントをお持ちの場合は
-            <Typography component="span" sx={{ textDecoration: 'underline' }}>
+            <Typography
+              component="span"
+              sx={{ fontSize: { xs: 14, sm: 16 }, textDecoration: 'underline' }}
+            >
               <Link href="/auth/login">ログイン</Link>
             </Typography>
             から

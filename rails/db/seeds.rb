@@ -1,6 +1,6 @@
 users_count = 5
-notes_count_per_user = 5
-durations_count_per_note = 5
+notes_count_per_user = 10
+durations_count_per_note = 200
 tags_count_per_note = 5
 users = []
 
@@ -35,7 +35,11 @@ users.each do |user|
     })
 
     durations_count_per_note.times do
-      note.durations.build(duration: rand(10..600), user:)
+      note.durations.build(
+        duration: rand(720..3600),
+        user:,
+        created_at: Time.current - rand(0..210).days,
+      )
     end
 
     note.save!

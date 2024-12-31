@@ -7,7 +7,7 @@ RSpec.describe "Api::V1::Followings GET /api/v1/:name/followings", type: :reques
   let(:name) { follower.name }
   let(:params) { nil }
 
-  before { create_list(:relationship, 20, follower:) }
+  before { create_list(:relationship, 80, follower:) }
 
   include_examples "リソース不在エラー", "アカウント", "name"
   include_examples "ページネーションのテスト", "アカウント"

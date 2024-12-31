@@ -7,6 +7,7 @@ import Header from '@/components/common/Header'
 import Snackbar from '@/components/common/Snackbar'
 import '@/styles/destyle.css'
 import { AuthProvider } from '@/providers/AuthProvider'
+import { ProfileProvider } from '@/providers/ProfileProvider'
 import createEmotionCache from '@/styles/createEmotionCache'
 import theme from '@/styles/theme'
 
@@ -24,10 +25,12 @@ export default function MyApp(props: MyAppProps): JSX.Element {
       <ThemeProvider theme={theme}>
         <HelmetProvider>
           <AuthProvider>
-            <CssBaseline />
-            <Header />
-            <Component {...pageProps} />
-            <Snackbar />
+            <ProfileProvider>
+              <CssBaseline />
+              <Header />
+              <Component {...pageProps} />
+              <Snackbar />
+            </ProfileProvider>
           </AuthProvider>
         </HelmetProvider>
       </ThemeProvider>

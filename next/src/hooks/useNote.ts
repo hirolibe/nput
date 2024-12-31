@@ -1,13 +1,9 @@
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
-import { useAuth } from './useAuth'
+import { useAuthContext } from './useAuthContext'
 import { useProfile } from './useProfile'
 import { fetcher } from '@/utils/fetcher'
-
-export interface UseNoteParams {
-  authorName?: string
-  noteId?: string | number
-}
 
 export interface CommentData {
   id: number
@@ -50,8 +46,14 @@ export interface NoteData {
   }
 }
 
-export const useNote = ({ authorName, noteId }: UseNoteParams) => {
-  const { idToken, isAuthLoading } = useAuth()
+export const useNote = () => {
+  const { idToken, isAuthLoading } = useAuthContext()
+  const router = useRouter()
+  const { name, id } = router.query
+  const [authorName, noteId] = [name, id].map((value) =>
+    typeof value === 'string' ? value : undefined,
+  )
+
   const { profileData, isProfileLoading } = useProfile()
 
   const urlPath =

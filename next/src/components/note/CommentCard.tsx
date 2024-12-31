@@ -11,17 +11,17 @@ import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import ConfirmationDialog from '../common/ConfirmDialog'
+import ConfirmDialog from '../common/ConfirmDialog'
 import CommentForm from './CommentForm'
 import MarkdownText from './MarkdownText'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { CommentData, NoteData } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const CommentCard = ({ noteData }: { noteData: NoteData }) => {
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const [open, setOpen] = useState(false)
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
@@ -40,7 +40,7 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
   )
 
   const handleDeleteComment = (commentId: number) => {
-    setCommentIdToDelete(commentId) // 削除対象のcommentIdを状態に保持
+    setCommentIdToDelete(commentId)
     setOpen(true)
   }
 
@@ -79,7 +79,7 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
     <Card
       sx={{
         boxShadow: 'none',
-        borderRadius: '12px',
+        borderRadius: 2,
         p: 5,
         mb: 3,
       }}
@@ -145,18 +145,18 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
               <MarkdownText content={comment.content} />
             </Box>
             <Divider sx={{ my: 5 }} />
-
-            {/* コメント削除の確認画面 */}
-            <ConfirmationDialog
-              open={open}
-              onClose={handleClose}
-              onConfirm={handleConfirm}
-              message={'コメントを削除しますか？'}
-              confirmText="実行"
-            />
           </Box>
         )
       })}
+
+      {/* コメント削除の確認画面 */}
+      <ConfirmDialog
+        open={open}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        message={'コメントを削除しますか？'}
+        confirmText="実行"
+      />
 
       {/* コメント入力フォーム */}
       <CommentForm addComment={addComment} />

@@ -5,6 +5,9 @@ ja:
         email: "メールアドレス"
         name: "ユーザー名"
         cheer_points: "保有エールポイント"
+      profile:
+        nickname: "ニックネーム"
+        bio: "自己紹介文"
       note:
         title: "タイトル"
         description: "概要"

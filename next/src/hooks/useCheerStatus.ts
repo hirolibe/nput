@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
-import { useAuth } from './useAuth'
+import { useAuthContext } from './useAuthContext'
 import { fetcher } from '@/utils/fetcher'
 
 export interface UseCheerStatusParams {
@@ -16,7 +16,7 @@ export const useCheerStatus = ({
   authorName,
   noteId,
 }: UseCheerStatusParams) => {
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
   const {
     data,

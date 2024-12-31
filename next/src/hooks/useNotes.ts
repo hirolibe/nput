@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import useSWR, { SWRResponse } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 
@@ -30,7 +31,10 @@ export interface PagenatedNotesData {
   }
 }
 
-export const useNotes = (page: string | number) => {
+export const useNotes = () => {
+  const router = useRouter()
+  const page = 'page' in router.query ? String(router.query.page) : 1
+
   const url = page
     ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes/?page=${page}`
     : `${process.env.NEXT_PUBLIC_API_BASE_URL}/notes`

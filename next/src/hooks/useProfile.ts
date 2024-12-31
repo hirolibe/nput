@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
-import { useAuth } from './useAuth'
+import { useAuthContext } from './useAuthContext'
 import { fetcher } from '@/utils/fetcher'
 
 export interface ProfileData {
-  id: number
+  id?: number
   nickname?: string
   bio?: string
+  xUsername?: string
   xLink?: string
+  githubUsername?: string
   githubLink?: string
   avatarUrl?: string
   user: {
     name: string
+    cheerPoints: number
   }
 }
 
 export const useProfile = () => {
-  const { idToken, isAuthLoading } = useAuth()
+  const { idToken, isAuthLoading } = useAuthContext()
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`
 
   const {

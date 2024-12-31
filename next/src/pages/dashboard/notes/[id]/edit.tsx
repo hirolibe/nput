@@ -1,5 +1,6 @@
 import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp'
 import CloseIcon from '@mui/icons-material/Close'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined'
 import SellOutlinedIcon from '@mui/icons-material/SellOutlined'
@@ -26,14 +27,14 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
-import ImageUploadButton from '@/components/common/ImageUploadButton'
 import Loading from '@/components/common/Loading'
-import { CheerIcon } from '@/components/note/CheerIcon'
+import UploadImagesButton from '@/components/common/UploadImagesButton'
 import MarkdownText from '@/components/note/MarkdownText'
 import TimeTracker from '@/components/note/TimeTracker'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -61,11 +62,11 @@ const EditNote: NextPage = () => {
   useEnsureAuth()
 
   const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuth()
+  const { idToken } = useAuthContext()
   const router = useRouter()
   const { id } = router.query
   const noteId = typeof id === 'string' ? id : undefined
-  const { noteData, noteError } = useNote({ noteId })
+  const { noteData, noteError } = useNote()
 
   const { tagsData } = useTags()
   const { sessionSeconds } = useTimeTracking()
@@ -86,9 +87,12 @@ const EditNote: NextPage = () => {
   const [remainingSeconds, setRemainingSeconds] = useState<number>(0)
   const [previousSessionSeconds, setPreviousSessionSeconds] =
     useState<number>(0)
-  const [cheerPoints, setCheersPoints] = useState<number>(0)
 
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
+  const [openBackConfirmDialog, setOpenBackConfirmDialog] =
+    useState<boolean>(false)
+  const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] =
+    useState<boolean>(false)
+  const [noteIdToDelete, setNoteIdToDelete] = useState<string | null>(null)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [cursorPosition, setCursorPosition] = useState<number | null>(null)
@@ -99,12 +103,6 @@ const EditNote: NextPage = () => {
     setPreCursorText(content?.slice(0, cursorPosition ?? undefined))
     setPostCursorText(content?.slice(cursorPosition ?? undefined))
   }, [content, cursorPosition, setPreCursorText, setPostCursorText])
-
-  useEffect(() => {
-    const updatedPoints =
-      (noteData?.user.cheerPoints ?? 0) + Math.floor(sessionSeconds)
-    setCheersPoints(updatedPoints)
-  }, [noteData, sessionSeconds, setCheersPoints])
 
   const handleContentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -164,6 +162,21 @@ const EditNote: NextPage = () => {
     }
   }, [noteData])
 
+  const validationRules = {
+    title: {
+      maxLength: {
+        value: 70,
+        message: '70文字以内で入力してください',
+      },
+    },
+    description: {
+      maxLength: {
+        value: 200,
+        message: '200文字以内で入力してください',
+      },
+    },
+  }
+
   const { handleSubmit, control, reset, watch, formState } =
     useForm<NoteFormData>({
       defaultValues: note,
@@ -178,6 +191,7 @@ const EditNote: NextPage = () => {
       setContent(note.content)
       setStatusChecked(note.status == '公開中')
       setInputTags(note.tags)
+
       setIsFetched(true)
     }
   }, [noteData, note, reset, setIsFetched])
@@ -206,17 +220,17 @@ const EditNote: NextPage = () => {
     setIsLoading(true)
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${id}`
-    const headers = { Authorization: `Bearer ${idToken}` }
 
     const status = statusChecked ? 'published' : 'draft'
     const workDuration =
       remainingSeconds + sessionSeconds - previousSessionSeconds
-
     const patchData = {
       note: { ...data, status: status, image_signed_ids: imageSignedIds },
-      tag_names: data.tags,
+      tag_names: inputTags,
       duration: workDuration,
     }
+
+    const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
       const res = await axios.patch(url, patchData, { headers })
@@ -245,19 +259,51 @@ const EditNote: NextPage = () => {
 
   const handleBackWithConfirmation = () => {
     if (isDirty) {
-      setOpenConfirmDialog(true)
+      setOpenBackConfirmDialog(true)
       return
     }
     router.push('/dashboard')
   }
 
-  const handleConfirm = () => {
-    setOpenConfirmDialog(false)
+  const handleBackConfirm = () => {
+    setOpenBackConfirmDialog(false)
     router.push('/dashboard')
   }
 
-  const handleClose = () => {
-    setOpenConfirmDialog(false)
+  const handleCloseBackConfirmDialog = () => {
+    setOpenBackConfirmDialog(false)
+  }
+
+  const handleDeleteNote = (noteId?: string) => {
+    if (!noteId) return
+
+    setNoteIdToDelete(noteId)
+    setOpenDeleteConfirmDialog(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!noteIdToDelete) return
+
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteId}`
+    const headers = { Authorization: `Bearer ${idToken}` }
+
+    try {
+      await axios.delete(url, { headers })
+      router.push('/dashboard')
+    } catch (err) {
+      const { errorMessage } = handleError(err)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+    } finally {
+      setOpenDeleteConfirmDialog(false)
+    }
+  }
+
+  const handleCloseDeleteConfirmDialog = () => {
+    setOpenDeleteConfirmDialog(false)
   }
 
   if (noteError) {
@@ -287,7 +333,7 @@ const EditNote: NextPage = () => {
           pl: { xs: 2, sm: 9 },
           pr: 9,
           transition: 'margin 0.2s',
-          marginRight: openSidebar ? '400px' : 0,
+          marginRight: openSidebar ? '385px' : 0,
         }}
       >
         <AppBar
@@ -303,7 +349,7 @@ const EditNote: NextPage = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               transition: 'margin 0.2s',
-              marginRight: openSidebar ? '400px' : 0,
+              marginRight: openSidebar ? '385px' : 0,
             }}
           >
             <Box sx={{ maxWidth: 35 }}>
@@ -313,7 +359,7 @@ const EditNote: NextPage = () => {
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box>
-                <Stack direction={'row'} spacing={4} sx={{ mr: 4 }}>
+                <Stack direction={'row'} spacing={3} sx={{ mr: 3 }}>
                   <Box
                     sx={{
                       display: {
@@ -323,21 +369,9 @@ const EditNote: NextPage = () => {
                       alignItems: 'center',
                     }}
                   >
-                    <CheerIcon
-                      isCheered={(cheerPoints ?? 0) >= 360 ? true : false}
-                    />
-                    <Typography
-                      sx={{
-                        fontWeight:
-                          (cheerPoints ?? 0) >= 3600 ? 'bold' : 'normal',
-                        ml: 1,
-                        mr: 4,
-                      }}
-                    >
-                      {Math.floor(cheerPoints ?? 0) >= 3600
-                        ? 'Max'
-                        : `× ${Math.floor(cheerPoints / 360)}`}
-                    </Typography>
+                    <Box sx={{ mr: 3 }}>
+                      <CheerPoints addedCheerPoints={sessionSeconds} />
+                    </Box>
 
                     <Typography sx={{ mr: 1 }}>Total</Typography>
                     <TimeTracker
@@ -370,7 +404,7 @@ const EditNote: NextPage = () => {
                     display: { xs: undefined, md: 'flex' },
                     alignItems: 'center',
                     textAlign: 'center',
-                    mr: 3,
+                    mr: 2,
                     mt: { xs: 1, md: 0 },
                   }}
                 >
@@ -421,6 +455,7 @@ const EditNote: NextPage = () => {
                 <Controller
                   name="title"
                   control={control}
+                  rules={validationRules.title}
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
@@ -486,12 +521,12 @@ const EditNote: NextPage = () => {
             >
               <Card
                 sx={{
-                  borderRadius: '8px',
+                  borderRadius: 2,
                   boxShadow: 'none',
                   backgroundColor: 'white',
                   width: '100%',
                   maxWidth: '700px',
-                  minHeight: '650px',
+                  minHeight: '600px',
                   px: 2,
                   py: '13.5px',
                   mb: 1,
@@ -565,19 +600,19 @@ const EditNote: NextPage = () => {
                 )}
               </Card>
 
-              {/* ボタン（プレビュー表示・タグ入力欄表示・画像追加） */}
+              {/* ボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
               <Box
                 sx={{
                   position: 'absolute',
                   height: '100%',
-                  right: '-70px',
+                  right: '-65px',
                   transition: '0.2s',
                 }}
               >
                 <Box
                   sx={{
                     position: 'sticky',
-                    top: '150px',
+                    top: '230px',
                   }}
                 >
                   <Stack spacing={3}>
@@ -610,6 +645,8 @@ const EditNote: NextPage = () => {
                         onClick={toggleSidebar}
                         sx={{
                           backgroundColor: 'white',
+                          width: '46px',
+                          height: '46px',
                           '&:hover': {
                             backgroundColor: 'backgroundColor.hover',
                           },
@@ -620,21 +657,55 @@ const EditNote: NextPage = () => {
                     </Tooltip>
                     {!isPreviewActive && (
                       <Tooltip title="画像を追加">
-                        <ImageUploadButton
-                          setImageSignedIds={setImageSignedIds}
-                          isMultiple={true}
-                          setContent={setContent}
-                          preCursorText={preCursorText}
-                          postCursorText={postCursorText}
-                          backgroundColor={true}
-                        />
+                        <Box tabIndex={0}>
+                          <UploadImagesButton
+                            setImageSignedIds={setImageSignedIds}
+                            isMultiple={true}
+                            setContent={setContent}
+                            preCursorText={preCursorText}
+                            postCursorText={postCursorText}
+                            backgroundColor={true}
+                          />
+                        </Box>
                       </Tooltip>
                     )}
+                    <Tooltip title="ノートを削除">
+                      <IconButton
+                        onClick={() => handleDeleteNote(noteId)}
+                        sx={{
+                          backgroundColor: 'white',
+                          width: '46px',
+                          height: '46px',
+                          '&:hover': {
+                            backgroundColor: 'backgroundColor.hover',
+                          },
+                        }}
+                      >
+                        <DeleteOutlineIcon sx={{ color: '#f28b82' }} />
+                      </IconButton>
+                    </Tooltip>
                   </Stack>
                 </Box>
               </Box>
             </Box>
           </Stack>
+
+          <ConfirmDialog
+            open={openBackConfirmDialog}
+            onClose={handleCloseBackConfirmDialog}
+            onConfirm={handleBackConfirm}
+            message={'変更内容を保存せずに編集を終了しますか？'}
+            confirmText="終了"
+          />
+
+          {/* ノート削除の確認画面 */}
+          <ConfirmDialog
+            open={openDeleteConfirmDialog}
+            onClose={handleCloseDeleteConfirmDialog}
+            onConfirm={handleDeleteConfirm}
+            message={'ノートを削除しますか？'}
+            confirmText="実行"
+          />
         </Container>
 
         <Drawer
@@ -686,7 +757,7 @@ const EditNote: NextPage = () => {
                 <Box
                   sx={{
                     border: '1px solid',
-                    borderRadius: '8px',
+                    borderRadius: 2,
                     borderColor: 'divider',
                     p: 2,
                   }}
@@ -807,7 +878,7 @@ const EditNote: NextPage = () => {
                 <Box
                   sx={{
                     border: '1px solid',
-                    borderRadius: '8px',
+                    borderRadius: 2,
                     borderColor: 'divider',
                     p: 1,
                   }}
@@ -815,12 +886,7 @@ const EditNote: NextPage = () => {
                   <Controller
                     name="description"
                     control={control}
-                    rules={{
-                      maxLength: {
-                        value: 200,
-                        message: '200文字以内で入力してください',
-                      },
-                    }}
+                    rules={validationRules.description}
                     render={({ field, fieldState }) => (
                       <>
                         <TextField
@@ -858,14 +924,6 @@ const EditNote: NextPage = () => {
           </Box>
         </Drawer>
       </Box>
-
-      <ConfirmDialog
-        open={openConfirmDialog}
-        onClose={handleClose}
-        onConfirm={handleConfirm}
-        message={'変更内容を保存せずに編集を終了しますか？'}
-        confirmText="終了"
-      />
     </>
   )
 }

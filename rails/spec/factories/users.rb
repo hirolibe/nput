@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :user do
     uid { Faker::Internet.uuid }
     email { Faker::Internet.email }
-    cheer_points { Faker::Number.between(from: 0, to: 50) }
+    cheer_points { Faker::Number.between(from: 0, to: 3600) }
 
     name do
       generated_name = nil

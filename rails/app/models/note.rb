@@ -1,4 +1,6 @@
 class Note < ApplicationRecord
+  before_create :generate_slug
+
   belongs_to :user
 
   has_many :comments, dependent: :destroy
@@ -21,6 +23,13 @@ class Note < ApplicationRecord
   validate :tag_limit
 
   private
+
+    def generate_slug
+      self.slug = loop do
+        random_slug = SecureRandom.alphanumeric(14)
+        break random_slug unless Note.exists?(slug: random_slug)
+      end
+    end
 
     def validate_single_unsaved
       if unsaved? && user.notes.unsaved.exists?

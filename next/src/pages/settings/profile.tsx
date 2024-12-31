@@ -48,13 +48,13 @@ const EditProfile: NextPage = () => {
     nickname: {
       maxLength: {
         value: 30,
-        message: 'ニックネームは30文字以内で入力してください',
+        message: '30文字以内で入力してください',
       },
     },
     bio: {
       maxLength: {
         value: 120,
-        message: '自己紹介は120文字以内で入力してください',
+        message: '120文字以内で入力してください',
       },
     },
   }

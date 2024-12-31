@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_30_222055) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -87,7 +87,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_08_073000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cheers_count", default: 0, null: false, comment: "エール獲得合計数"
+    t.string "slug", null: false, comment: "スラッグ（URL識別子）"
     t.index ["published_at"], name: "index_notes_on_published_at"
+    t.index ["slug"], name: "index_notes_on_slug", unique: true
     t.index ["status"], name: "index_notes_on_status"
     t.index ["user_id"], name: "index_notes_on_user_id"
   end

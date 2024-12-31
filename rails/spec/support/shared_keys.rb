@@ -36,7 +36,9 @@ EXPECTED_PROFILE_KEYS = [
   "id",
   "nickname",
   "bio",
+  "x_username",
   "x_link",
+  "github_username",
   "github_link",
   "avatar_url",
 ].freeze
@@ -47,15 +49,18 @@ EXPECTED_USER_KEYS = [
   "cheers_count",
   "followings_count",
   "followers_count",
-  "daily_duration",
-  "monthly_duration",
+  "daily_durations",
+  "weekly_durations",
+  "monthly_durations",
   "total_duration",
   "profile",
+  "notes",
 ].freeze
 
 EXPECTED_BASIC_USER_KEYS = [
   "name",
   "cheer_points",
+  "cheers_count",
   "profile",
 ].freeze
 

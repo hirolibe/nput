@@ -62,13 +62,13 @@ const UsersIndex: NextPage = () => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
 
-  const [changedFollowingsCount, setChangedFollowingsCount] = useState<
-    number | undefined
-  >(0)
+  // const [changedFollowingsCount, setChangedFollowingsCount] = useState<
+  //   number | undefined
+  // >(0)
 
-  useEffect(() => {
-    setChangedFollowingsCount(userData?.followingsCount)
-  }, [userData?.followingsCount])
+  // useEffect(() => {
+  //   setChangedFollowingsCount(userData?.followingsCount)
+  // }, [userData?.followingsCount])
 
   if (userError) {
     const { statusCode, errorMessage } = handleError(userError)

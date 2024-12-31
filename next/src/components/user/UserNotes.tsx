@@ -71,7 +71,13 @@ const UserNotes = () => {
             width: '100%',
           }}
         >
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.placeholder', my: 0.5 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              color: 'text.placeholder',
+              my: 0.5,
+            }}
+          >
             データを取得できませんでした
           </Typography>
         </Box>
@@ -94,7 +100,13 @@ const UserNotes = () => {
             width: '100%',
           }}
         >
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.placeholder', my: 0.5 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              color: 'text.placeholder',
+              my: 0.5,
+            }}
+          >
             投稿したノートがありません
           </Typography>
         </Box>

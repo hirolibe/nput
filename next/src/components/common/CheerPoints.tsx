@@ -31,7 +31,7 @@ const CheerPoints = (props: CheerPointsProps) => {
         </Typography>
       )}
       {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) < 3600 && (
-        <Typography sx={{ ml: 0.5 }} >
+        <Typography sx={{ ml: 0.5 }}>
           × {Math.floor(((cheerPoints ?? 0) + (addedCheerPoints ?? 0)) / 360)}
         </Typography>
       )}

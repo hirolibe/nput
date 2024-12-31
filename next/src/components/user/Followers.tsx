@@ -9,9 +9,9 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowers } from '@/hooks/useFollowers'
+import { BasicUserData } from '@/hooks/useFollowings'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
-import { BasicUserData } from '@/hooks/useFollowings'
 
 const Followers = () => {
   const router = useRouter()
@@ -54,7 +54,13 @@ const Followers = () => {
             width: '100%',
           }}
         >
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.placeholder', my: 0.5 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              color: 'text.placeholder',
+              my: 0.5,
+            }}
+          >
             データを取得できませんでした
           </Typography>
         </Box>
@@ -77,7 +83,13 @@ const Followers = () => {
             width: '100%',
           }}
         >
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.placeholder', my: 0.5 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              color: 'text.placeholder',
+              my: 0.5,
+            }}
+          >
             フォロワーがいません
           </Typography>
         </Box>

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import useSWR, { SWRResponse } from 'swr'
-import { fetcher } from '@/utils/fetcher'
 import { PagenatedUsersData } from './useFollowings'
+import { fetcher } from '@/utils/fetcher'
 
 export const useFollowers = () => {
   const router = useRouter()

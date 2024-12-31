@@ -1,11 +1,10 @@
 import { Avatar, Box, CardContent, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { UserData } from '@/hooks/useUser'
+import { useState, useEffect } from 'react'
 import { FollowButton } from '../common/FollowButton'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
-import { useState } from 'react'
-import { useEffect } from 'react'
 import { useProfile } from '@/hooks/useProfile'
+import { UserData } from '@/hooks/useUser'
 
 const UserCard = (props: UserData) => {
   const router = useRouter()
@@ -32,7 +31,13 @@ const UserCard = (props: UserData) => {
   return (
     <Box>
       <CardContent sx={{ px: 4, pt: 3, height: '100%' }}>
-        <Box sx={{ display: { md: 'flex' }, justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: { md: 'flex' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Box
             onClick={handleCardClick}
             sx={{
@@ -50,7 +55,12 @@ const UserCard = (props: UserData) => {
               sx={{ width: 60, height: 60, mr: 2 }}
             />
             <Stack>
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                sx={{ mb: 0.5 }}
+              >
                 <Typography sx={{ fontSize: 16, fontWeight: 'bold' }}>
                   {props.profile.nickname || props.name}
                 </Typography>
@@ -64,7 +74,9 @@ const UserCard = (props: UserData) => {
                 <Typography sx={{ fontSize: 12, color: 'text.light' }}>
                   合計エール数：
                 </Typography>
-                <Typography sx={{ fontSize: 12, fontWeight: 'bold', color: 'text.light' }}>
+                <Typography
+                  sx={{ fontSize: 12, fontWeight: 'bold', color: 'text.light' }}
+                >
                   {Math.floor((props.cheerPoints ?? 0) / 360)}
                 </Typography>
               </Stack>
@@ -72,7 +84,11 @@ const UserCard = (props: UserData) => {
             </Stack>
           </Box>
           {userName !== currentUserName && (
-            <FollowButton userName={props.name} followState={followState} width={110} />
+            <FollowButton
+              userName={props.name}
+              followState={followState}
+              width={110}
+            />
           )}
         </Box>
       </CardContent>

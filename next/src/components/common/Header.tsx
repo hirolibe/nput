@@ -23,10 +23,10 @@ import CheerPoints from './CheerPoints'
 import StopPropagationLink from './StopPropagationLink'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
+import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import { useProfileContext } from '@/hooks/useProfileContext'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

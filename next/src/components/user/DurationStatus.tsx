@@ -34,7 +34,11 @@ interface DurationStatusProps {
   monthlyDurations?: number[]
 }
 
-const DurationStatus = ({ dailyDurations, weeklyDurations, monthlyDurations }: DurationStatusProps) => {
+const DurationStatus = ({
+  dailyDurations,
+  weeklyDurations,
+  monthlyDurations,
+}: DurationStatusProps) => {
   const [tabIndex, setTabIndex] = useState(0)
 
   const getRecentDays = () => {
@@ -137,7 +141,9 @@ const DurationStatus = ({ dailyDurations, weeklyDurations, monthlyDurations }: D
   const maxWeeklyDuration = weeklyDurations ? Math.max(...weeklyDurations) : 0
   const weeklyStepSize = dynamicStepSize(maxWeeklyDuration)
 
-  const maxMonthlyDuration = monthlyDurations ? Math.max(...monthlyDurations) : 0
+  const maxMonthlyDuration = monthlyDurations
+    ? Math.max(...monthlyDurations)
+    : 0
   const monthlyStepSize = dynamicStepSize(maxMonthlyDuration)
 
   return (

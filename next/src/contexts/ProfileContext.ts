@@ -1,5 +1,4 @@
-import { createContext } from 'react'
-import { Dispatch, SetStateAction } from 'react'
+import { createContext, Dispatch, SetStateAction } from 'react'
 
 export interface ProfileContextState {
   currentUserName: string | undefined

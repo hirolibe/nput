@@ -40,7 +40,12 @@ const NoteCardSkeleton = () => {
           </Stack>
         </Box>
         <Skeleton variant="text" width="100%" height={40} />
-        <Skeleton variant="text" width={70} height={34} sx={{ display: { md: 'none' }, my: 0.5 }} />
+        <Skeleton
+          variant="text"
+          width={70}
+          height={34}
+          sx={{ display: { md: 'none' }, my: 0.5 }}
+        />
       </CardContent>
     </Card>
   )

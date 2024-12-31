@@ -17,7 +17,8 @@ const Followings = () => {
   const { name } = router.query
   const userName = typeof name === 'string' ? name : undefined
 
-  const { followingsData, followingsError, isFollowingsLoading } = useFollowings()
+  const { followingsData, followingsError, isFollowingsLoading } =
+    useFollowings()
   const users = followingsData?.users
   const meta = followingsData?.meta
 
@@ -53,7 +54,13 @@ const Followings = () => {
             width: '100%',
           }}
         >
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.placeholder', my: 0.5 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              color: 'text.placeholder',
+              my: 0.5,
+            }}
+          >
             データを取得できませんでした
           </Typography>
         </Box>
@@ -76,7 +83,13 @@ const Followings = () => {
             width: '100%',
           }}
         >
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.placeholder', my: 0.5 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, sm: 16 },
+              color: 'text.placeholder',
+              my: 0.5,
+            }}
+          >
             フォローしているユーザーがいません
           </Typography>
         </Box>

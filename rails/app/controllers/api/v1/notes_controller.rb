@@ -30,7 +30,7 @@ class Api::V1::NotesController < Api::V1::ApplicationController
     note = user.notes.includes(
       comments: { user: { profile: { avatar_attachment: :blob } } },
       tags: {},
-    ).published.find_by(id: params[:id])
+    ).published.find_by(slug: params[:slug])
 
     if note
       render json: note,

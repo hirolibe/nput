@@ -2,7 +2,11 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create, :destroy]
 
   def create
-    note = Note.published.find(params[:note_id])
+    note = Note.published.find_by(slug: params[:note_slug])
+    unless note
+      return render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
+
     comment = note.comments.build(comment_params)
     comment.user = current_user
     attach_images(comment, params[:image_signed_ids])
@@ -11,8 +15,6 @@ class Api::V1::CommentsController < Api::V1::ApplicationController
     else
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   def destroy

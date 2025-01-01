@@ -26,7 +26,7 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
     note = current_user.notes.includes(
       comments: { user: { profile: { avatar_attachment: :blob } } },
       tags: {},
-    ).find_by(id: params[:id])
+    ).find_by(slug: params[:slug])
 
     if note
       render json: note,
@@ -45,7 +45,10 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
   end
 
   def update
-    note = current_user.notes.find(params[:id])
+    note = current_user.notes.find_by(slug: params[:slug])
+    unless note
+      return render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
 
     ActiveRecord::Base.transaction do
       record_duration(note)
@@ -57,20 +60,20 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
     end
 
     render json: { message: "ノートを更新しました！" }, status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def destroy
-    note = current_user.notes.find(params[:id])
+    note = current_user.notes.find_by(slug: params[:slug])
+    unless note
+      return render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
+
     note.destroy!
     render json: { message: "ノートを削除しました" }, status: :ok
   rescue ActiveRecord::RecordNotDestroyed
     render json: { error: "ノートの削除に失敗しました" }, status: :unprocessable_entity
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   private

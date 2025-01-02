@@ -13,12 +13,16 @@ export interface FollowButtonProps {
     isFollowed: boolean | undefined
     setIsFollowed: Dispatch<SetStateAction<boolean | undefined>>
   }
+  setChangedFollowingsCount?: Dispatch<SetStateAction<number | undefined>>
+  setChangedFollowersCount?: Dispatch<SetStateAction<number | undefined>>
   width?: number
 }
 
 export const FollowButton = ({
   userName,
   followState,
+  setChangedFollowingsCount,
+  setChangedFollowersCount,
   width,
 }: FollowButtonProps) => {
   const router = useRouter()
@@ -43,6 +47,8 @@ export const FollowButton = ({
     try {
       await axios.post(url, null, { headers })
       setIsFollowed?.(true)
+      setChangedFollowingsCount?.((prev) => (prev ?? 0) + 1)
+      setChangedFollowersCount?.((prev) => (prev ?? 0) + 1)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -61,6 +67,8 @@ export const FollowButton = ({
     try {
       await axios.delete(url, { headers })
       setIsFollowed?.(false)
+      setChangedFollowingsCount?.((prev) => (prev ?? 0) - 1)
+      setChangedFollowersCount?.((prev) => (prev ?? 0) - 1)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({

@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Notes GET /api/v1/my_notes/:id", type: :request do
-  subject { get(api_v1_my_note_path(note_id), headers:) }
+RSpec.describe "Api::V1::MyNotes GET /api/v1/my_notes/:slug", type: :request do
+  subject { get(api_v1_my_note_path(note_slug), headers:) }
 
   let(:user) { create(:user) }
   let(:note) { create(:note, user:) }
-  let(:note_id) { note.id }
+  let(:note_slug) { note.slug }
   let(:headers) { { Authorization: "Bearer token" } }
 
   include_examples "ユーザー認証エラー"
@@ -15,7 +15,11 @@ RSpec.describe "Api::V1::Notes GET /api/v1/my_notes/:id", type: :request do
       stub_token_verification.and_return({ "sub" => user.uid })
     end
 
-    include_examples "リソース不在エラー", "ノート", "note_id"
+    context "ノートが存在しない場合" do
+      let(:note_slug) { "non_exist_slug" }
+
+      include_examples "404エラー", "ノート"
+    end
 
     context "ステータスが公開中のノートが存在する場合" do
       before { create_list(:comment, 5, note:) }

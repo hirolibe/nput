@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Notes POST /api/v1/my_notes", type: :request do
+RSpec.describe "Api::V1::MyNotes POST /api/v1/my_notes", type: :request do
   subject { post(api_v1_my_notes_path(name), headers:) }
 
-  let(:headers) { { Authorization: "Bearer token" } }
   let(:user) { create(:user) }
   let(:name) { user.name }
+  let(:headers) { { Authorization: "Bearer token" } }
 
   include_examples "ユーザー認証エラー"
 

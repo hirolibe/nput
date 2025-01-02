@@ -111,7 +111,7 @@ const Dashboard: NextPage = () => {
                 }}
               >
                 <Link
-                  href={`/${note.user.name}/notes/${note.id}`}
+                  href={`/${note.user.name}/notes/${note.slug}`}
                   css={styles.noUnderline}
                   style={{ display: 'block', width: '100%' }}
                 >
@@ -168,7 +168,7 @@ const Dashboard: NextPage = () => {
                   >
                     {note.statusJp}
                   </Box>
-                  <Link href={`/dashboard/notes/${note.id}/edit/`}>
+                  <Link href={`/dashboard/notes/${note.slug}/edit/`}>
                     <Avatar>
                       <Tooltip title="編集する">
                         <IconButton

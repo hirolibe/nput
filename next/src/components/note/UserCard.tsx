@@ -1,12 +1,16 @@
 import { Avatar, Box, CardContent, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { FollowButton } from '../common/FollowButton'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { useProfile } from '@/hooks/useProfile'
 import { UserData } from '@/hooks/useUser'
 
-const UserCard = (props: UserData) => {
+interface UserCardProps extends UserData {
+  setChangedFollowingsCount?: Dispatch<SetStateAction<number | undefined>>
+}
+
+const UserCard = (props: UserCardProps) => {
   const router = useRouter()
 
   const { profileData } = useProfile()
@@ -87,6 +91,7 @@ const UserCard = (props: UserData) => {
             <FollowButton
               userName={props.name}
               followState={followState}
+              setChangedFollowingsCount={props.setChangedFollowingsCount}
               width={110}
             />
           )}

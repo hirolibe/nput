@@ -3,10 +3,11 @@ class NoteSerializer < ActiveModel::Serializer
              :title,
              :description,
              :content,
+             :cheers_count,
+             :slug,
              :status_jp,
              :published_date,
              :updated_date,
-             :cheers_count,
              :total_duration
 
   has_many :comments

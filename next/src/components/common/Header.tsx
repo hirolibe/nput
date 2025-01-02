@@ -11,6 +11,8 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Theme,
+  useMediaQuery,
 } from '@mui/material'
 import axios from 'axios'
 import { signOut } from 'firebase/auth'
@@ -38,10 +40,14 @@ const Header = () => {
 
   const { avatarUrl } = useProfileContext()
 
+  const isSmallScreen = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down('sm'),
+  )
+
   const hideHeaderPathnames = [
     '/auth/signup',
     '/auth/login',
-    '/dashboard/notes/[id]/edit',
+    '/dashboard/notes/[slug]/edit',
   ]
   if (hideHeaderPathnames.includes(router.pathname)) return
 
@@ -73,7 +79,7 @@ const Header = () => {
 
     try {
       const res = await axios.post(url, null, { headers })
-      router.push(`/dashboard/notes/${res.data.id}/edit`)
+      router.push(`/dashboard/notes/${res.data.slug}/edit`)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -94,7 +100,7 @@ const Header = () => {
         py: '12px',
       }}
     >
-      <Container maxWidth="lg" sx={{ px: 4 }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 4 } }}>
         <Box
           sx={{
             display: 'flex',
@@ -129,36 +135,25 @@ const Header = () => {
                   color="primary"
                   variant="contained"
                   sx={{
-                    display: { xs: 'none', sm: 'block' },
-                    color: 'white',
-                    fontSize: 16,
-                    borderRadius: 2,
-                    width: 120,
-                    boxShadow: 'none',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  ノート作成
-                </Button>
-                <Button
-                  onClick={handleAddNewNote}
-                  color="primary"
-                  variant="contained"
-                  sx={{
-                    display: { sm: 'none' },
                     textAlign: 'center',
                     color: 'white',
-                    fontSize: 14,
-                    lineHeight: 1.2,
+                    fontSize: { xs: 14, sm: 16 },
+                    lineHeight: { xs: 1.2, sm: 28 / 16 },
                     borderRadius: 2,
-                    width: 80,
+                    width: { xs: 80, sm: 120 },
                     boxShadow: 'none',
                     fontWeight: 'bold',
                   }}
                 >
-                  ノート
-                  <br />
-                  作成
+                  {isSmallScreen ? (
+                    <>
+                      ノート
+                      <br />
+                      作成
+                    </>
+                  ) : (
+                    'ノート作成'
+                  )}
                 </Button>
               </Box>
               <Menu

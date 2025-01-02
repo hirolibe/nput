@@ -9,6 +9,7 @@ export interface BasicNoteData {
   fromToday: string
   statusJp?: '未保存' | '下書き' | '公開中'
   cheersCount: number
+  slug: string
   totalDuration: string
   user: {
     name: string

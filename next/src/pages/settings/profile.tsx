@@ -25,8 +25,8 @@ import { handleError } from '@/utils/handleError'
 type ProfileFormData = {
   nickname: string
   bio: string
-  xUsername: string
-  githubUsername: string
+  x_username: string
+  github_username: string
 }
 
 const EditProfile: NextPage = () => {
@@ -62,7 +62,12 @@ const EditProfile: NextPage = () => {
   useEffect(() => {
     if (profileData === undefined) return
 
-    const profile = { ...profileData }
+    const profile = {
+      nickname: profileData?.nickname,
+      bio: profileData?.bio,
+      x_username: profileData?.xUsername,
+      github_username: profileData?.githubUsername,
+    }
     reset(profile)
 
     setIsFetched(true)
@@ -188,7 +193,7 @@ const EditProfile: NextPage = () => {
             />
             <Stack direction={'row'} spacing={2} sx={{ width: '100%' }}>
               <Controller
-                name="xUsername"
+                name="x_username"
                 control={control}
                 render={({ field, fieldState }) => (
                   <TextField
@@ -202,7 +207,7 @@ const EditProfile: NextPage = () => {
                 )}
               />
               <Controller
-                name="githubUsername"
+                name="github_username"
                 control={control}
                 render={({ field, fieldState }) => (
                   <TextField

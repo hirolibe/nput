@@ -6,13 +6,17 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, Dispatch, SetStateAction } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowings, BasicUserData } from '@/hooks/useFollowings'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-const Followings = () => {
+type FollowingsProps = {
+  setChangedFollowingsCount: Dispatch<SetStateAction<number | undefined>>
+}
+
+const Followings = (props: FollowingsProps) => {
   const router = useRouter()
   const { name } = router.query
   const userName = typeof name === 'string' ? name : undefined
@@ -101,7 +105,10 @@ const Followings = () => {
     <Box sx={{ width: '100%' }}>
       {users?.map((user: BasicUserData, i: number) => (
         <Box key={i} sx={{ border: 'none', mx: { xs: 0, sm: 6, lg: 15 } }}>
-          <UserCard {...user} />
+          <UserCard
+            {...user}
+            setChangedFollowingsCount={props.setChangedFollowingsCount}
+          />
           <Divider />
         </Box>
       ))}

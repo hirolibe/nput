@@ -5,7 +5,7 @@ import { fetcher } from '@/utils/fetcher'
 
 export interface UseCheerStatusParams {
   authorName: string | undefined
-  noteId: string | number | undefined
+  noteSlug: string | number | undefined
 }
 
 export interface CheerStatusData {
@@ -14,16 +14,16 @@ export interface CheerStatusData {
 
 export const useCheerStatus = ({
   authorName,
-  noteId,
+  noteSlug,
 }: UseCheerStatusParams) => {
   const { idToken, isAuthLoading } = useAuthContext()
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const {
     data,
     error,
     isLoading: isCheerStatusLoading,
   }: SWRResponse<CheerStatusData | undefined> = useSWR(
-    authorName && noteId && idToken ? [url, idToken] : null,
+    authorName && noteSlug && idToken ? [url, idToken] : null,
     fetcher,
   )
 

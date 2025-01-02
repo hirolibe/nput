@@ -62,13 +62,21 @@ const UsersIndex: NextPage = () => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
 
-  // const [changedFollowingsCount, setChangedFollowingsCount] = useState<
-  //   number | undefined
-  // >(0)
+  const [changedFollowingsCount, setChangedFollowingsCount] = useState<
+    number | undefined
+  >(0)
 
-  // useEffect(() => {
-  //   setChangedFollowingsCount(userData?.followingsCount)
-  // }, [userData?.followingsCount])
+  useEffect(() => {
+    setChangedFollowingsCount(userData?.followingsCount)
+  }, [userData?.followingsCount])
+
+  const [changedFollowersCount, setChangedFollowersCount] = useState<
+    number | undefined
+  >(0)
+
+  useEffect(() => {
+    setChangedFollowersCount(userData?.followersCount)
+  }, [userData?.followersCount])
 
   if (userError) {
     const { statusCode, errorMessage } = handleError(userError)
@@ -116,6 +124,9 @@ const UsersIndex: NextPage = () => {
               >
                 <UserInfo
                   userData={userData}
+                  changedFollowingsCount={changedFollowingsCount}
+                  changedFollowersCount={changedFollowersCount}
+                  setChangedFollowersCount={setChangedFollowersCount}
                   followState={followState}
                   setTabIndex={setTabIndex}
                   listRef={listRef}
@@ -154,13 +165,14 @@ const UsersIndex: NextPage = () => {
                               sx={{
                                 fontSize: '16px',
                                 fontWeight: 'bold',
-                                p: 1,
                                 borderRight:
                                   index !== data.length - 1
                                     ? '1px solid'
                                     : 'none',
                                 borderColor: 'divider',
                                 backgroundColor: 'backgroundColor.icon',
+                                width: `${100 / data.length}%`,
+                                p: 1,
                               }}
                             >
                               {row.label}
@@ -177,13 +189,14 @@ const UsersIndex: NextPage = () => {
                               sx={{
                                 fontSize: '16px',
                                 fontWeight: 'bold',
-                                p: 1,
                                 borderBottom: 'none',
                                 borderRight:
                                   index !== data.length - 1
                                     ? '1px solid'
                                     : 'none',
                                 borderColor: 'divider',
+                                width: `${100 / data.length}%`,
+                                p: 1,
                               }}
                             >
                               {row.value}時間
@@ -206,7 +219,7 @@ const UsersIndex: NextPage = () => {
             </Card>
           </Box>
 
-          {/* ノート一覧 */}
+          {/* ノート・ユーザー一覧 */}
           <Card ref={listRef} sx={{ width: '100%' }}>
             <AppBar
               position="static"
@@ -312,7 +325,11 @@ const UsersIndex: NextPage = () => {
 
             {tabIndex === 0 && <UserNotes />}
             {tabIndex === 1 && <CheeredNotes />}
-            {tabIndex === 2 && <Followings />}
+            {tabIndex === 2 && (
+              <Followings
+                setChangedFollowingsCount={setChangedFollowingsCount}
+              />
+            )}
             {tabIndex === 3 && <Followers />}
           </Card>
         </Container>

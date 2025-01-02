@@ -27,8 +27,8 @@ const PublicNotes: NextPage = () => {
   const [title, setTitle] = useState<string | undefined>(undefined)
   const [description, setDescription] = useState<string | undefined>(undefined)
 
-  const handleOpenDescription = (id: number) => {
-    const note = notesData?.notes.find((note) => note.id === id)
+  const handleOpenDescription = (slug: string) => {
+    const note = notesData?.notes.find((note) => note.slug === slug)
     setTitle(note?.title)
     setDescription(note?.description)
     setIsOpen(true)
@@ -84,6 +84,7 @@ const PublicNotes: NextPage = () => {
                   description={note.description}
                   fromToday={note.fromToday}
                   cheersCount={note.cheersCount}
+                  slug={note.slug}
                   totalDuration={note.totalDuration}
                   user={note.user}
                   tags={note.tags.map((tag) => ({

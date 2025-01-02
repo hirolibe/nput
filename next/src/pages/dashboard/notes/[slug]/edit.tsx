@@ -64,8 +64,8 @@ const EditNote: NextPage = () => {
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
   const router = useRouter()
-  const { id } = router.query
-  const noteId = typeof id === 'string' ? id : undefined
+  const { slug } = router.query
+  const noteSlug = typeof slug === 'string' ? slug : undefined
   const { noteData, noteError } = useNote()
 
   const { tagsData } = useTags()
@@ -92,7 +92,7 @@ const EditNote: NextPage = () => {
     useState<boolean>(false)
   const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] =
     useState<boolean>(false)
-  const [noteIdToDelete, setNoteIdToDelete] = useState<string | null>(null)
+  const [noteSlugToDelete, setNoteSlugToDelete] = useState<string | null>(null)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [cursorPosition, setCursorPosition] = useState<number | null>(null)
@@ -219,7 +219,7 @@ const EditNote: NextPage = () => {
 
     setIsLoading(true)
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${id}`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
 
     const status = statusChecked ? 'published' : 'draft'
     const workDuration =
@@ -274,17 +274,17 @@ const EditNote: NextPage = () => {
     setOpenBackConfirmDialog(false)
   }
 
-  const handleDeleteNote = (noteId?: string) => {
-    if (!noteId) return
+  const handleDeleteNote = (noteSlug?: string) => {
+    if (!noteSlug) return
 
-    setNoteIdToDelete(noteId)
+    setNoteSlugToDelete(noteSlug)
     setOpenDeleteConfirmDialog(true)
   }
 
   const handleDeleteConfirm = async () => {
-    if (!noteIdToDelete) return
+    if (!noteSlugToDelete) return
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteId}`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteSlug}`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
@@ -671,7 +671,7 @@ const EditNote: NextPage = () => {
                     )}
                     <Tooltip title="ノートを削除">
                       <IconButton
-                        onClick={() => handleDeleteNote(noteId)}
+                        onClick={() => handleDeleteNote(noteSlug)}
                         sx={{
                           backgroundColor: 'white',
                           width: '46px',

@@ -2,7 +2,11 @@ class Api::V1::CheersController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:show, :create, :destroy]
 
   def show
-    note = Note.published.find(params[:note_id])
+    note = Note.published.find_by(slug: params[:note_slug])
+    unless note
+      return render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
+
     cheer_status = current_user.has_cheered?(note)
 
     render json: { has_cheered: cheer_status }, status: :ok
@@ -15,7 +19,10 @@ class Api::V1::CheersController < Api::V1::ApplicationController
       return render json: { error: "保有エールポイントが不足しています" }, status: :unprocessable_entity
     end
 
-    note = Note.published.find(params[:note_id])
+    note = Note.published.find_by(slug: params[:note_slug])
+    unless note
+      return render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
 
     ActiveRecord::Base.transaction do
       current_user.cheers.create!(note:)
@@ -23,8 +30,6 @@ class Api::V1::CheersController < Api::V1::ApplicationController
     end
 
     render status: :created
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   rescue ActiveRecord::RecordNotSaved
@@ -32,7 +37,11 @@ class Api::V1::CheersController < Api::V1::ApplicationController
   end
 
   def destroy
-    note = Note.published.find(params[:note_id])
+    note = Note.published.find_by(slug: params[:note_slug])
+    unless note
+      return render json: { error: "ノートにアクセスできません" }, status: :not_found
+    end
+
     cheer = current_user.cheers.find_by(note_id: note.id)
 
     if cheer

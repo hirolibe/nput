@@ -36,8 +36,8 @@ const NoteDetail: NextPage = () => {
   const [isDraft, setIsDraft] = useState<boolean>(false)
 
   const router = useRouter()
-  const { name, id } = router.query
-  const [authorName, noteId] = [name, id].map((value) =>
+  const { name, slug } = router.query
+  const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
 
@@ -56,7 +56,7 @@ const NoteDetail: NextPage = () => {
   // エール状態のデータ取得・管理
   const { cheerStatusData, cheerStatusError } = useCheerStatus({
     authorName,
-    noteId,
+    noteSlug,
   })
   const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const [cheersCount, setCheersCount] = useState(0)
@@ -159,7 +159,7 @@ const NoteDetail: NextPage = () => {
               boxParams={{ flexDirection: 'row', gap: 1 }}
             />
           ) : (
-            <Link href={`/dashboard/notes/${noteId}/edit/`}>
+            <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
               <Avatar sx={{ width: '50px', height: '50px' }}>
                 <Tooltip title="編集する">
                   <IconButton
@@ -269,7 +269,7 @@ const NoteDetail: NextPage = () => {
                         width: '100%',
                       }}
                     >
-                      <Link href={`/dashboard/notes/${noteId}/edit/`}>
+                      <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
                         <Avatar sx={{ width: '50px', height: '50px' }}>
                           <Tooltip title="編集する">
                             <IconButton
@@ -365,7 +365,7 @@ const NoteDetail: NextPage = () => {
                       boxParams={{ flexDirection: 'row', gap: 1 }}
                     />
                   ) : (
-                    <Link href={`/dashboard/notes/${noteId}/edit/`}>
+                    <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
                       <Avatar sx={{ width: '50px', height: '50px' }}>
                         <Tooltip title="編集する">
                           <IconButton

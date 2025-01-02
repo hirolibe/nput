@@ -19,13 +19,13 @@ import { handleError } from '@/utils/handleError'
 import { omit } from '@/utils/omit'
 
 interface NoteCardProps extends BasicNoteData {
-  handleOpenDescription: (id: number) => void
+  handleOpenDescription: (slug: string) => void
 }
 
 const NoteCard = (props: NoteCardProps) => {
   const { cheerStatusData, cheerStatusError } = useCheerStatus({
     authorName: props.user.name,
-    noteId: props.id,
+    noteSlug: props.slug,
   })
   const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const router = useRouter()
@@ -47,7 +47,7 @@ const NoteCard = (props: NoteCardProps) => {
   }, [cheerStatusData])
 
   const handleCardClick = () => {
-    router.push(`/${props.user.name}/notes/${props.id}`)
+    router.push(`/${props.user.name}/notes/${props.slug}`)
   }
 
   return (
@@ -168,7 +168,7 @@ const NoteCard = (props: NoteCardProps) => {
                   '&:hover': { textDecoration: 'underline' },
                 }}
                 onClick={(e) => {
-                  props.handleOpenDescription(props.id)
+                  props.handleOpenDescription(props.slug)
                   e.stopPropagation()
                 }}
               >

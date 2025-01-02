@@ -17,6 +17,9 @@ import { goToUserX, goToUserGithub } from '@/utils/socialLinkHandlers'
 
 export interface UserInfoProps {
   userData: UserData
+  changedFollowingsCount?: number
+  changedFollowersCount?: number
+  setChangedFollowersCount?: Dispatch<SetStateAction<number | undefined>>
   followState: {
     isFollowed: boolean | undefined
     setIsFollowed: Dispatch<SetStateAction<boolean | undefined>>
@@ -27,6 +30,9 @@ export interface UserInfoProps {
 
 export const UserInfo = ({
   userData,
+  changedFollowingsCount,
+  changedFollowersCount,
+  setChangedFollowersCount,
   followState,
   setTabIndex,
   listRef,
@@ -134,7 +140,9 @@ export const UserInfo = ({
                 },
               }}
             >
-              {followingsCount ?? 0}
+              {name !== currentUserName
+                ? followingsCount
+                : (changedFollowingsCount ?? 0)}
             </Typography>
             <Typography sx={{ fontSize: 12, color: 'text.light' }}>
               フォロー
@@ -152,7 +160,9 @@ export const UserInfo = ({
                 },
               }}
             >
-              {followersCount ?? 0}
+              {name !== currentUserName
+                ? changedFollowersCount
+                : (followersCount ?? 0)}
             </Typography>
             <Typography sx={{ fontSize: 12, color: 'text.light' }}>
               フォロワー
@@ -227,7 +237,8 @@ export const UserInfo = ({
               <FollowButton
                 userName={name}
                 followState={followState}
-                width={200}
+                setChangedFollowersCount={setChangedFollowersCount}
+                width={160}
               />
             </Box>
           )}
@@ -244,11 +255,11 @@ export const UserInfo = ({
               fontWeight: 'bold',
               boxShadow: 'none',
               borderRadius: 2,
-              width: '200px',
+              width: '160px',
               height: '30px',
             }}
           >
-            プロフィールを編集する
+            プロフィール編集
           </Button>
         )}
       </Box>

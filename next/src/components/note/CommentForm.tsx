@@ -40,8 +40,8 @@ const CommentForm = ({
   >(undefined)
   const { idToken } = useAuthContext()
   const { profileData } = useProfile()
-  const { name, id } = router.query
-  const [authorName, noteId] = [name, id].map((value) =>
+  const { name, slug } = router.query
+  const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
   const { handleSubmit, control } = useForm<CommentFormData>({
@@ -101,7 +101,7 @@ const CommentForm = ({
     if (!comment.trim()) return
 
     setIsLoading(true)
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/comments`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/comments`
     const commentData = { content: comment, image_signed_ids: imageSignedIds }
     const headers = { Authorization: `Bearer ${idToken}` }
 
@@ -126,7 +126,9 @@ const CommentForm = ({
     <>
       {!idToken && (
         <Stack spacing={2} sx={{ alignItems: 'center' }}>
-          <Typography sx={{ color: 'text.light' }}>
+          <Typography
+            sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.light' }}
+          >
             ログインまたは新規登録してコメントする
           </Typography>
           <AuthLinks />
@@ -203,6 +205,10 @@ const CommentForm = ({
                     sx={{
                       '& .MuiInputBase-input': {
                         fontSize: { xs: '14px', sm: '16px' },
+                        lineHeight: '25.6px',
+                      },
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
                       },
                     }}
                   />
@@ -212,12 +218,13 @@ const CommentForm = ({
               // プレビュー画面
               <Box
                 sx={{
-                  p: 2,
                   border: '1px solid',
                   borderColor: 'grey.400',
                   borderRadius: 2,
-                  minHeight: '148px',
+                  minHeight: '163px',
                   overflowWrap: 'break-word',
+                  px: '13px',
+                  py: '15.5px',
                 }}
               >
                 {comment ? (

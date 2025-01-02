@@ -27,6 +27,7 @@ export interface NoteData {
   publishedDate?: string
   updatedDate: string
   cheersCount: number
+  slug: string
   totalDuration: number
   comments?: CommentData[]
   tags?: {
@@ -49,8 +50,8 @@ export interface NoteData {
 export const useNote = () => {
   const { idToken, isAuthLoading } = useAuthContext()
   const router = useRouter()
-  const { name, id } = router.query
-  const [authorName, noteId] = [name, id].map((value) =>
+  const { name, slug } = router.query
+  const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
 
@@ -58,8 +59,8 @@ export const useNote = () => {
 
   const urlPath =
     !authorName || authorName === profileData?.user.name
-      ? `my_notes/${noteId}`
-      : `${authorName}/notes/${noteId}`
+      ? `my_notes/${noteSlug}`
+      : `${authorName}/notes/${noteSlug}`
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${urlPath}`
 
   const {

@@ -30,8 +30,8 @@ export const CheerButton = ({
   cheerIconSize,
 }: CheerButtonProps) => {
   const router = useRouter()
-  const { name, id } = router.query
-  const [authorName, noteId] = [name, id].map((value) =>
+  const { name, slug } = router.query
+  const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
   const { idToken, isAuthLoading } = useAuthContext()
@@ -42,7 +42,7 @@ export const CheerButton = ({
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
   const { setCheerPoints } = useProfileContext()
 
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/cheer`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }
 
   const handleCheer = async () => {

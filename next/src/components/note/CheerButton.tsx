@@ -7,7 +7,7 @@ import ConfirmDialog from '../common/ConfirmDialog'
 import AnimatedIconWrapper from './AnimatedIconWrapper'
 import { CheerIcon } from './CheerIcon'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import { useCheerPointsContext } from '@/hooks/useCheerPointsContext'
+import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
@@ -40,7 +40,7 @@ export const CheerButton = ({
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
-  const { setCheerPoints } = useCheerPointsContext()
+  const { setCheerPoints } = useProfileContext()
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }

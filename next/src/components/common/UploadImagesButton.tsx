@@ -16,7 +16,6 @@ interface UploadImagesButtonProps {
   postCursorText?: string
   backgroundColor?: boolean
   hoverIconColor?: boolean
-  setIsChanged?: Dispatch<SetStateAction<boolean>>
 }
 
 const UploadImagesButton = (props: UploadImagesButtonProps) => {
@@ -30,7 +29,6 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
     postCursorText,
     backgroundColor,
     hoverIconColor,
-    setIsChanged,
   } = props
 
   const handleUploadImages = () => {
@@ -76,7 +74,6 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
       setImageSignedIds(imageSignedIdList)
 
       if (setContent) insertImageTagsAtCursor(imageTagList)
-      if (setIsChanged) setIsChanged(true)
 
       setSnackbar({
         message: 'アップロードが完了しました',
@@ -90,7 +87,7 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
     const formData = new FormData()
     formData.append('image', image)
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads/upload`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads`
     const headers = {
       Authorization: `Bearer ${idToken}`,
     }

@@ -40,7 +40,7 @@ export const CheerButton = ({
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
-  const { setCheerPoints } = useProfileContext()
+  const { setCheerPoints } = useCheerPointsContext()
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }

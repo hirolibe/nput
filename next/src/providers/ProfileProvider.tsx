@@ -21,14 +21,7 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
     setCurrentUserName(profileData?.user.name)
     setCurrentUserNickname(profileData?.nickname)
     setAvatarUrl(profileData?.avatarUrl ?? '')
-    setCheerPoints(profileData?.user.cheerPoints ?? 0)
-  }, [
-    setCurrentUserName,
-    setCurrentUserNickname,
-    setAvatarUrl,
-    setCheerPoints,
-    profileData,
-  ])
+  }, [setCurrentUserName, setCurrentUserNickname, setAvatarUrl, profileData])
 
   return (
     <ProfileContext.Provider
@@ -37,8 +30,6 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
         currentUserNickname,
         avatarUrl,
         setAvatarUrl,
-        cheerPoints,
-        setCheerPoints,
       }}
     >
       {children}

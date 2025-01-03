@@ -229,7 +229,12 @@ const EditNote: NextPage = () => {
     const workDuration =
       remainingSeconds + sessionSeconds - previousSessionSeconds
     const patchData = {
-      note: { ...data, status: status, image_signed_ids: imageSignedIds },
+      note: {
+        ...data,
+        content: content,
+        status: status,
+        image_signed_ids: imageSignedIds,
+      },
       tag_names: inputTags,
       duration: workDuration,
     }
@@ -248,6 +253,7 @@ const EditNote: NextPage = () => {
         pathname: router.pathname,
       })
 
+      setIsChanged(false)
       reset(data)
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -262,7 +268,7 @@ const EditNote: NextPage = () => {
   }
 
   const handleBackWithConfirmation = () => {
-    if (isDirty) {
+    if (isChanged) {
       setOpenBackConfirmDialog(true)
       return
     }
@@ -659,7 +665,7 @@ const EditNote: NextPage = () => {
                         <SellOutlinedIcon />
                       </IconButton>
                     </Tooltip>
-                    {!isPreviewActive && (
+                    {!isPreviewActive && !openSidebar && (
                       <Tooltip title="画像を追加">
                         <Box tabIndex={0}>
                           <UploadImagesButton
@@ -669,6 +675,7 @@ const EditNote: NextPage = () => {
                             preCursorText={preCursorText}
                             postCursorText={postCursorText}
                             backgroundColor={true}
+                            setIsChanged={setIsChanged}
                           />
                         </Box>
                       </Tooltip>

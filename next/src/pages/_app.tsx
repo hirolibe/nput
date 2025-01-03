@@ -27,10 +27,12 @@ export default function MyApp(props: MyAppProps): JSX.Element {
         <HelmetProvider>
           <AuthProvider>
             <ProfileProvider>
-              <CssBaseline />
-              <Header />
-              <Component {...pageProps} />
-              <Snackbar />
+              <CheerPointsProvider>
+                <CssBaseline />
+                <Header />
+                <Component {...pageProps} />
+                <Snackbar />
+              </CheerPointsProvider>
             </ProfileProvider>
           </AuthProvider>
         </HelmetProvider>

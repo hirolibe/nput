@@ -16,6 +16,7 @@ interface UploadImagesButtonProps {
   postCursorText?: string
   backgroundColor?: boolean
   hoverIconColor?: boolean
+  setIsChanged?: Dispatch<SetStateAction<boolean>>
 }
 
 const UploadImagesButton = (props: UploadImagesButtonProps) => {

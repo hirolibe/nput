@@ -182,6 +182,10 @@ const EditNote: NextPage = () => {
       defaultValues: note,
     })
   const { isDirty } = formState
+  const [isChanged, setIsChanged] = useState<boolean>(false)
+  useEffect(() => {
+    setIsChanged(isDirty)
+  }, [setIsChanged, isDirty])
 
   useEffect(() => {
     if (noteData === undefined) return

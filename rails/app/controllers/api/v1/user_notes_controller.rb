@@ -4,10 +4,8 @@ class Api::V1::UserNotesController < Api::V1::ApplicationController
   def index
     user = User.find_by!(name: params[:name])
     notes = user.notes.
-              includes(
-                user: { profile: { avatar_attachment: :blob } },
-                tags: {},
-              ).published.
+              includes(tags: {}).
+              published.
               order("notes.published_at DESC").
               page(params[:page] || 1).
               per(10)

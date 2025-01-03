@@ -14,7 +14,6 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
     string | undefined
   >(undefined)
   const [avatarUrl, setAvatarUrl] = useState<string>('')
-  const [cheerPoints, setCheerPoints] = useState<number>(0)
 
   const { profileData } = useProfile()
 

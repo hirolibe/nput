@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { CheerIcon } from '../note/CheerIcon'
-import { useProfileContext } from '@/hooks/useProfileContext'
+import { useCheerPointsContext } from '@/hooks/useCheerPointsContext'
 
 type CheerPointsProps = {
   addedCheerPoints?: number
@@ -9,7 +9,7 @@ type CheerPointsProps = {
 
 const CheerPoints = (props: CheerPointsProps) => {
   const { addedCheerPoints, size } = props
-  const { cheerPoints } = useProfileContext()
+  const { cheerPoints } = useCheerPointsContext()
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '60px' }}>

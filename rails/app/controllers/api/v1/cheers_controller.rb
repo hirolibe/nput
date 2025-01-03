@@ -2,7 +2,7 @@ class Api::V1::CheersController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:show, :create, :destroy]
 
   def show
-    note = Note.published.find_by(slug: params[:note_slug])
+    note = Note.find_by(slug: params[:note_slug])
     unless note
       return render json: { error: "ノートにアクセスできません" }, status: :not_found
     end

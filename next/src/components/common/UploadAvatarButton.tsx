@@ -61,7 +61,7 @@ const UploadAvatarButton = () => {
     const formData = new FormData()
     formData.append('image', image)
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads/upload`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     const res = await axios.post(url, formData, { headers })

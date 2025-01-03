@@ -141,6 +141,7 @@ const EditNote: NextPage = () => {
     }
 
     setInputValue(newInputValue)
+    setIsChanged(true)
   }
 
   const updateCursorPosition = () => {

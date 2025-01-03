@@ -7,7 +7,7 @@ import ConfirmDialog from '../common/ConfirmDialog'
 import AnimatedIconWrapper from './AnimatedIconWrapper'
 import { CheerIcon } from './CheerIcon'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import { useProfileContext } from '@/hooks/useProfileContext'
+import { useCheerPointsContext } from '@/hooks/useCheerPointsContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 

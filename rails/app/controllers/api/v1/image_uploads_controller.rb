@@ -1,7 +1,7 @@
 class Api::V1::ImageUploadsController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:create, :attach_avatar]
+  before_action :authenticate_user!, only: [:upload, :attach_avatar]
 
-  def create
+  def upload
     if params[:image].present? && valid_image_type?(params[:image].content_type)
       blob = ActiveStorage::Blob.create_and_upload!(
         io: params[:image].tempfile,

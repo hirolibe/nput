@@ -21,9 +21,7 @@ RSpec.describe "Api::V1::Cheers GET /api/v1/:name/notes/:note_slug/cheer", type:
       include_examples "404エラー", "ノート"
     end
 
-    include_examples "ノート非公開エラー"
-
-    context "ステータスが公開中のノートが存在する場合" do
+    context "ノートが存在する場合" do
       before { create(:cheer, note:, user: current_user) }
 
       it "200ステータス、エール状態が返る" do

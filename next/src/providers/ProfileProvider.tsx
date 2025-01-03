@@ -14,6 +14,7 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
     string | undefined
   >(undefined)
   const [avatarUrl, setAvatarUrl] = useState<string>('')
+  const [cheerPoints, setCheerPoints] = useState<number>(0)
 
   const { profileData } = useProfile()
 
@@ -21,7 +22,14 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
     setCurrentUserName(profileData?.user.name)
     setCurrentUserNickname(profileData?.nickname)
     setAvatarUrl(profileData?.avatarUrl ?? '')
-  }, [setCurrentUserName, setCurrentUserNickname, setAvatarUrl, profileData])
+    setCheerPoints(profileData?.user.cheerPoints ?? 0)
+  }, [
+    setCurrentUserName,
+    setCurrentUserNickname,
+    setAvatarUrl,
+    setCheerPoints,
+    profileData,
+  ])
 
   return (
     <ProfileContext.Provider
@@ -30,6 +38,8 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
         currentUserNickname,
         avatarUrl,
         setAvatarUrl,
+        cheerPoints,
+        setCheerPoints,
       }}
     >
       {children}

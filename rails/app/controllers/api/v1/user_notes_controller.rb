@@ -4,8 +4,10 @@ class Api::V1::UserNotesController < Api::V1::ApplicationController
   def index
     user = User.find_by!(name: params[:name])
     notes = user.notes.
-              includes(tags: {}).
-              published.
+              includes(
+                user: { profile: { avatar_attachment: :blob } },
+                tags: {},
+              ).published.
               order("notes.published_at DESC").
               page(params[:page] || 1).
               per(10)
@@ -20,6 +22,6 @@ class Api::V1::UserNotesController < Api::V1::ApplicationController
            adapter: :json,
            status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "アカウントにアクセスできません" }, status: :not_found
+    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 end

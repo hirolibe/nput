@@ -5,6 +5,8 @@ export interface ProfileContextState {
   currentUserNickname: string | undefined
   avatarUrl: string
   setAvatarUrl: Dispatch<SetStateAction<string>>
+  cheerPoints: number
+  setCheerPoints: Dispatch<SetStateAction<number>>
 }
 
 export const ProfileContext = createContext<ProfileContextState | undefined>(

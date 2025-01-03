@@ -195,13 +195,13 @@ const CommentForm = ({
                     helperText={fieldState.error?.message}
                     variant="outlined"
                     inputRef={textareaRef}
-                    value={comment}
                     onChange={(e) => {
                       field.onChange(e)
                       handleChange(e)
                     }}
                     onClick={updateCursorPosition}
                     onKeyUp={updateCursorPosition}
+                    value={comment}
                     sx={{
                       '& .MuiInputBase-input': {
                         fontSize: { xs: '14px', sm: '16px' },

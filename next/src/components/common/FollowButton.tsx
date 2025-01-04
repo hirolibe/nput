@@ -99,7 +99,6 @@ export const FollowButton = ({
             borderColor: !isFollowed ? 'black' : 'primary',
             backgroundColor: !isFollowed ? '#E0E0E0' : 'none',
           },
-          mr: 1,
         }}
       >
         {!isFollowed ? 'フォロー' : 'フォロー中'}

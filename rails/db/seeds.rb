@@ -1,6 +1,6 @@
 users_count = 5
 notes_count_per_user = 10
-durations_count_per_note = 200
+durations_count_per_note = 1
 tags_count_per_note = 5
 users = []
 

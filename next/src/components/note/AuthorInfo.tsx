@@ -51,7 +51,12 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
           </Typography>
 
           {(authorXLink || authorGithubLink) && (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               <Stack
                 direction="row"
                 sx={{ alignItems: 'center', height: '40px', mr: 1 }}

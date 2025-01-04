@@ -66,7 +66,7 @@ const PublicNotes: NextPage = () => {
             mb: 3,
           }}
         >
-          新着記事一覧
+          新着ノート一覧
         </Typography>
         <Grid container spacing={4}>
           {!notesData &&

@@ -20,7 +20,7 @@ class Api::V1::ImageUploadsController < Api::V1::ApplicationController
       profile.avatar.attach(params[:image_signed_id])
 
       if profile.avatar.attached?
-        render json: { message: "画像を変更しました" }, status: :ok
+        render json: { message: "画像を変更しました！" }, status: :ok
       else
         render json: { error: "画像の変更に失敗しました" }, status: :unprocessable_entity
       end

@@ -11,18 +11,30 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import NoteCard from '../note/NoteCard'
 import { useCheeredNotes } from '@/hooks/useCheeredNotes'
-import { BasicNoteData } from '@/hooks/useNotes'
+import { BasicNoteData, pageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const CheeredNotes = () => {
   const router = useRouter()
-  const { name } = router.query
-  const userName = typeof name === 'string' ? name : undefined
 
-  const { notesData, notesError, isNotesLoading } = useCheeredNotes()
-  const notes = notesData?.notes
-  const meta = notesData?.meta
+  const [page, setPage] = useState<number>(1)
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value)
+  }
+
+  const { notesData, notesError, isNotesLoading } = useCheeredNotes(page)
+
+  const [notes, setNotes] = useState<BasicNoteData[] | undefined>(undefined)
+  const [meta, setMeta] = useState<pageData | undefined>(undefined)
+
+  useEffect(() => {
+    setNotes(notesData?.notes)
+  }, [setNotes, notesData?.notes])
+
+  useEffect(() => {
+    setMeta(notesData?.meta)
+  }, [setMeta, notesData?.meta])
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
@@ -37,10 +49,6 @@ const CheeredNotes = () => {
 
   const handleClose = () => {
     setIsOpen(false)
-  }
-
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`/${userName}/?page=${value}`)
   }
 
   const [, setSnackbar] = useSnackbarState()

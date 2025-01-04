@@ -52,7 +52,7 @@ const TaggedNotes: NextPage = () => {
   const meta = notesData?.meta
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`/?page=${value}`)
+    router.push(`/tags/${tagName}/?page=${value}`)
   }
 
   return (

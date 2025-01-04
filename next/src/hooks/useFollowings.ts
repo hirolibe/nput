@@ -19,12 +19,10 @@ export interface PagenatedUsersData {
   }
 }
 
-export const useFollowings = () => {
+export const useFollowings = (page: number) => {
   const router = useRouter()
   const { name } = router.query
   const userName = typeof name === 'string' ? name : undefined
-
-  const page = 'page' in router.query ? String(router.query.page) : 1
 
   const url = page
     ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userName}/followings/?page=${page}`

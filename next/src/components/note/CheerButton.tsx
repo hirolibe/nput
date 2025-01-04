@@ -1,9 +1,19 @@
-import { Avatar, Box, IconButton, Typography } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import {
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  Modal,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, Dispatch, SetStateAction } from 'react'
 import LoginDialog from '../auth/LoginDialog'
 import ConfirmDialog from '../common/ConfirmDialog'
+import Supporters from '../user/Supporters'
 import AnimatedIconWrapper from './AnimatedIconWrapper'
 import { CheerIcon } from './CheerIcon'
 import { useAuthContext } from '@/hooks/useAuthContext'
@@ -36,11 +46,12 @@ export const CheerButton = ({
   )
   const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
-  const [isAnimated, setIsAnimated] = useState(false)
-  const [openLoginDialog, setOpenLoginDialog] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
+  const [isAnimated, setIsAnimated] = useState<boolean>(false)
+  const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
   const { setCheerPoints } = useCheerPointsContext()
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }
@@ -93,9 +104,14 @@ export const CheerButton = ({
     }
   }
 
+  const handleOpenModal = () => {
+    setIsOpen(true)
+  }
+
   const handleClose = () => {
     setOpenLoginDialog(false)
     setOpenConfirmDialog(false)
+    setIsOpen(false)
   }
 
   return (
@@ -133,8 +149,72 @@ export const CheerButton = ({
             )}
           </IconButton>
         </Avatar>
-        <Typography sx={{ fontSize: 12 }}>{cheersCount}</Typography>
+        <Tooltip title="エールしたユーザーを表示">
+          <Typography
+            onClick={handleOpenModal}
+            sx={{
+              cursor: 'pointer',
+              fontSize: 14,
+              fontWeight: 'bold',
+              color: 'text.light',
+              '&:hover': {
+                fontWeight: 'bold',
+                color: 'black',
+              },
+            }}
+          >
+            {cheersCount}
+          </Typography>
+        </Tooltip>
       </Box>
+
+      <Modal
+        open={isOpen}
+        onClose={handleClose}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            borderRadius: 2,
+            boxShadow: 24,
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: 'calc(100vh - 100px)', // ウィンドウ高さに基づく最大値
+            height: 'auto',
+            overflowY: 'auto',
+          }}
+        >
+          <Box sx={{ position: 'relative', my: 2 }}>
+            <CloseIcon
+              onClick={handleClose}
+              sx={{
+                cursor: 'pointer',
+                position: 'absolute',
+                right: '30px',
+                textAlign: 'end',
+                opacity: 0.7,
+                '&:hover': { opacity: 1 },
+              }}
+            />
+            <Typography
+              sx={{
+                textAlign: 'center',
+                fontSize: { xs: 16, sm: 18 },
+                fontWeight: 'bold',
+              }}
+            >
+              ノートにエールしたユーザー
+            </Typography>
+          </Box>
+          <Divider sx={{ mx: 3 }} />
+          <Supporters />
+        </Box>
+      </Modal>
 
       <LoginDialog open={openLoginDialog} onClose={handleClose} />
 

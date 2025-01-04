@@ -90,7 +90,7 @@ const Dashboard: NextPage = () => {
                 justifyContent: 'center',
                 width: '100%',
                 minHeight: '250px',
-                mt: 20,
+                mt: 24,
               }}
             >
               <Typography sx={{ fontSize: 18, color: 'text.placeholder' }}>

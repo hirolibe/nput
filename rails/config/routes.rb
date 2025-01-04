@@ -37,7 +37,8 @@ Rails.application.routes.draw do
 
       resources :image_uploads, only: [] do
         collection do
-          post :upload, :attach_avatar
+          post :upload
+          post :attach_avatar
         end
       end
     end

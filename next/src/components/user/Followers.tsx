@@ -6,25 +6,37 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowers } from '@/hooks/useFollowers'
 import { BasicUserData } from '@/hooks/useFollowings'
+import { pageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const Followers = () => {
   const router = useRouter()
-  const { name } = router.query
-  const userName = typeof name === 'string' ? name : undefined
 
-  const { followersData, followersError, isFollowersLoading } = useFollowers()
-  const users = followersData?.users
-  const meta = followersData?.meta
-
+  const [page, setPage] = useState<number>(1)
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`/${userName}/?page=${value}`)
+    setPage(value)
   }
+
+  const { followersData, followersError, isFollowersLoading } =
+    useFollowers(page)
+
+  const [followers, setFollowers] = useState<BasicUserData[] | undefined>(
+    undefined,
+  )
+  const [meta, setMeta] = useState<pageData | undefined>(undefined)
+
+  useEffect(() => {
+    setFollowers(followersData?.users)
+  }, [setFollowers, followersData?.users])
+
+  useEffect(() => {
+    setMeta(followersData?.meta)
+  }, [setMeta, followersData?.meta])
 
   const [, setSnackbar] = useSnackbarState()
 
@@ -68,7 +80,7 @@ const Followers = () => {
     )
   }
 
-  if (!isFollowersLoading && !users?.length) {
+  if (!isFollowersLoading && !followers?.length) {
     return (
       <CardContent
         sx={{
@@ -99,8 +111,12 @@ const Followers = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      {users?.map((user: BasicUserData, i: number) => (
-        <Box key={i} sx={{ border: 'none', mx: { xs: 0, sm: 6, lg: 15 } }}>
+      {followers?.map((user: BasicUserData, i: number) => (
+        <Box
+          key={i}
+          sx={{ border: 'none', mx: { xs: 0, sm: 5, md: 10, lg: 15 } }}
+        >
+          {' '}
           <UserCard {...user} />
           <Divider />
         </Box>

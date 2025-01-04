@@ -6,55 +6,51 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useEffect, Dispatch, SetStateAction, useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
-import { useFollowings, BasicUserData } from '@/hooks/useFollowings'
+import { BasicUserData } from '@/hooks/useFollowings'
 import { pageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { useSupporters } from '@/hooks/useSupporters'
 import { handleError } from '@/utils/handleError'
 
-type FollowingsProps = {
-  setChangedFollowingsCount: Dispatch<SetStateAction<number | undefined>>
-}
-
-const Followings = (props: FollowingsProps) => {
+const Supporters = () => {
   const router = useRouter()
+  const [, setSnackbar] = useSnackbarState()
 
   const [page, setPage] = useState<number>(1)
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value)
   }
 
-  const { followingsData, followingsError, isFollowingsLoading } =
-    useFollowings(page)
+  const { supportersData, supportersError, isSupportersLoading } =
+    useSupporters(page)
 
-  const [followings, setFollowings] = useState<BasicUserData[] | undefined>(
+  const [supporters, setSupporters] = useState<BasicUserData[] | undefined>(
     undefined,
   )
   const [meta, setMeta] = useState<pageData | undefined>(undefined)
 
   useEffect(() => {
-    setFollowings(followingsData?.users)
-  }, [setFollowings, followingsData?.users])
+    setSupporters(supportersData?.users)
+  }, [setSupporters, supportersData?.users])
 
   useEffect(() => {
-    setMeta(followingsData?.meta)
-  }, [setMeta, followingsData?.meta])
-
-  const [, setSnackbar] = useSnackbarState()
+    setMeta(supportersData?.meta)
+  }, [setMeta, supportersData?.meta])
 
   useEffect(() => {
-    if (followingsError) {
-      const { errorMessage } = handleError(followingsError)
+    if (supportersError) {
+      const { errorMessage } = handleError(supportersError)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
         pathname: router.pathname,
       })
     }
-  }, [followingsError, router.pathname, setSnackbar])
+  }, [supportersError, router.pathname, setSnackbar])
 
-  if (followingsError) {
+  if (supportersError) {
     return (
       <CardContent
         sx={{
@@ -83,7 +79,7 @@ const Followings = (props: FollowingsProps) => {
     )
   }
 
-  if (!isFollowingsLoading && !followings?.length) {
+  if (!isSupportersLoading && !supporters?.length) {
     return (
       <CardContent
         sx={{
@@ -105,7 +101,7 @@ const Followings = (props: FollowingsProps) => {
               my: 0.5,
             }}
           >
-            フォローしているユーザーがいません
+            エールしたユーザーがまだいません
           </Typography>
         </Box>
       </CardContent>
@@ -113,29 +109,28 @@ const Followings = (props: FollowingsProps) => {
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      {followings?.map((user: BasicUserData, i: number) => (
-        <Box
-          key={i}
-          sx={{ border: 'none', mx: { xs: 0, sm: 5, md: 10, lg: 15 } }}
-        >
-          <UserCard
-            {...user}
-            setChangedFollowingsCount={props.setChangedFollowingsCount}
-          />
+    <>
+      {supporters?.map((user: BasicUserData, i: number) => (
+        <Box key={i} sx={{ border: 'none', mx: { xs: 0, sm: 3 } }}>
+          <UserCard {...user} />
           <Divider />
         </Box>
       ))}
-
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          my: 2,
+        }}
+      >
         <Pagination
           count={meta?.totalPages}
           page={meta?.currentPage}
           onChange={handleChange}
         />
       </Box>
-    </Box>
+    </>
   )
 }
 
-export default Followings
+export default Supporters

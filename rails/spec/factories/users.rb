@@ -8,14 +8,16 @@ FactoryBot.define do
       generated_name = nil
       5.times do
         temp_name = Faker::Internet.username[0..19]
-        next unless !User.exists?(name: temp_name) &&
-                    temp_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
-                    !temp_name.start_with?("-") &&
-                    !temp_name.end_with?("-")
+        filtered_name = temp_name.gsub(/[^a-zA-Z0-9_-]/, "")
+        next unless !User.exists?(name: filtered_name) &&
+                    filtered_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
+                    !filtered_name.start_with?("-") &&
+                    !filtered_name.end_with?("-")
 
-        generated_name = temp_name
+        generated_name = filtered_name
         break
       end
+
       generated_name || "user_#{SecureRandom.hex(4)}"
     end
   end

@@ -28,7 +28,7 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
 
     before { stub_token_verification.and_return({ "sub" => uid, "email" => email }) }
 
-    it "ユーザーとプロフィールが新規作成され、201ステータスとユーザー登録成功のメッセージが返る" do
+    it "ユーザーとプロフィールが新規作成され、201ステータスと新規登録成功のメッセージが返る" do
       expect { subject }.to change { User.count }.by(1) and
         expect(Profile.last.user).to eq(user)
       expect(response).to have_http_status(:created)
@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
       expect(user.email).to eq(email)
       expect(user.name).to eq(params[:name])
       expect(user.cheer_points).to eq(0)
-      expect(json_response["message"]).to eq("ユーザー登録に成功しました！")
+      expect(json_response["message"]).to eq("新規登録に成功しました！")
     end
   end
 

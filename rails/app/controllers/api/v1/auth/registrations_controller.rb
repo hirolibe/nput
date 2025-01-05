@@ -18,7 +18,7 @@ class Api::V1::Auth::RegistrationsController < Api::V1::ApplicationController
     user = User.new(uid: decoded_token["sub"], email: decoded_token["email"], name: params[:name])
 
     if user.save
-      render json: { message: "ユーザー登録に成功しました！" }, status: :created
+      render json: { message: "新規登録に成功しました！" }, status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end

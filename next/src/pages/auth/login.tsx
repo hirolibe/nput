@@ -51,7 +51,7 @@ const LogIn: NextPage = () => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
       setSnackbar({
-        message: 'ログインに成功しました',
+        message: 'ログインに成功しました！',
         severity: 'success',
         pathname: redirectPath,
       })

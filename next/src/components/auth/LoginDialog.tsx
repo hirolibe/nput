@@ -65,7 +65,6 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose }) => {
           <Button
             onClick={handleLogin}
             variant="outlined"
-            color="primary"
             sx={{ fontWeight: 'bold', width: '100%' }}
           >
             メールアドレスでログイン
@@ -73,7 +72,6 @@ const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose }) => {
           <Button
             onClick={handleSignup}
             variant="contained"
-            color="primary"
             sx={{ color: 'white', fontWeight: 'bold', width: '100%' }}
           >
             メールアドレスで新規登録

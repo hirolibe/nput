@@ -1,6 +1,7 @@
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
+import SettingsIcon from '@mui/icons-material/Settings'
 import {
   AppBar,
   Avatar,
@@ -132,7 +133,6 @@ const Header = () => {
               <Box sx={{ ml: { xs: 1, sm: 2 } }}>
                 <Button
                   onClick={handleAddNewNote}
-                  color="primary"
                   variant="contained"
                   sx={{
                     textAlign: 'center',
@@ -177,6 +177,14 @@ const Header = () => {
                       <AutoStoriesIcon fontSize="small" />
                     </ListItemIcon>
                     ノートの管理
+                  </MenuItem>
+                </Link>
+                <Link href="/settings/account">
+                  <MenuItem>
+                    <ListItemIcon>
+                      <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    アカウント設定
                   </MenuItem>
                 </Link>
                 <Link href="/">

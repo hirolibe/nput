@@ -24,7 +24,6 @@ const AuthLinks = () => {
     <Box>
       <Button
         onClick={handleLogin}
-        color="primary"
         variant="contained"
         sx={{
           color: 'white',
@@ -38,7 +37,6 @@ const AuthLinks = () => {
       </Button>
       <Button
         onClick={handleSignup}
-        color="primary"
         variant="outlined"
         sx={{
           fontSize: 16,

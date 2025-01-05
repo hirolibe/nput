@@ -1,12 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import {
-  Box,
-  Card,
-  Container,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Box, Card, Container, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -15,6 +8,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import UploadAvatarButton from '@/components/common/UploadAvatarButton'
+import SettingTabs from '@/components/user/SettingTabs'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useProfile } from '@/hooks/useProfile'
@@ -39,6 +33,8 @@ const EditProfile: NextPage = () => {
 
   const [isFetched, setIsFetched] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const [tabIndex, setTabIndex] = useState<number>(1)
 
   const { handleSubmit, control, reset } = useForm<ProfileFormData>({
     defaultValues: { ...profileData },
@@ -124,117 +120,107 @@ const EditProfile: NextPage = () => {
       }}
     >
       <Container maxWidth="md" sx={{ pt: 5, px: { xs: 2, md: 4 } }}>
-        <Card
-          sx={{
-            px: { xs: 2, sm: 8, md: 15 },
-            pt: 4,
-            pb: 5,
-          }}
-        >
-          <Box sx={{ mb: 2 }}>
-            <Typography
-              component="h2"
-              sx={{
-                textAlign: 'center',
-                fontSize: 24,
-                fontWeight: 'bold',
-              }}
-            >
-              プロフィールの編集
-            </Typography>
-          </Box>
-
-          {/* アバター画像 */}
-          <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <UploadAvatarButton />
-          </Box>
-
-          <Stack
-            component="form"
-            noValidate
-            onSubmit={handleSubmit(onSubmit)}
-            spacing={4}
-            sx={{ alignItems: 'center' }}
+        <Card>
+          <SettingTabs tabIndex={tabIndex} setTabIndex={setTabIndex} />
+          <Box
+            sx={{
+              px: { xs: 2, sm: 8, md: 15 },
+              pt: 4,
+              pb: 5,
+            }}
           >
-            <Controller
-              name="nickname"
-              control={control}
-              rules={validationRules.nickname}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="ニックネーム"
-                  error={fieldState.invalid}
-                  helperText={fieldState.error?.message}
-                  sx={{
-                    backgroundColor: 'white',
-                    width: '100%',
-                  }}
-                />
-              )}
-            />
-            <Controller
-              name="bio"
-              control={control}
-              rules={validationRules.bio}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  type="textarea"
-                  label="自己紹介"
-                  error={fieldState.invalid}
-                  helperText={fieldState.error?.message}
-                  multiline
-                  minRows={1}
-                  sx={{ width: '100%' }}
-                />
-              )}
-            />
-            <Stack direction={'row'} spacing={2} sx={{ width: '100%' }}>
-              <Controller
-                name="x_username"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    type="text"
-                    label="X(Twitter)ユーザー名"
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    sx={{ width: '100%' }}
-                  />
-                )}
-              />
-              <Controller
-                name="github_username"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    type="text"
-                    label="GitHubユーザー名"
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    sx={{ width: '100%' }}
-                  />
-                )}
-              />
-            </Stack>
-            <LoadingButton
-              variant="contained"
-              type="submit"
-              loading={isLoading}
-              sx={{
-                fontWeight: 'bold',
-                color: 'white',
-                width: '30%',
-                minWidth: '200px',
-              }}
+            {/* アバター画像 */}
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <UploadAvatarButton />
+            </Box>
+
+            <Stack
+              component="form"
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
+              spacing={4}
+              sx={{ alignItems: 'center' }}
             >
-              更新する
-            </LoadingButton>
-          </Stack>
+              <Controller
+                name="nickname"
+                control={control}
+                rules={validationRules.nickname}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    type="text"
+                    label="ニックネーム"
+                    error={fieldState.invalid}
+                    helperText={fieldState.error?.message}
+                    sx={{
+                      backgroundColor: 'white',
+                      width: '100%',
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="bio"
+                control={control}
+                rules={validationRules.bio}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    type="textarea"
+                    label="自己紹介"
+                    error={fieldState.invalid}
+                    helperText={fieldState.error?.message}
+                    multiline
+                    minRows={1}
+                    sx={{ width: '100%' }}
+                  />
+                )}
+              />
+              <Stack direction={'row'} spacing={2} sx={{ width: '100%' }}>
+                <Controller
+                  name="x_username"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      type="text"
+                      label="X(Twitter)ユーザー名"
+                      error={fieldState.invalid}
+                      helperText={fieldState.error?.message}
+                      sx={{ width: '100%' }}
+                    />
+                  )}
+                />
+                <Controller
+                  name="github_username"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      type="text"
+                      label="GitHubユーザー名"
+                      error={fieldState.invalid}
+                      helperText={fieldState.error?.message}
+                      sx={{ width: '100%' }}
+                    />
+                  )}
+                />
+              </Stack>
+              <LoadingButton
+                variant="contained"
+                type="submit"
+                loading={isLoading}
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'white',
+                  width: '30%',
+                  minWidth: '200px',
+                }}
+              >
+                更新する
+              </LoadingButton>
+            </Stack>
+          </Box>
         </Card>
       </Container>
     </Box>

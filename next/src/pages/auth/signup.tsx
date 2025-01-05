@@ -94,10 +94,10 @@ const SignUp: NextPage = () => {
 
       const createdUser = userCredential.user
       await updateProfile(createdUser, { displayName: data.name })
-      await verifyIdToken(createdUser)
+      const message = await verifyIdToken(createdUser)
 
       setSnackbar({
-        message: '新規登録に成功しました',
+        message: message,
         severity: 'success',
         pathname: redirectPath,
       })

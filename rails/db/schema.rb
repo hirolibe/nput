@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_30_222055) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_07_014509) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -133,6 +133,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_30_222055) do
     t.integer "cheers_count", default: 0, null: false, comment: "エールした合計回数"
     t.integer "followings_count", default: 0, null: false, comment: "フォローした数"
     t.integer "followers_count", default: 0, null: false, comment: "フォロワー数"
+    t.string "terms_version", null: false, comment: "利用規約のバージョン"
+    t.string "privacy_version", null: false, comment: "プライバシーポリシーのバージョン"
+    t.datetime "agreed_at", null: false, comment: "利用規約とプライバシーポリシーに同意した日"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true

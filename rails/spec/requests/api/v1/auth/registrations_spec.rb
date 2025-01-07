@@ -22,7 +22,7 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
 
     let(:uid) { Faker::Internet.uuid }
     let(:email) { Faker::Internet.email }
-    let(:params) { { name: generate_unique_username } }
+    let(:params) { { name: generate_unique_username, terms_version: "1", privacy_version: "1", agreed_at: Time.current } }
     let(:headers) { { "Content-Type" => "application/json", Authorization: "Bearer token" } }
     let(:user) { User.last }
 
@@ -43,14 +43,19 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
   private
 
     def generate_unique_username
-      loop do
-        generated_name = Faker::Internet.username(specifier: 3..20)
-        if User.where(name: generated_name).empty? &&
-           generated_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
-           !generated_name.start_with?("-") &&
-           !generated_name.end_with?("-")
-          return generated_name
-        end
+      generated_name = nil
+      5.times do
+        temp_name = Faker::Internet.username[0..19]
+        filtered_name = temp_name.gsub(/[^a-zA-Z0-9_-]/, "")
+        next unless !User.exists?(name: filtered_name) &&
+                    filtered_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
+                    !filtered_name.start_with?("-") &&
+                    !filtered_name.end_with?("-")
+
+        generated_name = filtered_name
+        break
       end
+
+      generated_name || "user_#{SecureRandom.hex(4)}"
     end
 end

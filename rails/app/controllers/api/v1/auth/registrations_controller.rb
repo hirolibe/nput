@@ -15,7 +15,8 @@ class Api::V1::Auth::RegistrationsController < Api::V1::ApplicationController
       return render json: { error: "認証情報が無効です" }, status: :unauthorized
     end
 
-    user = User.new(uid: decoded_token["sub"], email: decoded_token["email"], name: params[:name])
+    user = User.new(uid: decoded_token["sub"], email: decoded_token["email"], name: params[:name], terms_version: params[:terms_version],
+                    privacy_version: params[:privacy_version], agreed_at: Time.current)
 
     if user.save
       render json: { message: "新規登録に成功しました！" }, status: :created

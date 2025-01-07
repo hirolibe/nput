@@ -1,5 +1,12 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Container, Stack, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import axios from 'axios'
 import {
   createUserWithEmailAndPassword,
@@ -11,7 +18,7 @@ import type { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
@@ -21,14 +28,46 @@ type SignUpFormData = {
   name: string
   email: string
   password: string
+  terms: boolean
+  privacy: boolean
 }
 
 const SignUp: NextPage = () => {
+  const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(false)
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
   const { previousPath } = router.query
   const redirectPath = typeof previousPath === 'string' ? previousPath : '/'
+
+  const [termsLatestVersion, setTermsLatestVersion] = useState<string>('')
+  const [privacyLatestVersion, setPrivacyLatestVersion] = useState<string>('')
+
+  useEffect(() => {
+    const fetchLatestVersion = async () => {
+      try {
+        const response = await fetch('/api/getVersion')
+
+        if (!response.ok) {
+          throw new Error('ディレクトリの読み込みに失敗しました')
+        }
+
+        const data = await response.json()
+        setTermsLatestVersion(data.termsVersion)
+        setPrivacyLatestVersion(data.privacyVersion)
+      } catch (err) {
+        const { errorMessage } = handleError(err)
+        setSnackbar({
+          message: errorMessage,
+          severity: 'error',
+          pathname: router.pathname,
+        })
+      }
+    }
+
+    fetchLatestVersion()
+  }, [setSnackbar, router.pathname])
 
   const { handleSubmit, control } = useForm<SignUpFormData>({
     defaultValues: { name: '', email: '', password: '' },
@@ -37,10 +76,6 @@ const SignUp: NextPage = () => {
   const validationRules = {
     name: {
       required: 'ユーザー名を入力してください',
-      minLength: {
-        value: 3,
-        message: 'ユーザー名は3文字以上で入力してください',
-      },
       maxLength: {
         value: 20,
         message: 'ユーザー名は20文字以内で入力してください',
@@ -77,7 +112,11 @@ const SignUp: NextPage = () => {
 
     const res = await axios.post(
       url,
-      { name: createdUser.displayName },
+      {
+        name: createdUser.displayName,
+        terms_version: termsLatestVersion,
+        privacy_version: privacyLatestVersion,
+      },
       { headers },
     )
     return res.data.message
@@ -143,7 +182,7 @@ const SignUp: NextPage = () => {
           component="form"
           noValidate
           onSubmit={handleSubmit(onSubmit)}
-          spacing={4}
+          spacing={3}
           sx={{ alignItems: 'center' }}
         >
           <Controller
@@ -191,12 +230,49 @@ const SignUp: NextPage = () => {
               />
             )}
           />
+          <Stack>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox
+                checked={isTermsChecked}
+                onChange={(e) => setIsTermsChecked(e.target.checked)}
+              />
+              <Link href={`/terms/terms-v${termsLatestVersion}.md`}>
+                <Typography
+                  sx={{
+                    textDecoration: 'underline',
+                    '&:hover': { fontWeight: 'bold' },
+                  }}
+                >
+                  利用規約
+                </Typography>
+              </Link>
+              <Typography>に同意する</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox
+                checked={isPrivacyChecked}
+                onChange={(e) => setIsPrivacyChecked(e.target.checked)}
+                sx={{ py: 0 }}
+              />
+              <Link href={`/privacy/privacy-v${privacyLatestVersion}.md`}>
+                <Typography
+                  sx={{
+                    textDecoration: 'underline',
+                    '&:hover': { fontWeight: 'bold' },
+                  }}
+                >
+                  プライバシーポリシー
+                </Typography>
+              </Link>
+              <Typography>に同意する</Typography>
+            </Box>
+          </Stack>
           <LoadingButton
             variant="contained"
             type="submit"
+            disabled={!isTermsChecked || !isPrivacyChecked}
             loading={isLoading}
             sx={{
-              fontSize: { xs: 14, sm: 16 },
               fontWeight: 'bold',
               color: 'white',
               width: '170px',
@@ -204,16 +280,20 @@ const SignUp: NextPage = () => {
           >
             新規登録する
           </LoadingButton>
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>
-            アカウントをお持ちの場合は
-            <Typography
-              component="span"
-              sx={{ fontSize: { xs: 14, sm: 16 }, textDecoration: 'underline' }}
-            >
-              <Link href="/auth/login">ログイン</Link>
-            </Typography>
-            から
-          </Typography>
+          <Box sx={{ display: 'flex' }}>
+            <Typography>アカウントをお持ちの場合は</Typography>
+            <Link href="/auth/login">
+              <Typography
+                sx={{
+                  textDecoration: 'underline',
+                  '&:hover': { fontWeight: 'bold' },
+                }}
+              >
+                ログイン
+              </Typography>
+            </Link>
+            <Typography>から</Typography>
+          </Box>
         </Stack>
       </Container>
     </Container>

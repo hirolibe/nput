@@ -23,6 +23,7 @@ const SettingTabs = (props: SettingTabsProps) => {
     <AppBar
       position="static"
       sx={{
+        color: 'black',
         boxShadow: 'none',
         borderBottom: '1px solid',
         borderColor: 'divider',

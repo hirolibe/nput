@@ -23,7 +23,6 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import AuthLinks from '../auth/AuthLinks'
 import CheerPoints from './CheerPoints'
-import StopPropagationLink from './StopPropagationLink'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
@@ -110,9 +109,9 @@ const Header = () => {
           }}
         >
           <Box>
-            <StopPropagationLink href="/">
+            <Link href="/">
               <Image src="/logo.png" width={90} height={40} alt="logo" />
-            </StopPropagationLink>
+            </Link>
           </Box>
           {!isAuthLoading &&
             !idToken &&

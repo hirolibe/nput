@@ -22,7 +22,7 @@ interface ConfirmDialogProps {
   confirmColor?: 'error' | 'primary' | 'secondary' | 'warning'
 }
 
-const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
+const ConfirmDialog = ({
   open,
   onClose,
   onConfirm,
@@ -31,7 +31,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   confirmText = 'はい',
   cancelText = 'キャンセル',
   confirmColor = 'error',
-}) => {
+}: ConfirmDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle

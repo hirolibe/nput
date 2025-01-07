@@ -8,14 +8,13 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import React from 'react'
 
 interface LoginDialogProps {
   open: boolean
   onClose: () => void
 }
 
-const LoginDialog: React.FC<LoginDialogProps> = ({ open, onClose }) => {
+const LoginDialog = ({ open, onClose }: LoginDialogProps) => {
   const router = useRouter()
 
   const handleLogin = () => {

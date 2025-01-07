@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { AppProps } from 'next/app'
 import { HelmetProvider } from 'react-helmet-async'
+import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
 import Snackbar from '@/components/common/Snackbar'
 import '@/styles/destyle.css'
@@ -32,6 +33,7 @@ export default function MyApp(props: MyAppProps): JSX.Element {
                 <Header />
                 <Component {...pageProps} />
                 <Snackbar />
+                <Footer />
               </CheerPointsProvider>
             </ProfileProvider>
           </AuthProvider>

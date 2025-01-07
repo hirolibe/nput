@@ -19,10 +19,7 @@ interface CustomCodeProps {
   children?: React.ReactNode
 }
 
-const MarkdownText: React.FC<MarkdownTextProps> = ({
-  content,
-  className = '',
-}) => {
+const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
   const customComponents: Components = {
     code(props: CustomCodeProps) {
       const { className, children } = props

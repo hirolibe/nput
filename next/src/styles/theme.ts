@@ -1,4 +1,3 @@
-import { red } from '@mui/material/colors'
 import { createTheme } from '@mui/material/styles'
 
 declare module '@mui/material/styles' {
@@ -19,17 +18,17 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#3EA8FF',
+      main: '#0056B3',
     },
     secondary: {
       main: '#19857b',
     },
     error: {
-      main: red.A400,
+      main: '#E63946',
     },
     divider: '#acbcc7',
     backgroundColor: {
-      page: '#e6f2ff',
+      page: '#E3E8F1',
       icon: '#EDF2F7',
       hover: '#E0E0E0',
       draft: '#9E9E9E',

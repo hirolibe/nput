@@ -247,16 +247,16 @@ export const UserInfo = ({
         {name === currentUserName && (
           <Button
             onClick={handleEditProfile}
-            color="secondary"
-            variant="contained"
+            variant="outlined"
             sx={{
-              color: 'white',
               fontSize: 12,
               fontWeight: 'bold',
+              border: '1px solid',
               boxShadow: 'none',
               borderRadius: 2,
               width: '160px',
               height: '30px',
+              '&:hover': { border: '1.5px solid' },
             }}
           >
             プロフィール編集

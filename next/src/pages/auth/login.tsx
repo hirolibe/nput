@@ -130,7 +130,6 @@ const LogIn: NextPage = () => {
             type="submit"
             loading={isLoading}
             sx={{
-              fontSize: { xs: 14, sm: 16 },
               fontWeight: 'bold',
               color: 'white',
               width: '170px',
@@ -139,16 +138,20 @@ const LogIn: NextPage = () => {
           >
             Nput にログイン
           </LoadingButton>
-          <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>
-            アカウントをお持ちでない場合は
-            <Typography
-              component="span"
-              sx={{ fontSize: { xs: 14, sm: 16 }, textDecoration: 'underline' }}
-            >
-              <Link href="/auth/signup">新規登録</Link>
-            </Typography>
-            から
-          </Typography>
+          <Box sx={{ display: 'flex' }}>
+            <Typography>アカウントをお持ちでない場合は</Typography>
+            <Link href="/auth/signup">
+              <Typography
+                sx={{
+                  textDecoration: 'underline',
+                  '&:hover': { fontWeight: 'bold' },
+                }}
+              >
+                新規登録
+              </Typography>
+            </Link>
+            <Typography>から</Typography>
+          </Box>
         </Stack>
       </Container>
     </Container>

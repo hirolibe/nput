@@ -10,6 +10,9 @@ class User < ApplicationRecord
             },
             length: { maximum: 20 }
   validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 3600 }
+  validates :terms_version, presence: true
+  validates :privacy_version, presence: true
+  validates :agreed_at, presence: true
 
   has_many :notes, dependent: :destroy
 

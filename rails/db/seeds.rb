@@ -1,26 +1,33 @@
-users_count = 5
-notes_count_per_user = 10
+users_count = 30
+notes_count_per_user = 0
 durations_count_per_note = 1
-tags_count_per_note = 5
+tags_count_per_note = 0
 users = []
 
 users_count.times do
-  loop do
-    generated_name = Faker::Internet.username(specifier: 3..20)
-    next if User.exists?(name: generated_name) ||
-            !generated_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) ||
-            generated_name.start_with?("-") ||
-            generated_name.end_with?("-")
+  generated_name = nil
+  5.times do
+    temp_name = Faker::Internet.username[0..19]
+    filtered_name = temp_name.gsub(/[^a-zA-Z0-9_-]/, "")
+    next unless !User.exists?(name: filtered_name) &&
+                filtered_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
+                !filtered_name.start_with?("-") &&
+                !filtered_name.end_with?("-")
 
-    user = User.create!(
-      uid: Faker::Internet.uuid,
-      email: Faker::Internet.email,
-      name: generated_name,
-      cheer_points: Faker::Number.between(from: 0, to: 3600),
-    )
-    users.push(user)
+    generated_name = filtered_name
     break
   end
+
+  user = User.create!(
+    uid: Faker::Internet.uuid,
+    email: Faker::Internet.email,
+    name: generated_name || "user_#{SecureRandom.hex(4)}",
+    cheer_points: Faker::Number.between(from: 0, to: 3600),
+    terms_version: "1",
+    privacy_version: "1",
+    agreed_at: Time.current,
+  )
+  users.push(user)
 end
 
 # rubocop:disable Style/CombinableLoops

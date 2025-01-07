@@ -350,6 +350,7 @@ const EditNote: NextPage = () => {
         <AppBar
           position="fixed"
           sx={{
+            color: 'black',
             backgroundColor: 'backgroundColor.page',
             boxShadow: 'none',
           }}

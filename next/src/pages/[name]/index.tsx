@@ -97,7 +97,7 @@ const UsersIndex: NextPage = () => {
   return (
     <>
       <Box
-        sx={{ backgroundColor: 'backgroundColor.page', minHeight: '1416px' }}
+        sx={{ backgroundColor: 'backgroundColor.page', minHeight: '1126px' }}
       >
         <Container maxWidth="lg" sx={{ height: '100%', pt: 4, pb: 3 }}>
           <Box
@@ -224,6 +224,7 @@ const UsersIndex: NextPage = () => {
             <AppBar
               position="static"
               sx={{
+                color: 'black',
                 boxShadow: 'none',
                 borderBottom: '1px solid',
                 borderColor: 'divider',

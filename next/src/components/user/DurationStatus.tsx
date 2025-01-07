@@ -77,8 +77,8 @@ const DurationStatus = ({
       {
         label: '作業時間',
         data: dailyDurations,
-        backgroundColor: '#CCFFCCCC',
-        borderColor: '#99CC99',
+        backgroundColor: '#C0EEF0CC',
+        borderColor: '#A0D8E6',
         borderWidth: 1,
       },
     ],
@@ -91,8 +91,8 @@ const DurationStatus = ({
       {
         label: '作業時間',
         data: weeklyDurations,
-        backgroundColor: '#CCFFCCCC',
-        borderColor: '#99CC99',
+        backgroundColor: '#C0EEF0CC',
+        borderColor: '#A0D8E6',
         borderWidth: 1,
       },
     ],
@@ -105,8 +105,8 @@ const DurationStatus = ({
       {
         label: '作業時間',
         data: monthlyDurations,
-        backgroundColor: '#CCFFCCCC',
-        borderColor: '#99CC99',
+        backgroundColor: '#C0EEF0CC',
+        borderColor: '#A0D8E6',
         borderWidth: 1,
       },
     ],
@@ -158,6 +158,7 @@ const DurationStatus = ({
       <AppBar
         position="static"
         sx={{
+          color: 'black',
           boxShadow: 'none',
           borderBottom: '1px solid',
           borderColor: 'divider',
@@ -167,8 +168,8 @@ const DurationStatus = ({
         <Tabs
           value={tabIndex}
           onChange={(_, newValue) => setTabIndex(newValue)}
-          indicatorColor="secondary"
           textColor="inherit"
+          indicatorColor="secondary"
           variant="fullWidth"
           sx={{ minHeight: 'unset' }}
         >

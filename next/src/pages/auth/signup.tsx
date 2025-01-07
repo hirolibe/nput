@@ -76,10 +76,6 @@ const SignUp: NextPage = () => {
   const validationRules = {
     name: {
       required: 'ユーザー名を入力してください',
-      minLength: {
-        value: 3,
-        message: 'ユーザー名は3文字以上で入力してください',
-      },
       maxLength: {
         value: 20,
         message: 'ユーザー名は20文字以内で入力してください',
@@ -240,7 +236,7 @@ const SignUp: NextPage = () => {
                 checked={isTermsChecked}
                 onChange={(e) => setIsTermsChecked(e.target.checked)}
               />
-              <Link href="/terms">
+              <Link href={`/terms/terms-v${termsLatestVersion}.md`}>
                 <Typography
                   sx={{
                     textDecoration: 'underline',
@@ -258,7 +254,7 @@ const SignUp: NextPage = () => {
                 onChange={(e) => setIsPrivacyChecked(e.target.checked)}
                 sx={{ py: 0 }}
               />
-              <Link href="/privacy">
+              <Link href={`/privacy/privacy-v${privacyLatestVersion}.md`}>
                 <Typography
                   sx={{
                     textDecoration: 'underline',

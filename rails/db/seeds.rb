@@ -1,7 +1,7 @@
-users_count = 30
-notes_count_per_user = 0
-durations_count_per_note = 1
-tags_count_per_note = 0
+users_count = 5
+notes_count_per_user = 5
+durations_count_per_note = 5
+tags_count_per_note = 5
 users = []
 
 users_count.times do

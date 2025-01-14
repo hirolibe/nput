@@ -104,7 +104,7 @@ const UploadAvatarButton = () => {
             mb: 1,
           }}
         />
-        <Typography sx={{ fontWeight: 'bold' }}>画像を変更する</Typography>
+        <Typography sx={{ fontSize: 14 }}>画像を変更する</Typography>
       </Box>
     </Button>
   )

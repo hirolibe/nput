@@ -221,6 +221,7 @@ const EditProfile: NextPage = () => {
                   loading={isLoading}
                   sx={{
                     fontWeight: 'bold',
+                    borderRadius: 2,
                     color: 'white',
                     width: '30%',
                     minWidth: '200px',

@@ -143,6 +143,7 @@ const LogIn: NextPage = () => {
                 color: 'white',
                 width: '170px',
                 textTransform: 'none',
+                borderRadius: 2,
               }}
             >
               Nput にログイン

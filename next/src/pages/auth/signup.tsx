@@ -285,6 +285,7 @@ const SignUp: NextPage = () => {
                 fontWeight: 'bold',
                 color: 'white',
                 width: '170px',
+                borderRadius: 2,
               }}
             >
               新規登録する

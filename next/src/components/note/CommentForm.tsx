@@ -276,6 +276,7 @@ const CommentForm = ({
                   sx={{
                     fontWeight: 'bold',
                     color: 'white',
+                    borderRadius: 2,
                   }}
                 >
                   投稿する

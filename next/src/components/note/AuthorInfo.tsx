@@ -50,55 +50,57 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
             <Link href={`/${authorName}`}>{authorNickname || authorName}</Link>
           </Typography>
 
-          {(authorXLink || authorGithubLink) && (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <Stack
-                direction="row"
-                sx={{ alignItems: 'center', height: '40px', mr: 1 }}
+          <Box sx={{ display: 'flex' }}>
+            {(authorXLink || authorGithubLink) && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
               >
-                {authorXLink && (
-                  <Tooltip title={`${authorNickname}さんのXリンク`}>
-                    <IconButton
-                      onClick={goToUserX(authorXLink)}
-                      sx={{
-                        width: '40px',
-                        height: '40px',
-                        border: 'none',
-                        boxShadow: 'none',
-                      }}
-                    >
-                      <FaXTwitter size={24} />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                {authorGithubLink && (
-                  <Tooltip title={`${authorNickname}さんのGitHubリンク`}>
-                    <IconButton
-                      onClick={goToUserGithub(authorGithubLink)}
-                      sx={{
-                        width: '40px',
-                        height: '40px',
-                        border: 'none',
-                        boxShadow: 'none',
-                      }}
-                    >
-                      <FaGithub size={24} />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </Stack>
-            </Box>
-          )}
-          {followState.isFollowed !== undefined &&
-            profileData !== undefined &&
-            authorName !== currentUserName && (
-              <FollowButton userName={authorName} followState={followState} />
+                <Stack
+                  direction="row"
+                  sx={{ alignItems: 'center', height: '40px', mr: 1 }}
+                >
+                  {authorXLink && (
+                    <Tooltip title={`${authorNickname}さんのXリンク`}>
+                      <IconButton
+                        onClick={goToUserX(authorXLink)}
+                        sx={{
+                          width: '40px',
+                          height: '40px',
+                          border: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        <FaXTwitter size={24} />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {authorGithubLink && (
+                    <Tooltip title={`${authorNickname}さんのGitHubリンク`}>
+                      <IconButton
+                        onClick={goToUserGithub(authorGithubLink)}
+                        sx={{
+                          width: '40px',
+                          height: '40px',
+                          border: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        <FaGithub size={24} />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Stack>
+              </Box>
             )}
+            {followState.isFollowed !== undefined &&
+              profileData !== undefined &&
+              authorName !== currentUserName && (
+                <FollowButton userName={authorName} followState={followState} />
+              )}
+          </Box>
         </Stack>
       </Box>
       {authorBio && (

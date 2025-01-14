@@ -16,6 +16,7 @@ import {
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState, useEffect, useRef } from 'react'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import CheeredNotes from '@/components/user/CheeredNotes'
@@ -96,6 +97,13 @@ const UsersIndex: NextPage = () => {
 
   return (
     <>
+      {/* タブの表示 */}
+      <HelmetProvider>
+        <Helmet>
+          <title>{`${userData.profile.nickname || userName} | Nput`}</title>
+        </Helmet>
+      </HelmetProvider>
+
       <Box
         sx={{ backgroundColor: 'backgroundColor.page', minHeight: '1126px' }}
       >

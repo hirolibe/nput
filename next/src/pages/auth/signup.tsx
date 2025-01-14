@@ -19,6 +19,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
@@ -159,144 +160,153 @@ const SignUp: NextPage = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ pt: 6 }}>
-      <Box sx={{ px: 2 }}>
-        <Link href="/">
-          <Image src="/logo.png" width={90} height={40} alt="logo" />
-        </Link>
-      </Box>
-      <Container maxWidth="sm">
-        <Box sx={{ textAlign: { xs: 'center', sm: 'start' }, mb: 4, pt: 4 }}>
-          <Typography
-            component="h2"
-            sx={{
-              fontSize: { xs: 28, sm: 32 },
-              color: 'black',
-              fontWeight: 'bold',
-            }}
-          >
-            Nput へようこそ！
-          </Typography>
+    <>
+      {/* タブの表示 */}
+      <HelmetProvider>
+        <Helmet>
+          <title>新規登録 | Nput</title>
+        </Helmet>
+      </HelmetProvider>
+
+      <Container maxWidth="md" sx={{ pt: 6 }}>
+        <Box sx={{ px: 2 }}>
+          <Link href="/">
+            <Image src="/logo.png" width={90} height={40} alt="logo" />
+          </Link>
         </Box>
-        <Stack
-          component="form"
-          noValidate
-          onSubmit={handleSubmit(onSubmit)}
-          spacing={3}
-          sx={{ alignItems: 'center' }}
-        >
-          <Controller
-            name="name"
-            control={control}
-            rules={validationRules.name}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                type="text"
-                label="ユーザー名"
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white', width: '100%' }}
-              />
-            )}
-          />
-          <Controller
-            name="email"
-            control={control}
-            rules={validationRules.email}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                type="text"
-                label="メールアドレス"
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white', width: '100%' }}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            rules={validationRules.password}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                type="password"
-                label="パスワード"
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white', width: '100%' }}
-              />
-            )}
-          />
-          <Stack>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox
-                checked={isTermsChecked}
-                onChange={(e) => setIsTermsChecked(e.target.checked)}
-              />
-              <Link href={`/terms/terms-v${termsLatestVersion}.md`}>
+        <Container maxWidth="sm">
+          <Box sx={{ textAlign: { xs: 'center', sm: 'start' }, mb: 4, pt: 4 }}>
+            <Typography
+              component="h2"
+              sx={{
+                fontSize: { xs: 28, sm: 32 },
+                color: 'black',
+                fontWeight: 'bold',
+              }}
+            >
+              Nput へようこそ！
+            </Typography>
+          </Box>
+          <Stack
+            component="form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            spacing={3}
+            sx={{ alignItems: 'center' }}
+          >
+            <Controller
+              name="name"
+              control={control}
+              rules={validationRules.name}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  label="ユーザー名"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  sx={{ backgroundColor: 'white', width: '100%' }}
+                />
+              )}
+            />
+            <Controller
+              name="email"
+              control={control}
+              rules={validationRules.email}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  label="メールアドレス"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  sx={{ backgroundColor: 'white', width: '100%' }}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              rules={validationRules.password}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="password"
+                  label="パスワード"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  sx={{ backgroundColor: 'white', width: '100%' }}
+                />
+              )}
+            />
+            <Stack>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox
+                  checked={isTermsChecked}
+                  onChange={(e) => setIsTermsChecked(e.target.checked)}
+                />
+                <Link href={`/terms/terms-v${termsLatestVersion}.md`}>
+                  <Typography
+                    sx={{
+                      textDecoration: 'underline',
+                      '&:hover': { fontWeight: 'bold' },
+                    }}
+                  >
+                    利用規約
+                  </Typography>
+                </Link>
+                <Typography>に同意する</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox
+                  checked={isPrivacyChecked}
+                  onChange={(e) => setIsPrivacyChecked(e.target.checked)}
+                  sx={{ py: 0 }}
+                />
+                <Link href={`/privacy/privacy-v${privacyLatestVersion}.md`}>
+                  <Typography
+                    sx={{
+                      textDecoration: 'underline',
+                      '&:hover': { fontWeight: 'bold' },
+                    }}
+                  >
+                    プライバシーポリシー
+                  </Typography>
+                </Link>
+                <Typography>に同意する</Typography>
+              </Box>
+            </Stack>
+            <LoadingButton
+              variant="contained"
+              type="submit"
+              disabled={!isTermsChecked || !isPrivacyChecked}
+              loading={isLoading}
+              sx={{
+                fontWeight: 'bold',
+                color: 'white',
+                width: '170px',
+              }}
+            >
+              新規登録する
+            </LoadingButton>
+            <Box sx={{ display: 'flex' }}>
+              <Typography>アカウントをお持ちの場合は</Typography>
+              <Link href="/auth/login">
                 <Typography
                   sx={{
                     textDecoration: 'underline',
                     '&:hover': { fontWeight: 'bold' },
                   }}
                 >
-                  利用規約
+                  ログイン
                 </Typography>
               </Link>
-              <Typography>に同意する</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox
-                checked={isPrivacyChecked}
-                onChange={(e) => setIsPrivacyChecked(e.target.checked)}
-                sx={{ py: 0 }}
-              />
-              <Link href={`/privacy/privacy-v${privacyLatestVersion}.md`}>
-                <Typography
-                  sx={{
-                    textDecoration: 'underline',
-                    '&:hover': { fontWeight: 'bold' },
-                  }}
-                >
-                  プライバシーポリシー
-                </Typography>
-              </Link>
-              <Typography>に同意する</Typography>
+              <Typography>から</Typography>
             </Box>
           </Stack>
-          <LoadingButton
-            variant="contained"
-            type="submit"
-            disabled={!isTermsChecked || !isPrivacyChecked}
-            loading={isLoading}
-            sx={{
-              fontWeight: 'bold',
-              color: 'white',
-              width: '170px',
-            }}
-          >
-            新規登録する
-          </LoadingButton>
-          <Box sx={{ display: 'flex' }}>
-            <Typography>アカウントをお持ちの場合は</Typography>
-            <Link href="/auth/login">
-              <Typography
-                sx={{
-                  textDecoration: 'underline',
-                  '&:hover': { fontWeight: 'bold' },
-                }}
-              >
-                ログイン
-              </Typography>
-            </Link>
-            <Typography>から</Typography>
-          </Box>
-        </Stack>
+        </Container>
       </Container>
-    </Container>
+    </>
   )
 }
 

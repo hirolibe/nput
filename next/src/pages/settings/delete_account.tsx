@@ -203,6 +203,7 @@ const DeleteAccount: NextPage = () => {
                       fontSize: { xs: 14, sm: 16 },
                       fontWeight: 'bold',
                       color: 'black',
+                      borderRadius: 2,
                       borderColor: 'black',
                       textTransform: 'none',
                       mr: { xs: 0, sm: 2 },
@@ -225,6 +226,7 @@ const DeleteAccount: NextPage = () => {
                       fontWeight: 'bold',
                       color: 'white',
                       textTransform: 'none',
+                      borderRadius: 2,
                     }}
                   >
                     アカウントを削除する

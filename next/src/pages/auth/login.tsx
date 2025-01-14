@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
@@ -69,92 +70,101 @@ const LogIn: NextPage = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ pt: 6 }}>
-      <Box sx={{ px: 2 }}>
-        <Link href="/">
-          <Image src="/logo.png" width={90} height={40} alt="logo" />
-        </Link>
-      </Box>
-      <Container maxWidth="sm">
-        <Box sx={{ textAlign: { xs: 'center', sm: 'start' }, mb: 4, pt: 4 }}>
-          <Typography
-            component="h2"
-            sx={{
-              fontSize: { xs: 28, sm: 32 },
-              color: 'black',
-              fontWeight: 'bold',
-            }}
-          >
-            Nput にログイン
-          </Typography>
+    <>
+      {/* タブの表示 */}
+      <HelmetProvider>
+        <Helmet>
+          <title>ログイン | Nput</title>
+        </Helmet>
+      </HelmetProvider>
+
+      <Container maxWidth="md" sx={{ pt: 6 }}>
+        <Box sx={{ px: 2 }}>
+          <Link href="/">
+            <Image src="/logo.png" width={90} height={40} alt="logo" />
+          </Link>
         </Box>
-        <Stack
-          component="form"
-          noValidate
-          onSubmit={handleSubmit(onSubmit)}
-          spacing={4}
-          sx={{ alignItems: 'center' }}
-        >
-          <Controller
-            name="email"
-            control={control}
-            rules={validationRules.email}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                type="text"
-                label="メールアドレス"
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white', width: '100%' }}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            rules={validationRules.password}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                type="password"
-                label="パスワード"
-                error={fieldState.invalid}
-                helperText={fieldState.error?.message}
-                sx={{ backgroundColor: 'white', width: '100%' }}
-              />
-            )}
-          />
-          <LoadingButton
-            variant="contained"
-            type="submit"
-            loading={isLoading}
-            sx={{
-              fontWeight: 'bold',
-              color: 'white',
-              width: '170px',
-              textTransform: 'none',
-            }}
-          >
-            Nput にログイン
-          </LoadingButton>
-          <Box sx={{ display: 'flex' }}>
-            <Typography>アカウントをお持ちでない場合は</Typography>
-            <Link href="/auth/signup">
-              <Typography
-                sx={{
-                  textDecoration: 'underline',
-                  '&:hover': { fontWeight: 'bold' },
-                }}
-              >
-                新規登録
-              </Typography>
-            </Link>
-            <Typography>から</Typography>
+        <Container maxWidth="sm">
+          <Box sx={{ textAlign: { xs: 'center', sm: 'start' }, mb: 4, pt: 4 }}>
+            <Typography
+              component="h2"
+              sx={{
+                fontSize: { xs: 28, sm: 32 },
+                color: 'black',
+                fontWeight: 'bold',
+              }}
+            >
+              Nput にログイン
+            </Typography>
           </Box>
-        </Stack>
+          <Stack
+            component="form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            spacing={4}
+            sx={{ alignItems: 'center' }}
+          >
+            <Controller
+              name="email"
+              control={control}
+              rules={validationRules.email}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  label="メールアドレス"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  sx={{ backgroundColor: 'white', width: '100%' }}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              rules={validationRules.password}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  type="password"
+                  label="パスワード"
+                  error={fieldState.invalid}
+                  helperText={fieldState.error?.message}
+                  sx={{ backgroundColor: 'white', width: '100%' }}
+                />
+              )}
+            />
+            <LoadingButton
+              variant="contained"
+              type="submit"
+              loading={isLoading}
+              sx={{
+                fontWeight: 'bold',
+                color: 'white',
+                width: '170px',
+                textTransform: 'none',
+              }}
+            >
+              Nput にログイン
+            </LoadingButton>
+            <Box sx={{ display: 'flex' }}>
+              <Typography>アカウントをお持ちでない場合は</Typography>
+              <Link href="/auth/signup">
+                <Typography
+                  sx={{
+                    textDecoration: 'underline',
+                    '&:hover': { fontWeight: 'bold' },
+                  }}
+                >
+                  新規登録
+                </Typography>
+              </Link>
+              <Typography>から</Typography>
+            </Box>
+          </Stack>
+        </Container>
       </Container>
-    </Container>
+    </>
   )
 }
 

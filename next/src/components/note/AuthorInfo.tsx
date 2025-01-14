@@ -92,16 +92,13 @@ export const AuthorInfo = ({ noteData, followState }: AuthorInfoProps) => {
                   </Tooltip>
                 )}
               </Stack>
-              {followState.isFollowed !== undefined &&
-                profileData !== undefined &&
-                authorName !== currentUserName && (
-                  <FollowButton
-                    userName={authorName}
-                    followState={followState}
-                  />
-                )}
             </Box>
           )}
+          {followState.isFollowed !== undefined &&
+            profileData !== undefined &&
+            authorName !== currentUserName && (
+              <FollowButton userName={authorName} followState={followState} />
+            )}
         </Stack>
       </Box>
       {authorBio && (

@@ -26,6 +26,7 @@ import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useMemo, useRef } from 'react'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
@@ -335,6 +336,13 @@ const EditNote: NextPage = () => {
 
   return (
     <>
+      {/* タブの表示 */}
+      <HelmetProvider>
+        <Helmet>
+          <title>編集中 | Nput</title>
+        </Helmet>
+      </HelmetProvider>
+
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -437,6 +445,7 @@ const EditNote: NextPage = () => {
                     fontWeight: 'bold',
                     fontSize: { xs: 14, md: 16 },
                     border: statusChecked ? 'none' : '2px solid',
+                    borderRadius: 2,
                     width: { xs: '115px', md: '120px' },
                     height: '40px',
                   }}

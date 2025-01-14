@@ -4,10 +4,10 @@ name: Continuous Integration
 # 当 workflow の実行タイミング
 # mainブランチ以外への push 時
 on:
- push:
-   branches-ignore:
-     - "main"
- workflow_call:
+  push:
+    branches-ignore:
+      - "main"
+  workflow_call:
 
 # 当 workflow が行う処理
 jobs:
@@ -21,12 +21,17 @@ jobs:
       REDIS_URL: redis://127.0.0.1:6379/0
     services:
       mysql:
-        image: mysql:8.0.32
+        image: mysql:8.0.39
         ports:
           - 3306:3306
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: password
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7.0.11-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout code

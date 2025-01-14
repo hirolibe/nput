@@ -79,5 +79,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Default host for URL generation
-  Rails.application.routes.default_url_options[:host] = "https://n-put.com"
+  Rails.application.routes.default_url_options[:host] = "https://backend.n-put.com"
 end

@@ -59,7 +59,7 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
           const imageSignedId = await uploadImage(image)
           imageSignedIdList.push(imageSignedId)
 
-          const imageUrl = `http://localhost:3000/rails/active_storage/blobs/redirect/${imageSignedId}/${image.name}`
+          const imageUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/rails/active_storage/blobs/redirect/${imageSignedId}/${image.name}`
           const imgTag = `<img src="${imageUrl}" alt="image" width=700 />`
           imageTagList.push(imgTag)
         } catch (err) {

@@ -44,7 +44,7 @@ const SetAccount: NextPage = () => {
               }}
             >
               <Typography
-                sx={{ fontSize: { xs: 18, sm: 20 }, fontWeight: 'bold', mb: 3 }}
+                sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', mb: 3 }}
               >
                 アカウントの削除
               </Typography>

@@ -70,7 +70,7 @@ const PublicNotes: NextPage = () => {
             component={'h2'}
             sx={{
               textAlign: 'center',
-              fontSize: 24,
+              fontSize: { xs: 18, sm: 24 },
               fontWeight: 'bold',
               mb: 3,
             }}

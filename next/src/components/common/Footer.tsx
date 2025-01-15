@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Logo from './Logo'
 
 const Footer = () => {
   const router = useRouter()
@@ -25,9 +25,7 @@ const Footer = () => {
         >
           {/* ロゴ */}
           <Box sx={{ mb: { xs: 2, sm: 0 } }}>
-            <Link href="/">
-              <Image src="/logo.png" width={90} height={40} alt="logo" />
-            </Link>
+            <Logo />
           </Box>
 
           {/* リンク */}

@@ -111,6 +111,7 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
       onClick={handleUploadImages}
       sx={{
         backgroundColor: backgroundColor ? 'white' : undefined,
+        boxShadow: { xs: '0 4px 8px rgba(0, 0, 0, 0.2)', sm: 'none' },
         width: '46px',
         height: '46px',
         '&:hover': {

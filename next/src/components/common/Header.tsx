@@ -1,4 +1,5 @@
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'
+import EditIcon from '@mui/icons-material/Edit'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -12,17 +13,16 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  Theme,
-  useMediaQuery,
+  Typography,
 } from '@mui/material'
 import axios from 'axios'
 import { signOut } from 'firebase/auth'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import AuthLinks from '../auth/AuthLinks'
 import CheerPoints from './CheerPoints'
+import Logo from './Logo'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
@@ -37,12 +37,7 @@ const Header = () => {
   const [, setSnackbar] = useSnackbarState()
   const { idToken, isAuthLoading } = useAuthContext()
   const { profileData, isProfileLoading } = useProfile()
-
   const { avatarUrl } = useProfileContext()
-
-  const isSmallScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm'),
-  )
 
   const hideHeaderPathnames = [
     '/auth/signup',
@@ -97,7 +92,7 @@ const Header = () => {
         backgroundColor: 'white',
         color: 'black',
         boxShadow: 'none',
-        py: '12px',
+        py: { xs: 1, sm: '12px' },
       }}
     >
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 4 } }}>
@@ -108,11 +103,7 @@ const Header = () => {
             alignItems: 'center',
           }}
         >
-          <Box>
-            <Link href="/">
-              <Image src="/logo.png" width={90} height={40} alt="logo" />
-            </Link>
-          </Box>
+          <Logo />
           {!isAuthLoading &&
             !idToken &&
             !isProfileLoading &&
@@ -129,30 +120,21 @@ const Header = () => {
                 />
               </IconButton>
               <CheerPoints size={26} />
-              <Box sx={{ ml: { xs: 1, sm: 2 } }}>
+              <Box sx={{ display: { xs: 'none', sm: 'block' }, ml: 2 }}>
                 <Button
                   onClick={handleAddNewNote}
                   variant="contained"
                   sx={{
                     textAlign: 'center',
                     color: 'white',
-                    fontSize: { xs: 14, sm: 16 },
-                    lineHeight: { xs: 1.2, sm: 28 / 16 },
+                    fontSize: 16,
                     borderRadius: 2,
-                    width: { xs: 80, sm: 120 },
+                    width: 120,
                     boxShadow: 'none',
                     fontWeight: 'bold',
                   }}
                 >
-                  {isSmallScreen ? (
-                    <>
-                      ノート
-                      <br />
-                      作成
-                    </>
-                  ) : (
-                    'ノート作成'
-                  )}
+                  ノート作成
                 </Button>
               </Box>
               <Menu
@@ -170,6 +152,25 @@ const Header = () => {
                     マイページ
                   </MenuItem>
                 </Link>
+                <Box
+                  onClick={handleAddNewNote}
+                  sx={{ display: { xs: 'block', sm: 'none' } }}
+                >
+                  <MenuItem>
+                    <ListItemIcon>
+                      <EditIcon fontSize="small" />
+                    </ListItemIcon>
+                    <Typography
+                      sx={{
+                        '&:hover': {
+                          textDecoration: 'underline',
+                        },
+                      }}
+                    >
+                      ノートを新規作成
+                    </Typography>
+                  </MenuItem>
+                </Box>
                 <Link href="/dashboard">
                   <MenuItem>
                     <ListItemIcon>

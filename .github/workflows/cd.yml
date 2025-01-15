@@ -76,7 +76,7 @@ jobs:
         service: ${{ env.ECS_SERVICE_BACKEND }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
-  # 処理③ Railsの自動デプロイ。動作には ci のクリアが必要
+  # 処理③ Nextの自動デプロイ。動作には ci のクリアが必要
   deploy-next:
     needs: [ci]
     runs-on: ubuntu-latest

@@ -30,9 +30,32 @@ jobs:
   # 処理① ci.yml によるチェック
   ci:
     uses: ./.github/workflows/ci.yml
-  # 処理② Railsの自動デプロイ。動作には ci のクリアが必要
-  deploy-rails:
+
+  # 処理② Next.js のビルド
+  build:
     needs: [ci]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19.4.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env.production
+        run: echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+
+      - name: Build the Next.js application
+        run: npm run build
+
+  # 処理③ Railsの自動デプロイ。動作には ci build のクリアが必要
+  deploy-rails:
+    needs: [ci, build]
     runs-on: ubuntu-latest
     environment: production
 
@@ -76,9 +99,10 @@ jobs:
         service: ${{ env.ECS_SERVICE_BACKEND }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
-  # 処理③ Nextの自動デプロイ。動作には ci のクリアが必要
+
+  # 処理④ Next.jsの自動デプロイ。動作には ci build のクリアが必要
   deploy-next:
-    needs: [ci]
+    needs: [ci, build]
     runs-on: ubuntu-latest
     environment: production
 

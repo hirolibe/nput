@@ -2,12 +2,12 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Container, TextField, Typography, Stack } from '@mui/material'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import type { NextPage } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import Logo from '@/components/common/Logo'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
@@ -80,16 +80,14 @@ const LogIn: NextPage = () => {
 
       <Container maxWidth="md" sx={{ pt: 6 }}>
         <Box sx={{ px: 2 }}>
-          <Link href="/">
-            <Image src="/logo.png" width={90} height={40} alt="logo" />
-          </Link>
+          <Logo />
         </Box>
         <Container maxWidth="sm">
           <Box sx={{ textAlign: { xs: 'center', sm: 'start' }, mb: 4, pt: 4 }}>
             <Typography
               component="h2"
               sx={{
-                fontSize: { xs: 28, sm: 32 },
+                fontSize: { xs: 24, sm: 32 },
                 color: 'black',
                 fontWeight: 'bold',
               }}
@@ -139,6 +137,7 @@ const LogIn: NextPage = () => {
               type="submit"
               loading={isLoading}
               sx={{
+                fontSize: 16,
                 fontWeight: 'bold',
                 color: 'white',
                 width: '170px',
@@ -148,19 +147,21 @@ const LogIn: NextPage = () => {
             >
               Nput にログイン
             </LoadingButton>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: { sm: 'flex' } }}>
               <Typography>アカウントをお持ちでない場合は</Typography>
-              <Link href="/auth/signup">
-                <Typography
-                  sx={{
-                    textDecoration: 'underline',
-                    '&:hover': { fontWeight: 'bold' },
-                  }}
-                >
-                  新規登録
-                </Typography>
-              </Link>
-              <Typography>から</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Link href="/auth/signup">
+                  <Typography
+                    sx={{
+                      textDecoration: 'underline',
+                      '&:hover': { fontWeight: 'bold' },
+                    }}
+                  >
+                    新規登録
+                  </Typography>
+                </Link>
+                <Typography>から</Typography>
+              </Box>
             </Box>
           </Stack>
         </Container>

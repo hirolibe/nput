@@ -350,7 +350,7 @@ const EditNote: NextPage = () => {
           backgroundColor: 'backgroundColor.page',
           minHeight: '100vh',
           pl: { xs: 2, sm: 9 },
-          pr: 9,
+          pr: { xs: 2, sm: 9 },
           transition: 'margin 0.2s',
           marginRight: openSidebar ? '385px' : 0,
         }}
@@ -621,9 +621,10 @@ const EditNote: NextPage = () => {
                 )}
               </Card>
 
-              {/* ボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
+              {/* 画面幅大のボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
               <Box
                 sx={{
+                  display: { xs: 'none', sm: 'block' },
                   position: 'absolute',
                   height: '100%',
                   right: '-65px',
@@ -708,6 +709,92 @@ const EditNote: NextPage = () => {
                     </Tooltip>
                   </Stack>
                 </Box>
+              </Box>
+
+              {/* 画面幅小のボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
+              <Box
+                sx={{
+                  display: { xs: 'flex', sm: 'none' },
+                  justifyContent: 'space-around',
+                  position: 'fixed',
+                  width: '300px',
+                  bottom: '20px',
+                  transition: '0.2s',
+                  zIndex: 1000,
+                }}
+              >
+                <Tooltip
+                  title={
+                    !isPreviewActive ? 'プレビューを表示' : 'エディタに戻る'
+                  }
+                >
+                  <IconButton
+                    onClick={togglePreviewDisplay}
+                    sx={{
+                      backgroundColor: !isPreviewActive
+                        ? 'white'
+                        : 'primary.main',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                      '&:hover': {
+                        backgroundColor: 'backgroundColor.hover',
+                      },
+                    }}
+                  >
+                    <PlayArrowOutlinedIcon
+                      sx={{
+                        fontSize: 30,
+                        color: !isPreviewActive ? undefined : 'white',
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="タグ・概要を登録">
+                  <IconButton
+                    onClick={toggleSidebar}
+                    sx={{
+                      backgroundColor: 'white',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                      width: '46px',
+                      height: '46px',
+                      '&:hover': {
+                        backgroundColor: 'backgroundColor.hover',
+                      },
+                    }}
+                  >
+                    <SellOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
+                {!isPreviewActive && !openSidebar && (
+                  <Tooltip title="画像を追加">
+                    <Box tabIndex={0}>
+                      <UploadImagesButton
+                        setImageSignedIds={setImageSignedIds}
+                        isMultiple={true}
+                        setContent={setContent}
+                        preCursorText={preCursorText}
+                        postCursorText={postCursorText}
+                        backgroundColor={true}
+                        setIsChanged={setIsChanged}
+                      />
+                    </Box>
+                  </Tooltip>
+                )}
+                <Tooltip title="ノートを削除">
+                  <IconButton
+                    onClick={() => handleDeleteNote(noteSlug)}
+                    sx={{
+                      backgroundColor: 'white',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                      width: '46px',
+                      height: '46px',
+                      '&:hover': {
+                        backgroundColor: 'backgroundColor.hover',
+                      },
+                    }}
+                  >
+                    <DeleteOutlineIcon sx={{ color: '#f28b82' }} />
+                  </IconButton>
+                </Tooltip>
               </Box>
             </Box>
           </Stack>

@@ -27,7 +27,7 @@ const AuthLinks = () => {
         variant="contained"
         sx={{
           color: 'white',
-          fontSize: 16,
+          fontSize: { xs: 12, sm: 16 },
           borderRadius: 2,
           boxShadow: 'none',
           fontWeight: 'bold',
@@ -39,10 +39,10 @@ const AuthLinks = () => {
         onClick={handleSignup}
         variant="outlined"
         sx={{
-          fontSize: 16,
+          fontSize: { xs: 12, sm: 16 },
           borderRadius: 2,
           border: '1px solid primary',
-          ml: 2,
+          ml: { xs: 1, sm: 2 },
           fontWeight: 'bold',
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.1)',

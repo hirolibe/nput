@@ -4,7 +4,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :uid, null: false
       t.string :email, null: false
       t.string :name, null: false, limit: 20
-      t.integer :cheer_points, default: 0, null: false, comment: "保有エールポイント（上限3600ポイント）"
+      t.integer :cheer_points, default: 3600, null: false, comment: "保有エールポイント（上限3600ポイント）"
 
       t.timestamps
 

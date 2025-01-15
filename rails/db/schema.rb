@@ -127,7 +127,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_07_014509) do
     t.string "uid", null: false
     t.string "email", null: false
     t.string "name", limit: 20, null: false
-    t.integer "cheer_points", default: 0, null: false, comment: "保有エールポイント（上限3600ポイント）"
+    t.integer "cheer_points", default: 3600, null: false, comment: "保有エールポイント（上限3600ポイント）"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cheers_count", default: 0, null: false, comment: "エールした合計回数"

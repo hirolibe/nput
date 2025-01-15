@@ -11,13 +11,13 @@ on:
 # $AWS_REGION のような形で参照可能
 env:
   AWS_REGION: ap-northeast-1
-  ECS_CLUSTER: zenn-clone-cluster
-  ECS_SERVICE_BACKEND: zenn-clone-backend-service
-  ECS_SERVICE_FRONTEND: zenn-clone-frontend-service
+  ECS_CLUSTER: n-put-cluster
+  ECS_SERVICE_BACKEND: n-put-backend-service
+  ECS_SERVICE_FRONTEND: n-put-frontend-service
   ECS_TASK_DEFINITION_BACKEND: ./rails/task-definition.json
   ECS_TASK_DEFINITION_FRONTEND: ./next/task-definition.json
-  ECR_REPOSITORY_RAILS: zenn-clone-rails
-  ECR_REPOSITORY_NEXT: zenn-clone-next
+  ECR_REPOSITORY_RAILS: n-put-rails
+  ECR_REPOSITORY_NEXT: n-put-next
   CONTAINER_NAME_RAILS: rails
   CONTAINER_NAME_NEXT: next
 

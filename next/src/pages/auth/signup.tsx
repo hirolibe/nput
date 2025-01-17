@@ -10,8 +10,9 @@ import {
 import axios from 'axios'
 import {
   createUserWithEmailAndPassword,
-  updateProfile,
   deleteUser,
+  signInAnonymously,
+  updateProfile,
   User,
 } from 'firebase/auth'
 import type { NextPage } from 'next'
@@ -36,7 +37,8 @@ type SignUpFormData = {
 const SignUp: NextPage = () => {
   const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
   const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isRegistering, setIsRegistering] = useState(false)
+  const [isGuestLoggingIn, setIsGuestLoggingIn] = useState(false)
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
   const { previousPath } = router.query
@@ -104,9 +106,8 @@ const SignUp: NextPage = () => {
     },
   }
 
-  const verifyIdToken = async (createdUser: User) => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/registration`
-    const idToken = await createdUser?.getIdToken()
+  const verifyIdToken = async (user: User, url: string) => {
+    const idToken = await user?.getIdToken()
     const headers = {
       Authorization: `Bearer ${idToken}`,
     }
@@ -114,7 +115,7 @@ const SignUp: NextPage = () => {
     const res = await axios.post(
       url,
       {
-        name: createdUser.displayName,
+        name: user.displayName,
         terms_version: termsLatestVersion,
         privacy_version: privacyLatestVersion,
       },
@@ -124,7 +125,7 @@ const SignUp: NextPage = () => {
   }
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
-    setIsLoading(true)
+    setIsRegistering(true)
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -134,7 +135,8 @@ const SignUp: NextPage = () => {
 
       const createdUser = userCredential.user
       await updateProfile(createdUser, { displayName: data.name })
-      const message = await verifyIdToken(createdUser)
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/registration`
+      const message = await verifyIdToken(createdUser, url)
 
       setSnackbar({
         message: message,
@@ -155,7 +157,33 @@ const SignUp: NextPage = () => {
         pathname: '/auth/signup',
       })
     } finally {
-      setIsLoading(false)
+      setIsRegistering(false)
+    }
+  }
+
+  const handleGuestLogin = async () => {
+    setIsGuestLoggingIn(true)
+    try {
+      const userCredential = await signInAnonymously(auth)
+      const guestUser = userCredential.user
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/guest_registration`
+      const message = await verifyIdToken(guestUser, url)
+
+      setSnackbar({
+        message: message,
+        severity: 'success',
+        pathname: redirectPath,
+      })
+      await router.push(redirectPath)
+    } catch (err) {
+      const { errorMessage } = handleError(err)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: '/auth/signup',
+      })
+    } finally {
+      setIsGuestLoggingIn(false)
     }
   }
 
@@ -278,7 +306,7 @@ const SignUp: NextPage = () => {
               variant="contained"
               type="submit"
               disabled={!isTermsChecked || !isPrivacyChecked}
-              loading={isLoading}
+              loading={isRegistering}
               sx={{
                 fontSize: 16,
                 fontWeight: 'bold',
@@ -289,7 +317,34 @@ const SignUp: NextPage = () => {
             >
               新規登録する
             </LoadingButton>
-            <Box sx={{ display: { sm: 'flex' } }}>
+          </Stack>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <LoadingButton
+              variant="contained"
+              color="secondary"
+              type="submit"
+              onClick={handleGuestLogin}
+              loading={isGuestLoggingIn}
+              sx={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: 'white',
+                width: '170px',
+                textTransform: 'none',
+                borderRadius: 2,
+                mt: 3,
+              }}
+            >
+              ゲストログイン
+            </LoadingButton>
+
+            <Box sx={{ display: { sm: 'flex' }, mt: 3 }}>
               <Typography>アカウントをお持ちの場合は</Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Link href="/auth/login">
@@ -305,7 +360,7 @@ const SignUp: NextPage = () => {
                 <Typography>から</Typography>
               </Box>
             </Box>
-          </Stack>
+          </Box>
         </Container>
       </Container>
     </>

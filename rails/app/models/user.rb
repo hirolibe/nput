@@ -10,9 +10,9 @@ class User < ApplicationRecord
             },
             length: { maximum: 20 }
   validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 3600 }
-  validates :terms_version, presence: true, unless: :is_guest?
-  validates :privacy_version, presence: true, unless: :is_guest?
-  validates :agreed_at, presence: true, unless: :is_guest?
+  validates :terms_version, presence: true, unless: :guest?
+  validates :privacy_version, presence: true, unless: :guest?
+  validates :agreed_at, presence: true, unless: :guest?
 
   has_many :notes, dependent: :destroy
 
@@ -53,7 +53,7 @@ class User < ApplicationRecord
     following_relationships.create!(following_id: user.id)
   end
 
-  def is_guest?
+  def guest?
     name.start_with?("Guest_")
   end
 

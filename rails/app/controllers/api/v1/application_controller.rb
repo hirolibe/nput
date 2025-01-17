@@ -38,7 +38,7 @@ class Api::V1::ApplicationController < ApplicationController
     end
 
     def restrict_guest_user!
-      if @current_user.is_guest?
+      if @current_user.guest?
         render json: { error: "ゲストユーザーはこの操作を実行できません" }, status: :forbidden
       end
     end

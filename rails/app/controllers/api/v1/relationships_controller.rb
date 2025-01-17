@@ -1,5 +1,6 @@
 class Api::V1::RelationshipsController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:show, :create, :destroy]
+  before_action :restrict_guest_user!, only: [:create, :destroy]
 
   def show
     following = User.find_by!(name: params[:name])

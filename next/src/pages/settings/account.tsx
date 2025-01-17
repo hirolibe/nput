@@ -1,4 +1,4 @@
-import { Box, Button, Card, Container, Typography } from '@mui/material'
+import { Box, Button, Card, Container } from '@mui/material'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -43,11 +43,6 @@ const SetAccount: NextPage = () => {
                 pb: 5,
               }}
             >
-              <Typography
-                sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', mb: 3 }}
-              >
-                アカウントの削除
-              </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Button
                   onClick={handleDelete}

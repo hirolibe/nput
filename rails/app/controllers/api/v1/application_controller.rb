@@ -37,6 +37,12 @@ class Api::V1::ApplicationController < ApplicationController
       fetch_authenticated_current_user
     end
 
+    def restrict_guest_user!
+      if @current_user.is_guest?
+        render json: { error: "ゲストユーザーはこの操作を実行できません" }, status: :forbidden
+      end
+    end
+
     attr_reader :current_user
 
     def attach_images(record, signed_ids)

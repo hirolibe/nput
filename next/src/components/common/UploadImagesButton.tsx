@@ -69,9 +69,12 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
             severity: 'error',
             pathname: router.pathname,
           })
+          return
         }
       })
       await Promise.all(promises)
+
+      if (imageSignedIdList.length === 0) return
 
       setImageSignedIds(imageSignedIdList)
 

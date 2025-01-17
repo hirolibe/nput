@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
       namespace :auth do
         resource :registration, only: [:create]
+        resource :guest_registration, only: [:create]
       end
 
       resource :profile, only: [:show, :update]

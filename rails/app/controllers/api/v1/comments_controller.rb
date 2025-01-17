@@ -1,5 +1,6 @@
 class Api::V1::CommentsController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create, :destroy]
+  before_action :restrict_guest_user!, only: [:create, :destroy]
 
   def create
     note = Note.published.find_by(slug: params[:note_slug])

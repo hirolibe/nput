@@ -85,3 +85,19 @@
 .markdownText pre code {
   padding: 0;
 }
+
+.markdownText table {
+  border-collapse: collapse;
+}
+
+.markdownText th {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: center;
+}
+
+.markdownText td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: left;
+}

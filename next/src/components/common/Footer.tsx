@@ -38,7 +38,7 @@ const Footer = () => {
         {/* コピーライト */}
         <Box mt={2} textAlign="center">
           <Typography variant="body2" color="text.light">
-            © {new Date().getFullYear()} HiroLibe.
+            © {new Date().getFullYear()} HiroLibe. Licensed under MIT License.
           </Typography>
         </Box>
       </Container>

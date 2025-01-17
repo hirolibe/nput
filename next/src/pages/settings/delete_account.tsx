@@ -144,8 +144,8 @@ const DeleteAccount: NextPage = () => {
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center',
                     justifyContent: 'center',
+                    alignItems: 'left',
                   }}
                 >
                   {currentUserNickname && (
@@ -172,7 +172,7 @@ const DeleteAccount: NextPage = () => {
                 noValidate
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <Typography sx={{ fontSize: 18, fontWeight: 'bold', mb: 1 }}>
+                <Typography sx={{ mb: 1 }}>
                   パスワードを入力してください
                 </Typography>
                 <Controller

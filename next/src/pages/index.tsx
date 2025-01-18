@@ -22,6 +22,7 @@ import { handleError } from '@/utils/handleError'
 
 const PublicNotes: NextPage = () => {
   const router = useRouter()
+  const page = 'page' in router.query ? Number(router.query.page) : 1
   const { notesData, notesError } = useNotes()
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -156,7 +157,7 @@ const PublicNotes: NextPage = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
             <Pagination
               count={meta?.totalPages}
-              page={meta?.currentPage}
+              page={page}
               onChange={handleChange}
             />
           </Box>

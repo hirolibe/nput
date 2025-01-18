@@ -59,21 +59,9 @@ const UserCard = (props: UserCardProps) => {
               sx={{ width: 60, height: 60, mr: 2 }}
             />
             <Stack>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                sx={{ mb: 0.5 }}
-              >
-                <Typography sx={{ fontSize: 16, fontWeight: 'bold' }}>
-                  {props.profile.nickname || props.name}
-                </Typography>
-                {props.profile.nickname && (
-                  <Typography sx={{ fontSize: 16, color: 'text.light', mx: 1 }}>
-                    @{props.name}
-                  </Typography>
-                )}
-              </Stack>
+              <Typography sx={{ fontSize: 16, fontWeight: 'bold' }}>
+                {props.profile.nickname || props.name}
+              </Typography>
               <Stack direction={'row'} sx={{ mb: 0.5 }}>
                 <Typography sx={{ fontSize: 12, color: 'text.light' }}>
                   合計エール数：

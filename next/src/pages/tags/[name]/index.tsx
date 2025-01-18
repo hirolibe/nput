@@ -23,6 +23,7 @@ import { handleError } from '@/utils/handleError'
 
 const TaggedNotes: NextPage = () => {
   const router = useRouter()
+  const page = 'page' in router.query ? Number(router.query.page) : 1
   const { name } = router.query
   const tagName = typeof name === 'string' ? name : undefined
 
@@ -151,7 +152,7 @@ const TaggedNotes: NextPage = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
             <Pagination
               count={meta?.totalPages}
-              page={meta?.currentPage}
+              page={page}
               onChange={handleChange}
             />
           </Box>

@@ -105,6 +105,34 @@ const EditNote: NextPage = () => {
     setPostCursorText(content?.slice(cursorPosition ?? undefined))
   }, [content, cursorPosition, setPreCursorText, setPostCursorText])
 
+  const [scrollPosition, setScrollPosition] = useState<number>(0)
+  const [modeChanged, setModeChanged] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY ?? 0)
+      console.log(window.scrollY)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    setModeChanged(true)
+  }, [isPreviewActive])
+
+  useEffect(() => {
+    if (modeChanged) {
+      window.scrollTo({
+        top: scrollPosition,
+        behavior: 'auto',
+      })
+      setModeChanged(false)
+    }
+  }, [modeChanged, scrollPosition])
+
   const handleContentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

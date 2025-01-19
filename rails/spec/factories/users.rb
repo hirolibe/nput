@@ -8,20 +8,10 @@ FactoryBot.define do
     agreed_at { Time.current }
 
     name do
-      generated_name = nil
-      5.times do
-        temp_name = Faker::Internet.username[0..19]
-        filtered_name = temp_name.gsub(/[^a-zA-Z0-9_-]/, "")
-        next unless !User.exists?(name: filtered_name) &&
-                    filtered_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
-                    !filtered_name.start_with?("-") &&
-                    !filtered_name.end_with?("-")
-
-        generated_name = filtered_name
-        break
+      loop do
+        generated_name = SecureRandom.alphanumeric(20)
+        break generated_name unless User.where(name: generated_name).exists?
       end
-
-      generated_name || "user_#{SecureRandom.hex(4)}"
     end
   end
 end

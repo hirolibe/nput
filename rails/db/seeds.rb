@@ -1,27 +1,20 @@
-users_count = 0
-notes_count_per_user = 0
-durations_count_per_note = 100
-tags_count_per_note = 0
+users_count = 5
+notes_count_per_user = 5
+durations_count_per_note = 5
+tags_count_per_note = 5
 users = []
 
 users_count.times do
   generated_name = nil
-  5.times do
-    temp_name = Faker::Internet.username[0..19]
-    filtered_name = temp_name.gsub(/[^a-zA-Z0-9_-]/, "")
-    next unless !User.exists?(name: filtered_name) &&
-                filtered_name.match?(/\A[a-zA-Z0-9_][a-zA-Z0-9_-]*[a-zA-Z0-9_]\z/) &&
-                !filtered_name.start_with?("-") &&
-                !filtered_name.end_with?("-")
-
-    generated_name = filtered_name
-    break
+  loop do
+    generated_name = SecureRandom.alphanumeric(20)
+    break generated_name unless User.where(name: generated_name).exists?
   end
 
   user = User.create!(
     uid: Faker::Internet.uuid,
     email: Faker::Internet.email,
-    name: generated_name || "user_#{SecureRandom.hex(4)}",
+    name: generated_name,
     cheer_points: Faker::Number.between(from: 0, to: 3600),
     terms_version: "1",
     privacy_version: "1",

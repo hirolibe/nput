@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import AuthLinks from '../auth/AuthLinks'
-import UploadImagesButton from '../common/UploadImagesButton'
+import { UploadImagesButton } from '../common/UploadImagesButton'
 import MarkdownText from './MarkdownText'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { CommentData } from '@/hooks/useNote'
@@ -261,11 +261,9 @@ const CommentForm = ({
             >
               <UploadImagesButton
                 setImageSignedIds={setImageSignedIds}
-                isMultiple={true}
                 setContent={setComment}
                 preCursorText={preCursorText}
                 postCursorText={postCursorText}
-                hoverIconColor={true}
               />
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
                 <LoadingButton

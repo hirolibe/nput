@@ -333,20 +333,22 @@ const UsersIndex: NextPage = () => {
               </Tabs>
             </AppBar>
 
-            <TabPanel value={tabIndex} index={0}>
-              <UserNotes />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={1}>
-              <CheeredNotes />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={2}>
-              <Followings
-                setChangedFollowingsCount={setChangedFollowingsCount}
-              />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={3}>
-              <Followers />
-            </TabPanel>
+            <CardContent sx={{ minHeight: '488px' }}>
+              <TabPanel value={tabIndex} index={0}>
+                <UserNotes />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={1}>
+                <CheeredNotes />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={2}>
+                <Followings
+                  setChangedFollowingsCount={setChangedFollowingsCount}
+                />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={3}>
+                <Followers />
+              </TabPanel>
+            </CardContent>
           </Card>
         </Container>
       </Box>

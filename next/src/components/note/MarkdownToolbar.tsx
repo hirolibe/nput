@@ -1,7 +1,6 @@
 import Code from '@mui/icons-material/Code'
 import FormatBold from '@mui/icons-material/FormatBold'
 import FormatListBulleted from '@mui/icons-material/FormatListBulleted'
-import Link from '@mui/icons-material/Link'
 import TableChart from '@mui/icons-material/TableChart'
 import FormatHeader from '@mui/icons-material/Title'
 import { IconButton, Stack, Tooltip, useMediaQuery } from '@mui/material'
@@ -10,6 +9,7 @@ import {
   UploadImagesButton,
   UploadImagesButtonProps,
 } from '../common/UploadImagesButton'
+import LinkFormatter from './LinkFormatter'
 
 interface MarkdownToolbarProps extends UploadImagesButtonProps {
   textareaRef: React.RefObject<HTMLTextAreaElement>
@@ -58,11 +58,6 @@ const MarkdownToolbar = (props: MarkdownToolbarProps) => {
       title: 'リスト',
       icon: <FormatListBulleted />,
       action: () => insertMarkdown('- '),
-    },
-    {
-      title: 'リンク',
-      icon: <Link />,
-      action: () => insertMarkdown('[', '](url)'),
     },
   ]
 
@@ -116,6 +111,7 @@ const MarkdownToolbar = (props: MarkdownToolbarProps) => {
           </IconButton>
         </Tooltip>
       ))}
+      <LinkFormatter insertMarkdown={insertMarkdown} />
       <UploadImagesButton {...props} />
     </Stack>
   )

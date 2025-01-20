@@ -70,7 +70,7 @@ URL: [https://n-put.com](https://n-put.com)
 - 下書き保存・ノート公開・ノート削除
 - ノート作成時間の確認
 
-![Image](https://github.com/user-attachments/assets/18f5ae0d-b7be-4755-8404-564c31da9e29)
+![Image](https://github.com/user-attachments/assets/ba715710-0bc8-4e7d-bfbe-b3bd6954162b)
 <br><br>
 
 ## 4. 機能一覧

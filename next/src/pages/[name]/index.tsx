@@ -19,6 +19,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
+import TabPanel from '@/components/common/TabPanel'
 import CheeredNotes from '@/components/user/CheeredNotes'
 import DurationStatus from '@/components/user/DurationStatus'
 import Followers from '@/components/user/Followers'
@@ -332,14 +333,20 @@ const UsersIndex: NextPage = () => {
               </Tabs>
             </AppBar>
 
-            {tabIndex === 0 && <UserNotes />}
-            {tabIndex === 1 && <CheeredNotes />}
-            {tabIndex === 2 && (
+            <TabPanel value={tabIndex} index={0}>
+              <UserNotes />
+            </TabPanel>
+            <TabPanel value={tabIndex} index={1}>
+              <CheeredNotes />
+            </TabPanel>
+            <TabPanel value={tabIndex} index={2}>
               <Followings
                 setChangedFollowingsCount={setChangedFollowingsCount}
               />
-            )}
-            {tabIndex === 3 && <Followers />}
+            </TabPanel>
+            <TabPanel value={tabIndex} index={3}>
+              <Followers />
+            </TabPanel>
           </Card>
         </Container>
       </Box>

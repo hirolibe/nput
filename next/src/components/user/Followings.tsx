@@ -1,10 +1,4 @@
-import {
-  Box,
-  CardContent,
-  Divider,
-  Pagination,
-  Typography,
-} from '@mui/material'
+import { Box, Divider, Pagination, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, Dispatch, SetStateAction, useState } from 'react'
 import UserCard from '../note/UserCard'
@@ -54,62 +48,27 @@ const Followings = (props: FollowingsProps) => {
     }
   }, [followingsError, router.pathname, setSnackbar])
 
-  if (followingsError) {
+  if (followingsError || (!isFollowingsLoading && !followings?.length)) {
     return (
-      <CardContent
+      <Box
         sx={{
-          mx: { xs: 0, md: 10 },
-          py: { xs: 3, md: 4 },
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '448px',
         }}
       >
-        <Box
+        <Typography
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
+            fontSize: { xs: 14, sm: 16 },
+            color: 'text.placeholder',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16 },
-              color: 'text.placeholder',
-              my: 0.5,
-            }}
-          >
-            データを取得できませんでした
-          </Typography>
-        </Box>
-      </CardContent>
-    )
-  }
-
-  if (!isFollowingsLoading && !followings?.length) {
-    return (
-      <CardContent
-        sx={{
-          mx: { xs: 0, md: 10 },
-          py: { xs: 3, md: 3 },
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            height: '440px',
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16 },
-              color: 'text.placeholder',
-            }}
-          >
-            フォローしているユーザーがいません
-          </Typography>
-        </Box>
-      </CardContent>
+          {followingsError
+            ? 'データを取得できませんでした'
+            : 'フォローしているユーザーがいません'}
+        </Typography>
+      </Box>
     )
   }
 

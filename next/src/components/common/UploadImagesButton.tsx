@@ -8,18 +8,15 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-interface UploadImagesButtonProps {
+export interface UploadImagesButtonProps {
   setImageSignedIds: Dispatch<SetStateAction<string | string[] | undefined>>
-  isMultiple?: boolean
   setContent?: Dispatch<SetStateAction<string>>
   preCursorText?: string
   postCursorText?: string
-  backgroundColor?: boolean
-  hoverIconColor?: boolean
   setIsChanged?: Dispatch<SetStateAction<boolean>>
 }
 
-const UploadImagesButton = (props: UploadImagesButtonProps) => {
+export const UploadImagesButton = (props: UploadImagesButtonProps) => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
@@ -28,8 +25,6 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
     setContent,
     preCursorText,
     postCursorText,
-    backgroundColor,
-    hoverIconColor,
     setIsChanged,
   } = props
 
@@ -113,28 +108,17 @@ const UploadImagesButton = (props: UploadImagesButtonProps) => {
     <IconButton
       onClick={handleUploadImages}
       sx={{
-        backgroundColor: backgroundColor ? 'white' : undefined,
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
         width: '46px',
         height: '46px',
-        '&:hover': {
-          backgroundColor: backgroundColor
-            ? 'backgroundColor.hover'
-            : 'transparent',
-        },
+        '&:hover': { backgroundColor: 'backgroundColor.hover' },
       }}
     >
       <AddPhotoAlternateOutlinedIcon
         sx={{
           fontSize: '25px',
           color: 'text.light',
-          '&:hover': {
-            color: hoverIconColor ? 'black' : undefined,
-          },
         }}
       />
     </IconButton>
   )
 }
-
-export default UploadImagesButton

@@ -62,9 +62,9 @@ const ConfirmDialog = ({
 
       <DialogActions
         sx={{
-          pb: 2,
           justifyContent: 'space-between',
           px: 6,
+          pb: 2,
         }}
       >
         <Button

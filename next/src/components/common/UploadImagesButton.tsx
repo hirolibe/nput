@@ -1,5 +1,5 @@
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined'
-import { IconButton } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
@@ -105,20 +105,22 @@ export const UploadImagesButton = (props: UploadImagesButtonProps) => {
   }
 
   return (
-    <IconButton
-      onClick={handleUploadImages}
-      sx={{
-        width: '46px',
-        height: '46px',
-        '&:hover': { backgroundColor: 'backgroundColor.hover' },
-      }}
-    >
-      <AddPhotoAlternateOutlinedIcon
+    <Tooltip title="画像">
+      <IconButton
+        onClick={handleUploadImages}
         sx={{
-          fontSize: '25px',
-          color: 'text.light',
+          width: '46px',
+          height: '46px',
+          '&:hover': { backgroundColor: 'backgroundColor.hover' },
         }}
-      />
-    </IconButton>
+      >
+        <AddPhotoAlternateOutlinedIcon
+          sx={{
+            fontSize: '25px',
+            color: 'text.light',
+          }}
+        />
+      </IconButton>
+    </Tooltip>
   )
 }

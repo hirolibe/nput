@@ -1,12 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close'
-import {
-  Box,
-  CardContent,
-  Divider,
-  Modal,
-  Pagination,
-  Typography,
-} from '@mui/material'
+import { Box, Divider, Modal, Pagination, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import NoteCard from '../note/NoteCard'
@@ -64,62 +57,27 @@ const UserNotes = () => {
     }
   }, [notesError, router.pathname, setSnackbar])
 
-  if (notesError) {
+  if (notesError || (!isNotesLoading && !notes?.length)) {
     return (
-      <CardContent
+      <Box
         sx={{
-          mx: { xs: 0, md: 10 },
-          py: { xs: 3, md: 4 },
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '448px',
         }}
       >
-        <Box
+        <Typography
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
+            fontSize: { xs: 14, sm: 16 },
+            color: 'text.placeholder',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16 },
-              color: 'text.placeholder',
-              my: 0.5,
-            }}
-          >
-            データを取得できませんでした
-          </Typography>
-        </Box>
-      </CardContent>
-    )
-  }
-
-  if (!isNotesLoading && !notes?.length) {
-    return (
-      <CardContent
-        sx={{
-          mx: { xs: 0, md: 10 },
-          py: { xs: 3, md: 3 },
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            height: '440px',
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: { xs: 14, sm: 16 },
-              color: 'text.placeholder',
-            }}
-          >
-            投稿したノートがありません
-          </Typography>
-        </Box>
-      </CardContent>
+          {notesError
+            ? 'データを取得できませんでした'
+            : '投稿したノートがありません'}
+        </Typography>
+      </Box>
     )
   }
 

@@ -257,6 +257,7 @@ const CommentForm = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                mt: 1,
               }}
             >
               <UploadImagesButton
@@ -265,7 +266,7 @@ const CommentForm = ({
                 preCursorText={preCursorText}
                 postCursorText={postCursorText}
               />
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <LoadingButton
                   variant="contained"
                   type="submit"

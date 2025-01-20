@@ -98,21 +98,22 @@ const UserNotes = () => {
       <CardContent
         sx={{
           mx: { xs: 0, md: 10 },
-          py: { xs: 3, md: 4 },
+          py: { xs: 3, md: 3 },
         }}
       >
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
+            alignItems: 'center',
             width: '100%',
+            height: '440px',
           }}
         >
           <Typography
             sx={{
               fontSize: { xs: 14, sm: 16 },
               color: 'text.placeholder',
-              my: 0.5,
             }}
           >
             投稿したノートがありません

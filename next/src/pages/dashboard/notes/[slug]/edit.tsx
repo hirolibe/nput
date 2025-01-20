@@ -9,7 +9,6 @@ import {
   AppBar,
   Autocomplete,
   Box,
-  Card,
   Chip,
   Divider,
   Drawer,
@@ -31,8 +30,8 @@ import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
-import UploadImagesButton from '@/components/common/UploadImagesButton'
 import MarkdownText from '@/components/note/MarkdownText'
+import MarkdownToolbar from '@/components/note/MarkdownToolbar'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
@@ -351,7 +350,7 @@ const EditNote: NextPage = () => {
           pl: 2,
           pr: openSidebar ? 4 : 2,
           transition: 'margin 0.2s',
-          marginRight: openSidebar ? '385px' : 0,
+          mr: openSidebar ? '385px' : 0,
         }}
       >
         <AppBar
@@ -469,7 +468,7 @@ const EditNote: NextPage = () => {
           <Stack sx={{ alignItems: 'center', width: '100%' }}>
             {/* タイトル */}
             <Box sx={{ width: '90%', maxWidth: '1200px', mb: 3 }}>
-              {!isPreviewActive && (
+              {(!openSidebar || !isPreviewActive) && (
                 <Controller
                   name="title"
                   control={control}
@@ -508,7 +507,7 @@ const EditNote: NextPage = () => {
                   )}
                 />
               )}
-              {isPreviewActive && (
+              {openSidebar && isPreviewActive && (
                 <Box sx={{ pt: '4px', pb: { xs: '5px', md: '6px' } }}>
                   <Typography
                     component="h2"
@@ -532,182 +531,206 @@ const EditNote: NextPage = () => {
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
-                position: 'relative',
                 width: '100%',
                 maxWidth: '1400px',
+                mb: 8,
               }}
             >
-              <Card
-                sx={{
-                  borderRadius: 2,
-                  boxShadow: 'none',
-                  backgroundColor: 'white',
-                  width: '100%',
-                  minHeight: '600px',
-                  px: 2,
-                  py: '13.5px',
-                  mb: 1,
-                }}
-              >
-                {!openSidebar && (
-                  <Box sx={{ display: 'flex', width: '100%' }}>
+              <Controller
+                name="content"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                    }}
+                  >
+                    <MarkdownToolbar
+                      textareaRef={textareaRef}
+                      onContentChange={(newContent) => {
+                        setContent(newContent)
+                        field.onChange(newContent)
+                      }}
+                      content={content}
+                      setImageSignedIds={setImageSignedIds}
+                      setContent={setContent}
+                      preCursorText={preCursorText}
+                      postCursorText={postCursorText}
+                      setIsChanged={setIsChanged}
+                    />
                     <Box
                       sx={{
-                        width: {
-                          xs: '100%',
-                          md: isPreviewActive ? '50%' : '100%',
-                        },
+                        backgroundColor: 'white',
+                        width: '100%',
+                        minHeight: '600px',
+                        px: 2,
                       }}
                     >
-                      <Controller
-                        name="content"
-                        control={control}
-                        render={({ field, fieldState }) => (
-                          <TextField
-                            {...field}
-                            type="textarea"
-                            error={fieldState.invalid}
-                            helperText={fieldState.error?.message}
-                            multiline
-                            fullWidth
-                            placeholder="本文を入力してください（マークダウン記法）"
-                            inputRef={textareaRef}
-                            value={content}
-                            onChange={(e) => {
-                              field.onChange(e)
-                              handleContentChange(e)
-                            }}
-                            onClick={updateCursorPosition}
-                            onKeyUp={updateCursorPosition}
-                            minRows={23}
-                            sx={{
-                              '& .MuiInputBase-input': {
-                                fontSize: { xs: 14, md: 16 },
-                              },
-                              '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none',
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                    </Box>
-                    {isPreviewActive && (
-                      <Box
-                        sx={{
-                          display: { xs: 'none', md: 'block' },
-                          borderLeft: '1px solid',
-                          borderColor: 'divider',
-                          width: '50%',
-                          px: '14px',
-                          py: '16.5px',
-                        }}
-                      >
-                        {content ? (
+                      {!openSidebar && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            width: '100%',
+                            height: '100%',
+                          }}
+                        >
                           <Box
                             sx={{
-                              fontSize: { xs: 14, md: 16 },
+                              width: {
+                                xs: '100%',
+                                md: isPreviewActive ? '50%' : '100%',
+                              },
                             }}
                           >
-                            <MarkdownText content={content} />
-                          </Box>
-                        ) : (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '540px',
-                            }}
-                          >
-                            <Typography
+                            <TextField
+                              {...field}
+                              type="textarea"
+                              error={fieldState.invalid}
+                              helperText={fieldState.error?.message}
+                              multiline
+                              fullWidth
+                              placeholder="本文を入力してください（マークダウン記法）"
+                              inputRef={textareaRef}
+                              value={content}
+                              onChange={(e) => {
+                                field.onChange(e)
+                                handleContentChange(e)
+                              }}
+                              onClick={updateCursorPosition}
+                              onKeyUp={updateCursorPosition}
+                              minRows={23}
                               sx={{
-                                fontSize: { xs: 20, md: 24 },
-                                color: 'text.placeholder',
-                                fontFamily:
-                                  'Roboto, Helvetica, Arial, sans-serif',
+                                '& .MuiInputBase-input': {
+                                  fontSize: { xs: 14, md: 16 },
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none',
+                                },
+                              }}
+                            />
+                          </Box>
+                          {isPreviewActive && (
+                            <Box
+                              sx={{
+                                display: { xs: 'none', md: 'block' },
+                                borderLeft: '0.5px solid',
+                                borderColor: 'divider',
+                                width: '50%',
+                                minHeight: '600px',
+                                px: '14px',
+                                py: '16.5px',
                               }}
                             >
-                              No content
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    )}
+                              {content ? (
+                                <Box
+                                  sx={{
+                                    fontSize: { xs: 14, md: 16 },
+                                    height: '100%',
+                                  }}
+                                >
+                                  <MarkdownText content={content} />
+                                </Box>
+                              ) : (
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height: '100%',
+                                  }}
+                                >
+                                  <Typography
+                                    sx={{
+                                      fontSize: { xs: 20, md: 24 },
+                                      color: 'text.placeholder',
+                                      fontFamily:
+                                        'Roboto, Helvetica, Arial, sans-serif',
+                                    }}
+                                  >
+                                    No content
+                                  </Typography>
+                                </Box>
+                              )}
+                            </Box>
+                          )}
+                        </Box>
+                      )}
+                      {openSidebar && (
+                        <>
+                          {!isPreviewActive && (
+                            <Controller
+                              name="content"
+                              control={control}
+                              render={({ field, fieldState }) => (
+                                <TextField
+                                  {...field}
+                                  type="textarea"
+                                  error={fieldState.invalid}
+                                  helperText={fieldState.error?.message}
+                                  multiline
+                                  fullWidth
+                                  placeholder="本文を入力してください（マークダウン記法）"
+                                  inputRef={textareaRef}
+                                  value={content}
+                                  onChange={(e) => {
+                                    field.onChange(e)
+                                    handleContentChange(e)
+                                  }}
+                                  onClick={updateCursorPosition}
+                                  onKeyUp={updateCursorPosition}
+                                  minRows={23}
+                                  sx={{
+                                    '& .MuiInputBase-input': {
+                                      fontSize: { xs: 14, md: 16 },
+                                    },
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      border: 'none',
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          )}
+                          {isPreviewActive && (
+                            <Box sx={{ px: '14px', py: '15.5px' }}>
+                              {content ? (
+                                <Box
+                                  sx={{
+                                    fontSize: { xs: 14, md: 16 },
+                                  }}
+                                >
+                                  <MarkdownText content={content} />
+                                </Box>
+                              ) : (
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height: '540px',
+                                  }}
+                                >
+                                  <Typography
+                                    sx={{
+                                      fontSize: { xs: 20, md: 24 },
+                                      color: 'text.placeholder',
+                                      fontFamily:
+                                        'Roboto, Helvetica, Arial, sans-serif',
+                                    }}
+                                  >
+                                    No content
+                                  </Typography>
+                                </Box>
+                              )}
+                            </Box>
+                          )}
+                        </>
+                      )}
+                    </Box>
                   </Box>
                 )}
-                {openSidebar && (
-                  <>
-                    {!isPreviewActive && (
-                      <Controller
-                        name="content"
-                        control={control}
-                        render={({ field, fieldState }) => (
-                          <TextField
-                            {...field}
-                            type="textarea"
-                            error={fieldState.invalid}
-                            helperText={fieldState.error?.message}
-                            multiline
-                            fullWidth
-                            placeholder="本文を入力してください（マークダウン記法）"
-                            inputRef={textareaRef}
-                            value={content}
-                            onChange={(e) => {
-                              field.onChange(e)
-                              handleContentChange(e)
-                            }}
-                            onClick={updateCursorPosition}
-                            onKeyUp={updateCursorPosition}
-                            minRows={23}
-                            sx={{
-                              '& .MuiInputBase-input': {
-                                fontSize: { xs: 14, md: 16 },
-                              },
-                              '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none',
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                    )}
-                    {isPreviewActive && (
-                      <Box sx={{ px: '14px', py: '16.5px' }}>
-                        {content ? (
-                          <Box
-                            sx={{
-                              fontSize: { xs: 14, md: 16 },
-                            }}
-                          >
-                            <MarkdownText content={content} />
-                          </Box>
-                        ) : (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '540px',
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                fontSize: { xs: 20, md: 24 },
-                                color: 'text.placeholder',
-                                fontFamily:
-                                  'Roboto, Helvetica, Arial, sans-serif',
-                              }}
-                            >
-                              No content
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    )}
-                  </>
-                )}
-              </Card>
+              />
 
               {/* ボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
               <Box
@@ -762,21 +785,6 @@ const EditNote: NextPage = () => {
                     <SellOutlinedIcon />
                   </IconButton>
                 </Tooltip>
-                {(!openSidebar || (openSidebar && !isPreviewActive)) && (
-                  <Tooltip title="画像を追加">
-                    <Box tabIndex={0}>
-                      <UploadImagesButton
-                        setImageSignedIds={setImageSignedIds}
-                        isMultiple={true}
-                        setContent={setContent}
-                        preCursorText={preCursorText}
-                        postCursorText={postCursorText}
-                        backgroundColor={true}
-                        setIsChanged={setIsChanged}
-                      />
-                    </Box>
-                  </Tooltip>
-                )}
                 <Tooltip title="ノートを削除">
                   <IconButton
                     onClick={() => handleDeleteNote(noteSlug)}

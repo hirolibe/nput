@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_17_001757) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_22_065754) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -136,6 +136,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_17_001757) do
     t.string "terms_version", comment: "利用規約のバージョン"
     t.string "privacy_version", comment: "プライバシーポリシーのバージョン"
     t.datetime "agreed_at", comment: "利用規約とプライバシーポリシーに同意した日"
+    t.string "role", default: "user", null: false, comment: "権限"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true

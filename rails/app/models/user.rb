@@ -57,6 +57,10 @@ class User < ApplicationRecord
     name.start_with?("Guest_")
   end
 
+  def admin?
+    role == "admin"
+  end
+
   private
 
     def create_profile!

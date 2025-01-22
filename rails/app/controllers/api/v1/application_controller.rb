@@ -43,6 +43,12 @@ class Api::V1::ApplicationController < ApplicationController
       end
     end
 
+    def authenticate_admin!
+      unless @current_user.admin?
+        render json: { error: "アクセス権限がありません" }, status: :forbidden
+      end
+    end
+
     attr_reader :current_user
 
     def attach_images(record, signed_ids)

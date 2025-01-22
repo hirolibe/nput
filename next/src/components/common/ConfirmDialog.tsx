@@ -70,8 +70,11 @@ const ConfirmDialog = ({
         <Button
           onClick={onClose}
           variant="outlined"
-          color="secondary"
-          sx={{ width: '105px' }}
+          sx={{
+            width: '105px',
+            color: 'text.light',
+            borderColor: 'text.light',
+          }}
         >
           {cancelText}
         </Button>

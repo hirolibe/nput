@@ -77,16 +77,19 @@ const LinkFormatter = ({ insertMarkdown }: LinkFormatterProps) => {
           <Button
             onClick={onClose}
             variant="outlined"
-            color="secondary"
-            sx={{ width: '105px' }}
+            sx={{
+              width: '105px',
+              color: 'text.light',
+              borderColor: 'text.light',
+            }}
           >
             キャンセル
           </Button>
           <Button
             onClick={handleInsert}
             variant="contained"
-            color="secondary"
-            sx={{ width: '105px' }}
+            color="primary"
+            sx={{ fontWeight: 'bold', color: 'white', width: '105px' }}
           >
             挿入
           </Button>

@@ -9,6 +9,7 @@ import {
   AppBar,
   Autocomplete,
   Box,
+  Button,
   Chip,
   Divider,
   Drawer,
@@ -32,9 +33,11 @@ import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import MarkdownText from '@/components/note/MarkdownText'
 import MarkdownToolbar from '@/components/note/MarkdownToolbar'
+import { AutoSaveDialog } from '@/components/note/RestoreConfirmDialog'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
@@ -42,13 +45,15 @@ import { useTimeTracking } from '@/hooks/useTimeTracking'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
-type NoteProps = {
-  title: string
-  description: string
-  content: string
-  status: string
-  tags: string[]
-}
+type NoteProps =
+  | {
+      title: string
+      description: string
+      content: string
+      status: string
+      tags: string[]
+    }
+  | undefined
 
 type NoteFormData = {
   title: string
@@ -98,6 +103,43 @@ const EditNote: NextPage = () => {
   const [preCursorText, setPreCursorText] = useState<string>('')
   const [postCursorText, setPostCursorText] = useState<string>('')
 
+  const { saveContent, loadSavedContent, removeSavedContent } = useLocalStorage(
+    noteSlug || '',
+  )
+  const [isLocalData, setIsLocalData] = useState<boolean>(false)
+  const [isContentChanged, setIsContentChanged] = useState<boolean>(false)
+
+  useEffect(() => {
+    const savedContent = loadSavedContent()
+    if (savedContent && !isContentChanged) setIsLocalData(true)
+  }, [loadSavedContent, isContentChanged])
+
+  const [openRestoreConfirmDialog, setOpenRestoreConfirmDialog] =
+    useState<boolean>(false)
+
+  const handleOpenRestoreConfirmDialog = () => {
+    setOpenRestoreConfirmDialog(true)
+  }
+
+  const handleRestore = () => {
+    setContent(loadSavedContent())
+    setOpenRestoreConfirmDialog(false)
+    removeSavedContent()
+    setIsLocalData(false)
+    setIsContentChanged(false)
+  }
+
+  const handleRejectRestore = () => {
+    setOpenRestoreConfirmDialog(false)
+    removeSavedContent()
+    setIsLocalData(false)
+    setIsContentChanged(false)
+  }
+
+  const handleCloseRestoreConfirmDialog = () => {
+    setOpenRestoreConfirmDialog(false)
+  }
+
   useEffect(() => {
     setPreCursorText(content?.slice(0, cursorPosition ?? undefined))
     setPostCursorText(content?.slice(cursorPosition ?? undefined))
@@ -106,9 +148,12 @@ const EditNote: NextPage = () => {
   const handleContentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setContent(e.target.value)
+    const newValue = e.target.value
+    setContent(newValue)
     const position = textareaRef.current?.selectionStart || 0
     setCursorPosition(position)
+    setIsContentChanged(true)
+    if (!isLocalData) saveContent(newValue)
   }
 
   const handleInputChange = (newInputValue: string) => {
@@ -153,6 +198,8 @@ const EditNote: NextPage = () => {
   >(undefined)
 
   const note: NoteProps = useMemo(() => {
+    if (noteData === undefined) return
+
     return {
       title: noteData?.title ?? '',
       description: noteData?.description ?? '',
@@ -188,7 +235,7 @@ const EditNote: NextPage = () => {
   }, [setIsChanged, isDirty])
 
   useEffect(() => {
-    if (noteData === undefined) return
+    if (note === undefined) return
 
     if (note) {
       reset(note)
@@ -196,9 +243,13 @@ const EditNote: NextPage = () => {
       setStatusChecked(note.status == '公開中')
       setInputTags(note.tags)
 
-      setIsFetched(true)
+      const timer = setTimeout(() => {
+        setIsFetched(true)
+      }, 200)
+
+      return () => clearTimeout(timer)
     }
-  }, [noteData, note, reset, setIsFetched])
+  }, [note, reset, setIsFetched])
 
   const togglePreviewDisplay = () => {
     setIsPreviewActive(!isPreviewActive)
@@ -253,6 +304,9 @@ const EditNote: NextPage = () => {
         pathname: router.pathname,
       })
 
+      removeSavedContent()
+      setIsLocalData(false)
+      setIsContentChanged(false)
       setIsChanged(false)
       reset(data)
     } catch (err) {
@@ -321,7 +375,7 @@ const EditNote: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!idToken || !isFetched) {
+  if (!isFetched) {
     return (
       <Box
         css={styles.pageMinHeight}
@@ -347,8 +401,6 @@ const EditNote: NextPage = () => {
         sx={{
           backgroundColor: 'backgroundColor.page',
           minHeight: '100vh',
-          pl: 2,
-          pr: openSidebar ? 4 : 2,
           transition: 'margin 0.2s',
           mr: openSidebar ? '385px' : 0,
         }}
@@ -455,12 +507,104 @@ const EditNote: NextPage = () => {
           </Toolbar>
         </AppBar>
 
+        {/* ローカルストレージのデータ復元 */}
+        {isLocalData && (
+          <Box
+            sx={{
+              backgroundColor: 'secondary.main',
+            }}
+          >
+            <Box
+              sx={{
+                pt: 10,
+                pb: 2,
+                pl: 2,
+                pr: openSidebar ? 4 : 2,
+                mb: 3,
+              }}
+            >
+              <Box
+                sx={{
+                  display: { sm: 'flex' },
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  sx={{
+                    textAlign: 'center',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: 'text.light',
+                    mr: { xs: 0, sm: 3 },
+                    mb: { xs: 1, sm: 0 },
+                  }}
+                >
+                  保存されていないデータがあります
+                </Typography>
+                <Box sx={{ textAlign: { xs: 'center', sm: undefined } }}>
+                  <Button
+                    onClick={handleRejectRestore}
+                    variant="contained"
+                    sx={{
+                      fontSize: { xs: 12, sm: 14 },
+                      fontWeight: 'bold',
+                      color: 'text.light',
+                      boxShadow: 'none',
+                      borderRadius: 50,
+                      backgroundColor: 'white',
+                      width: '90px',
+                      height: '30px',
+                      mr: 2,
+                      '&:hover': {
+                        boxShadow: 'none',
+                        backgroundColor: 'backgroundColor.hover',
+                      },
+                    }}
+                  >
+                    削除する
+                  </Button>
+                  <Button
+                    onClick={handleOpenRestoreConfirmDialog}
+                    variant="contained"
+                    sx={{
+                      fontSize: { xs: 12, sm: 14 },
+                      fontWeight: 'bold',
+                      color: 'text.light',
+                      boxShadow: 'none',
+                      borderRadius: 50,
+                      backgroundColor: 'white',
+                      width: '90px',
+                      height: '30px',
+                      '&:hover': {
+                        boxShadow: 'none',
+                        backgroundColor: 'backgroundColor.hover',
+                      },
+                    }}
+                  >
+                    確認する
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        )}
+
+        <AutoSaveDialog
+          open={openRestoreConfirmDialog}
+          onReject={handleRejectRestore}
+          onRestore={handleRestore}
+          onClose={handleCloseRestoreConfirmDialog}
+          currentContent={content}
+          savedContent={loadSavedContent()}
+        />
+
         {/* ノート */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            pt: 11,
+            pt: isLocalData ? 0 : 10,
             pb: 3,
           }}
         >
@@ -805,6 +949,7 @@ const EditNote: NextPage = () => {
             </Box>
           </Stack>
 
+          {/* 変更内容破棄の確認画面 */}
           <ConfirmDialog
             open={openBackConfirmDialog}
             onClose={handleCloseBackConfirmDialog}

@@ -45,13 +45,15 @@ import { useTimeTracking } from '@/hooks/useTimeTracking'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
-type NoteProps = {
-  title: string
-  description: string
-  content: string
-  status: string
-  tags: string[]
-} | undefined
+type NoteProps =
+  | {
+      title: string
+      description: string
+      content: string
+      status: string
+      tags: string[]
+    }
+  | undefined
 
 type NoteFormData = {
   title: string
@@ -68,7 +70,7 @@ const EditNote: NextPage = () => {
   const router = useRouter()
   const { slug } = router.query
   const noteSlug = typeof slug === 'string' ? slug : undefined
-  const { noteData, noteError, isNoteLoading } = useNote()
+  const { noteData, noteError } = useNote()
 
   const { tagsData } = useTags()
   const { sessionSeconds } = useTimeTracking()

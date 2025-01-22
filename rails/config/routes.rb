@@ -8,6 +8,10 @@ Rails.application.routes.draw do
         resource :guest_registration, only: [:create]
       end
 
+      namespace :admin do
+        resources :users, only: [:index, :destroy]
+      end
+
       resource :profile, only: [:show, :update]
 
       resources :notes, only: [:index]

@@ -81,6 +81,5 @@ Rails.application.configure do
   # Default host for URL generation
   Rails.application.routes.default_url_options[:host] = "https://backend.n-put.com"
 
-  config.hosts.clear if ENV["RAILS_HOST"].present?
   config.hosts.concat(ENV["RAILS_HOST"].split(","))
 end

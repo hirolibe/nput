@@ -22,7 +22,7 @@
               },
               {
                   "name": "RAILS_HOST",
-                  "value": "localhost,n-put.com,backend.n-put.com,rails:3000"
+                  "value": "n-put.com,backend.n-put.com,rails:3000"
               },
               {
                   "name": "FIREBASE_PROJECT_ID",

@@ -47,10 +47,9 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
 
   try {
     const noteData: NoteData = await fetcher([
-      `${process.env.API_BASE_URL}/${name}/notes/${slug}`,
+      `${process.env.NEXT_PUBLIC_SERVER_API_BASE_URL}/${name}/notes/${slug}`,
       undefined,
     ])
-    console.log(process.env.API_BASE_URL)
 
     if (!noteData) {
       return { notFound: true }

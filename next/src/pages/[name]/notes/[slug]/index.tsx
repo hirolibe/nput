@@ -47,7 +47,8 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
 
   try {
     const noteData: NoteData = await fetcher([
-      `${process.env.NEXT_PUBLIC_SERVER_API_BASE_URL}/${name}/notes/${slug}`,
+      // `${process.env.NEXT_PUBLIC_SERVER_API_BASE_URL}/${name}/notes/${slug}`,
+      `http://rails:3000/api/v1/${name}/notes/${slug}`,
       undefined,
     ])
 

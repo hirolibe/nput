@@ -22,10 +22,10 @@ import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Logo from '@/components/common/Logo'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import { useAuthContext } from '@/hooks/useAuthContext'
 
 type SignUpFormData = {
   name: string

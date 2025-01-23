@@ -605,6 +605,8 @@ const EditNote: NextPage = () => {
             display: 'flex',
             justifyContent: 'center',
             pt: isLocalData ? 0 : 10,
+            pl: 2,
+            pr: openSidebar ? 4 : 2,
             pb: 3,
           }}
         >

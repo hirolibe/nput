@@ -22,10 +22,10 @@ import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Logo from '@/components/common/Logo'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import { useAuthContext } from '@/hooks/useAuthContext'
 
 type SignUpFormData = {
   name: string
@@ -36,7 +36,7 @@ type SignUpFormData = {
 }
 
 const SignUp: NextPage = () => {
-  const { setIsAuthLoading } = useAuthContext()
+  const { idToken, setIdToken } = useAuthContext()
 
   const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
   const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
@@ -110,9 +110,9 @@ const SignUp: NextPage = () => {
   }
 
   const verifyIdToken = async (user: User, url: string) => {
-    const idToken = await user?.getIdToken()
+    const token = await user?.getIdToken()
     const headers = {
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${token}`,
     }
 
     const res = await axios.post(
@@ -129,7 +129,9 @@ const SignUp: NextPage = () => {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     setIsRegistering(true)
+    const token = idToken
     try {
+      setIdToken(undefined)
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
@@ -147,7 +149,6 @@ const SignUp: NextPage = () => {
         pathname: redirectPath,
       })
 
-      setIsAuthLoading(true)
       await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -161,6 +162,7 @@ const SignUp: NextPage = () => {
         severity: 'error',
         pathname: '/auth/signup',
       })
+      setIdToken(token)
     } finally {
       setIsRegistering(false)
     }
@@ -179,7 +181,6 @@ const SignUp: NextPage = () => {
         severity: 'success',
         pathname: redirectPath,
       })
-      setIsAuthLoading(true)
       await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)

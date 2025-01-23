@@ -16,8 +16,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import Error from '@/components/common/Error'
-import Loading from '@/components/common/Loading'
 import { AuthorInfo } from '@/components/note/AuthorInfo'
 import { CheerButton } from '@/components/note/CheerButton'
 import CommentCard from '@/components/note/CommentCard'
@@ -100,7 +98,6 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   useEffect(() => {
     if (cheerStatusError) {
       const { errorMessage } = handleError(cheerStatusError)
-      setError(cheerStatusError)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
@@ -110,7 +107,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   // フォロー状態のデータ取得・管理
-  const { followStatusData } = useFollowStatus(authorName)
+  const { followStatusData, followStatusError } = useFollowStatus(authorName)
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined)
   const followState = {
     isFollowed,
@@ -120,6 +117,17 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   useEffect(() => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
+
+  useEffect(() => {
+    if (followStatusError) {
+      const { errorMessage } = handleError(followStatusError)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+    }
+  }, [followStatusError, router.pathname, setSnackbar])
 
   return (
     <>

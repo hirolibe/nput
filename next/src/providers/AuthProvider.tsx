@@ -84,6 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       value={{
         idToken,
         isAuthLoading,
+        setIsAuthLoading,
       }}
     >
       {children}

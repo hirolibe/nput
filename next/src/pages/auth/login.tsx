@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Logo from '@/components/common/Logo'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
@@ -18,6 +19,8 @@ type LogInFormData = {
 }
 
 const LogIn: NextPage = () => {
+  const { setIsAuthLoading } = useAuthContext()
+
   const [isLoading, setIsLoading] = useState(false)
   const [, setSnackbar] = useSnackbarState()
 
@@ -56,6 +59,7 @@ const LogIn: NextPage = () => {
         severity: 'success',
         pathname: redirectPath,
       })
+      setIsAuthLoading(true)
       await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -137,7 +141,7 @@ const LogIn: NextPage = () => {
               type="submit"
               loading={isLoading}
               sx={{
-                fontSize: 16,
+                fontSize: { xs: 14, sm: 16 },
                 fontWeight: 'bold',
                 color: 'white',
                 width: '170px',

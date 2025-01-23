@@ -245,7 +245,7 @@ const EditNote: NextPage = () => {
 
       const timer = setTimeout(() => {
         setIsFetched(true)
-      }, 300)
+      }, 0)
 
       return () => clearTimeout(timer)
     }

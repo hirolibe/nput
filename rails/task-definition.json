@@ -22,7 +22,7 @@
               },
               {
                   "name": "RAILS_HOST",
-                  "value": "n-put.com,backend.n-put.com,rails:3000"
+                  "value": "n-put.com,backend.n-put.com,rails:3000,n-put-alb-backend-1023768941.ap-northeast-1.elb.amazonaws.com"
               },
               {
                   "name": "FIREBASE_PROJECT_ID",

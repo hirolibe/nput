@@ -83,8 +83,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <AuthContext.Provider
       value={{
         idToken,
+        setIdToken,
         isAuthLoading,
-        setIsAuthLoading,
       }}
     >
       {children}

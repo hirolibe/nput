@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
       `${process.env.API_BASE_URL}/${name}/notes/${slug}`,
       undefined,
     ])
+    console.log(process.env.API_BASE_URL)
 
     if (!noteData) {
       return { notFound: true }

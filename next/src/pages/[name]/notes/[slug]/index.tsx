@@ -11,13 +11,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { NextPage } from 'next'
+import { NextPage, GetServerSideProps } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import Error from '@/components/common/Error'
-import Loading from '@/components/common/Loading'
 import { AuthorInfo } from '@/components/note/AuthorInfo'
 import { CheerButton } from '@/components/note/CheerButton'
 import CommentCard from '@/components/note/CommentCard'
@@ -25,16 +23,50 @@ import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
-import { useNote } from '@/hooks/useNote'
+import { NoteData } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
+import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
 
-const NoteDetail: NextPage = () => {
-  const [, setSnackbar] = useSnackbarState()
-  const [isDraft, setIsDraft] = useState<boolean>(false)
+interface NoteDetailProps {
+  noteData: NoteData
+}
 
+export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
+  context,
+) => {
+  const { name, slug } = context.query
+
+  if (typeof name !== 'string' || typeof slug !== 'string') {
+    return {
+      notFound: true,
+    }
+  }
+
+  try {
+    const noteData: NoteData = await fetcher([
+      `${process.env.API_BASE_URL}/${name}/notes/${slug}`,
+      undefined,
+    ])
+
+    if (!noteData) {
+      return { notFound: true }
+    }
+
+    return { props: { noteData } }
+  } catch (err) {
+    handleError(err)
+    return { notFound: true }
+  }
+}
+
+const NoteDetail: NextPage<NoteDetailProps> = (props) => {
+  const { noteData } = props
+  const isDraft = noteData.statusJp === '下書き'
+
+  const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
   const { name, slug } = router.query
   const [authorName, noteSlug] = [name, slug].map((value) =>
@@ -44,31 +76,25 @@ const NoteDetail: NextPage = () => {
   const { profileData } = useProfile()
   const currentUserName = profileData?.user.name
 
-  // ノートのデータ管理
-  const { noteData, noteError } = useNote()
-  useEffect(() => {
-    if (noteData) {
-      setCheersCount(noteData.cheersCount)
-      setIsDraft(noteData.statusJp === '下書き')
-    }
-  }, [noteData])
-
   // エール状態のデータ取得・管理
   const { cheerStatusData, cheerStatusError } = useCheerStatus({
     authorName,
     noteSlug,
   })
+
   const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
-  const [cheersCount, setCheersCount] = useState(0)
+  const [cheersCount, setCheersCount] = useState(noteData.cheersCount)
   const cheerState = {
     isCheered,
     setIsCheered,
     cheersCount,
     setCheersCount,
   }
+
   useEffect(() => {
     setIsCheered(cheerStatusData)
   }, [cheerStatusData])
+
   useEffect(() => {
     if (cheerStatusError) {
       const { errorMessage } = handleError(cheerStatusError)
@@ -81,31 +107,27 @@ const NoteDetail: NextPage = () => {
   }, [cheerStatusError, router.pathname, setSnackbar])
 
   // フォロー状態のデータ取得・管理
-  const { followStatusData } = useFollowStatus(authorName)
+  const { followStatusData, followStatusError } = useFollowStatus(authorName)
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined)
   const followState = {
     isFollowed,
     setIsFollowed,
   }
+
   useEffect(() => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
 
-  if (noteError) {
-    const { statusCode, errorMessage } = handleError(noteError)
-    return <Error statusCode={statusCode} errorMessage={errorMessage} />
-  }
-
-  if (!noteData) {
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <Loading />
-      </Box>
-    )
-  }
+  useEffect(() => {
+    if (followStatusError) {
+      const { errorMessage } = handleError(followStatusError)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+    }
+  }, [followStatusError, router.pathname, setSnackbar])
 
   return (
     <>

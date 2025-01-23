@@ -22,6 +22,7 @@ import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Logo from '@/components/common/Logo'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
@@ -35,6 +36,8 @@ type SignUpFormData = {
 }
 
 const SignUp: NextPage = () => {
+  const { setIsAuthLoading } = useAuthContext()
+
   const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
   const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
   const [isRegistering, setIsRegistering] = useState(false)
@@ -143,6 +146,8 @@ const SignUp: NextPage = () => {
         severity: 'success',
         pathname: redirectPath,
       })
+
+      setIsAuthLoading(true)
       await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -174,6 +179,7 @@ const SignUp: NextPage = () => {
         severity: 'success',
         pathname: redirectPath,
       })
+      setIsAuthLoading(true)
       await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -308,7 +314,7 @@ const SignUp: NextPage = () => {
               disabled={!isTermsChecked || !isPrivacyChecked}
               loading={isRegistering}
               sx={{
-                fontSize: 16,
+                fontSize: { xs: 14, sm: 16 },
                 fontWeight: 'bold',
                 color: 'white',
                 width: '170px',
@@ -326,18 +332,17 @@ const SignUp: NextPage = () => {
             }}
           >
             <LoadingButton
-              variant="contained"
-              color="secondary"
+              variant="outlined"
               type="submit"
               onClick={handleGuestLogin}
               loading={isGuestLoggingIn}
               sx={{
-                fontSize: 16,
+                fontSize: { xs: 14, sm: 16 },
                 fontWeight: 'bold',
-                color: 'white',
                 width: '170px',
-                textTransform: 'none',
+                border: '2px solid',
                 borderRadius: 2,
+                height: { xs: '36.5px', sm: '40px' },
                 mt: 3,
               }}
             >

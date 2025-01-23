@@ -19,7 +19,7 @@ import axios from 'axios'
 import { signOut } from 'firebase/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AuthLinks from '../auth/AuthLinks'
 import CheerPoints from './CheerPoints'
 import Logo from './Logo'
@@ -36,8 +36,19 @@ const Header = () => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
   const { idToken, isAuthLoading } = useAuthContext()
-  const { profileData, isProfileLoading } = useProfile()
+  const { profileData, profileError, isProfileLoading } = useProfile()
   const { avatarUrl } = useProfileContext()
+
+  useEffect(() => {
+    if (profileError) {
+      const { errorMessage } = handleError(profileError)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+    }
+  }, [profileError, router.pathname, setSnackbar])
 
   const hideHeaderPathnames = [
     '/auth/signup',
@@ -92,6 +103,7 @@ const Header = () => {
         backgroundColor: 'white',
         color: 'black',
         boxShadow: 'none',
+        height: { sm: '64px' },
         py: { xs: 1, sm: '12px' },
       }}
     >
@@ -104,10 +116,8 @@ const Header = () => {
           }}
         >
           <Logo />
-          {!isAuthLoading &&
-            !idToken &&
-            !isProfileLoading &&
-            profileData === null && <AuthLinks />}
+          {((!isAuthLoading && !isProfileLoading && profileData === null) ||
+            profileError) && <AuthLinks />}
           {profileData && (
             <Box sx={{ display: 'flex' }}>
               <IconButton

@@ -19,7 +19,7 @@ type LogInFormData = {
 }
 
 const LogIn: NextPage = () => {
-  const { idToken, setIdToken } = useAuthContext()
+  const { setIdToken } = useAuthContext()
 
   const [isLoading, setIsLoading] = useState(false)
   const [, setSnackbar] = useSnackbarState()
@@ -52,7 +52,6 @@ const LogIn: NextPage = () => {
 
   const onSubmit: SubmitHandler<LogInFormData> = async (data) => {
     setIsLoading(true)
-    const token = idToken
     try {
       setIdToken(undefined)
       await signInWithEmailAndPassword(auth, data.email, data.password)
@@ -69,7 +68,7 @@ const LogIn: NextPage = () => {
         severity: 'error',
         pathname: '/auth/login',
       })
-      setIdToken(token)
+      setIdToken(null)
     } finally {
       setIsLoading(false)
     }

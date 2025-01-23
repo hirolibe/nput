@@ -36,7 +36,7 @@ type SignUpFormData = {
 }
 
 const SignUp: NextPage = () => {
-  const { idToken, setIdToken } = useAuthContext()
+  const { setIdToken } = useAuthContext()
 
   const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
   const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
@@ -129,7 +129,6 @@ const SignUp: NextPage = () => {
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
     setIsRegistering(true)
-    const token = idToken
     try {
       setIdToken(undefined)
       const userCredential = await createUserWithEmailAndPassword(
@@ -162,7 +161,7 @@ const SignUp: NextPage = () => {
         severity: 'error',
         pathname: '/auth/signup',
       })
-      setIdToken(token)
+      setIdToken(null)
     } finally {
       setIsRegistering(false)
     }
@@ -171,6 +170,7 @@ const SignUp: NextPage = () => {
   const handleGuestLogin = async () => {
     setIsGuestLoggingIn(true)
     try {
+      setIdToken(undefined)
       const userCredential = await signInAnonymously(auth)
       const guestUser = userCredential.user
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/guest_registration`
@@ -189,6 +189,7 @@ const SignUp: NextPage = () => {
         severity: 'error',
         pathname: '/auth/signup',
       })
+      setIdToken(null)
     } finally {
       setIsGuestLoggingIn(false)
     }

@@ -116,7 +116,10 @@ const Header = () => {
           }}
         >
           <Logo />
-          {((!isAuthLoading && !isProfileLoading && profileData === null) ||
+          {((!isAuthLoading &&
+            idToken === null &&
+            !isProfileLoading &&
+            profileData === null) ||
             profileError) && <AuthLinks />}
           {profileData && (
             <Box sx={{ display: 'flex' }}>

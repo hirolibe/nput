@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { NextPage, GetServerSideProps } from 'next'
+import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -25,50 +25,16 @@ import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
-import { NoteData } from '@/hooks/useNote'
+import { useNote } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
-import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
 
-interface NoteDetailProps {
-  noteData: NoteData
-}
-
-export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
-  context,
-) => {
-  const { name, slug } = context.query
-
-  if (typeof name !== 'string' || typeof slug !== 'string') {
-    return {
-      notFound: true,
-    }
-  }
-
-  try {
-    const noteData: NoteData = await fetcher([
-      `${process.env.API_BASE_URL}/${name}/notes/${slug}`,
-      undefined,
-    ])
-
-    if (!noteData) {
-      return { notFound: true }
-    }
-
-    return { props: { noteData } }
-  } catch (err) {
-    handleError(err)
-    return { notFound: true }
-  }
-}
-
-const NoteDetail: NextPage<NoteDetailProps> = (props) => {
-  const { noteData } = props
-  const isDraft = noteData.statusJp === '下書き'
-
+const NoteDetail: NextPage = () => {
   const [, setSnackbar] = useSnackbarState()
+  const [isDraft, setIsDraft] = useState<boolean>(false)
+
   const router = useRouter()
   const { name, slug } = router.query
   const [authorName, noteSlug] = [name, slug].map((value) =>
@@ -78,29 +44,34 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   const { profileData } = useProfile()
   const currentUserName = profileData?.user.name
 
+  // ノートのデータ管理
+  const { noteData, noteError } = useNote()
+  useEffect(() => {
+    if (noteData) {
+      setCheersCount(noteData.cheersCount)
+      setIsDraft(noteData.statusJp === '下書き')
+    }
+  }, [noteData])
+
   // エール状態のデータ取得・管理
   const { cheerStatusData, cheerStatusError } = useCheerStatus({
     authorName,
     noteSlug,
   })
-
   const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
-  const [cheersCount, setCheersCount] = useState(noteData.cheersCount)
+  const [cheersCount, setCheersCount] = useState(0)
   const cheerState = {
     isCheered,
     setIsCheered,
     cheersCount,
     setCheersCount,
   }
-
   useEffect(() => {
     setIsCheered(cheerStatusData)
   }, [cheerStatusData])
-
   useEffect(() => {
     if (cheerStatusError) {
       const { errorMessage } = handleError(cheerStatusError)
-      setError(cheerStatusError)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
@@ -116,10 +87,25 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     isFollowed,
     setIsFollowed,
   }
-
   useEffect(() => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
+
+  if (noteError) {
+    const { statusCode, errorMessage } = handleError(noteError)
+    return <Error statusCode={statusCode} errorMessage={errorMessage} />
+  }
+
+  if (!noteData) {
+    return (
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <Loading />
+      </Box>
+    )
+  }
 
   return (
     <>

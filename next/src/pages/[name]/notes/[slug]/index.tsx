@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
   try {
     const noteData: NoteData = await fetcher([
       // `${process.env.NEXT_PUBLIC_SERVER_API_BASE_URL}/${name}/notes/${slug}`,
-      `http://n-put-alb-backend-1023768941.ap-northeast-1.elb.amazonaws.com/api/v1/${name}/notes/${slug}`,
+      `https://backend.n-put.com/api/v1/${name}/notes/${slug}`,
       undefined,
     ])
 

@@ -1,7 +1,7 @@
 import { Box, Container, Link, Stack, Typography } from '@mui/material'
 import { styles } from '@/styles'
 
-type ErrorProps = {
+interface ErrorProps {
   statusCode?: number | null
   errorMessage?: string | null
 }

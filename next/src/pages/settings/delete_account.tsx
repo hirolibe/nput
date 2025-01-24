@@ -27,7 +27,7 @@ import { styles } from '@/styles'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
-type DeleteAccountFormData = {
+interface DeleteAccountFormData {
   password: string
 }
 

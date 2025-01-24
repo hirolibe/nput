@@ -17,7 +17,7 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
-type ProfileFormData = {
+interface ProfileFormData {
   nickname: string
   bio: string
   x_username: string

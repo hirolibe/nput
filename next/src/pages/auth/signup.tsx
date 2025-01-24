@@ -27,7 +27,7 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
-type SignUpFormData = {
+interface SignUpFormData {
   name: string
   email: string
   password: string

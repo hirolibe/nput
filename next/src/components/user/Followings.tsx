@@ -7,7 +7,7 @@ import { pageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-type FollowingsProps = {
+interface FollowingsProps {
   setChangedFollowingsCount: Dispatch<SetStateAction<number | undefined>>
 }
 

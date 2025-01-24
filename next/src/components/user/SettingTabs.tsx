@@ -2,7 +2,7 @@ import { AppBar, Tab, Tabs } from '@mui/material'
 import { useRouter } from 'next/router'
 import { Dispatch, SetStateAction, SyntheticEvent } from 'react'
 
-type SettingTabsProps = {
+interface SettingTabsProps {
   tabIndex: number
   setTabIndex: Dispatch<SetStateAction<number>>
 }

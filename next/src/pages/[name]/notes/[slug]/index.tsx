@@ -46,9 +46,11 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
   }
 
   try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
+      process.env.NEXT_PUBLIC_API_BASE_URL // 本番環境ではALB経由
     const noteData: NoteData = await fetcher([
-      // `${process.env.NEXT_PUBLIC_SERVER_API_BASE_URL}/${name}/notes/${slug}`,
-      `https://backend.n-put.com/api/v1/${name}/notes/${slug}`,
+      `${baseUrl}/${name}/notes/${slug}`,
       undefined,
     ])
 

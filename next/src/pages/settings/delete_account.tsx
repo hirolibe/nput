@@ -20,6 +20,7 @@ import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useAuthContext } from '@/hooks/useAuthContext'
+import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
@@ -36,8 +37,10 @@ const DeleteAccount: NextPage = () => {
   const [, setSnackbar] = useSnackbarState()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { currentUserName, currentUserNickname, avatarUrl } =
-    useProfileContext()
+  const { profileData } = useProfile()
+  const currentUserName = profileData?.user.name
+  const currentUserNickname = profileData?.nickname
+  const { avatarUrl } = useProfileContext()
 
   const { handleSubmit, control } = useForm<DeleteAccountFormData>({
     defaultValues: { password: '' },

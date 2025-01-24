@@ -3,6 +3,7 @@ import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
 import { useAuthContext } from '@/hooks/useAuthContext'
+import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
@@ -11,8 +12,10 @@ const UploadAvatarButton = () => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
-  const { currentUserName, currentUserNickname, avatarUrl, setAvatarUrl } =
-    useProfileContext()
+  const { avatarUrl, setAvatarUrl } = useProfileContext()
+  const { profileData } = useProfile()
+  const currentUserName = profileData?.user.name
+  const currentUserNickname = profileData?.nickname
 
   const handleUploadAvatar = () => {
     const input = document.createElement('input')

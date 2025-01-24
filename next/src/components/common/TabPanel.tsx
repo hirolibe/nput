@@ -1,7 +1,7 @@
 import { Slide, Box } from '@mui/material'
 import { ReactNode, useRef, useEffect } from 'react'
 
-type TabPanelProps = {
+interface TabPanelProps {
   children: ReactNode
   value: number
   index: number

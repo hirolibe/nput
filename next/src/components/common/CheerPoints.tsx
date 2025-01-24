@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { CheerIcon } from '../note/CheerIcon'
 import { useCheerPointsContext } from '@/hooks/useCheerPointsContext'
 
-type CheerPointsProps = {
+interface CheerPointsProps {
   addedCheerPoints?: number
   size?: number
 }

@@ -13,7 +13,7 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
-type LogInFormData = {
+interface LogInFormData {
   email: string
   password: string
 }

@@ -22,7 +22,7 @@ import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-type CommentFormData = {
+interface CommentFormData {
   content: string
 }
 

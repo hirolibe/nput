@@ -4,7 +4,10 @@ import { FirebaseError } from 'firebase/app'
 const handleAxiosError = (
   err: AxiosError,
 ): { statusCode: number | null; errorMessage: string | null } => {
-  type ErrorResponse = { error?: string; errors?: string[] }
+  interface ErrorResponse {
+    error?: string
+    errors?: string[]
+  }
 
   const isErrorResponse = (data: unknown): data is ErrorResponse => {
     return (

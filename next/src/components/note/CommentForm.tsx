@@ -38,7 +38,7 @@ const CommentForm = ({
   const [imageSignedIds, setImageSignedIds] = useState<
     string | string[] | undefined
   >(undefined)
-  const { idToken } = useAuthContext()
+  const { idToken, isAuthLoading } = useAuthContext()
   const { profileData } = useProfile()
   const { name, slug } = router.query
   const [authorName, noteSlug] = [name, slug].map((value) =>
@@ -121,6 +121,8 @@ const CommentForm = ({
       setIsLoading(false)
     }
   }
+
+  if (isAuthLoading) return
 
   return (
     <>

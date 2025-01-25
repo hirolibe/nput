@@ -2,10 +2,10 @@ import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
   Box,
-  Card,
   Chip,
   Container,
   Divider,
+  Fade,
   IconButton,
   Stack,
   Tooltip,
@@ -90,6 +90,7 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
     const baseUrl =
       process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
       process.env.NEXT_PUBLIC_API_BASE_URL // 本番環境ではALB経由
+
     const noteData: NoteData = await fetcher([
       `${baseUrl}/${name}/notes/${slug}`,
       undefined,
@@ -243,7 +244,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           )}
           <Box
             sx={{
-              display: { xs: 'flex', md: 'none' },
+              display: { xs: 'flex', lg: 'none' },
               alignItems: 'center',
             }}
           >
@@ -307,55 +308,57 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
           {!isDraft && profileData && (
-            <Box
-              sx={{
-                position: 'absolute',
-                height: '100%',
-                left: '-50px',
-                display: { xs: 'none', xl: 'block' },
-              }}
-            >
+            <Fade in={true} timeout={{ enter: 1000 }}>
               <Box
                 sx={{
-                  position: 'sticky',
-                  top: '190px',
+                  position: 'absolute',
+                  height: '100%',
+                  left: '-50px',
+                  display: { xs: 'none', xl: 'block' },
                 }}
               >
-                <Stack spacing={1}>
-                  {name && name !== currentUserName ? (
-                    <CheerButton
-                      cheerState={cheerState}
-                      backgroundColor="white"
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        width: '100%',
-                      }}
-                    >
-                      <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
-                        <Avatar sx={{ width: '50px', height: '50px' }}>
-                          <Tooltip title="編集する">
-                            <IconButton
-                              sx={{
-                                backgroundColor: 'white',
-                                width: '100%',
-                                height: '100%',
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Avatar>
-                      </Link>
-                    </Box>
-                  )}
-                  <SocialShareIcon />
-                </Stack>
+                <Box
+                  sx={{
+                    position: 'sticky',
+                    top: '190px',
+                  }}
+                >
+                  <Stack spacing={1}>
+                    {name && name !== currentUserName ? (
+                      <CheerButton
+                        cheerState={cheerState}
+                        backgroundColor="white"
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          width: '100%',
+                        }}
+                      >
+                        <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
+                          <Avatar sx={{ width: '50px', height: '50px' }}>
+                            <Tooltip title="編集する">
+                              <IconButton
+                                sx={{
+                                  backgroundColor: 'white',
+                                  width: '100%',
+                                  height: '100%',
+                                }}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Avatar>
+                        </Link>
+                      </Box>
+                    )}
+                    <SocialShareIcon />
+                  </Stack>
+                </Box>
               </Box>
-            </Box>
+            </Fade>
           )}
 
           {/* コンテンツ */}
@@ -370,10 +373,11 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
             {/* タグ・本文・ボタン・プロフィール・コメント */}
             <Box sx={{ width: '100%', maxWidth: '780px' }}>
               {/* タグ・本文・ボタン・プロフィール */}
-              <Card
+              <Box
                 sx={{
                   boxShadow: 'none',
                   borderRadius: 2,
+                  backgroundColor: 'white',
                   p: 5,
                   mb: 3,
                 }}
@@ -461,7 +465,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
                 {/* プロフィール */}
                 <AuthorInfo noteData={noteData} followState={followState} />
-              </Card>
+              </Box>
 
               {/* コメント */}
               {!isDraft ? (
@@ -478,20 +482,20 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
             {/* プロフィール（サイドバー） */}
             <Box
               sx={{
-                display: { xs: 'none', md: 'block' },
-                minWidth: 300,
+                display: { xs: 'none', lg: 'block' },
+                width: '340px',
               }}
             >
-              <Card
+              <Box
                 sx={{
                   boxShadow: 'none',
                   borderRadius: 2,
-                  p: '20px 25px',
-                  maxWidth: '370px',
+                  backgroundColor: 'white',
+                  width: '100%',
                 }}
               >
                 <AuthorInfo noteData={noteData} followState={followState} />
-              </Card>
+              </Box>
             </Box>
           </Box>
         </Container>

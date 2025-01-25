@@ -9,9 +9,11 @@ export const shareToFacebook = () =>
 export const shareToHatena = () =>
   openLink(`https://b.hatena.ne.jp/entry/${window.location.href}`)
 
-export const goToUserX = (xLink: string) => () => openLink(xLink)
+export const goToUserX = (xLink: string) => () =>
+  openLink(`https://x.com/${xLink}`)
 
-export const goToUserGithub = (githubLink: string) => () => openLink(githubLink)
+export const goToUserGithub = (githubLink: string) => () =>
+  openLink(`https://github.com/${githubLink}`)
 
 export const openLink = (url: string | undefined) => {
   if (!url) return

@@ -12,7 +12,13 @@ const CheerPoints = (props: CheerPointsProps) => {
   const { cheerPoints } = useCheerPointsContext()
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', width: '60px' }}>
+    <Box
+      sx={{
+        display: cheerPoints ? 'flex' : 'none',
+        alignItems: 'center',
+        width: '60px',
+      }}
+    >
       <CheerIcon
         isCheered={
           (cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 360 ? true : false

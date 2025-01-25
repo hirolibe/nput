@@ -12,6 +12,7 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
+import { setCookieToken } from '@/utils/setCookieToken'
 
 interface LogInFormData {
   email: string
@@ -54,12 +55,23 @@ const LogIn: NextPage = () => {
     setIsLoading(true)
     try {
       setIdToken(undefined)
-      await signInWithEmailAndPassword(auth, data.email, data.password)
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      )
+      const currentUser = userCredential.user
+      const token = await currentUser.getIdToken(true)
+
+      setIdToken(token)
+      setCookieToken(token)
+
       setSnackbar({
         message: 'ログインに成功しました！',
         severity: 'success',
         pathname: redirectPath,
       })
+
       await router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)

@@ -23,15 +23,14 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import type { NextPage } from 'next'
+import type { NextPage, GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { parseCookies } from 'nookies'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
-import Error from '@/components/common/Error'
-import Loading from '@/components/common/Loading'
 import MarkdownText from '@/components/note/MarkdownText'
 import MarkdownToolbar from '@/components/note/MarkdownToolbar'
 import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
@@ -39,22 +38,17 @@ import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { useTags } from '@/hooks/useTags'
-import { useTimeTracking } from '@/hooks/useTimeTracking'
+import { TagData, useTags } from '@/hooks/useTags'
+import { NoteData } from '@/pages/[name]/notes/[slug]'
 import { styles } from '@/styles'
+import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
 
-type InitialNoteData =
-  | {
-      title: string
-      description: string
-      content: string
-      status: string
-      tags: string[]
-    }
-  | undefined
+interface EditNoteProps {
+  initialIdToken: string
+  noteData: NoteData
+}
 
 interface NoteFormData {
   title: string
@@ -64,34 +58,108 @@ interface NoteFormData {
   tags: string[]
 }
 
-const EditNote: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<EditNoteProps> = async (
+  context,
+) => {
+  const cookies = parseCookies(context)
+  const idToken = cookies['firebase_auth_token']
+
+  if (!idToken) {
+    console.log('トークンがありません')
+    return {
+      notFound: true,
+    }
+  }
+
+  const { slug } = context.query
+
+  if (typeof slug !== 'string') {
+    return {
+      notFound: true,
+    }
+  }
+
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
+      process.env.NEXT_PUBLIC_API_BASE_URL // 本番環境ではALB経由
+
+    const noteData: NoteData = await fetcher([
+      `${baseUrl}/my_notes/${slug}`,
+      idToken,
+    ])
+
+    if (!noteData) {
+      return { notFound: true }
+    }
+
+    return { props: { initialIdToken: idToken, noteData } }
+  } catch (err) {
+    handleError(err)
+    return { notFound: true }
+  }
+}
+
+const EditNote: NextPage<EditNoteProps> = (props) => {
   useEnsureAuth()
+
+  const { initialIdToken, noteData } = props
+  const note: NoteFormData | undefined = useMemo(() => {
+    return {
+      title: noteData?.title ?? '',
+      description: noteData?.description ?? '',
+      content: noteData?.content ?? '',
+      status: noteData?.statusJp ?? '未保存',
+      tags: noteData?.tags?.map((tag) => tag.name) ?? [],
+    }
+  }, [noteData])
 
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
+
+  const [token, setToken] = useState<string | null | undefined>(initialIdToken)
+
+  useEffect(() => {
+    setToken(idToken)
+  }, [idToken])
+
   const router = useRouter()
   const { slug } = router.query
   const noteSlug = typeof slug === 'string' ? slug : undefined
-  const { noteData, noteError } = useNote()
 
   const { tagsData } = useTags()
-  const { seconds } = useTimeTracking()
+  const [tagOptions, setTagsOptions] = useState<TagData[]>([])
+  useEffect(() => {
+    setTagsOptions(tagsData)
+  }, [tagsData])
 
+  const [sessionSeconds, setSessionSeconds] = useState<number>(0)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const timer = setInterval(() => {
+        setSessionSeconds((prevTime) => prevTime + 1)
+      }, 1000)
+
+      return () => clearInterval(timer)
+    }
+  }, [])
+
+  const [content, setContent] = useState<string>(note.content)
+  const [inputTags, setInputTags] = useState<string[]>(note.tags)
+  const [statusChecked, setStatusChecked] = useState<boolean>(
+    note.status == '公開中',
+  )
   const [isPreviewActive, setIsPreviewActive] = useState<boolean>(false)
-  const [statusChecked, setStatusChecked] = useState<boolean>(false)
-  const [isFetched, setIsFetched] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [maxLengthError, setMaxLengthError] = useState<boolean>(false)
   const [maxTagsError, setMaxTagsError] = useState<boolean>(false)
   const [formatError, setFormatError] = useState<boolean>(false)
   const [charCount, setCharCount] = useState<number>(0)
   const [openSidebar, setOpenSidebar] = useState<boolean>(false)
-  const [content, setContent] = useState<string>('')
-  const [inputTags, setInputTags] = useState<string[]>([])
   const [inputValue, setInputValue] = useState<string>('')
 
   const [remainingSeconds, setRemainingSeconds] = useState<number>(0)
-  const [previousSeconds, setPreviousSeconds] =
+  const [previousSessionSeconds, setPreviousSessionSeconds] =
     useState<number>(0)
 
   const [openBackConfirmDialog, setOpenBackConfirmDialog] =
@@ -132,7 +200,6 @@ const EditNote: NextPage = () => {
     setRestoreContent('')
     setOpenRestoreConfirmDialog(false)
   }
-
 
   const handleCloseRestoreConfirmDialog = () => {
     setOpenRestoreConfirmDialog(false)
@@ -194,18 +261,6 @@ const EditNote: NextPage = () => {
     string | string[] | undefined
   >(undefined)
 
-  const note: NoteFormData | undefined = useMemo(() => {
-    if (noteData === undefined) return
-
-    return {
-      title: noteData?.title ?? '',
-      description: noteData?.description ?? '',
-      content: noteData?.content ?? '',
-      status: noteData?.statusJp ?? '未保存',
-      tags: noteData?.tags?.map((tag) => tag.name) ?? [],
-    }
-  }, [noteData])
-
   const validationRules = {
     title: {
       maxLength: {
@@ -221,10 +276,9 @@ const EditNote: NextPage = () => {
     },
   }
 
-  const { handleSubmit, control, reset, formState } =
-    useForm<NoteFormData>({
-      defaultValues: note,
-    })
+  const { handleSubmit, control, reset, formState } = useForm<NoteFormData>({
+    defaultValues: note,
+  })
   const { isDirty } = formState
   const [isChanged, setIsChanged] = useState<boolean>(false)
   useEffect(() => {
@@ -232,15 +286,7 @@ const EditNote: NextPage = () => {
   }, [setIsChanged, isDirty])
 
   useEffect(() => {
-    if (note === undefined) return
-
-    if (note) {
-      reset(note)
-      setContent(note.content)
-      setStatusChecked(note.status == '公開中')
-      setInputTags(note.tags)
-      setIsFetched(true)
-    }
+    reset(note)
   }, [note, reset])
 
   const togglePreviewDisplay = () => {
@@ -270,7 +316,7 @@ const EditNote: NextPage = () => {
 
     const status = statusChecked ? 'published' : 'draft'
     const workDuration =
-      remainingSeconds + seconds - previousSeconds
+      remainingSeconds + sessionSeconds - previousSessionSeconds
     const patchData = {
       note: {
         ...data,
@@ -282,13 +328,13 @@ const EditNote: NextPage = () => {
       duration: workDuration,
     }
 
-    const headers = { Authorization: `Bearer ${idToken}` }
+    const headers = { Authorization: `Bearer ${token}` }
 
     try {
       const res = await axios.patch(url, patchData, { headers })
 
-      setRemainingSeconds((seconds - previousSeconds) % 60)
-      setPreviousSeconds(seconds)
+      setRemainingSeconds((sessionSeconds - previousSessionSeconds) % 60)
+      setPreviousSessionSeconds(sessionSeconds)
 
       setSnackbar({
         message: res.data.message,
@@ -339,7 +385,7 @@ const EditNote: NextPage = () => {
     if (!noteSlugToDelete) return
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteSlug}`
-    const headers = { Authorization: `Bearer ${idToken}` }
+    const headers = { Authorization: `Bearer ${token}` }
 
     try {
       await axios.delete(url, { headers })
@@ -358,22 +404,6 @@ const EditNote: NextPage = () => {
 
   const handleCloseDeleteConfirmDialog = () => {
     setOpenDeleteConfirmDialog(false)
-  }
-
-  if (noteError) {
-    const { statusCode, errorMessage } = handleError(noteError)
-    return <Error statusCode={statusCode} errorMessage={errorMessage} />
-  }
-
-  if (!isFetched) {
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <Loading />
-      </Box>
-    )
   }
 
   return (
@@ -417,85 +447,83 @@ const EditNote: NextPage = () => {
                 <ArrowBackSharpIcon />
               </IconButton>
             </Box>
-            <Fade in={true} timeout={{ enter: 1000 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box>
-                  <Stack direction={'row'} spacing={3} sx={{ mr: 3 }}>
-                    <Box
-                      sx={{
-                        display: {
-                          xs: 'none',
-                          md: openSidebar ? 'none' : 'flex',
-                        },
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Box sx={{ mr: 3 }}>
-                        <CheerPoints addedCheerPoints={seconds} />
-                      </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box>
+                <Stack direction={'row'} spacing={3} sx={{ mr: 3 }}>
+                  <Box
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        md: openSidebar ? 'none' : 'flex',
+                      },
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Box sx={{ mr: 3 }}>
+                      <CheerPoints addedCheerPoints={sessionSeconds} />
+                    </Box>
 
-                      <Typography sx={{ mr: 1 }}>Total</Typography>
-                      <TimeTracker
-                        seconds={(noteData?.totalDuration ?? 0) + seconds}
-                      />
-                    </Box>
-                    <Box
-                      sx={{
-                        display: { xs: undefined, md: 'flex' },
-                        alignItems: 'center',
-                        textAlign: 'center',
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: { xs: 13, md: 15 },
-                          mr: { xs: 0, md: 1 },
-                          my: { xs: 0.5, md: 0 },
-                        }}
-                      >
-                        Session
-                      </Typography>
-                      <TimeTracker seconds={seconds} />
-                    </Box>
-                  </Stack>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                    <Typography sx={{ mr: 1 }}>Total</Typography>
+                    <TimeTracker
+                      seconds={(noteData?.totalDuration ?? 0) + sessionSeconds}
+                    />
+                  </Box>
                   <Box
                     sx={{
                       display: { xs: undefined, md: 'flex' },
                       alignItems: 'center',
                       textAlign: 'center',
-                      mr: 2,
-                      mt: { xs: 1, md: 0 },
                     }}
                   >
-                    <Typography sx={{ fontSize: { xs: 13, md: 15 } }}>
-                      公開設定
+                    <Typography
+                      sx={{
+                        fontSize: { xs: 13, md: 15 },
+                        mr: { xs: 0, md: 1 },
+                        my: { xs: 0.5, md: 0 },
+                      }}
+                    >
+                      Session
                     </Typography>
-                    <Switch
-                      checked={statusChecked}
-                      onChange={toggleStatusChecked}
-                    />
+                    <TimeTracker seconds={sessionSeconds} />
                   </Box>
-                  <LoadingButton
-                    variant={statusChecked ? 'contained' : 'outlined'}
-                    type="submit"
-                    loading={isLoading}
-                    sx={{
-                      color: statusChecked ? 'white' : 'primary',
-                      fontWeight: 'bold',
-                      fontSize: { xs: 14, md: 16 },
-                      border: statusChecked ? 'none' : '2px solid',
-                      borderRadius: 2,
-                      width: { xs: '115px', md: '120px' },
-                      height: '40px',
-                    }}
-                  >
-                    {statusChecked ? '公開する' : '下書き保存'}
-                  </LoadingButton>
-                </Box>
+                </Stack>
               </Box>
-            </Fade>
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                <Box
+                  sx={{
+                    display: { xs: undefined, md: 'flex' },
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    mr: 2,
+                    mt: { xs: 1, md: 0 },
+                  }}
+                >
+                  <Typography sx={{ fontSize: { xs: 13, md: 15 } }}>
+                    公開設定
+                  </Typography>
+                  <Switch
+                    checked={statusChecked}
+                    onChange={toggleStatusChecked}
+                  />
+                </Box>
+                <LoadingButton
+                  variant={statusChecked ? 'contained' : 'outlined'}
+                  type="submit"
+                  loading={isLoading}
+                  sx={{
+                    color: statusChecked ? 'white' : 'primary',
+                    fontWeight: 'bold',
+                    fontSize: { xs: 14, md: 16 },
+                    border: statusChecked ? 'none' : '2px solid',
+                    borderRadius: 2,
+                    width: { xs: '115px', md: '120px' },
+                    height: '40px',
+                  }}
+                >
+                  {statusChecked ? '公開する' : '下書き保存'}
+                </LoadingButton>
+              </Box>
+            </Box>
           </Toolbar>
         </AppBar>
 
@@ -582,13 +610,14 @@ const EditNote: NextPage = () => {
           </Box>
         )}
 
+        {/* 復元確認のダイアログ */}
         <RestoreConfirmDialog
           open={openRestoreConfirmDialog}
           onReject={handleRejectRestore}
           onRestore={handleRestore}
           onClose={handleCloseRestoreConfirmDialog}
           currentContent={content}
-          restoreContent={loadSavedContent()}
+          restoreContent={restoreContent}
         />
 
         {/* ノート */}
@@ -672,7 +701,7 @@ const EditNote: NextPage = () => {
                           setContent(newContent)
                           field.onChange(newContent)
                         }}
-                        content={content}
+                        content={content || ''}
                         setImageSignedIds={setImageSignedIds}
                         setContent={setContent}
                         preCursorText={preCursorText}
@@ -851,7 +880,7 @@ const EditNote: NextPage = () => {
                   )}
                 />
 
-                {/* ボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
+                {/* ボタン（プレビュー表示・タグ入力欄表示・ノート削除） */}
                 <Box
                   sx={{
                     display: 'flex',
@@ -1006,7 +1035,7 @@ const EditNote: NextPage = () => {
                         {...field}
                         multiple
                         freeSolo
-                        options={tagsData?.map((tag) => tag.name)}
+                        options={tagOptions?.map((tag) => tag.name)}
                         value={inputTags}
                         onChange={(_, newTagNames) => {
                           setFormatError(false)

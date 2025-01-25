@@ -23,12 +23,53 @@ import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
-import { NoteData } from '@/hooks/useNote'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
+
+export interface CommentData {
+  id: number
+  content: string
+  fromToday: string
+  user: {
+    name: string
+    profile: {
+      nickname?: string
+      avatarUrl?: string
+    }
+  }
+}
+
+export interface NoteData {
+  id: number
+  title?: string
+  description?: string
+  content?: string
+  statusJp: '未保存' | '下書き' | '公開中'
+  publishedDate?: string
+  updatedDate: string
+  cheersCount: number
+  slug: string
+  totalDuration: number
+  comments?: CommentData[]
+  tags?: {
+    id: number
+    name: string
+  }[]
+  user: {
+    name: string
+    cheerPoints: number
+    profile: {
+      nickname?: string
+      bio?: string
+      xLink?: string
+      githubLink?: string
+      avatarUrl?: string
+    }
+  }
+}
 
 interface NoteDetailProps {
   noteData: NoteData
@@ -265,7 +306,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         {/* ボタン・コンテンツ */}
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
-          {!isDraft && (
+          {!isDraft && profileData && (
             <Box
               sx={{
                 position: 'absolute',
@@ -376,43 +417,46 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 </Box>
 
                 {/* ボタン */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mb: 5,
-                  }}
-                >
-                  {name && name !== currentUserName ? (
-                    <CheerButton
-                      cheerState={cheerState}
-                      boxParams={{ flexDirection: 'row', gap: 1 }}
-                    />
-                  ) : (
-                    <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
-                      <Avatar sx={{ width: '50px', height: '50px' }}>
-                        <Tooltip title="編集する">
-                          <IconButton
-                            sx={{
-                              backgroundColor: 'backgroundColor.icon',
-                              width: '100%',
-                              height: '100%',
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Avatar>
-                    </Link>
-                  )}
+                {profileData && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      mb: 5,
+                    }}
+                  >
+                    {name && name !== currentUserName ? (
+                      <CheerButton
+                        cheerState={cheerState}
+                        boxParams={{ flexDirection: 'row', gap: 1 }}
+                      />
+                    ) : (
+                      <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
+                        <Avatar sx={{ width: '50px', height: '50px' }}>
+                          <Tooltip title="編集する">
+                            <IconButton
+                              sx={{
+                                backgroundColor: 'backgroundColor.icon',
+                                width: '100%',
+                                height: '100%',
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Avatar>
+                      </Link>
+                    )}
 
-                  {!isDraft && (
-                    <Box>
-                      <SocialShareIcon />
-                    </Box>
-                  )}
-                </Box>
+                    {!isDraft && (
+                      <Box>
+                        <SocialShareIcon />
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
                 <Divider sx={{ mb: 5 }} />
 
                 {/* プロフィール */}

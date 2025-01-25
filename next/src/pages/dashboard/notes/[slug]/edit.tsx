@@ -22,68 +22,139 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import type { NextPage } from 'next'
+import type { NextPage, GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { parseCookies } from 'nookies'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
-import Error from '@/components/common/Error'
-import Loading from '@/components/common/Loading'
 import MarkdownText from '@/components/note/MarkdownText'
 import MarkdownToolbar from '@/components/note/MarkdownToolbar'
-import { AutoSaveDialog } from '@/components/note/RestoreConfirmDialog'
+import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAuth from '@/hooks/useAuthenticationCheck'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { useTags } from '@/hooks/useTags'
-import { useTimeTracking } from '@/hooks/useTimeTracking'
+import { TagData, useTags } from '@/hooks/useTags'
+import { NoteData } from '@/pages/[name]/notes/[slug]'
 import { styles } from '@/styles'
+import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
 
-interface NoteProps {
-  title: string
-  description: string
-  content: string
-  status: string
-  tags: string[]
+interface EditNoteProps {
+  initialIdToken: string
+  noteData: NoteData
 }
 
 interface NoteFormData {
   title: string
   description: string
   content: string
+  status?: string
   tags: string[]
 }
 
-const EditNote: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<EditNoteProps> = async (
+  context,
+) => {
+  const cookies = parseCookies(context)
+  const idToken = cookies['firebase_auth_token']
+
+  if (!idToken) {
+    console.log('トークンがありません')
+    return {
+      notFound: true,
+    }
+  }
+
+  const { slug } = context.query
+
+  if (typeof slug !== 'string') {
+    return {
+      notFound: true,
+    }
+  }
+
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
+      process.env.NEXT_PUBLIC_API_BASE_URL // 本番環境ではALB経由
+
+    const noteData: NoteData = await fetcher([
+      `${baseUrl}/my_notes/${slug}`,
+      idToken,
+    ])
+
+    if (!noteData) {
+      return { notFound: true }
+    }
+
+    return { props: { initialIdToken: idToken, noteData } }
+  } catch (err) {
+    handleError(err)
+    return { notFound: true }
+  }
+}
+
+const EditNote: NextPage<EditNoteProps> = (props) => {
   useEnsureAuth()
+
+  const { initialIdToken, noteData } = props
+  const note: NoteFormData | undefined = useMemo(() => {
+    return {
+      title: noteData?.title ?? '',
+      description: noteData?.description ?? '',
+      content: noteData?.content ?? '',
+      status: noteData?.statusJp ?? '未保存',
+      tags: noteData?.tags?.map((tag) => tag.name) ?? [],
+    }
+  }, [noteData])
 
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
+
+  const [token, setToken] = useState<string | null | undefined>(initialIdToken)
+
+  useEffect(() => {
+    setToken(idToken)
+  }, [idToken])
+
   const router = useRouter()
   const { slug } = router.query
   const noteSlug = typeof slug === 'string' ? slug : undefined
-  const { noteData, noteError } = useNote()
 
   const { tagsData } = useTags()
-  const { sessionSeconds } = useTimeTracking()
+  const [tagOptions, setTagsOptions] = useState<TagData[]>([])
+  useEffect(() => {
+    setTagsOptions(tagsData)
+  }, [tagsData])
 
+  const [sessionSeconds, setSessionSeconds] = useState<number>(0)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const timer = setInterval(() => {
+        setSessionSeconds((prevTime) => prevTime + 1)
+      }, 1000)
+
+      return () => clearInterval(timer)
+    }
+  }, [])
+
+  const [content, setContent] = useState<string>(note.content)
+  const [inputTags, setInputTags] = useState<string[]>(note.tags)
+  const [statusChecked, setStatusChecked] = useState<boolean>(
+    note.status == '公開中',
+  )
   const [isPreviewActive, setIsPreviewActive] = useState<boolean>(false)
-  const [statusChecked, setStatusChecked] = useState<boolean>(false)
-  const [isFetched, setIsFetched] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [maxLengthError, setMaxLengthError] = useState<boolean>(false)
   const [maxTagsError, setMaxTagsError] = useState<boolean>(false)
   const [formatError, setFormatError] = useState<boolean>(false)
   const [charCount, setCharCount] = useState<number>(0)
   const [openSidebar, setOpenSidebar] = useState<boolean>(false)
-  const [content, setContent] = useState<string>('')
-  const [inputTags, setInputTags] = useState<string[]>([])
   const [inputValue, setInputValue] = useState<string>('')
 
   const [remainingSeconds, setRemainingSeconds] = useState<number>(0)
@@ -104,13 +175,12 @@ const EditNote: NextPage = () => {
   const { saveContent, loadSavedContent, removeSavedContent } = useLocalStorage(
     noteSlug || '',
   )
-  const [isLocalData, setIsLocalData] = useState<boolean>(false)
-  const [isContentChanged, setIsContentChanged] = useState<boolean>(false)
+  const [restoreContent, setRestoreContent] = useState<string>('')
+  const loadedContent = useMemo(() => loadSavedContent(), [loadSavedContent])
 
   useEffect(() => {
-    const savedContent = loadSavedContent()
-    if (savedContent && !isContentChanged) setIsLocalData(true)
-  }, [loadSavedContent, isContentChanged])
+    if (loadedContent) setRestoreContent(loadedContent)
+  }, [loadedContent])
 
   const [openRestoreConfirmDialog, setOpenRestoreConfirmDialog] =
     useState<boolean>(false)
@@ -120,18 +190,14 @@ const EditNote: NextPage = () => {
   }
 
   const handleRestore = () => {
-    setContent(loadSavedContent())
+    setContent(restoreContent)
+    setRestoreContent('')
     setOpenRestoreConfirmDialog(false)
-    removeSavedContent()
-    setIsLocalData(false)
-    setIsContentChanged(false)
   }
 
   const handleRejectRestore = () => {
+    setRestoreContent('')
     setOpenRestoreConfirmDialog(false)
-    removeSavedContent()
-    setIsLocalData(false)
-    setIsContentChanged(false)
   }
 
   const handleCloseRestoreConfirmDialog = () => {
@@ -150,8 +216,7 @@ const EditNote: NextPage = () => {
     setContent(newValue)
     const position = textareaRef.current?.selectionStart || 0
     setCursorPosition(position)
-    setIsContentChanged(true)
-    if (!isLocalData) saveContent(newValue)
+    if (!restoreContent) saveContent(newValue)
   }
 
   const handleInputChange = (newInputValue: string) => {
@@ -195,18 +260,6 @@ const EditNote: NextPage = () => {
     string | string[] | undefined
   >(undefined)
 
-  const note: NoteProps | undefined = useMemo(() => {
-    if (noteData === undefined) return
-
-    return {
-      title: noteData?.title ?? '',
-      description: noteData?.description ?? '',
-      content: noteData?.content ?? '',
-      status: noteData?.statusJp ?? '未保存',
-      tags: noteData?.tags?.map((tag) => tag.name) ?? [],
-    }
-  }, [noteData])
-
   const validationRules = {
     title: {
       maxLength: {
@@ -233,21 +286,8 @@ const EditNote: NextPage = () => {
   }, [setIsChanged, isDirty])
 
   useEffect(() => {
-    if (note === undefined) return
-
-    if (note) {
-      reset(note)
-      setContent(note.content)
-      setStatusChecked(note.status == '公開中')
-      setInputTags(note.tags)
-
-      const timer = setTimeout(() => {
-        setIsFetched(true)
-      }, 0)
-
-      return () => clearTimeout(timer)
-    }
-  }, [note, reset, setIsFetched])
+    reset(note)
+  }, [note, reset])
 
   const togglePreviewDisplay = () => {
     setIsPreviewActive(!isPreviewActive)
@@ -288,7 +328,7 @@ const EditNote: NextPage = () => {
       duration: workDuration,
     }
 
-    const headers = { Authorization: `Bearer ${idToken}` }
+    const headers = { Authorization: `Bearer ${token}` }
 
     try {
       const res = await axios.patch(url, patchData, { headers })
@@ -303,9 +343,7 @@ const EditNote: NextPage = () => {
       })
 
       removeSavedContent()
-      setIsLocalData(false)
-      setIsContentChanged(false)
-      setIsChanged(false)
+      setRestoreContent('')
       reset(data)
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -347,7 +385,7 @@ const EditNote: NextPage = () => {
     if (!noteSlugToDelete) return
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteSlug}`
-    const headers = { Authorization: `Bearer ${idToken}` }
+    const headers = { Authorization: `Bearer ${token}` }
 
     try {
       await axios.delete(url, { headers })
@@ -366,22 +404,6 @@ const EditNote: NextPage = () => {
 
   const handleCloseDeleteConfirmDialog = () => {
     setOpenDeleteConfirmDialog(false)
-  }
-
-  if (noteError) {
-    const { statusCode, errorMessage } = handleError(noteError)
-    return <Error statusCode={statusCode} errorMessage={errorMessage} />
-  }
-
-  if (!isFetched) {
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <Loading />
-      </Box>
-    )
   }
 
   return (
@@ -506,7 +528,7 @@ const EditNote: NextPage = () => {
         </AppBar>
 
         {/* ローカルストレージのデータ復元 */}
-        {isLocalData && (
+        {restoreContent && (
           <Box
             sx={{
               backgroundColor: 'secondary.main',
@@ -588,13 +610,13 @@ const EditNote: NextPage = () => {
           </Box>
         )}
 
-        <AutoSaveDialog
+        <RestoreConfirmDialog
           open={openRestoreConfirmDialog}
           onReject={handleRejectRestore}
           onRestore={handleRestore}
           onClose={handleCloseRestoreConfirmDialog}
           currentContent={content}
-          savedContent={loadSavedContent()}
+          restoreContent={restoreContent}
         />
 
         {/* ノート */}
@@ -602,7 +624,7 @@ const EditNote: NextPage = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            pt: isLocalData ? 0 : 10,
+            pt: restoreContent ? 0 : 10,
             pl: 2,
             pr: openSidebar ? 4 : 2,
             pb: 3,
@@ -654,7 +676,6 @@ const EditNote: NextPage = () => {
               {openSidebar && isPreviewActive && (
                 <Box sx={{ pt: '4px', pb: { xs: '5px', md: '6px' } }}>
                   <Typography
-                    component="h2"
                     sx={{
                       color: watch('title') ? 'black' : 'text.placeholder',
                       fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
@@ -696,7 +717,7 @@ const EditNote: NextPage = () => {
                         setContent(newContent)
                         field.onChange(newContent)
                       }}
-                      content={content}
+                      content={content || ''}
                       setImageSignedIds={setImageSignedIds}
                       setContent={setContent}
                       preCursorText={preCursorText}
@@ -1030,7 +1051,7 @@ const EditNote: NextPage = () => {
                         {...field}
                         multiple
                         freeSolo
-                        options={tagsData?.map((tag) => tag.name)}
+                        options={tagOptions?.map((tag) => tag.name)}
                         value={inputTags}
                         onChange={(_, newTagNames) => {
                           setFormatError(false)

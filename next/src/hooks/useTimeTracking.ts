@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 
 export const useTimeTracking = () => {
-  const [sessionSeconds, setSessionSeconds] = useState<number>(0)
+  const [seconds, setSeconds] = useState<number>(0)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSessionSeconds((prevTime) => prevTime + 1)
-    }, 1000)
+    if (typeof window !== 'undefined') {
+      const timer = setInterval(() => {
+        setSeconds((prevTime) => prevTime + 1)
+      }, 1000)
 
-    return () => clearInterval(timer)
-  }, [setSessionSeconds])
+      return () => clearInterval(timer)
+    }
+  }, [])
 
-  return {
-    sessionSeconds,
-  }
+  return { seconds }
 }

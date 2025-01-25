@@ -5,6 +5,7 @@ import {
   Box,
   CardContent,
   Chip,
+  Fade,
   Stack,
   Typography,
 } from '@mui/material'
@@ -95,13 +96,24 @@ const NoteCard = (props: NoteCardProps) => {
                 </Stack>
                 <Stack direction="row" spacing={0.5} alignItems="center">
                   {isCheered === undefined ? (
-                    <Box sx={{ width: 16 }}></Box>
+                    <Box sx={{ width: '30px' }}></Box>
                   ) : (
-                    <CheerIcon isCheered={isCheered} size={16} />
+                    <Fade in={true} timeout={{ enter: 1000 }}>
+                      <Box
+                        gap={0.5}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          width: '30px',
+                        }}
+                      >
+                        <CheerIcon isCheered={isCheered} size={16} />
+                        <Typography sx={{ fontSize: { xs: 10, sm: 12 } }}>
+                          {props.cheersCount}
+                        </Typography>
+                      </Box>
+                    </Fade>
                   )}
-                  <Typography sx={{ fontSize: { xs: 10, sm: 12 } }}>
-                    {props.cheersCount}
-                  </Typography>
                 </Stack>
               </Stack>
             </Stack>

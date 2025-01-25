@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Fade, Typography } from '@mui/material'
 import { CheerIcon } from '../note/CheerIcon'
 import { useCheerPointsContext } from '@/hooks/useCheerPointsContext'
 
@@ -12,36 +12,38 @@ const CheerPoints = (props: CheerPointsProps) => {
   const { cheerPoints } = useCheerPointsContext()
 
   return (
-    <Box
-      sx={{
-        display: cheerPoints ? 'flex' : 'none',
-        alignItems: 'center',
-        width: '60px',
-      }}
-    >
-      <CheerIcon
-        isCheered={
-          (cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 360 ? true : false
-        }
-        size={size}
-      />
-      {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 3600 && (
-        <Typography
-          sx={{
-            fontSize: 12,
-            fontWeight: 'bold',
-            ml: 0.5,
-          }}
-        >
-          Max
-        </Typography>
-      )}
-      {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) < 3600 && (
-        <Typography sx={{ ml: 0.5 }}>
-          × {Math.floor(((cheerPoints ?? 0) + (addedCheerPoints ?? 0)) / 360)}
-        </Typography>
-      )}
-    </Box>
+    <Fade in={cheerPoints ? true : false} timeout={{ enter: 1000 }}>
+      <Box
+        sx={{
+          display: cheerPoints ? 'flex' : 'none',
+          alignItems: 'center',
+          width: '60px',
+        }}
+      >
+        <CheerIcon
+          isCheered={
+            (cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 360 ? true : false
+          }
+          size={size}
+        />
+        {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) >= 3600 && (
+          <Typography
+            sx={{
+              fontSize: 12,
+              fontWeight: 'bold',
+              ml: 0.5,
+            }}
+          >
+            Max
+          </Typography>
+        )}
+        {(cheerPoints ?? 0) + (addedCheerPoints ?? 0) < 3600 && (
+          <Typography sx={{ ml: 0.5 }}>
+            × {Math.floor(((cheerPoints ?? 0) + (addedCheerPoints ?? 0)) / 360)}
+          </Typography>
+        )}
+      </Box>
+    </Fade>
   )
 }
 

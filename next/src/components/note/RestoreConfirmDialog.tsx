@@ -20,17 +20,16 @@ interface DiffLine {
 
 const getDiffLines = (
   currentContent: string,
-  savedContent: string,
+  restoreContent: string,
 ): DiffLine[] => {
-  const currentLines = currentContent.split('\n')
-  const savedLines = savedContent.split('\n')
+  const currentLines = currentContent?.split('\n') || ''
+  const savedLines = restoreContent?.split('\n') || ''
   const maxLength = Math.max(currentLines.length, savedLines.length)
   const diffLines: DiffLine[] = []
 
   for (let i = 0; i < maxLength; i++) {
     const currentLine = currentLines[i] || ''
     const savedLine = savedLines[i] || ''
-    if (currentLine === '' && savedLine === '') continue
     diffLines.push({
       currentLine,
       savedLine,
@@ -185,26 +184,26 @@ const DiffContent = ({ diffLines }: DiffContentProps) => {
   )
 }
 
-interface AutoSaveDialogProps {
+interface RestoreConfirmDialogProps {
   open: boolean
   onClose: () => void
   onReject: () => void
   onRestore: () => void
   currentContent: string
-  savedContent: string
+  restoreContent: string
 }
 
-export const AutoSaveDialog = ({
+export const RestoreConfirmDialog = ({
   open,
   onClose,
   onReject,
   onRestore,
   currentContent,
-  savedContent,
-}: AutoSaveDialogProps) => {
+  restoreContent,
+}: RestoreConfirmDialogProps) => {
   const diffLines = React.useMemo(
-    () => getDiffLines(currentContent, savedContent),
-    [currentContent, savedContent],
+    () => getDiffLines(currentContent, restoreContent),
+    [currentContent, restoreContent],
   )
 
   return (

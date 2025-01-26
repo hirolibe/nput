@@ -2,7 +2,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
   Box,
-  Card,
   Chip,
   Container,
   Divider,
@@ -13,52 +12,180 @@ import {
 } from '@mui/material'
 import { NextPage, GetServerSideProps } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { parseCookies } from 'nookies'
+import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { AuthorInfo } from '@/components/note/AuthorInfo'
 import { CheerButton } from '@/components/note/CheerButton'
-import CommentCard from '@/components/note/CommentCard'
+import Comment from '@/components/note/Comment'
 import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
-import { useCheerStatus } from '@/hooks/useCheerStatus'
-import { useFollowStatus } from '@/hooks/useFollowStatus'
-import { NoteData } from '@/hooks/useNote'
-import { useProfile } from '@/hooks/useProfile'
-import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { CheerStatusData } from '@/hooks/useCheerStatus'
+import { FollowStatusData } from '@/hooks/useFollowStatus'
+import { ProfileData } from '@/hooks/useProfile'
 import { styles } from '@/styles'
 import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
 
+export interface CommentData {
+  id: number
+  content: string
+  fromToday: string
+  user: {
+    name: string
+    profile: {
+      nickname?: string
+      avatarUrl?: string
+    }
+  }
+}
+
+export interface NoteData {
+  id: number
+  title?: string
+  description?: string
+  content?: string
+  statusJp: '未保存' | '下書き' | '公開中'
+  publishedDate?: string
+  updatedDate: string
+  cheersCount: number
+  slug: string
+  totalDuration: number
+  comments?: CommentData[]
+  tags?: {
+    id: number
+    name: string
+  }[]
+  user: {
+    name: string
+    cheerPoints: number
+    profile: {
+      nickname?: string
+      bio?: string
+      xLink?: string
+      githubLink?: string
+      avatarUrl?: string
+    }
+  }
+}
+
+const fetchProfileData = async (
+  baseUrl: string,
+  idToken: string,
+): Promise<ProfileData | null> => {
+  try {
+    const url = `${baseUrl}/profile`
+    return await fetcher([url, idToken])
+  } catch (err) {
+    handleError(err)
+    return null
+  }
+}
+
+const fetchCheerStatusData = async (
+  baseUrl: string,
+  name: string,
+  slug: string,
+  idToken: string,
+): Promise<CheerStatusData | null> => {
+  try {
+    const url = `${baseUrl}/${name}/notes/${slug}/cheer`
+    return await fetcher([url, idToken])
+  } catch (err) {
+    handleError(err)
+    return null
+  }
+}
+
+const fetchFollowStatusData = async (
+  baseUrl: string,
+  name: string,
+  idToken: string,
+): Promise<FollowStatusData | null> => {
+  try {
+    const url = `${baseUrl}/${name}/relationship`
+    return await fetcher([url, idToken])
+  } catch (err) {
+    handleError(err)
+    return null
+  }
+}
+
+const fetchNoteData = async (
+  baseUrl: string,
+  name: string,
+  slug: string,
+  idToken?: string,
+  userName?: string,
+): Promise<NoteData | null> => {
+  try {
+    const urlPath =
+      userName === name ? `my_notes/${slug}` : `${name}/notes/${slug}`
+    const url = `${baseUrl}/${urlPath}`
+    return await fetcher([url, idToken])
+  } catch (err) {
+    handleError(err)
+    return null
+  }
+}
 interface NoteDetailProps {
+  name: string
+  slug: string
+  profileData: ProfileData | null
   noteData: NoteData
+  cheerStatusData: CheerStatusData | null
+  followStatusData: FollowStatusData | null
 }
 
 export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
   context,
 ) => {
-  const { name, slug } = context.query
+  const cookies = parseCookies(context)
+  const idToken = cookies['firebase_auth_token']
 
+  const { name, slug } = context.query
   if (typeof name !== 'string' || typeof slug !== 'string') {
     return {
       notFound: true,
     }
   }
 
+  const baseUrl =
+    process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? // 本番環境ではALB経由
+    ''
+
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
-      process.env.NEXT_PUBLIC_API_BASE_URL // 本番環境ではALB経由
-    const noteData: NoteData = await fetcher([
-      `${baseUrl}/${name}/notes/${slug}`,
-      undefined,
-    ])
+    let profileData: ProfileData | null = null
+    let userName: string | undefined
+    let noteData: NoteData | null = null
+    let cheerStatusData: CheerStatusData | null = null
+    let followStatusData: FollowStatusData | null = null
+
+    if (idToken) {
+      profileData = await fetchProfileData(baseUrl, idToken)
+      userName = profileData?.user?.name
+
+      cheerStatusData = await fetchCheerStatusData(baseUrl, name, slug, idToken)
+      followStatusData = await fetchFollowStatusData(baseUrl, name, idToken)
+    }
+
+    noteData = await fetchNoteData(baseUrl, name, slug, idToken, userName)
 
     if (!noteData) {
       return { notFound: true }
     }
 
-    return { props: { noteData } }
+    return {
+      props: {
+        name,
+        slug,
+        profileData,
+        noteData,
+        cheerStatusData,
+        followStatusData,
+      },
+    }
   } catch (err) {
     handleError(err)
     return { notFound: true }
@@ -66,26 +193,21 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
 }
 
 const NoteDetail: NextPage<NoteDetailProps> = (props) => {
-  const { noteData } = props
+  const {
+    name,
+    slug,
+    profileData,
+    noteData,
+    cheerStatusData,
+    followStatusData,
+  } = props
+
+  const currentUserName = profileData?.user.name
   const isDraft = noteData.statusJp === '下書き'
 
-  const [, setSnackbar] = useSnackbarState()
-  const router = useRouter()
-  const { name, slug } = router.query
-  const [authorName, noteSlug] = [name, slug].map((value) =>
-    typeof value === 'string' ? value : undefined,
+  const [isCheered, setIsCheered] = useState<boolean | undefined>(
+    cheerStatusData?.hasCheered,
   )
-
-  const { profileData } = useProfile()
-  const currentUserName = profileData?.user.name
-
-  // エール状態のデータ取得・管理
-  const { cheerStatusData, cheerStatusError } = useCheerStatus({
-    authorName,
-    noteSlug,
-  })
-
-  const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const [cheersCount, setCheersCount] = useState(noteData.cheersCount)
   const cheerState = {
     isCheered,
@@ -94,50 +216,20 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     setCheersCount,
   }
 
-  useEffect(() => {
-    setIsCheered(cheerStatusData)
-  }, [cheerStatusData])
-
-  useEffect(() => {
-    if (cheerStatusError) {
-      const { errorMessage } = handleError(cheerStatusError)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: router.pathname,
-      })
-    }
-  }, [cheerStatusError, router.pathname, setSnackbar])
-
-  // フォロー状態のデータ取得・管理
-  const { followStatusData, followStatusError } = useFollowStatus(authorName)
-  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined)
+  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(
+    followStatusData?.hasFollowed,
+  )
   const followState = {
     isFollowed,
     setIsFollowed,
   }
-
-  useEffect(() => {
-    setIsFollowed(followStatusData)
-  }, [followStatusData])
-
-  useEffect(() => {
-    if (followStatusError) {
-      const { errorMessage } = handleError(followStatusError)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: router.pathname,
-      })
-    }
-  }, [followStatusError, router.pathname, setSnackbar])
 
   return (
     <>
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>{noteData?.title}</title>
+          <title>{noteData.title}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -178,13 +270,13 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           }}
         >
           {/* エールボタン */}
-          {authorName && authorName !== currentUserName ? (
+          {name && name !== currentUserName ? (
             <CheerButton
               cheerState={cheerState}
               boxParams={{ flexDirection: 'row', gap: 1 }}
             />
           ) : (
-            <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
+            <Link href={`/dashboard/notes/${slug}/edit/`}>
               <Avatar sx={{ width: '50px', height: '50px' }}>
                 <Tooltip title="編集する">
                   <IconButton
@@ -202,14 +294,14 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           )}
           <Box
             sx={{
-              display: { xs: 'flex', md: 'none' },
+              display: { xs: 'flex', lg: 'none' },
               alignItems: 'center',
             }}
           >
-            <Link href={`/${noteData?.user.name}`}>
+            <Link href={`/${noteData.user.name}`}>
               <Avatar
-                alt={noteData?.user.profile.nickname || noteData?.user.name}
-                src={noteData?.user.profile.avatarUrl}
+                alt={noteData.user.profile.nickname || noteData.user.name}
+                src={noteData.user.profile.avatarUrl}
               />
             </Link>
           </Box>
@@ -231,11 +323,11 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 sx={{
                   fontSize: { xs: 24, sm: 36 },
                   fontWeight: 'bold',
-                  color: noteData?.title ? 'black' : 'text.placeholder',
+                  color: noteData.title ? 'black' : 'text.placeholder',
                   mb: 2,
                 }}
               >
-                {noteData?.title || 'No title'}
+                {noteData.title || 'No title'}
               </Typography>
             </Box>
             <Stack
@@ -250,13 +342,13 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               }}
             >
               {!isDraft && (
-                <Typography>投稿日：{noteData?.publishedDate}</Typography>
+                <Typography>投稿日：{noteData.publishedDate}</Typography>
               )}
-              <Typography>最終更新日：{noteData?.updatedDate}</Typography>
+              <Typography>最終更新日：{noteData.updatedDate}</Typography>
               <Typography>
                 作成時間：
-                {Math.floor(noteData?.totalDuration / 3600)}時間
-                {Math.floor((noteData?.totalDuration % 3600) / 60)}分
+                {Math.floor(noteData.totalDuration / 3600)}時間
+                {Math.floor((noteData.totalDuration % 3600) / 60)}分
               </Typography>
             </Stack>
           </Box>
@@ -265,7 +357,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         {/* ボタン・コンテンツ */}
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
-          {!isDraft && (
+          {!isDraft && profileData && (
             <Box
               sx={{
                 position: 'absolute',
@@ -294,7 +386,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                         width: '100%',
                       }}
                     >
-                      <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
+                      <Link href={`/dashboard/notes/${slug}/edit/`}>
                         <Avatar sx={{ width: '50px', height: '50px' }}>
                           <Tooltip title="編集する">
                             <IconButton
@@ -329,16 +421,17 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
             {/* タグ・本文・ボタン・プロフィール・コメント */}
             <Box sx={{ width: '100%', maxWidth: '780px' }}>
               {/* タグ・本文・ボタン・プロフィール */}
-              <Card
+              <Box
                 sx={{
                   boxShadow: 'none',
                   borderRadius: 2,
+                  backgroundColor: 'white',
                   p: 5,
                   mb: 3,
                 }}
               >
                 {/* タグ */}
-                {noteData?.tags?.length !== 0 && (
+                {noteData.tags?.length !== 0 && (
                   <Box
                     sx={{
                       overflowX: 'auto',
@@ -350,7 +443,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                     }}
                   >
                     <Stack direction="row" spacing={1}>
-                      {noteData?.tags?.map((tag, i: number) => (
+                      {noteData.tags?.map((tag, i: number) => (
                         <Link key={i} href={`/tags/${tag.name}`}>
                           <Chip
                             label={tag.name}
@@ -370,58 +463,70 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
                 {/* 本文 */}
                 <Box sx={{ fontSize: { xs: '14px', sm: '16px' }, mb: 5 }}>
-                  {noteData?.content && (
-                    <MarkdownText content={noteData?.content} />
+                  {noteData.content && (
+                    <MarkdownText content={noteData.content} />
                   )}
                 </Box>
 
                 {/* ボタン */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mb: 5,
-                  }}
-                >
-                  {name && name !== currentUserName ? (
-                    <CheerButton
-                      cheerState={cheerState}
-                      boxParams={{ flexDirection: 'row', gap: 1 }}
-                    />
-                  ) : (
-                    <Link href={`/dashboard/notes/${noteSlug}/edit/`}>
-                      <Avatar sx={{ width: '50px', height: '50px' }}>
-                        <Tooltip title="編集する">
-                          <IconButton
-                            sx={{
-                              backgroundColor: 'backgroundColor.icon',
-                              width: '100%',
-                              height: '100%',
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Avatar>
-                    </Link>
-                  )}
+                {profileData && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      mb: 5,
+                    }}
+                  >
+                    {name && name !== currentUserName ? (
+                      <CheerButton
+                        cheerState={cheerState}
+                        boxParams={{ flexDirection: 'row', gap: 1 }}
+                      />
+                    ) : (
+                      <Link href={`/dashboard/notes/${slug}/edit/`}>
+                        <Avatar sx={{ width: '50px', height: '50px' }}>
+                          <Tooltip title="編集する">
+                            <IconButton
+                              sx={{
+                                backgroundColor: 'backgroundColor.icon',
+                                width: '100%',
+                                height: '100%',
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Avatar>
+                      </Link>
+                    )}
 
-                  {!isDraft && (
-                    <Box>
-                      <SocialShareIcon />
-                    </Box>
-                  )}
-                </Box>
+                    {!isDraft && (
+                      <Box>
+                        <SocialShareIcon />
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
                 <Divider sx={{ mb: 5 }} />
 
                 {/* プロフィール */}
-                <AuthorInfo noteData={noteData} followState={followState} />
-              </Card>
+                <AuthorInfo
+                  profileData={profileData}
+                  noteData={noteData}
+                  followState={followState}
+                />
+              </Box>
 
               {/* コメント */}
               {!isDraft ? (
-                <CommentCard noteData={noteData} />
+                <Comment
+                  name={name}
+                  slug={slug}
+                  profileData={profileData}
+                  noteData={noteData}
+                />
               ) : (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Typography sx={{ fontWeight: 'bold', color: 'text.light' }}>
@@ -434,20 +539,24 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
             {/* プロフィール（サイドバー） */}
             <Box
               sx={{
-                display: { xs: 'none', md: 'block' },
-                minWidth: 300,
+                display: { xs: 'none', lg: 'block' },
+                width: '340px',
               }}
             >
-              <Card
+              <Box
                 sx={{
                   boxShadow: 'none',
                   borderRadius: 2,
-                  p: '20px 25px',
-                  maxWidth: '370px',
+                  backgroundColor: 'white',
+                  width: '100%',
                 }}
               >
-                <AuthorInfo noteData={noteData} followState={followState} />
-              </Card>
+                <AuthorInfo
+                  profileData={profileData}
+                  noteData={noteData}
+                  followState={followState}
+                />
+              </Box>
             </Box>
           </Box>
         </Container>

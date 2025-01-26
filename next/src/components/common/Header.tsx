@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   Container,
+  Fade,
   IconButton,
   ListItemIcon,
   Menu,
@@ -27,6 +28,7 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
@@ -68,6 +70,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth)
+      destroyCookieToken()
       router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -122,94 +125,96 @@ const Header = () => {
             profileData === null) ||
             profileError) && <AuthLinks />}
           {profileData && (
-            <Box sx={{ display: 'flex' }}>
-              <IconButton
-                onClick={handleClick}
-                sx={{ p: 0, mr: { xs: 1.5, sm: 2 } }}
-              >
-                <Avatar
-                  alt={profileData.nickname || profileData.user.name}
-                  src={avatarUrl}
-                />
-              </IconButton>
-              <CheerPoints size={26} />
-              <Box sx={{ display: { xs: 'none', sm: 'block' }, ml: 2 }}>
-                <Button
-                  onClick={handleAddNewNote}
-                  variant="contained"
-                  sx={{
-                    textAlign: 'center',
-                    color: 'white',
-                    fontSize: 16,
-                    borderRadius: 2,
-                    width: 120,
-                    boxShadow: 'none',
-                    fontWeight: 'bold',
-                  }}
+            <Fade in={true} timeout={1000}>
+              <Box sx={{ display: 'flex' }}>
+                <IconButton
+                  onClick={handleClick}
+                  sx={{ p: 0, mr: { xs: 1.5, sm: 2 } }}
                 >
-                  ノート作成
-                </Button>
-              </Box>
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-              >
-                <Link href={`/${profileData?.user.name}`}>
-                  <MenuItem>
-                    <ListItemIcon>
-                      <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    マイページ
-                  </MenuItem>
-                </Link>
-                <Box
-                  onClick={handleAddNewNote}
-                  sx={{ display: { xs: 'block', sm: 'none' } }}
-                >
-                  <MenuItem>
-                    <ListItemIcon>
-                      <EditIcon fontSize="small" />
-                    </ListItemIcon>
-                    <Typography
-                      sx={{
-                        '&:hover': {
-                          textDecoration: 'underline',
-                        },
-                      }}
-                    >
-                      ノートを新規作成
-                    </Typography>
-                  </MenuItem>
+                  <Avatar
+                    alt={profileData.nickname || profileData.user.name}
+                    src={avatarUrl}
+                  />
+                </IconButton>
+                <CheerPoints size={26} />
+                <Box sx={{ display: { xs: 'none', sm: 'block' }, ml: 2 }}>
+                  <Button
+                    onClick={handleAddNewNote}
+                    variant="contained"
+                    sx={{
+                      textAlign: 'center',
+                      color: 'white',
+                      fontSize: 16,
+                      borderRadius: 2,
+                      width: 120,
+                      boxShadow: 'none',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    ノート作成
+                  </Button>
                 </Box>
-                <Link href="/dashboard">
-                  <MenuItem>
-                    <ListItemIcon>
-                      <AutoStoriesIcon fontSize="small" />
-                    </ListItemIcon>
-                    ノートの管理
-                  </MenuItem>
-                </Link>
-                <Link href="/settings/account">
-                  <MenuItem>
-                    <ListItemIcon>
-                      <SettingsIcon fontSize="small" />
-                    </ListItemIcon>
-                    アカウント設定
-                  </MenuItem>
-                </Link>
-                <Link href="/">
-                  <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                      <Logout fontSize="small" />
-                    </ListItemIcon>
-                    ログアウト
-                  </MenuItem>
-                </Link>
-              </Menu>
-            </Box>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                >
+                  <Link href={`/${profileData?.user.name}`}>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <PersonIcon fontSize="small" />
+                      </ListItemIcon>
+                      マイページ
+                    </MenuItem>
+                  </Link>
+                  <Box
+                    onClick={handleAddNewNote}
+                    sx={{ display: { xs: 'block', sm: 'none' } }}
+                  >
+                    <MenuItem>
+                      <ListItemIcon>
+                        <EditIcon fontSize="small" />
+                      </ListItemIcon>
+                      <Typography
+                        sx={{
+                          '&:hover': {
+                            textDecoration: 'underline',
+                          },
+                        }}
+                      >
+                        ノートを新規作成
+                      </Typography>
+                    </MenuItem>
+                  </Box>
+                  <Link href="/dashboard">
+                    <MenuItem>
+                      <ListItemIcon>
+                        <AutoStoriesIcon fontSize="small" />
+                      </ListItemIcon>
+                      ノートの管理
+                    </MenuItem>
+                  </Link>
+                  <Link href="/settings/account">
+                    <MenuItem>
+                      <ListItemIcon>
+                        <SettingsIcon fontSize="small" />
+                      </ListItemIcon>
+                      アカウント設定
+                    </MenuItem>
+                  </Link>
+                  <Link href="/">
+                    <MenuItem onClick={handleLogout}>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      ログアウト
+                    </MenuItem>
+                  </Link>
+                </Menu>
+              </Box>
+            </Fade>
           )}
         </Box>
       </Container>

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-type AnimatedIconWrapperProps = {
+interface AnimatedIconWrapperProps {
   children: React.ReactNode
   isAnimated?: boolean
 }

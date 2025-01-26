@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
-type LinkFormatterProps = {
+interface LinkFormatterProps {
   insertMarkdown: (before: string, after?: string) => void
 }
 

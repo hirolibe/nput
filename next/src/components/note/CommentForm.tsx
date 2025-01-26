@@ -17,20 +17,23 @@ import AuthLinks from '../auth/AuthLinks'
 import { UploadImagesButton } from '../common/UploadImagesButton'
 import MarkdownText from './MarkdownText'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import { useProfile } from '@/hooks/useProfile'
+import { ProfileData } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { CommentData } from '@/pages/[name]/notes/[slug]'
 import { handleError } from '@/utils/handleError'
+
+interface CommentProps {
+  name: string
+  slug: string
+  profileData: ProfileData | null
+  addComment: (newComment: CommentData) => void
+}
 
 interface CommentFormData {
   content: string
 }
 
-const CommentForm = ({
-  addComment,
-}: {
-  addComment: (comment: CommentData) => void
-}) => {
+const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
   const [isLoading, setIsLoading] = useState(false)
@@ -38,9 +41,7 @@ const CommentForm = ({
   const [imageSignedIds, setImageSignedIds] = useState<
     string | string[] | undefined
   >(undefined)
-  const { idToken, isAuthLoading } = useAuthContext()
-  const { profileData } = useProfile()
-  const { name, slug } = router.query
+  const { idToken } = useAuthContext()
   const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
@@ -122,11 +123,9 @@ const CommentForm = ({
     }
   }
 
-  if (isAuthLoading) return
-
   return (
     <>
-      {!idToken && (
+      {!profileData && (
         <Stack spacing={2} sx={{ alignItems: 'center' }}>
           <Typography
             sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.light' }}
@@ -136,7 +135,7 @@ const CommentForm = ({
           <AuthLinks />
         </Stack>
       )}
-      {idToken && (
+      {profileData && (
         <Box>
           {/* コメント投稿ヘッダー */}
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

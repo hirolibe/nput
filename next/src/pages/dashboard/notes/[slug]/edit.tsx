@@ -46,16 +46,6 @@ import { useTimeTracking } from '@/hooks/useTimeTracking'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
-type InitialNoteData =
-  | {
-      title: string
-      description: string
-      content: string
-      status: string
-      tags: string[]
-    }
-  | undefined
-
 interface NoteFormData {
   title: string
   description: string
@@ -91,8 +81,7 @@ const EditNote: NextPage = () => {
   const [inputValue, setInputValue] = useState<string>('')
 
   const [remainingSeconds, setRemainingSeconds] = useState<number>(0)
-  const [previousSeconds, setPreviousSeconds] =
-    useState<number>(0)
+  const [previousSeconds, setPreviousSeconds] = useState<number>(0)
 
   const [openBackConfirmDialog, setOpenBackConfirmDialog] =
     useState<boolean>(false)
@@ -132,7 +121,6 @@ const EditNote: NextPage = () => {
     setRestoreContent('')
     setOpenRestoreConfirmDialog(false)
   }
-
 
   const handleCloseRestoreConfirmDialog = () => {
     setOpenRestoreConfirmDialog(false)
@@ -221,10 +209,9 @@ const EditNote: NextPage = () => {
     },
   }
 
-  const { handleSubmit, control, reset, formState } =
-    useForm<NoteFormData>({
-      defaultValues: note,
-    })
+  const { handleSubmit, control, reset, formState } = useForm<NoteFormData>({
+    defaultValues: note,
+  })
   const { isDirty } = formState
   const [isChanged, setIsChanged] = useState<boolean>(false)
   useEffect(() => {
@@ -269,8 +256,7 @@ const EditNote: NextPage = () => {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
 
     const status = statusChecked ? 'published' : 'draft'
-    const workDuration =
-      remainingSeconds + seconds - previousSeconds
+    const workDuration = remainingSeconds + seconds - previousSeconds
     const patchData = {
       note: {
         ...data,
@@ -459,7 +445,7 @@ const EditNote: NextPage = () => {
                     </Box>
                   </Stack>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Box
                     sx={{
                       display: { xs: undefined, md: 'flex' },
@@ -469,7 +455,7 @@ const EditNote: NextPage = () => {
                       mt: { xs: 1, md: 0 },
                     }}
                   >
-                    <Typography sx={{ fontSize: { xs: 13, md: 15 } }}>
+                    <Typography sx={{ fontSize: { xs: 12, md: 15 } }}>
                       公開設定
                     </Typography>
                     <Switch
@@ -499,6 +485,8 @@ const EditNote: NextPage = () => {
           </Toolbar>
         </AppBar>
 
+        <Box sx={{ backgroundColor: 'backgroundColor.page', height: '64px' }} />
+
         {/* ローカルストレージのデータ復元 */}
         {restoreContent && (
           <Box
@@ -508,11 +496,14 @@ const EditNote: NextPage = () => {
           >
             <Box
               sx={{
-                pt: 10,
-                pb: 2,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minheight: '60px',
                 pl: 2,
                 pr: openSidebar ? 4 : 2,
-                mb: 3,
+                py: 2,
+                mb: { xs: 1, sm: 3 },
               }}
             >
               <Box
@@ -597,7 +588,6 @@ const EditNote: NextPage = () => {
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              pt: restoreContent ? 0 : 10,
               pl: 2,
               pr: openSidebar ? 4 : 2,
               pb: 3,
@@ -606,7 +596,9 @@ const EditNote: NextPage = () => {
             {/* コンテンツ */}
             <Stack sx={{ alignItems: 'center', width: '100%' }}>
               {/* タイトル */}
-              <Box sx={{ width: '90%', maxWidth: '1200px', mb: 3 }}>
+              <Box
+                sx={{ width: '90%', maxWidth: '1200px', mb: { xs: 1, sm: 3 } }}
+              >
                 <Controller
                   name="title"
                   control={control}
@@ -733,8 +725,8 @@ const EditNote: NextPage = () => {
                             {isPreviewActive && (
                               <Box
                                 sx={{
-                                  borderLeft: '0.5px solid',
-                                  borderColor: 'divider',
+                                  borderLeft: { md: '0.5px solid' },
+                                  borderLeftColor: { md: 'divider' },
                                   width: { xs: '100%', md: '50%' },
                                   minHeight: '600px',
                                   px: '14px',

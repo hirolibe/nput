@@ -1,12 +1,5 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-import {
-  Avatar,
-  Box,
-  Card,
-  Divider,
-  IconButton,
-  Typography,
-} from '@mui/material'
+import { Avatar, Box, Divider, IconButton, Typography } from '@mui/material'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -15,25 +8,27 @@ import ConfirmDialog from '../common/ConfirmDialog'
 import CommentForm from './CommentForm'
 import MarkdownText from './MarkdownText'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import { useProfile } from '@/hooks/useProfile'
+import { ProfileData } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { CommentData, NoteData } from '@/pages/[name]/notes/[slug]'
 import { handleError } from '@/utils/handleError'
 
-const CommentCard = ({ noteData }: { noteData: NoteData }) => {
+interface CommentProps {
+  name: string
+  slug: string
+  profileData: ProfileData | null
+  noteData: NoteData
+}
+
+const Comment = ({ name, slug, profileData, noteData }: CommentProps) => {
   const { idToken } = useAuthContext()
   const [open, setOpen] = useState(false)
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
-  const { name, id } = router.query
-  const [authorName, noteId] = [name, id].map((value) =>
-    typeof value === 'string' ? value : undefined,
-  )
-  const { profileData } = useProfile()
   const currentUserName = profileData?.user.name
 
   const [comments, setComments] = useState<CommentData[]>(
-    noteData?.comments || [],
+    noteData.comments || [],
   )
   const [commentIdToDelete, setCommentIdToDelete] = useState<number | null>(
     null,
@@ -51,7 +46,7 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
   const handleConfirm = async () => {
     if (!commentIdToDelete) return
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteId}/comments/${commentIdToDelete}`
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${name}/notes/${slug}/comments/${commentIdToDelete}`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
@@ -76,10 +71,11 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
   }
 
   return (
-    <Card
+    <Box
       sx={{
         boxShadow: 'none',
         borderRadius: 2,
+        backgroundColor: 'white',
         p: 5,
         mb: 3,
       }}
@@ -91,7 +87,7 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
       <Divider sx={{ mb: 3 }} />
 
       {/* コメント一覧 */}
-      {comments?.map((comment: CommentData, i: number) => {
+      {comments.map((comment: CommentData, i: number) => {
         const {
           user: {
             name: commenterName,
@@ -159,9 +155,14 @@ const CommentCard = ({ noteData }: { noteData: NoteData }) => {
       />
 
       {/* コメント入力フォーム */}
-      <CommentForm addComment={addComment} />
-    </Card>
+      <CommentForm
+        name={name}
+        slug={slug}
+        profileData={profileData}
+        addComment={addComment}
+      />
+    </Box>
   )
 }
 
-export default CommentCard
+export default Comment

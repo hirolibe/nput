@@ -11,7 +11,7 @@ import Loading from '@/components/common/Loading'
 import SettingTabs from '@/components/user/SettingTabs'
 import UploadAvatarButton from '@/components/user/UploadAvatarButton'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import useEnsureAuth from '@/hooks/useAuthenticationCheck'
+import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
@@ -25,7 +25,7 @@ interface ProfileFormData {
 }
 
 const EditProfile: NextPage = () => {
-  useEnsureAuth()
+  const isAuthorized = useEnsureAuth()
 
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
@@ -101,7 +101,7 @@ const EditProfile: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!idToken || !isFetched) {
+  if (!isAuthorized || !isFetched) {
     return (
       <Box
         css={styles.pageMinHeight}

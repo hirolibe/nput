@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       end
 
       resource :profile, only: [:show, :update]
+      resource :role, only: [:show]
 
       resources :notes, only: [:index]
       resources :my_notes, only: [:index, :show, :create, :update, :destroy], param: :slug

@@ -1,8 +1,11 @@
 class Api::V1::Admin::UsersController < Api::V1::ApplicationController
   before_action :authenticate_admin!, only: [:index, :destroy]
+  include Pagination
 
   def index
-    users = User.all
+    users = User.all.
+      page(params[:page] || 1).
+      per(50)
     render json: users, status: :ok
   end
 

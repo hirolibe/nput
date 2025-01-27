@@ -3,18 +3,30 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import Loading from '@/components/common/Loading'
 import SettingTabs from '@/components/user/SettingTabs'
-import useEnsureAuth from '@/hooks/useAuthenticationCheck'
+import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { styles } from '@/styles'
 
 const SetAccount: NextPage = () => {
-  useEnsureAuth()
+  const isAuthorized = useEnsureAuth()
 
   const router = useRouter()
   const [tabIndex, setTabIndex] = useState<number>(0)
 
   const handleDelete = () => {
     router.push('/settings/delete_account')
+  }
+
+  if (!isAuthorized) {
+    return (
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <Loading />
+      </Box>
+    )
   }
 
   return (

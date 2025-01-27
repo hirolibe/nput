@@ -37,7 +37,7 @@ import MarkdownToolbar from '@/components/note/MarkdownToolbar'
 import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import useEnsureAuth from '@/hooks/useAuthenticationCheck'
+import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -55,7 +55,7 @@ interface NoteFormData {
 }
 
 const EditNote: NextPage = () => {
-  useEnsureAuth()
+  const isAuthorized = useEnsureAuth()
 
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
@@ -351,7 +351,7 @@ const EditNote: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!isFetched) {
+  if (!isAuthorized || !isFetched) {
     return (
       <Box
         css={styles.pageMinHeight}

@@ -56,6 +56,7 @@ const Header = () => {
     '/auth/signup',
     '/auth/login',
     '/dashboard/notes/[slug]/edit',
+    '/admin',
   ]
   if (hideHeaderPathnames.includes(router.pathname)) return
 
@@ -106,7 +107,7 @@ const Header = () => {
         backgroundColor: 'white',
         color: 'black',
         boxShadow: 'none',
-        height: { sm: '64px' },
+        height: { xs: '56px', sm: '64px' },
         py: { xs: 1, sm: '12px' },
       }}
     >
@@ -116,6 +117,7 @@ const Header = () => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            height: '40px',
           }}
         >
           <Logo />

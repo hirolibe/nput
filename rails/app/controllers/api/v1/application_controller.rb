@@ -44,6 +44,8 @@ class Api::V1::ApplicationController < ApplicationController
     end
 
     def authenticate_admin!
+      authenticate_user!
+
       unless @current_user.admin?
         render json: { error: "アクセス権限がありません" }, status: :forbidden
       end

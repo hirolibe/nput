@@ -16,8 +16,7 @@ import { useRouter } from 'next/router'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
-import { useAuthContext } from '@/hooks/useAuthContext'
-import useEnsureAuth from '@/hooks/useAuthenticationCheck'
+import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { useMyNotes } from '@/hooks/useMyNotes'
 import { BasicNoteData } from '@/hooks/useNotes'
 import { styles } from '@/styles'
@@ -25,9 +24,7 @@ import { handleError } from '@/utils/handleError'
 import { omit } from '@/utils/omit'
 
 const Dashboard: NextPage = () => {
-  useEnsureAuth()
-
-  const { idToken } = useAuthContext()
+  const isAuthorized = useEnsureAuth()
 
   const router = useRouter()
   const page = 'page' in router.query ? Number(router.query.page) : 1
@@ -45,7 +42,7 @@ const Dashboard: NextPage = () => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!idToken || notesData === undefined) {
+  if (!isAuthorized || notesData === undefined) {
     return (
       <Box
         css={styles.pageMinHeight}

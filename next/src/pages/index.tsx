@@ -42,7 +42,6 @@ const PublicNotes: NextPage = () => {
 
   if (notesError) {
     const { statusCode, errorMessage } = handleError(notesError)
-
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 

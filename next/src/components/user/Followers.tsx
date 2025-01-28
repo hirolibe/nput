@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowers } from '@/hooks/useFollowers'
 import { BasicUserData } from '@/hooks/useFollowings'
-import { pageData } from '@/hooks/useNotes'
+import { PageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
@@ -18,19 +18,8 @@ const Followers = () => {
 
   const { followersData, followersError, isFollowersLoading } =
     useFollowers(page)
-
-  const [followers, setFollowers] = useState<BasicUserData[] | undefined>(
-    undefined,
-  )
-  const [meta, setMeta] = useState<pageData | undefined>(undefined)
-
-  useEffect(() => {
-    setFollowers(followersData?.users)
-  }, [setFollowers, followersData?.users])
-
-  useEffect(() => {
-    setMeta(followersData?.meta)
-  }, [setMeta, followersData?.meta])
+  const followers = followersData?.users
+  const meta = followersData?.meta
 
   const [, setSnackbar] = useSnackbarState()
 
@@ -82,13 +71,15 @@ const Followers = () => {
         </Box>
       ))}
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
-        <Pagination
-          count={meta?.totalPages}
-          page={meta?.currentPage}
-          onChange={handleChange}
-        />
-      </Box>
+      {meta && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+          <Pagination
+            count={meta?.totalPages}
+            page={meta?.currentPage}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </Box>
   )
 }

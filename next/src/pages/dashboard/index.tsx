@@ -193,11 +193,11 @@ const Dashboard: NextPage = () => {
             ))}
             {!notes?.length ? (
               <></>
-            ) : (
+            ) : meta && (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
                 <Pagination
                   count={meta?.totalPages}
-                  page={page}
+                  page={meta?.currentPage}
                   onChange={handleChange}
                 />
               </Box>

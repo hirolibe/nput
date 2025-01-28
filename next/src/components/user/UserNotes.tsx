@@ -3,7 +3,7 @@ import { Box, Divider, Modal, Pagination, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import NoteCard from '../note/NoteCard'
-import { BasicNoteData, pageData } from '@/hooks/useNotes'
+import { BasicNoteData, PageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useUserNotes } from '@/hooks/useUserNotes'
 import { handleError } from '@/utils/handleError'
@@ -17,17 +17,8 @@ const UserNotes = () => {
   }
 
   const { notesData, notesError, isNotesLoading } = useUserNotes(page)
-
-  const [notes, setNotes] = useState<BasicNoteData[] | undefined>(undefined)
-  const [meta, setMeta] = useState<pageData | undefined>(undefined)
-
-  useEffect(() => {
-    setNotes(notesData?.notes)
-  }, [setNotes, notesData?.notes])
-
-  useEffect(() => {
-    setMeta(notesData?.meta)
-  }, [setMeta, notesData?.meta])
+  const notes = notesData?.notes
+  const meta = notesData?.meta
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
@@ -139,13 +130,15 @@ const UserNotes = () => {
         </Box>
       </Modal>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
-        <Pagination
-          count={meta?.totalPages}
-          page={meta?.currentPage}
-          onChange={handleChange}
-        />
-      </Box>
+      {meta && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+          <Pagination
+            count={meta?.totalPages}
+            page={meta?.currentPage}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </Box>
   )
 }

@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { BasicUserData } from '@/hooks/useFollowings'
-import { pageData } from '@/hooks/useNotes'
+import { PageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useSupporters } from '@/hooks/useSupporters'
 import { handleError } from '@/utils/handleError'
@@ -25,19 +25,8 @@ const Supporters = () => {
 
   const { supportersData, supportersError, isSupportersLoading } =
     useSupporters(page)
-
-  const [supporters, setSupporters] = useState<BasicUserData[] | undefined>(
-    undefined,
-  )
-  const [meta, setMeta] = useState<pageData | undefined>(undefined)
-
-  useEffect(() => {
-    setSupporters(supportersData?.users)
-  }, [setSupporters, supportersData?.users])
-
-  useEffect(() => {
-    setMeta(supportersData?.meta)
-  }, [setMeta, supportersData?.meta])
+  const supporters = supportersData?.users
+  const meta = supportersData?.meta
 
   useEffect(() => {
     if (supportersError) {
@@ -116,19 +105,21 @@ const Supporters = () => {
           <Divider />
         </Box>
       ))}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          my: 2,
-        }}
-      >
-        <Pagination
-          count={meta?.totalPages}
-          page={meta?.currentPage}
-          onChange={handleChange}
-        />
-      </Box>
+      {meta && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            my: 2,
+          }}
+        >
+          <Pagination
+            count={meta?.totalPages}
+            page={meta?.currentPage}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </>
   )
 }

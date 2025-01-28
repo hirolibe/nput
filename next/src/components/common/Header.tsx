@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Fade,
   IconButton,
   ListItemIcon,
@@ -31,6 +32,8 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import { useUserRole } from '@/hooks/useUserRole'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -52,11 +55,33 @@ const Header = () => {
     }
   }, [profileError, router.pathname, setSnackbar])
 
+  const { userRoleData, userRoleError } = useUserRole()
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (userRoleError) {
+      setIsAdmin(false)
+      const { errorMessage } = handleError(userRoleError)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+      return
+    }
+
+    if (userRoleData !== 'admin') {
+      setIsAdmin(false)
+      return
+    }
+
+    setIsAdmin(true)
+  }, [userRoleError, setSnackbar, router, userRoleData])
+
   const hideHeaderPathnames = [
     '/auth/signup',
     '/auth/login',
     '/dashboard/notes/[slug]/edit',
-    '/admin',
   ]
   if (hideHeaderPathnames.includes(router.pathname)) return
 
@@ -70,15 +95,15 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
+      router.push('/')
       await signOut(auth)
       destroyCookieToken()
-      router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: '/',
       })
     }
   }
@@ -163,6 +188,22 @@ const Header = () => {
                   onClose={handleClose}
                   onClick={handleClose}
                 >
+                  {/* 管理者用メニュー */}
+                  {isAdmin && (
+                    <>
+                      <Link href="/admin">
+                        <MenuItem>
+                          <ListItemIcon>
+                            <DashboardIcon fontSize="small" />
+                          </ListItemIcon>
+                          管理画面
+                        </MenuItem>
+                      </Link>
+                      <Divider />
+                    </>
+                  )}
+
+                  {/* ログインユーザー用メニュー */}
                   <Link href={`/${profileData?.user.name}`}>
                     <MenuItem>
                       <ListItemIcon>

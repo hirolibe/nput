@@ -282,6 +282,7 @@ const EditNote: NextPage = () => {
         pathname: router.pathname,
       })
 
+      setIsChanged(false)
       removeSavedContent()
       setRestoreContent('')
       reset(data)

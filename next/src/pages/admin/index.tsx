@@ -1,6 +1,5 @@
 import { Delete } from '@mui/icons-material'
 import {
-  AppBar,
   Box,
   Button,
   Pagination,
@@ -11,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Toolbar,
   Typography,
 } from '@mui/material'
 import axios from 'axios'
@@ -30,6 +28,7 @@ import { UserSystemData, useUsers } from '@/hooks/useUsers'
 import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
+import { styles } from '@/styles'
 
 const ManageUsers: NextPage = () => {
   const isAdmin = useEnsureAdmin()
@@ -57,7 +56,7 @@ const ManageUsers: NextPage = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: '/auth/login',
       })
     }
   }
@@ -132,45 +131,11 @@ const ManageUsers: NextPage = () => {
         </Helmet>
       </HelmetProvider>
 
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'backgroundColor.page' }}>
-        <AppBar
-          position="fixed"
-          sx={{
-            color: 'black',
-            backgroundColor: 'backgroundColor.page',
-            boxShadow: 'none',
-          }}
-        >
-          <Toolbar>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                width: '100%',
-              }}
-            >
-              <Button
-                onClick={handleLogout}
-                variant="outlined"
-                sx={{
-                  fontSize: { xs: 12, sm: 16 },
-                  borderRadius: 2,
-                  border: '1px solid primary',
-                  ml: { xs: 1, sm: 2 },
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                  },
-                }}
-              >
-                ログアウト
-              </Button>
-            </Box>
-          </Toolbar>
-        </AppBar>
-
-        <Box sx={{ width: '100%', p: 3 }}>
-          <Box sx={{ height: '40px' }} />
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ backgroundColor: 'backgroundColor.page' }}
+      >
+        <Box sx={{ width: '100%', px: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Typography
               sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', m: 2 }}

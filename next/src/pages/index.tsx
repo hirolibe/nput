@@ -24,13 +24,15 @@ const PublicNotes: NextPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? Number(router.query.page) : 1
   const { notesData, notesError } = useNotes()
+  const notes = notesData?.notes
+  const meta = notesData?.meta
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
   const [description, setDescription] = useState<string | undefined>(undefined)
 
   const handleOpenDescription = (slug: string) => {
-    const note = notesData?.notes.find((note) => note.slug === slug)
+    const note = notes?.find((note) => note.slug === slug)
     setTitle(note?.title)
     setDescription(note?.description)
     setIsOpen(true)
@@ -44,9 +46,6 @@ const PublicNotes: NextPage = () => {
     const { statusCode, errorMessage } = handleError(notesError)
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
-
-  const notes = notesData?.notes
-  const meta = notesData?.meta
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     router.push(`/?page=${value}`)
@@ -153,13 +152,15 @@ const PublicNotes: NextPage = () => {
             </Box>
           </Modal>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-            <Pagination
-              count={meta?.totalPages}
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
+          {meta && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+              <Pagination
+                count={meta?.totalPages}
+                page={meta?.currentPage}
+                onChange={handleChange}
+              />
+            </Box>
+          )}
         </Container>
       </Box>
     </>

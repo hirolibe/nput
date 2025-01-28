@@ -1,4 +1,5 @@
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import EditIcon from '@mui/icons-material/Edit'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
@@ -29,11 +30,10 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { useUserRole } from '@/hooks/useUserRole'
 import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import { useUserRole } from '@/hooks/useUserRole'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

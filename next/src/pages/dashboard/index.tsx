@@ -27,7 +27,6 @@ const Dashboard: NextPage = () => {
   const isAuthorized = useEnsureAuth()
 
   const router = useRouter()
-  const page = 'page' in router.query ? Number(router.query.page) : 1
   const { notesData, notesError } = useMyNotes()
   const notes = notesData?.notes
   const meta = notesData?.meta
@@ -193,14 +192,16 @@ const Dashboard: NextPage = () => {
             ))}
             {!notes?.length ? (
               <></>
-            ) : meta && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-                <Pagination
-                  count={meta?.totalPages}
-                  page={meta?.currentPage}
-                  onChange={handleChange}
-                />
-              </Box>
+            ) : (
+              meta && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+                  <Pagination
+                    count={meta?.totalPages}
+                    page={meta?.currentPage}
+                    onChange={handleChange}
+                  />
+                </Box>
+              )
             )}
           </Card>
         </Container>

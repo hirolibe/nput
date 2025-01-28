@@ -39,6 +39,10 @@
               {
                   "name": "REDIS_URL",
                   "value": "redis://n-put-redis.3cecvj.ng.0001.apne1.cache.amazonaws.com:6379"
+              },
+              {
+                  "name": "FIREBASE_CREDENTIALS",
+                  "value": "config/firebase/firebase-service-account.json"
               }
           ],
           "environmentFiles": [],

@@ -3,12 +3,18 @@ import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
 import { fetcher } from '@/utils/fetcher'
+import { PageData } from './useNotes'
 
 export interface UserSystemData {
   id: number
   name: string
   email: string
   role: string
+}
+
+export interface PagenatedUsersSystemData {
+  users: UserSystemData[]
+  meta: PageData
 }
 
 export const useUsers = () => {
@@ -25,13 +31,13 @@ export const useUsers = () => {
     data,
     error: usersError,
     isLoading: isUsersLoading,
-  }: SWRResponse<UserSystemData[]> = useSWR(
+  }: SWRResponse<PagenatedUsersSystemData> = useSWR(
     idToken ? [url, idToken] : null,
     fetcher,
   )
 
   const [usersData, setUsersData] = useState<
-    UserSystemData[] | null | undefined
+    PagenatedUsersSystemData | null | undefined
   >(undefined)
 
   useEffect(() => {

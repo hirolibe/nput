@@ -24,14 +24,14 @@ export interface BasicNoteData {
   }[]
 }
 
-export interface pageData {
+export interface PageData {
   totalPages: number
   currentPage: number
 }
 
 export interface PagenatedNotesData {
   notes: BasicNoteData[]
-  meta: pageData
+  meta: PageData
 }
 
 export const useNotes = () => {

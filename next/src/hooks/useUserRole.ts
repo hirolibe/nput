@@ -3,10 +3,6 @@ import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
 import { fetcher } from '@/utils/fetcher'
 
-export interface UserRoleData {
-  role: string
-}
-
 export const useUserRole = () => {
   const { idToken, isAuthLoading } = useAuthContext()
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/role`
@@ -15,13 +11,13 @@ export const useUserRole = () => {
     data,
     error: userRoleError,
     isLoading: isUserRoleLoading,
-  }: SWRResponse<UserRoleData | null | undefined> = useSWR(
+  }: SWRResponse<string | null | undefined> = useSWR(
     idToken ? [url, idToken] : null,
     fetcher,
   )
 
   const [userRoleData, setUserRoleData] = useState<
-    UserRoleData | null | undefined
+  string | null | undefined
   >(undefined)
   useEffect(() => {
     if (!isAuthLoading && !isUserRoleLoading && data) {

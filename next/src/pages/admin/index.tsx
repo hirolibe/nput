@@ -3,6 +3,7 @@ import {
   AppBar,
   Box,
   Button,
+  Pagination,
   Paper,
   Table,
   TableBody,
@@ -38,17 +39,19 @@ const ManageUsers: NextPage = () => {
   const { idToken } = useAuthContext()
 
   const { usersData, usersError } = useUsers()
-  const [users, setUsers] = useState<UserSystemData[]>([])
+
+  const meta = usersData?.meta
+
+  const [users, setUsers] = useState<UserSystemData[] | undefined>(undefined)
   useEffect(() => {
-    if (!usersData) return
-    setUsers(usersData)
+    setUsers(usersData?.users)
   }, [usersData])
 
   const handleLogout = async () => {
     try {
+      await router.push('/auth/login')
       await signOut(auth)
       destroyCookieToken()
-      router.push('/auth/login')
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -57,6 +60,12 @@ const ManageUsers: NextPage = () => {
         pathname: router.pathname,
       })
     }
+  }
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    router.push(`admin/?page=${value}`)
   }
 
   const [open, setOpen] = useState<boolean>(false)
@@ -71,12 +80,19 @@ const ManageUsers: NextPage = () => {
   const handleConfirm = async () => {
     if (!userIdToDelete) return
 
+    setIsLoading(true)
+
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/users/${userIdToDelete}`
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
-      await axios.delete(url, { headers })
+      const res = await axios.delete(url, { headers })
       setUsers(users?.filter((user) => user.id !== userIdToDelete))
+      setSnackbar({
+        message: res.data.message,
+        severity: 'success',
+        pathname: router.pathname,
+      })
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -85,6 +101,7 @@ const ManageUsers: NextPage = () => {
         pathname: router.pathname,
       })
     } finally {
+      setIsLoading(false)
       setOpen(false)
     }
   }
@@ -100,7 +117,7 @@ const ManageUsers: NextPage = () => {
 
   if (!isAdmin || usersData === undefined) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <Loading />
       </Box>
     )
@@ -111,11 +128,11 @@ const ManageUsers: NextPage = () => {
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>編集中 | Nput</title>
+          <title>管理画面 | Nput</title>
         </Helmet>
       </HelmetProvider>
 
-      <Box sx={{ minHeight: '100vh' }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: 'backgroundColor.page' }}>
         <AppBar
           position="fixed"
           sx={{
@@ -125,49 +142,67 @@ const ManageUsers: NextPage = () => {
           }}
         >
           <Toolbar>
-            <Button
-              onClick={handleLogout}
-              variant="outlined"
+            <Box
               sx={{
-                fontSize: { xs: 12, sm: 16 },
-                borderRadius: 2,
-                border: '1px solid primary',
-                ml: { xs: 1, sm: 2 },
-                fontWeight: 'bold',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                },
+                display: 'flex',
+                justifyContent: 'flex-end',
+                width: '100%',
               }}
             >
-              ログアウト
-            </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outlined"
+                sx={{
+                  fontSize: { xs: 12, sm: 16 },
+                  borderRadius: 2,
+                  border: '1px solid primary',
+                  ml: { xs: 1, sm: 2 },
+                  fontWeight: 'bold',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                  },
+                }}
+              >
+                ログアウト
+              </Button>
+            </Box>
           </Toolbar>
         </AppBar>
 
         <Box sx={{ width: '100%', p: 3 }}>
-          <Typography variant="h4" gutterBottom>
-            ユーザー管理
-          </Typography>
+          <Box sx={{ height: '40px' }} />
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography
+              sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', m: 2 }}
+            >
+              ユーザー管理
+            </Typography>
+          </Box>
 
-          <TableContainer component={Paper}>
+
+          <TableContainer component={Paper} sx={{ borderRadius: 2, px: 5 }}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>ユーザー名</TableCell>
-                  <TableCell>メールアドレス</TableCell>
-                  <TableCell>権限</TableCell>
-                  <TableCell align="right">アクション</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>ユーザー名</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>
+                    メールアドレス
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>権限</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                    アクション
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {users?.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell align="right">
+                    <TableCell sx={{ py: 1 }}>{user.id}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{user.name}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{user.email}</TableCell>
+                    <TableCell sx={{ py: 1 }}>{user.role}</TableCell>
+                    <TableCell align="right" sx={{ py: 1 }}>
                       <Button
                         color="error"
                         onClick={() => handleDeleteUser(user.id)}
@@ -180,16 +215,27 @@ const ManageUsers: NextPage = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {meta && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+              <Pagination
+                count={meta?.totalPages}
+                page={meta?.currentPage}
+                onChange={handleChange}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
 
-      {/* ユーザー削除の確認画面 */}
+      {/* アカウント削除の確認画面 */}
       <ConfirmDialog
         open={open}
         onClose={handleClose}
         onConfirm={handleConfirm}
-        message={'ノートを削除しますか？'}
+        message={'アカウントを削除しますか？'}
         confirmText="実行"
+        isLoading={isLoading}
       />
     </>
   )

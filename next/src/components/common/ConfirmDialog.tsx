@@ -1,4 +1,5 @@
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import { LoadingButton } from '@mui/lab'
 import {
   Dialog,
   DialogTitle,
@@ -20,6 +21,7 @@ interface ConfirmDialogProps {
   confirmText?: string
   cancelText?: string
   confirmColor?: 'error' | 'primary' | 'secondary' | 'warning'
+  isLoading?: boolean
 }
 
 const ConfirmDialog = ({
@@ -31,6 +33,7 @@ const ConfirmDialog = ({
   confirmText = 'はい',
   cancelText = 'キャンセル',
   confirmColor = 'error',
+  isLoading = false,
 }: ConfirmDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
@@ -78,14 +81,15 @@ const ConfirmDialog = ({
         >
           {cancelText}
         </Button>
-        <Button
+        <LoadingButton
           onClick={onConfirm}
+          loading={isLoading}
           variant="contained"
           color={confirmColor}
           sx={{ width: '105px' }}
         >
           {confirmText}
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   )

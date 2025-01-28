@@ -18,8 +18,14 @@ gem "down"
 # enum を日本語化する
 gem "enum_help"
 
+# Firebase REST API を呼び出す
+gem 'faraday'
+
 # idToken（JWT）を検証する
 gem "firebase_id_token", "~> 3.0.0"
+
+# Google Cloudサービスの認証を行う
+gem "googleauth"
 
 # ページネーション機能を提供する
 gem "kaminari"
@@ -45,6 +51,9 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 group :development, :test do
   # N+1発生時にアラートを表示する
   gem "bullet"
+
+  # 環境変数の読み込み
+  gem "dotenv"
 
   # テスト用データを作成する
   gem "factory_bot_rails"

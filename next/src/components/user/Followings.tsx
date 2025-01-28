@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useEffect, Dispatch, SetStateAction, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowings, BasicUserData } from '@/hooks/useFollowings'
-import { PageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 

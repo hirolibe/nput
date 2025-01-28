@@ -206,7 +206,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   const isDraft = noteData.statusJp === '下書き'
 
   const [isCheered, setIsCheered] = useState<boolean | undefined>(
-    cheerStatusData?.hasCheered,
+    cheerStatusData?.hasCheered ?? false,
   )
   const [cheersCount, setCheersCount] = useState(noteData.cheersCount)
   const cheerState = {
@@ -217,7 +217,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   }
 
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(
-    followStatusData?.hasFollowed,
+    followStatusData?.hasFollowed ?? false,
   )
   const followState = {
     isFollowed,
@@ -270,7 +270,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           }}
         >
           {/* エールボタン */}
-          {name && name !== currentUserName ? (
+          {name !== currentUserName ? (
             <CheerButton
               cheerState={cheerState}
               boxParams={{ flexDirection: 'row', gap: 1 }}
@@ -357,7 +357,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         {/* ボタン・コンテンツ */}
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
-          {!isDraft && profileData && (
+          {!isDraft && (
             <Box
               sx={{
                 position: 'absolute',
@@ -373,7 +373,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 }}
               >
                 <Stack spacing={1}>
-                  {name && name !== currentUserName ? (
+                  {name !== currentUserName ? (
                     <CheerButton
                       cheerState={cheerState}
                       backgroundColor="white"
@@ -469,45 +469,43 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 </Box>
 
                 {/* ボタン */}
-                {profileData && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      mb: 5,
-                    }}
-                  >
-                    {name && name !== currentUserName ? (
-                      <CheerButton
-                        cheerState={cheerState}
-                        boxParams={{ flexDirection: 'row', gap: 1 }}
-                      />
-                    ) : (
-                      <Link href={`/dashboard/notes/${slug}/edit/`}>
-                        <Avatar sx={{ width: '50px', height: '50px' }}>
-                          <Tooltip title="編集する">
-                            <IconButton
-                              sx={{
-                                backgroundColor: 'backgroundColor.icon',
-                                width: '100%',
-                                height: '100%',
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Avatar>
-                      </Link>
-                    )}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 5,
+                  }}
+                >
+                  {name !== currentUserName ? (
+                    <CheerButton
+                      cheerState={cheerState}
+                      boxParams={{ flexDirection: 'row', gap: 1 }}
+                    />
+                  ) : (
+                    <Link href={`/dashboard/notes/${slug}/edit/`}>
+                      <Avatar sx={{ width: '50px', height: '50px' }}>
+                        <Tooltip title="編集する">
+                          <IconButton
+                            sx={{
+                              backgroundColor: 'backgroundColor.icon',
+                              width: '100%',
+                              height: '100%',
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Avatar>
+                    </Link>
+                  )}
 
-                    {!isDraft && (
-                      <Box>
-                        <SocialShareIcon />
-                      </Box>
-                    )}
-                  </Box>
-                )}
+                  {!isDraft && (
+                    <Box>
+                      <SocialShareIcon />
+                    </Box>
+                  )}
+                </Box>
 
                 <Divider sx={{ mb: 5 }} />
 

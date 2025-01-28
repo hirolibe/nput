@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowers } from '@/hooks/useFollowers'
 import { BasicUserData } from '@/hooks/useFollowings'
-import { PageData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 

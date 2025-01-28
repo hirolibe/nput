@@ -4,14 +4,14 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
 
   def index
     users = User.all.
-      page(params[:page] || 1).
-      per(50)
+              page(params[:page] || 1).
+              per(50)
     render json: users,
            each_serializer: AdminUserSerializer,
            meta: pagination(users),
            adapter: :json,
            status: :ok
-end
+  end
 
   def destroy
     user = User.find(params[:id])

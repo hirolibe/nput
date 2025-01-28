@@ -19,7 +19,7 @@ gem "down"
 gem "enum_help"
 
 # Firebase REST API を呼び出す
-gem 'faraday'
+gem "faraday"
 
 # idToken（JWT）を検証する
 gem "firebase_id_token", "~> 3.0.0"

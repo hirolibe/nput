@@ -2,8 +2,8 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
-import { fetcher } from '@/utils/fetcher'
 import { PageData } from './useNotes'
+import { fetcher } from '@/utils/fetcher'
 
 export interface UserSystemData {
   id: number

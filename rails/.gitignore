@@ -27,3 +27,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+.env
+
+/config/firebase/firebase-service-account.json

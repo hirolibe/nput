@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import NoteCard from '../note/NoteCard'
 import { useCheeredNotes } from '@/hooks/useCheeredNotes'
-import { BasicNoteData, PageData } from '@/hooks/useNotes'
+import { BasicNoteData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 

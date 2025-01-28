@@ -19,6 +19,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
 
+  useEffect(() => {
+    const cookies = parseCookies()
+    if (cookies.firebase_auth_token) {
+      setIdToken(cookies.firebase_auth_token)
+    }
+  }, [])
+
   const fetchToken = useCallback(
     async (user: User) => {
       try {
@@ -36,13 +43,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     },
     [router.pathname, setSnackbar],
   )
-
-  useEffect(() => {
-    const cookies = parseCookies()
-    if (cookies.firebase_auth_token) {
-      setIdToken(cookies.firebase_auth_token)
-    }
-  }, [])
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
         setIsAuthLoading(false)
       },
-      45 * 60 * 1000,
+      55 * 60 * 1000,
     )
 
     return () => clearInterval(refreshToken)

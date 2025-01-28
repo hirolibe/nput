@@ -16,9 +16,9 @@ export const useUserRole = () => {
     fetcher,
   )
 
-  const [userRoleData, setUserRoleData] = useState<
-  string | null | undefined
-  >(undefined)
+  const [userRoleData, setUserRoleData] = useState<string | null | undefined>(
+    undefined,
+  )
   useEffect(() => {
     if (!isAuthLoading && !isUserRoleLoading && data) {
       setUserRoleData(data)

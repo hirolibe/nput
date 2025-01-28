@@ -13,7 +13,6 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import { signOut } from 'firebase/auth'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -25,10 +24,8 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import useEnsureAdmin from '@/hooks/useEnsureAdmin'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { UserSystemData, useUsers } from '@/hooks/useUsers'
-import { destroyCookieToken } from '@/utils/destroyCookieToken'
-import auth from '@/utils/firebaseConfig'
-import { handleError } from '@/utils/handleError'
 import { styles } from '@/styles'
+import { handleError } from '@/utils/handleError'
 
 const ManageUsers: NextPage = () => {
   const isAdmin = useEnsureAdmin()
@@ -45,21 +42,6 @@ const ManageUsers: NextPage = () => {
   useEffect(() => {
     setUsers(usersData?.users)
   }, [usersData])
-
-  const handleLogout = async () => {
-    try {
-      await router.push('/auth/login')
-      await signOut(auth)
-      destroyCookieToken()
-    } catch (err) {
-      const { errorMessage } = handleError(err)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: '/auth/login',
-      })
-    }
-  }
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -116,7 +98,14 @@ const ManageUsers: NextPage = () => {
 
   if (!isAdmin || usersData === undefined) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
         <Loading />
       </Box>
     )
@@ -143,7 +132,6 @@ const ManageUsers: NextPage = () => {
               ユーザー管理
             </Typography>
           </Box>
-
 
           <TableContainer component={Paper} sx={{ borderRadius: 2, px: 5 }}>
             <Table>

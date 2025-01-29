@@ -100,11 +100,11 @@ const ManageUsers: NextPage = () => {
   if (!isAdmin || usersData === undefined) {
     return (
       <Box
+        css={styles.pageMinHeight}
         sx={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '100vh',
         }}
       >
         <Loading />

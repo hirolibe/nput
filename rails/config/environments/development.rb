@@ -1,5 +1,8 @@
 require "active_support/core_ext/integer/time"
 
+require "dotenv"
+Dotenv.load
+
 Rails.application.configure do
   config.after_initialize do
     Bullet.enable        = true

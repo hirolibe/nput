@@ -57,29 +57,25 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
     end
 
     def firebase_admin_token
-      # file_path = ENV["FIREBASE_CREDENTIALS"]
-      # json_content = File.read(file_path)
-
-      # AWS SDKでSecrets Managerからシークレットを取得
-      secret_name = ENV["FIREBASE_CREDENTIALS"] # Secrets ManagerのARNを環境変数から取得
-      region = "ap-northeast-1" # 使用するリージョンを指定
-
-      # AWS Secrets Managerクライアントの作成
-      secrets_manager = Aws::SecretsManager::Client.new(region:)
-
-      # Secrets Managerからシークレットの値を取得
-      begin
-        secret_value = secrets_manager.get_secret_value(secret_id: secret_name)
-        json_content = secret_value.secret_string
-      rescue Aws::SecretsManager::Errors::ServiceError => e
-        raise "Unable to retrieve secret: #{e.message}"
+      # AWS設定を環境に応じて初期化
+      config = { region: ENV["AWS_REGION"] }
+      config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
+      unless Aws.config.update(config)
+        raise "AWS設定の更新に失敗しました"
       end
 
-      credentials = Google::Auth::DefaultCredentials.make_creds(
-        json_key_io: StringIO.new(json_content),
-        scope: ["https://www.googleapis.com/auth/identitytoolkit"],
-      )
+      # Secrets Managerから認証情報を取得
+      json_content = Aws::SecretsManager::Client.new.
+                       get_secret_value(secret_id: ENV["FIREBASE_CREDENTIALS"]).
+                       secret_string
 
-      credentials.fetch_access_token!["access_token"]
+      # Firebaseトークンを取得して返す
+      Google::Auth::DefaultCredentials.
+        make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
+        fetch_access_token!["access_token"]
+    rescue Aws::SecretsManager::Errors::ServiceError => e
+      raise "シークレット情報取得エラー: #{e.message}"
+    rescue => e
+      raise "認証トークン取得エラー: #{e.message}"
     end
 end

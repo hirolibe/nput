@@ -62,10 +62,10 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
 
       # AWS SDKでSecrets Managerからシークレットを取得
       secret_name = ENV["FIREBASE_CREDENTIALS"] # Secrets ManagerのARNを環境変数から取得
-      region = 'ap-northeast-1' # 使用するリージョンを指定
+      region = "ap-northeast-1" # 使用するリージョンを指定
 
       # AWS Secrets Managerクライアントの作成
-      secrets_manager = Aws::SecretsManager::Client.new(region: region)
+      secrets_manager = Aws::SecretsManager::Client.new(region:)
 
       # Secrets Managerからシークレットの値を取得
       begin

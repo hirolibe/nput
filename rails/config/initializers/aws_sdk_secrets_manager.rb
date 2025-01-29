@@ -1,1 +1,1 @@
-require 'aws-sdk-secretsmanager'
+require "aws-sdk-secretsmanager"

@@ -90,8 +90,8 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
       end
 
       # デバッグ情報の出力
-      Rails.logger.debug "Credential value: #{ENV["FIREBASE_CREDENTIALS"]}"
-      Rails.logger.debug "AWS Region: #{aws_region}"
+      Rails.logger.info "Credential value: #{ENV["FIREBASE_CREDENTIALS"]}"
+      Rails.logger.info "AWS Region: #{aws_region}"
 
       begin
         # Secrets Managerから認証情報を取得

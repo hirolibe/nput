@@ -43,6 +43,10 @@
               {
                   "name": "FIREBASE_CREDENTIALS",
                   "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/credentials-m90cFz"
+              },
+              {
+                  "name": "AWS_REGION",
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/region-2kOrX5"
               }
           ],
           "environmentFiles": [],

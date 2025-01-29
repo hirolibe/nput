@@ -15,38 +15,36 @@
               }
           ],
           "essential": true,
-          "secrets": [
+          "environment": [
               {
                   "name": "RAILS_LOG_TO_STDOUT",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/log-to-stdout-SD9sgh"
+                  "value": "true"
               },
               {
-                  "name": "RAILS_HOST",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/host-vv6Vp6"
+                  "name": "AWS_BUCKET_NAME",
+                  "value": "n-put-image-storage"
               },
               {
                   "name": "FIREBASE_PROJECT_ID",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/project-id-pDeFty"
+                  "value": "nput-auth"
               },
+              {
+                  "name": "REDIS_URL",
+                  "value": "redis://n-put-redis.3cecvj.ng.0001.apne1.cache.amazonaws.com:6379"
+              },
+              {
+                  "name": "AWS_REGION",
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/region-2kOrX5"
+              }
+          ],
+          "secrets": [
               {
                   "name": "RAILS_MASTER_KEY",
                   "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/master-key-TexOKO"
               },
               {
-                  "name": "AWS_BUCKET_NAME",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/bucket-name-A9IMGF"
-              },
-              {
-                  "name": "REDIS_URL",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/redis/url-Zmv8cM"
-              },
-              {
                   "name": "FIREBASE_CREDENTIALS",
                   "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/credentials-m90cFz"
-              },
-              {
-                  "name": "AWS_REGION",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/region-2kOrX5"
               }
           ],
           "environmentFiles": [],

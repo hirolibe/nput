@@ -60,7 +60,7 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
       # AWS設定を環境に応じて初期化
       config = { region: ENV["AWS_REGION"] }
       config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
-      Aws.config.update!(config)
+      Aws.config.update(config)
 
       # Secrets Managerから認証情報を取得
       json_content = Aws::SecretsManager::Client.new.
@@ -73,7 +73,7 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
         fetch_access_token!["access_token"]
     rescue Aws::SecretsManager::Errors::ServiceError => e
       raise "シークレット情報取得エラー: #{e.message}"
-    rescue Google::Auth::Error => e
+    rescue => e
       raise "認証トークン取得エラー: #{e.message}"
     end
 end

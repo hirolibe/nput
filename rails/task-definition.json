@@ -34,7 +34,7 @@
               },
               {
                   "name": "AWS_REGION",
-                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/region-2kOrX5"
+                  "value": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/region-2kOrX5"
               }
           ],
           "secrets": [

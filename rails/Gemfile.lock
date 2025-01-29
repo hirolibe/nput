@@ -88,6 +88,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
+    aws-sdk-secretsmanager (1.110.0)
+      aws-sdk-core (~> 3, >= 3.210.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.11.0)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
@@ -336,6 +339,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   aws-sdk-s3
+  aws-sdk-secretsmanager
   bootsnap
   bullet
   config

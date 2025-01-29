@@ -57,15 +57,24 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
     end
 
     def firebase_admin_token
-      # file_path = ENV["FIREBASE_CREDENTIALS"]
-      # json_content = File.read(file_path)
+      if Rails.env.production?
+        # 本番環境ではIAMロールを利用する設定
+        Aws.config.update({
+          region: ENV['AWS_REGION']
+        })
+      else
+        # 開発環境では.envから読み込む
+        Aws.config.update({
+          region: ENV['AWS_REGION'],
+          credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
+        })
+      end
+
+      # AWS Secrets Managerクライアントの作成
+      secrets_manager = Aws::SecretsManager::Client.new
 
       # AWS SDKでSecrets Managerからシークレットを取得
       secret_name = ENV["FIREBASE_CREDENTIALS"] # Secrets ManagerのARNを環境変数から取得
-      region = "ap-northeast-1" # 使用するリージョンを指定
-
-      # AWS Secrets Managerクライアントの作成
-      secrets_manager = Aws::SecretsManager::Client.new(region:)
 
       # Secrets Managerからシークレットの値を取得
       begin

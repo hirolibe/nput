@@ -15,7 +15,7 @@
               }
           ],
           "essential": true,
-          "environment": [
+          "secrets": [
               {
                   "name": "RAILS_LOG_TO_STDOUT",
                   "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/log-to-stdout-SD9sgh"

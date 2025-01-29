@@ -58,10 +58,12 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
 
     def firebase_admin_token
       # AWS設定を環境に応じて初期化
-      aws_region = ENV['AWS_REGION'] || 'ap-northeast-1'
+      aws_region = ENV["AWS_REGION"] || "ap-northeast-1"
       config = { region: aws_region }
       config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
-      Aws.config.update(config)
+      unless Aws.config.update(config)
+        raise "AWS設定の更新に失敗しました"
+      end
 
       # Secrets Managerから認証情報を取得
       json_content = Aws::SecretsManager::Client.new.

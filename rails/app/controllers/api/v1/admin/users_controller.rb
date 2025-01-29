@@ -60,7 +60,9 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
       # AWS設定を環境に応じて初期化
       config = { region: ENV["AWS_REGION"] }
       config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
-      Aws.config.update(config)
+      unless Aws.config.update(config)
+        raise "AWS設定の更新に失敗しました"
+      end
 
       # Secrets Managerから認証情報を取得
       json_content = Aws::SecretsManager::Client.new.

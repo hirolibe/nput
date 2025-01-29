@@ -70,7 +70,7 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
                        secret_string
 
       # Firebaseトークンを取得して返す
-      Google::Auth::DefaultCredentials.
+      Google::Auth::ServiceAccountCredentials.
         make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
         fetch_access_token!["access_token"]
     rescue Aws::SecretsManager::Errors::ServiceError => e

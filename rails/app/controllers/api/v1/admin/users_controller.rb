@@ -57,38 +57,23 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
     end
 
     def firebase_admin_token
-      if Rails.env.production?
-        # 本番環境ではIAMロールを利用する設定
-        Aws.config.update({
-          region: ENV['AWS_REGION']
-        })
-      else
-        # 開発環境では.envから読み込む
-        Aws.config.update({
-          region: ENV['AWS_REGION'],
-          credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
-        })
-      end
+      # AWS設定を環境に応じて初期化
+      config = { region: ENV["AWS_REGION"] }
+      config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
+      Aws.config.update!(config)
 
-      # AWS Secrets Managerクライアントの作成
-      secrets_manager = Aws::SecretsManager::Client.new
+      # Secrets Managerから認証情報を取得
+      json_content = Aws::SecretsManager::Client.new.
+                       get_secret_value(secret_id: ENV["FIREBASE_CREDENTIALS"]).
+                       secret_string
 
-      # AWS SDKでSecrets Managerからシークレットを取得
-      secret_name = ENV["FIREBASE_CREDENTIALS"] # Secrets ManagerのARNを環境変数から取得
-
-      # Secrets Managerからシークレットの値を取得
-      begin
-        secret_value = secrets_manager.get_secret_value(secret_id: secret_name)
-        json_content = secret_value.secret_string
-      rescue Aws::SecretsManager::Errors::ServiceError => e
-        raise "Unable to retrieve secret: #{e.message}"
-      end
-
-      credentials = Google::Auth::DefaultCredentials.make_creds(
-        json_key_io: StringIO.new(json_content),
-        scope: ["https://www.googleapis.com/auth/identitytoolkit"],
-      )
-
-      credentials.fetch_access_token!["access_token"]
+      # Firebaseトークンを取得して返す
+      Google::Auth::DefaultCredentials.
+        make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
+        fetch_access_token!["access_token"]
+    rescue Aws::SecretsManager::Errors::ServiceError => e
+      raise "シークレット情報取得エラー: #{e.message}"
+    rescue Google::Auth::Error => e
+      raise "認証トークン取得エラー: #{e.message}"
     end
 end

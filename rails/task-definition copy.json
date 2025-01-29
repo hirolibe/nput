@@ -1,0 +1,131 @@
+{
+  "family": "n-put-task-definition-backend",
+  "containerDefinitions": [
+      {
+          "name": "rails",
+          "image": "715841369727.dkr.ecr.ap-northeast-1.amazonaws.com/n-put-rails",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "rails-3000-tcp",
+                  "containerPort": 3000,
+                  "hostPort": 3000,
+                  "protocol": "tcp",
+                  "appProtocol": "http"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "RAILS_LOG_TO_STDOUT",
+                  "value": "true"
+              },
+              {
+                  "name": "AWS_BUCKET_NAME",
+                  "value": "n-put-image-storage"
+              },
+              {
+                  "name": "FIREBASE_PROJECT_ID",
+                  "value": "nput-auth"
+              },
+              {
+                  "name": "REDIS_URL",
+                  "value": "redis://n-put-redis.3cecvj.ng.0001.apne1.cache.amazonaws.com:6379"
+              },
+              {
+                  "name": "AWS_REGION",
+                  "value": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/region-2kOrX5"
+              }
+          ],
+          "secrets": [
+              {
+                  "name": "RAILS_MASTER_KEY",
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/master-key-TexOKO"
+              },
+              {
+                  "name": "FIREBASE_CREDENTIALS",
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/credentials-m90cFz"
+              }
+          ],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "ulimits": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "/ecs/n-put-task-definition-backend",
+                  "awslogs-create-group": "true",
+                  "awslogs-region": "ap-northeast-1",
+                  "awslogs-stream-prefix": "ecs"
+              },
+              "secretOptions": []
+          },
+          "healthCheck": {
+              "command": [
+                  "CMD-SHELL",
+                  "curl --unix-socket /myapp/tmp/sockets/puma.sock localhost/api/v1/health_check || exit 1"
+              ],
+              "interval": 30,
+              "timeout": 5,
+              "retries": 3
+          },
+          "systemControls": []
+      },
+      {
+          "name": "nginx",
+          "image": "715841369727.dkr.ecr.ap-northeast-1.amazonaws.com/n-put-nginx",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "nginx-80-tcp",
+                  "containerPort": 80,
+                  "hostPort": 80,
+                  "protocol": "tcp",
+                  "appProtocol": "http"
+              }
+          ],
+          "essential": true,
+          "environment": [],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [
+              {
+                  "sourceContainer": "rails",
+                  "readOnly": false
+              }
+          ],
+          "dependsOn": [
+              {
+                  "containerName": "rails",
+                  "condition": "HEALTHY"
+              }
+          ],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "/ecs/n-put-task-definition-backend",
+                  "awslogs-create-group": "true",
+                  "awslogs-region": "ap-northeast-1",
+                  "awslogs-stream-prefix": "ecs"
+              },
+              "secretOptions": []
+          },
+          "systemControls": []
+      }
+  ],
+  "taskRoleArn": "arn:aws:iam::715841369727:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::715841369727:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+  }
+}

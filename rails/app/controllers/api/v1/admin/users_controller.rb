@@ -90,20 +90,13 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
       end
 
       # デバッグ情報の出力
-      Rails.logger.debug "=== Firebase Credentials Debug ==="
-      Rails.logger.debug "Credential length: #{ENV['FIREBASE_CREDENTIALS'].length}"
-      Rails.logger.debug "Credential value: #{ENV['FIREBASE_CREDENTIALS']}"
+      Rails.logger.debug "Credential value: #{ENV["FIREBASE_CREDENTIALS"]}"
       Rails.logger.debug "AWS Region: #{aws_region}"
-      Rails.logger.debug "=================================="
 
       begin
         # Secrets Managerから認証情報を取得
         secrets_client = Aws::SecretsManager::Client.new
-        Rails.logger.debug "Attempting to fetch secret with ID: #{ENV['FIREBASE_CREDENTIALS']}"
-
         secret_response = secrets_client.get_secret_value(secret_id: ENV["FIREBASE_CREDENTIALS"])
-        Rails.logger.debug "Secret successfully retrieved"
-
         json_content = secret_response.secret_string
 
         # Firebaseトークンを取得して返す
@@ -111,16 +104,8 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
           make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
           fetch_access_token!["access_token"]
       rescue Aws::SecretsManager::Errors::ServiceError => e
-        Rails.logger.error "Secrets Manager Error Details:"
-        Rails.logger.error "Error Class: #{e.class}"
-        Rails.logger.error "Error Message: #{e.message}"
-        Rails.logger.error "Error Code: #{e.code}" if e.respond_to?(:code)
         raise "シークレット情報取得エラー: #{e.message}"
       rescue => e
-        Rails.logger.error "Generic Error Details:"
-        Rails.logger.error "Error Class: #{e.class}"
-        Rails.logger.error "Error Message: #{e.message}"
-        Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
         raise "認証トークン取得エラー: #{e.message}"
       end
     end

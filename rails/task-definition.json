@@ -18,31 +18,31 @@
           "environment": [
               {
                   "name": "RAILS_LOG_TO_STDOUT",
-                  "value": "true"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/log-to-stdout-SD9sgh"
               },
               {
                   "name": "RAILS_HOST",
-                  "value": "n-put.com,backend.n-put.com,rails:3000,n-put-alb-backend-1023768941.ap-northeast-1.elb.amazonaws.com"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/host-vv6Vp6"
               },
               {
                   "name": "FIREBASE_PROJECT_ID",
-                  "value": "nput-auth"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/project-id-pDeFty"
               },
               {
                   "name": "RAILS_MASTER_KEY",
-                  "value": "3e624fdc798cf502a45a9e29b29e18c9"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/master-key-TexOKO"
               },
               {
                   "name": "AWS_BUCKET_NAME",
-                  "value": "n-put-image-storage"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/aws/bucket-name-A9IMGF"
               },
               {
                   "name": "REDIS_URL",
-                  "value": "redis://n-put-redis.3cecvj.ng.0001.apne1.cache.amazonaws.com:6379"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/redis/url-Zmv8cM"
               },
               {
                   "name": "FIREBASE_CREDENTIALS",
-                  "value": "config/firebase/firebase-service-account.json"
+                  "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/credentials-m90cFz"
               }
           ],
           "environmentFiles": [],
@@ -112,7 +112,7 @@
           "systemControls": []
       }
   ],
-  "taskRoleArn": "arn:aws:iam::715841369727:role/ecsS3AccessRole",
+  "taskRoleArn": "arn:aws:iam::715841369727:role/ecsTaskRole",
   "executionRoleArn": "arn:aws:iam::715841369727:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
   "volumes": [],

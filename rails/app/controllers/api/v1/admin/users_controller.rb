@@ -57,8 +57,23 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
     end
 
     def firebase_admin_token
-      file_path = ENV["FIREBASE_CREDENTIALS"]
-      json_content = File.read(file_path)
+      # file_path = ENV["FIREBASE_CREDENTIALS"]
+      # json_content = File.read(file_path)
+
+      # AWS SDKでSecrets Managerからシークレットを取得
+      secret_name = ENV["FIREBASE_CREDENTIALS"] # Secrets ManagerのARNを環境変数から取得
+      region = "ap-northeast-1" # 使用するリージョンを指定
+
+      # AWS Secrets Managerクライアントの作成
+      secrets_manager = Aws::SecretsManager::Client.new(region:)
+
+      # Secrets Managerからシークレットの値を取得
+      begin
+        secret_value = secrets_manager.get_secret_value(secret_id: secret_name)
+        json_content = secret_value.secret_string
+      rescue Aws::SecretsManager::Errors::ServiceError => e
+        raise "Unable to retrieve secret: #{e.message}"
+      end
 
       credentials = Google::Auth::DefaultCredentials.make_creds(
         json_key_io: StringIO.new(json_content),

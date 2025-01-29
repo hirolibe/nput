@@ -2,6 +2,7 @@ import { Delete } from '@mui/icons-material'
 import {
   Box,
   Button,
+  Container,
   Pagination,
   Paper,
   Table,
@@ -124,61 +125,65 @@ const ManageUsers: NextPage = () => {
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page' }}
       >
-        <Box sx={{ width: '100%', px: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Typography
-              sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', m: 2 }}
-            >
-              ユーザー管理
-            </Typography>
-          </Box>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 4 } }}>
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Typography
+                sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', m: 2 }}
+              >
+                ユーザー管理
+              </Typography>
+            </Box>
 
-          <TableContainer component={Paper} sx={{ borderRadius: 2, px: 5 }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>ユーザー名</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>
-                    メールアドレス
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>権限</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }} align="right">
-                    アクション
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users?.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell sx={{ py: 1 }}>{user.id}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{user.name}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{user.email}</TableCell>
-                    <TableCell sx={{ py: 1 }}>{user.role}</TableCell>
-                    <TableCell align="right" sx={{ py: 1 }}>
-                      <Button
-                        color="error"
-                        onClick={() => handleDeleteUser(user.id)}
-                      >
-                        <Delete />
-                      </Button>
+            <TableContainer component={Paper} sx={{ borderRadius: 2, p: 2 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>
+                      ユーザー名
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>
+                      メールアドレス
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>権限</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                      アクション
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {users?.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell sx={{ py: 1 }}>{user.id}</TableCell>
+                      <TableCell sx={{ py: 1 }}>{user.name}</TableCell>
+                      <TableCell sx={{ py: 1 }}>{user.email}</TableCell>
+                      <TableCell sx={{ py: 1 }}>{user.role}</TableCell>
+                      <TableCell align="right" sx={{ py: 1 }}>
+                        <Button
+                          color="error"
+                          onClick={() => handleDeleteUser(user.id)}
+                        >
+                          <Delete />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-          {meta && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-              <Pagination
-                count={meta?.totalPages}
-                page={meta?.currentPage}
-                onChange={handleChange}
-              />
-            </Box>
-          )}
-        </Box>
+            {meta && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+                <Pagination
+                  count={meta?.totalPages}
+                  page={meta?.currentPage}
+                  onChange={handleChange}
+                />
+              </Box>
+            )}
+          </Box>
+        </Container>
       </Box>
 
       {/* アカウント削除の確認画面 */}

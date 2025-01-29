@@ -95,7 +95,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      router.push('/')
+      await router.push('/')
       await signOut(auth)
       destroyCookieToken()
     } catch (err) {

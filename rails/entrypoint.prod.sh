@@ -6,8 +6,6 @@ echo "Start entrypoint.prod.sh"
 echo "rm -f /myapp/tmp/pids/server.pid"
 rm -f /myapp/tmp/pids/server.pid
 
-echo $RAILS_MASTER_KEY
-
 # echo "bundle exec rails db:create RAILS_ENV=production"
 # bundle exec rails db:create RAILS_ENV=production
 

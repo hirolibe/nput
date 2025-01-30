@@ -56,57 +56,29 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
       end
     end
 
-    # def firebase_admin_token
-    #   # AWS設定を環境に応じて初期化
-    #   aws_region = ENV["AWS_REGION"] || "ap-northeast-1"
-    #   config = { region: aws_region }
-    #   config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
-    #   unless Aws.config.update(config)
-    #     raise "AWS設定の更新に失敗しました"
-    #   end
-
-    #   # Secrets Managerから認証情報を取得
-    #   json_content = Aws::SecretsManager::Client.new.
-    #                    get_secret_value(secret_id: ENV["FIREBASE_CREDENTIALS"]).
-    #                    secret_string
-
-    #   # Firebaseトークンを取得して返す
-    #   Google::Auth::ServiceAccountCredentials.
-    #     make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
-    #     fetch_access_token!["access_token"]
-    # rescue Aws::SecretsManager::Errors::ServiceError => e
-    #   raise "シークレット情報取得エラー: #{e.message}"
-    # rescue => e
-    #   raise "認証トークン取得エラー: #{e.message}"
-    # end
-
     def firebase_admin_token
-      # AWS設定を環境に応じて初期化
-      aws_region = ENV["AWS_REGION"] || "ap-northeast-1"
-      config = { region: aws_region }
-      config[:credentials] = Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]) unless Rails.env.production?
-      unless Aws.config.update(config)
-        raise "AWS設定の更新に失敗しました"
+      # 開発環境のAWS設定
+      unless Rails.env.production?
+        config = {
+          region: ENV["AWS_REGION"],
+          credentials: Aws::Credentials.new(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"]),
+        }
+        updated_config = Aws.config.update(config)
+        if updated_config.blank?
+          raise "AWSの設定に失敗しました"
+        end
       end
 
-      # デバッグ情報の出力
-      Rails.logger.info "Credential value: #{ENV["FIREBASE_CREDENTIALS"]}"
-      Rails.logger.info "AWS Region: #{aws_region}"
+      # Secrets Managerから認証情報を取得
+      json_content = Aws::SecretsManager::Client.new.
+                       get_secret_value(secret_id: ENV["FIREBASE_CREDENTIALS"]).
+                       secret_string
 
-      begin
-        # Secrets Managerから認証情報を取得
-        secrets_client = Aws::SecretsManager::Client.new
-        secret_response = secrets_client.get_secret_value(secret_id: ENV["FIREBASE_CREDENTIALS"])
-        json_content = secret_response.secret_string
-
-        # Firebaseトークンを取得して返す
-        Google::Auth::ServiceAccountCredentials.
-          make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
-          fetch_access_token!["access_token"]
-      rescue Aws::SecretsManager::Errors::ServiceError => e
-        raise "シークレット情報取得エラー: #{e.message}"
-      rescue => e
-        raise "認証トークン取得エラー: #{e.message}"
-      end
+      # Firebaseトークンを取得して返す
+      Google::Auth::ServiceAccountCredentials.
+        make_creds(json_key_io: StringIO.new(json_content), scope: ["https://www.googleapis.com/auth/identitytoolkit"]).
+        fetch_access_token!["access_token"]
+    rescue => e
+      raise "認証トークン取得エラー: #{e.message}"
     end
 end

@@ -35,7 +35,7 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
     def delete_user(user)
       ActiveRecord::Base.transaction do
         user.destroy!
-        # delete_firebase_account(user.uid)
+        delete_firebase_account(user.uid)
       end
     end
 

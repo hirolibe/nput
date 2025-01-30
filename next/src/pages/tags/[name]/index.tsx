@@ -45,14 +45,14 @@ const TaggedNotes: NextPage = () => {
     setIsOpen(false)
   }
 
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    router.push(`/tags/${tagName}/?page=${value}`)
+  }
+
   if (notesError) {
     const { statusCode, errorMessage } = handleError(notesError)
 
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
-  }
-
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`/tags/${tagName}/?page=${value}`)
   }
 
   return (

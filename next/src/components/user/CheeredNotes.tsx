@@ -130,7 +130,7 @@ const CheeredNotes = () => {
         </Box>
       </Modal>
 
-      {meta && (
+      {!!meta?.totalPages && (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
           <Pagination
             count={meta?.totalPages}

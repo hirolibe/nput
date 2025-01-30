@@ -14,21 +14,35 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
+import SearchForm from '@/components/common/SearchForm'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
-import { useNotes, BasicNoteData } from '@/hooks/useNotes'
+import { BasicNoteData } from '@/hooks/useNotes'
+import { useSearchedNotes } from '@/hooks/useSearchedNotes'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
-const PublicNotes: NextPage = () => {
+const SearchedNotes: NextPage = () => {
   const router = useRouter()
-  const { notesData, notesError } = useNotes()
+  const query = 'q' in router.query ? String(router.query.q) : ''
+
+  const { notesData, notesError } = useSearchedNotes()
   const notes = notesData?.notes
   const meta = notesData?.meta
+  const notesCount = meta?.notesCount ?? 0
+
+  const page = meta?.currentPage ?? 1
+  const ITEMS_PER_PAGE = 10
+  const pageTopIndex = (page - 1) * ITEMS_PER_PAGE + 1
+  const pageEndIndex = Math.min(notesCount, page * ITEMS_PER_PAGE)
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
   const [description, setDescription] = useState<string | undefined>(undefined)
+
+  const handleSearch = (keyword: string) => {
+    router.push(`/search/?q=${keyword}`)
+  }
 
   const handleOpenDescription = (slug: string) => {
     const note = notes?.find((note) => note.slug === slug)
@@ -42,7 +56,9 @@ const PublicNotes: NextPage = () => {
   }
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`/?page=${value}`)
+    router.push(
+      query ? `/search/?q=${query}&page=${value}` : `/search/?page=${value}`,
+    )
   }
 
   if (notesError) {
@@ -55,7 +71,7 @@ const PublicNotes: NextPage = () => {
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>Nput</title>
+          <title>{`「${query}」の検索結果 | Nput`}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -63,18 +79,24 @@ const PublicNotes: NextPage = () => {
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page' }}
       >
-        <Container maxWidth="md" sx={{ pt: 4 }}>
-          <Typography
-            component={'h2'}
-            sx={{
-              textAlign: 'center',
-              fontSize: { xs: 18, sm: 24 },
-              fontWeight: 'bold',
-              mb: 3,
-            }}
-          >
-            新着ノート一覧
-          </Typography>
+        <Container maxWidth="md" sx={{ pt: 5 }}>
+          <SearchForm onSearch={handleSearch} />
+          <Box sx={{ display: 'flex', m: 2 }}>
+            <Typography
+              sx={{
+                fontSize: { xs: 14, sm: 16 },
+                fontWeight: 'bold',
+                mr: 1,
+              }}
+            >
+              {notesCount}件の検索結果
+            </Typography>
+            {!!notesCount && (
+              <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>
+                {pageTopIndex}~{pageEndIndex}件目を表示中
+              </Typography>
+            )}
+          </Box>
           <Grid container spacing={4}>
             {!notesData &&
               Array.from({ length: 10 }).map((_, i) => (
@@ -104,6 +126,21 @@ const PublicNotes: NextPage = () => {
               </Grid>
             ))}
           </Grid>
+          {!notes && (
+            <Box sx={{ width: '100%' }}>
+              <Typography
+                sx={{
+                  textAlign: 'center',
+                  fontSize: { xs: 14, sm: 16 },
+                  color: 'text.light',
+                  fontWeight: 'bold',
+                  mb: 3,
+                }}
+              >
+                「{query}」に一致するノートは見つかりませんでした
+              </Typography>
+            </Box>
+          )}
 
           <Modal open={isOpen} onClose={handleClose}>
             <Box
@@ -166,4 +203,4 @@ const PublicNotes: NextPage = () => {
   )
 }
 
-export default PublicNotes
+export default SearchedNotes

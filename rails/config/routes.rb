@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :notes, only: [:index]
       resources :my_notes, only: [:index, :show, :create, :update, :destroy], param: :slug
       resources :tags, only: [:index]
+      resources :searched_notes, only: [:index]
 
       get "/:name", to: "users#show", as: :user
       delete "/:name", to: "users#destroy", as: :delete_user

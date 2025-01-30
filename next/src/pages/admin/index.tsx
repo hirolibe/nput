@@ -173,7 +173,7 @@ const ManageUsers: NextPage = () => {
               </Table>
             </TableContainer>
 
-            {meta && (
+            {!!meta?.totalPages && (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
                 <Pagination
                   count={meta?.totalPages}

@@ -104,7 +104,8 @@ const Supporters = () => {
           <Divider />
         </Box>
       ))}
-      {meta && (
+
+      {!!meta?.totalPages && (
         <Box
           sx={{
             display: 'flex',

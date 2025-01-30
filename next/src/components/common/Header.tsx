@@ -3,6 +3,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import EditIcon from '@mui/icons-material/Edit'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
+import SearchIcon from '@mui/icons-material/Search'
 import SettingsIcon from '@mui/icons-material/Settings'
 import {
   AppBar,
@@ -154,10 +155,19 @@ const Header = () => {
           {profileData && (
             <Fade in={true} timeout={1000}>
               <Box sx={{ display: 'flex' }}>
-                <IconButton
-                  onClick={handleClick}
-                  sx={{ p: 0, mr: { xs: 1.5, sm: 2 } }}
-                >
+                <Link href="/search">
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      height: '100%',
+                      mr: 1.5,
+                    }}
+                  >
+                    <SearchIcon fontSize="large" />
+                  </Box>
+                </Link>
+                <IconButton onClick={handleClick} sx={{ p: 0, mr: 2 }}>
                   <Avatar
                     alt={profileData.nickname || profileData.user.name}
                     src={avatarUrl}

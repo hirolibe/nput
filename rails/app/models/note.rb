@@ -22,17 +22,16 @@ class Note < ApplicationRecord
   validate :validate_durations
   validate :tag_limit
 
-
   def self.calculate_total_durations(notes)
-    Duration.where(note_id: notes.map(&:id))
-           .group(:note_id)
-           .sum(:duration)
+    Duration.where(note_id: notes.map(&:id)).
+      group(:note_id).
+      sum(:duration)
   end
 
   scope :search_by_query, ->(query) {
     return all if query.blank?
 
-    where('title LIKE ? OR content LIKE ?', "%#{query}%", "%#{query}%")
+    where("title LIKE ? OR content LIKE ?", "%#{query}%", "%#{query}%")
   }
 
   private

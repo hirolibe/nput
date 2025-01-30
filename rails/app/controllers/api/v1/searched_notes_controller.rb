@@ -5,12 +5,12 @@ class Api::V1::SearchedNotesController < Api::V1::ApplicationController
     notes = Note.includes(
       user: { profile: { avatar_attachment: :blob } },
       tags: {},
-    ).published
-      .search_by_query(search_params[:q])
-      .order(published_at: :desc)
+    ).published.
+              search_by_query(search_params[:q]).
+              order(published_at: :desc)
 
-    notes_per_page = notes.page(params[:page] || 1)
-      .per(10)
+    notes_per_page = notes.page(params[:page] || 1).
+                       per(10)
 
     total_durations = Note.calculate_total_durations(notes)
 

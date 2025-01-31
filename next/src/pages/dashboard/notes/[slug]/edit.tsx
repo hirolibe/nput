@@ -671,6 +671,7 @@ const EditNote: NextPage = () => {
                         preCursorText={preCursorText}
                         postCursorText={postCursorText}
                         setIsChanged={setIsChanged}
+                        saveContent={saveContent}
                       />
                       <Box
                         sx={{

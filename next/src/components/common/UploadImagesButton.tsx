@@ -14,6 +14,7 @@ export interface UploadImagesButtonProps {
   preCursorText?: string
   postCursorText?: string
   setIsChanged?: Dispatch<SetStateAction<boolean>>
+  saveContent?: (content: string) => void
 }
 
 export const UploadImagesButton = (props: UploadImagesButtonProps) => {
@@ -26,6 +27,7 @@ export const UploadImagesButton = (props: UploadImagesButtonProps) => {
     preCursorText,
     postCursorText,
     setIsChanged,
+    saveContent,
   } = props
 
   const handleUploadImages = () => {
@@ -102,6 +104,7 @@ export const UploadImagesButton = (props: UploadImagesButtonProps) => {
     const imageTags = imageTagList.join('\n')
     const newContent = `${preCursorText}${imageTags}${postCursorText}`
     setContent?.(newContent)
+    saveContent?.(newContent)
   }
 
   return (

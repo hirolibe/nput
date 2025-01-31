@@ -164,7 +164,7 @@ const Header = () => {
                       mr: 1.5,
                     }}
                   >
-                    <SearchIcon fontSize="large" />
+                    <SearchIcon sx={{ fontSize: 26, color: 'text.light' }} />
                   </Box>
                 </Link>
                 <IconButton onClick={handleClick} sx={{ p: 0, mr: 2 }}>

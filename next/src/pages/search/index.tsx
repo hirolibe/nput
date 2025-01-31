@@ -71,7 +71,7 @@ const SearchedNotes: NextPage = () => {
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>{`「${query}」の検索結果 | Nput`}</title>
+          <title>{query ? `「${query}」の` : ''}検索結果 | Nput</title>
         </Helmet>
       </HelmetProvider>
 
@@ -82,15 +82,19 @@ const SearchedNotes: NextPage = () => {
         <Container maxWidth="md" sx={{ pt: 5 }}>
           <SearchForm onSearch={handleSearch} />
           <Box sx={{ display: 'flex', m: 2 }}>
-            <Typography
-              sx={{
-                fontSize: { xs: 14, sm: 16 },
-                fontWeight: 'bold',
-                mr: 1,
-              }}
-            >
-              {notesCount}件の検索結果
-            </Typography>
+            {notes === undefined ? (
+              <Box sx={{ height: '24px' }}></Box>
+            ) : (
+              <Typography
+                sx={{
+                  fontSize: { xs: 14, sm: 16 },
+                  fontWeight: 'bold',
+                  mr: 1,
+                }}
+              >
+                {notes !== undefined ? `${notesCount}件の検索結果` : ''}
+              </Typography>
+            )}
             {!!notesCount && (
               <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>
                 {pageTopIndex}~{pageEndIndex}件目を表示中
@@ -126,19 +130,29 @@ const SearchedNotes: NextPage = () => {
               </Grid>
             ))}
           </Grid>
-          {!notes && (
-            <Box sx={{ width: '100%' }}>
-              <Typography
-                sx={{
-                  textAlign: 'center',
-                  fontSize: { xs: 14, sm: 16 },
-                  color: 'text.light',
-                  fontWeight: 'bold',
-                  mb: 3,
-                }}
-              >
-                「{query}」に一致するノートは見つかりませんでした
-              </Typography>
+          {!notes?.length && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100px',
+              }}
+            >
+              {notes !== undefined && query && (
+                <Typography
+                  sx={{
+                    textAlign: 'center',
+                    fontSize: { xs: 14, sm: 16 },
+                    color: 'text.light',
+                    fontWeight: 'bold',
+                    mb: 3,
+                  }}
+                >
+                  「{query}」に一致するノートは見つかりませんでした
+                </Typography>
+              )}
             </Box>
           )}
 

@@ -168,8 +168,9 @@ URL: [https://n-put.com](https://n-put.com)
 ### 5-2. 図解
 #### インフラ構成図
 - Route53によるDNS管理
-- HTTPからHTTPSへの自動リダイレクト実装によるセキュアな通信
-- パブリック/プライベートサブネットの分離
+- ACMによるALBへのSSL/TLS証明書付与
+- ALBにおけるHTTPからHTTPSへの自動リダイレクト
+- RDSのプライベートサブネットへの配置
 - Secrets Managerによる秘密情報管理
 - GitHub ActionsとECRを連携した自動デプロイパイプライン
 

@@ -152,22 +152,22 @@ const Header = () => {
             !isProfileLoading &&
             profileData === null) ||
             profileError) && (
-              <Box sx={{ display: 'flex' }}>
-                <Link href="/search">
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      height: '100%',
-                      mr: 1.5,
-                    }}
-                  >
-                    <SearchIcon sx={{ fontSize: 26, color: 'text.light' }} />
-                  </Box>
-                </Link>
-                <AuthLinks />
-              </Box>
-            )}
+            <Box sx={{ display: 'flex' }}>
+              <Link href="/search">
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '100%',
+                    mr: 1.5,
+                  }}
+                >
+                  <SearchIcon sx={{ fontSize: 26, color: 'text.light' }} />
+                </Box>
+              </Link>
+              <AuthLinks />
+            </Box>
+          )}
           {profileData && (
             <Fade in={true} timeout={1000}>
               <Box sx={{ display: 'flex' }}>

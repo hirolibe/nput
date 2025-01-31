@@ -29,9 +29,11 @@ class Note < ApplicationRecord
   end
 
   scope :search_by_query, ->(query) {
-    return all if query.blank?
+    where("title LIKE :query OR content LIKE :query", query: "%#{sanitize_sql_like(query)}%")
+  }
 
-    where("title LIKE ? OR content LIKE ?", "%#{query}%", "%#{query}%")
+  scope :delete_by_query, ->(query) {
+    where.not("title LIKE :query OR content LIKE :query", query: "%#{sanitize_sql_like(query)}%")
   }
 
   private

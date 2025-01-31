@@ -22,17 +22,17 @@ class Api::V1::SearchedNotesController < Api::V1::ApplicationController
 
     def find_notes
       notes = public_notes
-      queries = (params[:q] || '').split(/[[:blank:]]+/).select(&:present?)
+      queries = (params[:q] || "").split(/[[:blank:]]+/).select(&:present?)
 
       return notes if queries.blank?
 
-      searched_notes = search_notes(notes, queries)
+      search_notes(notes, queries)
     end
 
     def paginate_notes(notes)
       notes.order(published_at: :desc).
-            page(params[:page] || 1).
-            per(10)
+        page(params[:page] || 1).
+        per(10)
     end
 
     def public_notes
@@ -48,12 +48,14 @@ class Api::V1::SearchedNotesController < Api::V1::ApplicationController
 
       result = positive_queries.reduce(notes) do |scope, query|
         next scope if query.blank?
+
         scope.search_by_query(query)
       end
 
       negative_queries.reduce(result) do |scope, query|
         next scope if query.blank?
-        scope.delete_by_query(query.delete_prefix('-'))
+
+        scope.delete_by_query(query.delete_prefix("-"))
       end
     end
 end

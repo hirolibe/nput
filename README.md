@@ -170,7 +170,7 @@ URL: [https://n-put.com](https://n-put.com)
 - パブリック/プライベートサブネットの分離
 - GitHub ActionsとECRを連携した自動デプロイパイプライン
 
-![Image](https://github.com/user-attachments/assets/2c947f1e-6b63-4f08-8ad9-757767884a19)
+![Image](https://github.com/user-attachments/assets/cce47778-de3e-4f4c-87c4-87f11394a12c)
 
 #### ER図
 - カウンターキャッシュを利用して、合計数（例: cheers_count）を効率的に取得

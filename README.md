@@ -174,7 +174,7 @@ URL: [https://n-put.com](https://n-put.com)
 - Secrets Managerによる秘密情報管理
 - GitHub ActionsとECRを連携した自動デプロイパイプライン
 
-![Image](https://github.com/user-attachments/assets/cce47778-de3e-4f4c-87c4-87f11394a12c)
+![Image](https://github.com/user-attachments/assets/cb2375d9-4cfe-49a0-9e4e-0fe19a8d39c2)
 
 #### ER図
 - カウンターキャッシュを利用して、合計数（例: cheers_count）を効率的に取得

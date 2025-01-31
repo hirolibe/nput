@@ -196,6 +196,7 @@ URL: [https://n-put.com](https://n-put.com)
 - 秘密情報管理
 
 → Secrets ManagerをVPC内に配置し、インターネットからのアクセスを抑制
+
 → RDSの認証情報をSecrets Managerで管理
 <br><br>
 

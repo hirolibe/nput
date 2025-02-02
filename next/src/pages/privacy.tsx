@@ -1,4 +1,4 @@
-import { Box, Container, Paper, Typography } from '@mui/material'
+import { Box, Container, Divider, Paper, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
@@ -38,11 +38,12 @@ const Terms: NextPage = () => {
                 textAlign: 'center',
                 fontSize: { xs: 22, sm: 28 },
                 fontWeight: 'bold',
-                mb: 4,
+                mb: 2,
               }}
             >
               プライバシーポリシー
             </Typography>
+            <Divider sx={{ mb: 4 }} />
             <MarkdownText content={markdownContent} />
           </Paper>
         </Container>

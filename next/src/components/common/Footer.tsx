@@ -21,7 +21,6 @@ const Footer = () => {
           sx={{
             display: { sm: 'flex' },
             justifyContent: 'space-between',
-            alignItems: 'center',
           }}
         >
           {/* ロゴ */}
@@ -29,10 +28,37 @@ const Footer = () => {
             <Logo />
           </Box>
 
-          {/* リンク */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Link href="/terms">利用規約</Link>
-            <Link href="/privacy">プライバシーポリシー</Link>
+          <Box sx={{ display: 'flex', gap: 4 }}>
+            {/* Guides */}
+            <Box>
+              <Typography sx={{ fontWeight: 'bold', mb: 2 }}>Guides</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  fontSize: 14,
+                }}
+              >
+                <Link href="/manual">使い方</Link>
+              </Box>
+            </Box>
+
+            {/* Legal */}
+            <Box>
+              <Typography sx={{ fontWeight: 'bold', mb: 2 }}>Legal</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  fontSize: 14,
+                }}
+              >
+                <Link href="/terms">利用規約</Link>
+                <Link href="/privacy">プライバシーポリシー</Link>
+              </Box>
+            </Box>
           </Box>
         </Box>
 

@@ -9,7 +9,7 @@ const Terms: NextPage = () => {
   const [markdownContent, setMarkdownContent] = useState('')
   useEffect(() => {
     const fetchMarkdown = async () => {
-      const response = await fetch('/terms/terms-v1.md')
+      const response = await fetch('/manual.md')
       const text = await response.text()
       setMarkdownContent(text)
     }
@@ -22,7 +22,7 @@ const Terms: NextPage = () => {
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>利用規約 | Nput</title>
+          <title>使い方 | Nput</title>
         </Helmet>
       </HelmetProvider>
 
@@ -41,7 +41,7 @@ const Terms: NextPage = () => {
                 mb: 2,
               }}
             >
-              利用規約
+              使い方
             </Typography>
             <Divider sx={{ mb: 4 }} />
             <MarkdownText content={markdownContent} />

@@ -15,28 +15,13 @@ class Api::V1::Auth::GuestRegistrationsController < Api::V1::ApplicationControll
       return render json: { error: "認証情報が無効です" }, status: :unauthorized
     end
 
-    begin
-      ActiveRecord::Base.transaction do
-        user = User.create!(uid: decoded_token["sub"], email: generate_random_email, name: generate_random_name)
+    create_guest_account(decoded_token)
 
-        note_data = DummyData::Note::NOTE
-        note = user.notes.create!(
-          title: note_data[:title],
-          content: note_data[:content],
-          status: :unsaved,
-        )
-
-        create_durations(note)
-        note.status = "draft"
-        note.save!
-
-        render json: { message: "ゲストとしてログインしました！" }, status: :created
-      end
-    rescue ActiveRecord::RecordInvalid
-      render json: { error: "アカウントの作成に失敗しました" }, status: :unprocessable_entity
-    rescue
-      render json: { error: "予期せぬエラーが発生しました" }, status: :internal_server_error
-    end
+    render json: { message: "ゲストとしてログインしました！" }, status: :created
+  rescue ActiveRecord::RecordInvalid
+    render json: { error: "アカウントの作成に失敗しました" }, status: :unprocessable_entity
+  rescue
+    render json: { error: "予期せぬエラーが発生しました" }, status: :internal_server_error
   end
 
   private
@@ -47,6 +32,20 @@ class Api::V1::Auth::GuestRegistrationsController < Api::V1::ApplicationControll
 
     def generate_random_name
       "Guest_#{SecureRandom.hex(5)}"
+    end
+
+    def create_guest_account(token)
+      ActiveRecord::Base.transaction do
+        user = User.create!(uid: token["sub"], email: generate_random_email, name: generate_random_name)
+        note_data = DummyData::Note::NOTE
+        note = user.notes.create!(
+          title: note_data[:title],
+          content: note_data[:content],
+          status: :unsaved,
+        )
+        create_durations(note)
+        note.update!(status: :draft)
+      end
     end
 
     def create_durations(note)

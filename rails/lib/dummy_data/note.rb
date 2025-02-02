@@ -2,7 +2,7 @@ module DummyData
   module Note
     NOTE = {
       title: "NputのMarkdown記法一覧",
-      content: <<~CONTENT
+      content: <<~CONTENT,
         このページでは、NputのMarkdown記法を一覧で紹介します。
 
         # 見出し
@@ -139,6 +139,6 @@ module DummyData
         <!-- ここに記載したコメントはページ上に表示されません -->
         <br><br>
       CONTENT
-    }
+    }.freeze
   end
 end

@@ -32,17 +32,17 @@ import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
+import DisplayDuration from '@/components/note/DisplayDuration'
 import MarkdownText from '@/components/note/MarkdownText'
 import { MarkdownToolbar } from '@/components/note/MarkdownToolbar'
 import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
-import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
+import { useDuration } from '@/hooks/useDuration'
 import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useNote } from '@/hooks/useNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
-import { useTimeTracking } from '@/hooks/useTimeTracking'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
 
@@ -65,7 +65,6 @@ const EditNote: NextPage = () => {
   const { noteData, noteError } = useNote()
 
   const { tagsData } = useTags()
-  const { seconds } = useTimeTracking()
 
   const [isPreviewActive, setIsPreviewActive] = useState<boolean>(false)
   const [statusChecked, setStatusChecked] = useState<boolean>(false)
@@ -80,7 +79,7 @@ const EditNote: NextPage = () => {
   const [inputTags, setInputTags] = useState<string[]>([])
   const [inputValue, setInputValue] = useState<string>('')
 
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(0)
+  const { getElapsedSeconds } = useDuration()
   const [previousSeconds, setPreviousSeconds] = useState<number>(0)
 
   const [openBackConfirmDialog, setOpenBackConfirmDialog] =
@@ -254,10 +253,14 @@ const EditNote: NextPage = () => {
 
     setIsLoading(true)
 
+    // URL
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
 
+    // 送信するデータ
     const status = statusChecked ? 'published' : 'draft'
-    const workDuration = remainingSeconds + seconds - previousSeconds
+    const currentSeconds = getElapsedSeconds()
+    const workDuration = currentSeconds - previousSeconds
+
     const patchData = {
       note: {
         ...data,
@@ -269,13 +272,13 @@ const EditNote: NextPage = () => {
       duration: workDuration,
     }
 
+    // ヘッダー
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
       const res = await axios.patch(url, patchData, { headers })
 
-      setRemainingSeconds((seconds - previousSeconds) % 60)
-      setPreviousSeconds(seconds)
+      setPreviousSeconds(currentSeconds)
 
       setSnackbar({
         message: res.data.message,
@@ -408,7 +411,7 @@ const EditNote: NextPage = () => {
             <Fade in={true} timeout={{ enter: 1000 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box>
-                  <Stack direction={'row'} spacing={3} sx={{ mr: 3 }}>
+                  <Stack direction={'row'} spacing={2} sx={{ mr: 2 }}>
                     <Box
                       sx={{
                         display: {
@@ -418,14 +421,7 @@ const EditNote: NextPage = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Box sx={{ mr: 3 }}>
-                        <CheerPoints addedCheerPoints={seconds} />
-                      </Box>
-
-                      <Typography sx={{ mr: 1 }}>Total</Typography>
-                      <TimeTracker
-                        seconds={(noteData?.totalDuration ?? 0) + seconds}
-                      />
+                      <CheerPoints />
                     </Box>
                     <Box
                       sx={{
@@ -441,9 +437,9 @@ const EditNote: NextPage = () => {
                           my: { xs: 0.5, md: 0 },
                         }}
                       >
-                        Session
+                        作業時間
                       </Typography>
-                      <TimeTracker seconds={seconds} />
+                      <DisplayDuration />
                     </Box>
                   </Stack>
                 </Box>

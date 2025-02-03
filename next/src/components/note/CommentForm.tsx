@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import AuthLinks from '../auth/AuthLinks'
 import { UploadImagesButton } from '../common/UploadImagesButton'
@@ -52,26 +52,11 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
   const theme = useTheme()
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const [cursorPosition, setCursorPosition] = useState<number | null>(null)
-  const [preCursorText, setPreCursorText] = useState<string>('')
-  const [postCursorText, setPostCursorText] = useState<string>('')
-
-  useEffect(() => {
-    setPreCursorText(comment?.slice(0, cursorPosition ?? undefined))
-    setPostCursorText(comment?.slice(cursorPosition ?? undefined))
-  }, [comment, cursorPosition, setPreCursorText, setPostCursorText])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setComment(e.target.value)
-    const position = textareaRef.current?.selectionStart || 0
-    setCursorPosition(position)
-  }
-
-  const updateCursorPosition = () => {
-    const position = textareaRef.current?.selectionStart || 0
-    setCursorPosition(position)
   }
 
   const handleViewMode = (mode: 'edit' | 'preview') => {
@@ -179,110 +164,110 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
 
           {/* コメントフォーム */}
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
-            {/* 入力欄 */}
-            {viewMode === 'edit' ? (
-              <Controller
-                name="content"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState }) => (
-                  <TextField
-                    {...field}
-                    placeholder="ノートにコメントする"
-                    fullWidth
-                    multiline
-                    rows={5}
-                    error={fieldState.invalid}
-                    helperText={fieldState.error?.message}
-                    variant="outlined"
-                    inputRef={textareaRef}
-                    value={comment}
-                    onChange={(e) => {
-                      field.onChange(e)
-                      handleChange(e)
-                    }}
-                    onClick={updateCursorPosition}
-                    onKeyUp={updateCursorPosition}
-                    sx={{
-                      '& .MuiInputBase-input': {
-                        fontSize: { xs: '14px', sm: '16px' },
-                        lineHeight: '25.6px',
-                      },
-                      '& .MuiOutlinedInput-root': {
+            <Controller
+              name="content"
+              control={control}
+              defaultValue=""
+              render={({ field, fieldState }) => (
+                <>
+                  {viewMode === 'edit' ? (
+                    <TextField
+                      {...field}
+                      placeholder="ノートにコメントする"
+                      fullWidth
+                      multiline
+                      rows={5}
+                      error={fieldState.invalid}
+                      helperText={fieldState.error?.message}
+                      variant="outlined"
+                      inputRef={textareaRef}
+                      value={comment}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        handleChange(e)
+                      }}
+                      sx={{
+                        '& .MuiInputBase-input': {
+                          fontSize: { xs: '14px', sm: '16px' },
+                          lineHeight: '25.6px',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 2,
+                        },
+                      }}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        border: '1px solid',
+                        borderColor: 'grey.400',
                         borderRadius: 2,
-                      },
-                    }}
-                  />
-                )}
-              />
-            ) : (
-              // プレビュー画面
-              <Box
-                sx={{
-                  border: '1px solid',
-                  borderColor: 'grey.400',
-                  borderRadius: 2,
-                  minHeight: '163px',
-                  overflowWrap: 'break-word',
-                  px: '13px',
-                  py: '15.5px',
-                }}
-              >
-                {comment ? (
-                  <MarkdownText content={comment} />
-                ) : (
+                        minHeight: '163px',
+                        overflowWrap: 'break-word',
+                        px: '13px',
+                        py: '15.5px',
+                      }}
+                    >
+                      {comment ? (
+                        <MarkdownText content={comment} />
+                      ) : (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '114px',
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              color: 'text.light',
+                              fontSize: { xs: '14px', sm: '16px' },
+                            }}
+                          >
+                            コメントが入力されていません
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  )}
+
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent: 'center',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      height: '114px',
+                      mt: 1,
                     }}
                   >
-                    <Typography
-                      sx={{
-                        color: 'text.light',
-                        fontSize: { xs: '14px', sm: '16px' },
+                    <UploadImagesButton
+                      textareaRef={textareaRef}
+                      content={comment}
+                      onContentChange={(newComment: string) => {
+                        setComment(newComment)
+                        field.onChange(newComment)
                       }}
-                    >
-                      コメントが入力されていません
-                    </Typography>
+                      setImageSignedIds={setImageSignedIds}
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <LoadingButton
+                        variant="contained"
+                        type="submit"
+                        loading={isLoading}
+                        disabled={!comment?.trim()}
+                        sx={{
+                          fontWeight: 'bold',
+                          color: 'white',
+                          borderRadius: 2,
+                        }}
+                      >
+                        投稿する
+                      </LoadingButton>
+                    </Box>
                   </Box>
-                )}
-              </Box>
-            )}
-
-            {/* 画像追加ボタン・投稿ボタン */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mt: 1,
-              }}
-            >
-              <UploadImagesButton
-                setImageSignedIds={setImageSignedIds}
-                setContent={setComment}
-                preCursorText={preCursorText}
-                postCursorText={postCursorText}
-              />
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <LoadingButton
-                  variant="contained"
-                  type="submit"
-                  loading={isLoading}
-                  disabled={!comment?.trim()}
-                  sx={{
-                    fontWeight: 'bold',
-                    color: 'white',
-                    borderRadius: 2,
-                  }}
-                >
-                  投稿する
-                </LoadingButton>
-              </Box>
-            </Box>
+                </>
+              )}
+            />
           </Box>
         </Box>
       )}

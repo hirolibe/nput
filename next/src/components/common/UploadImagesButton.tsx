@@ -3,32 +3,18 @@ import { IconButton, Tooltip } from '@mui/material'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
-import { Dispatch, SetStateAction } from 'react'
+import { MarkdownToolbarProps } from '../note/MarkdownToolbar'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
+import { insertMarkdown } from '@/utils/insertMarkdown'
 
-export interface UploadImagesButtonProps {
-  setImageSignedIds: Dispatch<SetStateAction<string | string[] | undefined>>
-  setContent?: Dispatch<SetStateAction<string>>
-  preCursorText?: string
-  postCursorText?: string
-  setIsChanged?: Dispatch<SetStateAction<boolean>>
-  saveContent?: (content: string) => void
-}
-
-export const UploadImagesButton = (props: UploadImagesButtonProps) => {
+export const UploadImagesButton = (props: MarkdownToolbarProps) => {
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
-  const {
-    setImageSignedIds,
-    setContent,
-    preCursorText,
-    postCursorText,
-    setIsChanged,
-    saveContent,
-  } = props
+
+  const { setImageSignedIds } = props
 
   const handleUploadImages = () => {
     const input = document.createElement('input')
@@ -75,8 +61,8 @@ export const UploadImagesButton = (props: UploadImagesButtonProps) => {
 
       setImageSignedIds(imageSignedIdList)
 
-      if (setContent) insertImageTagsAtCursor(imageTagList)
-      if (setIsChanged) setIsChanged(true)
+      const imageTags = imageTagList.join('\n')
+      insertMarkdown(props, imageTags)
 
       setSnackbar({
         message: 'アップロードが完了しました',
@@ -98,13 +84,6 @@ export const UploadImagesButton = (props: UploadImagesButtonProps) => {
     const data = camelcaseKeys(res.data, { deep: true })
     const signedId = data.signedId
     return signedId
-  }
-
-  const insertImageTagsAtCursor = (imageTagList: string[]) => {
-    const imageTags = imageTagList.join('\n')
-    const newContent = `${preCursorText}${imageTags}${postCursorText}`
-    setContent?.(newContent)
-    saveContent?.(newContent)
   }
 
   return (

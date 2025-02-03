@@ -33,7 +33,7 @@ import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import MarkdownText from '@/components/note/MarkdownText'
-import MarkdownToolbar from '@/components/note/MarkdownToolbar'
+import { MarkdownToolbar } from '@/components/note/MarkdownToolbar'
 import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
 import TimeTracker from '@/components/note/TimeTracker'
 import { useAuthContext } from '@/hooks/useAuthContext'
@@ -90,9 +90,22 @@ const EditNote: NextPage = () => {
   const [noteSlugToDelete, setNoteSlugToDelete] = useState<string | null>(null)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const [cursorPosition, setCursorPosition] = useState<number | null>(null)
-  const [preCursorText, setPreCursorText] = useState<string>('')
-  const [postCursorText, setPostCursorText] = useState<string>('')
+
+  const boxRef = useRef<HTMLDivElement>(null)
+  const [scrollPosition, setScrollPosition] = useState<number>(0)
+
+  useEffect(() => {
+    if (isPreviewActive && boxRef.current) {
+      console.log(scrollPosition)
+      boxRef.current.scrollTop = scrollPosition
+    }
+  }, [isPreviewActive, scrollPosition])
+
+  const handleScroll = () => {
+    if (boxRef.current) {
+      setScrollPosition(boxRef.current.scrollTop)
+    }
+  }
 
   const { saveContent, loadSavedContent, removeSavedContent } = useLocalStorage(
     noteSlug || '',
@@ -126,18 +139,11 @@ const EditNote: NextPage = () => {
     setOpenRestoreConfirmDialog(false)
   }
 
-  useEffect(() => {
-    setPreCursorText(content?.slice(0, cursorPosition ?? undefined))
-    setPostCursorText(content?.slice(cursorPosition ?? undefined))
-  }, [content, cursorPosition, setPreCursorText, setPostCursorText])
-
   const handleContentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const newValue = e.target.value
     setContent(newValue)
-    const position = textareaRef.current?.selectionStart || 0
-    setCursorPosition(position)
     if (!restoreContent) saveContent(newValue)
   }
 
@@ -171,11 +177,6 @@ const EditNote: NextPage = () => {
 
     setInputValue(newInputValue)
     setIsChanged(true)
-  }
-
-  const updateCursorPosition = () => {
-    const position = textareaRef.current?.selectionStart || 0
-    setCursorPosition(position)
   }
 
   const [imageSignedIds, setImageSignedIds] = useState<
@@ -661,17 +662,14 @@ const EditNote: NextPage = () => {
                     >
                       <MarkdownToolbar
                         textareaRef={textareaRef}
-                        onContentChange={(newContent) => {
+                        content={content}
+                        onContentChange={(newContent: string) => {
                           setContent(newContent)
                           field.onChange(newContent)
                         }}
-                        content={content}
                         setImageSignedIds={setImageSignedIds}
-                        setContent={setContent}
-                        preCursorText={preCursorText}
-                        postCursorText={postCursorText}
-                        setIsChanged={setIsChanged}
                         saveContent={saveContent}
+                        setIsChanged={setIsChanged}
                       />
                       <Box
                         sx={{
@@ -711,9 +709,7 @@ const EditNote: NextPage = () => {
                                   field.onChange(e)
                                   handleContentChange(e)
                                 }}
-                                onClick={updateCursorPosition}
-                                onKeyUp={updateCursorPosition}
-                                minRows={23}
+                                rows={28}
                                 sx={{
                                   '& .MuiInputBase-input': {
                                     fontSize: { xs: 14, md: 16 },
@@ -730,16 +726,19 @@ const EditNote: NextPage = () => {
                                   borderLeft: { md: '0.5px solid' },
                                   borderLeftColor: { md: 'divider' },
                                   width: { xs: '100%', md: '50%' },
-                                  minHeight: '600px',
+                                  height: '677px',
                                   px: '14px',
                                   py: '16.5px',
                                 }}
                               >
                                 {content ? (
                                   <Box
+                                    ref={boxRef}
+                                    onScroll={handleScroll}
                                     sx={{
                                       fontSize: { xs: 14, md: 16 },
                                       height: '100%',
+                                      overflow: 'auto',
                                     }}
                                   >
                                     <MarkdownText content={content} />
@@ -790,9 +789,7 @@ const EditNote: NextPage = () => {
                                       field.onChange(e)
                                       handleContentChange(e)
                                     }}
-                                    onClick={updateCursorPosition}
-                                    onKeyUp={updateCursorPosition}
-                                    minRows={23}
+                                    rows={28}
                                     sx={{
                                       '& .MuiInputBase-input': {
                                         fontSize: { xs: 14, md: 16 },
@@ -806,11 +803,21 @@ const EditNote: NextPage = () => {
                               />
                             )}
                             {isPreviewActive && (
-                              <Box sx={{ px: '14px', py: '15.5px' }}>
+                              <Box
+                                sx={{
+                                  height: '677px',
+                                  px: '14px',
+                                  py: '15.5px',
+                                }}
+                              >
                                 {content ? (
                                   <Box
+                                    ref={boxRef}
+                                    onScroll={handleScroll}
                                     sx={{
                                       fontSize: { xs: 14, md: 16 },
+                                      height: '100%',
+                                      overflow: 'auto',
                                     }}
                                   >
                                     <MarkdownText content={content} />

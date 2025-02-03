@@ -4,60 +4,38 @@ import FormatListBulleted from '@mui/icons-material/FormatListBulleted'
 import TableChart from '@mui/icons-material/TableChart'
 import FormatHeader from '@mui/icons-material/Title'
 import { IconButton, Stack, Tooltip, useMediaQuery } from '@mui/material'
-import React from 'react'
-import {
-  UploadImagesButton,
-  UploadImagesButtonProps,
-} from '../common/UploadImagesButton'
+import React, { Dispatch, SetStateAction } from 'react'
+import { UploadImagesButton } from '../common/UploadImagesButton'
 import LinkFormatter from './LinkFormatter'
+import { insertMarkdown } from '@/utils/insertMarkdown'
 
-interface MarkdownToolbarProps extends UploadImagesButtonProps {
+export interface MarkdownToolbarProps {
   textareaRef: React.RefObject<HTMLTextAreaElement>
-  onContentChange: (newContent: string) => void
   content: string
+  onContentChange: (newContent: string) => void
+  setImageSignedIds: Dispatch<SetStateAction<string | string[] | undefined>>
+  saveContent?: (content: string) => void
+  setIsChanged?: Dispatch<SetStateAction<boolean>>
 }
 
-const MarkdownToolbar = (props: MarkdownToolbarProps) => {
-  const { textareaRef, onContentChange, content } = props
+export const MarkdownToolbar = (props: MarkdownToolbarProps) => {
   const isSmScreen = useMediaQuery('(max-width:600px)')
-
-  const insertMarkdown = (before: string, after: string = '') => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selectedText = content.substring(start, end)
-    const newText =
-      content.substring(0, start) +
-      before +
-      selectedText +
-      after +
-      content.substring(end)
-
-    onContentChange(newText)
-
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + before.length, end + before.length)
-    }, 0)
-  }
 
   const formatters = [
     {
       title: '見出し',
       icon: <FormatHeader />,
-      action: () => insertMarkdown('# ', ''),
+      action: () => insertMarkdown(props, '# ', ''),
     },
     {
       title: '太字',
       icon: <FormatBold />,
-      action: () => insertMarkdown('**', '**'),
+      action: () => insertMarkdown(props, '**', '**'),
     },
     {
       title: 'リスト',
       icon: <FormatListBulleted />,
-      action: () => insertMarkdown('- '),
+      action: () => insertMarkdown(props, '- '),
     },
   ]
 
@@ -66,13 +44,14 @@ const MarkdownToolbar = (props: MarkdownToolbarProps) => {
       {
         title: 'コード',
         icon: <Code />,
-        action: () => insertMarkdown('```\n', '\n```'),
+        action: () => insertMarkdown(props, '```\n', '\n```'),
       },
       {
         title: 'テーブル',
         icon: <TableChart />,
         action: () =>
           insertMarkdown(
+            props,
             '| Header 1 | Header 2 | Header 3 |\n| --------- | --------- | --------- |\n| Row 1    | Row 1    | Row 1    |\n',
           ),
       },
@@ -111,10 +90,8 @@ const MarkdownToolbar = (props: MarkdownToolbarProps) => {
           </IconButton>
         </Tooltip>
       ))}
-      <LinkFormatter insertMarkdown={insertMarkdown} />
+      <LinkFormatter {...props} />
       <UploadImagesButton {...props} />
     </Stack>
   )
 }
-
-export default MarkdownToolbar

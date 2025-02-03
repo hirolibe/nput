@@ -10,12 +10,10 @@ import {
   Tooltip,
 } from '@mui/material'
 import { useState } from 'react'
+import { MarkdownToolbarProps } from './MarkdownToolbar'
+import { insertMarkdown } from '@/utils/insertMarkdown'
 
-interface LinkFormatterProps {
-  insertMarkdown: (before: string, after?: string) => void
-}
-
-const LinkFormatter = ({ insertMarkdown }: LinkFormatterProps) => {
+const LinkFormatter = (props: MarkdownToolbarProps) => {
   const [open, setOpen] = useState(false)
   const [url, setUrl] = useState('')
 
@@ -30,7 +28,7 @@ const LinkFormatter = ({ insertMarkdown }: LinkFormatterProps) => {
 
   const handleInsert = () => {
     if (url) {
-      insertMarkdown('[', `](${url})`)
+      insertMarkdown(props, '[', `](${url})`)
     }
     onClose()
   }

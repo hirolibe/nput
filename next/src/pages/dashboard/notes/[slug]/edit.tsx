@@ -437,7 +437,7 @@ const EditNote: NextPage = () => {
                           my: { xs: 0.5, md: 0 },
                         }}
                       >
-                        作業時間
+                        作成時間
                       </Typography>
                       <DisplayDuration />
                     </Box>

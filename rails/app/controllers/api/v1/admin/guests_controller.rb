@@ -1,5 +1,5 @@
 class Api::V1::Admin::GuestsController < Api::V1::ApplicationController
-  before_action :authenticate_admin!, only: [:destroy_guests]
+  before_action :authenticate_admin!, only: [:destroy_all]
 
   def destroy_all
     users = User.where(guest: true)

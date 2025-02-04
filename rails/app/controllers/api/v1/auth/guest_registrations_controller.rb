@@ -36,7 +36,7 @@ class Api::V1::Auth::GuestRegistrationsController < Api::V1::ApplicationControll
 
     def create_guest_account(token)
       ActiveRecord::Base.transaction do
-        user = User.create!(uid: token["sub"], email: generate_random_email, name: generate_random_name)
+        user = User.create!(uid: token["sub"], email: generate_random_email, name: generate_random_name, guest: true)
         note_data = DummyData::Note::NOTE
         note = user.notes.create!(
           title: note_data[:title],

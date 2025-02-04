@@ -50,16 +50,16 @@ const ManageUsers: NextPage = () => {
     router.push(`admin/?page=${value}`)
   }
 
-  const [open, setOpen] = useState<boolean>(false)
+  const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false)
   const [userIdToDelete, setUserIdToDelete] = useState<number | null>(null)
 
   const handleDeleteUser = (userId: number) => {
     if (!userId) return
     setUserIdToDelete(userId)
-    setOpen(true)
+    setOpenDeleteUser(true)
   }
 
-  const handleConfirm = async () => {
+  const handleConfirmDeleteUser = async () => {
     if (!userIdToDelete) return
 
     setIsLoading(true)
@@ -84,12 +84,46 @@ const ManageUsers: NextPage = () => {
       })
     } finally {
       setIsLoading(false)
-      setOpen(false)
+      setOpenDeleteUser(false)
+    }
+  }
+
+  const [openDeleteAllGuests, setOpenDeleteAllGuests] = useState<boolean>(false)
+
+  const handleDeleteAllGuests = () => {
+    setOpenDeleteAllGuests(true)
+  }
+
+  const handleConfirmDeleteAllGuests = async () => {
+    setIsLoading(true)
+
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/guests/destroy_all`
+    const headers = { Authorization: `Bearer ${idToken}` }
+
+    try {
+      const res = await axios.delete(url, { headers })
+      setUsers(users?.filter((user) => user.guest === false))
+      setSnackbar({
+        message: res.data.message,
+        severity: 'success',
+        pathname: router.pathname,
+      })
+    } catch (err) {
+      const { errorMessage } = handleError(err)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
+    } finally {
+      setIsLoading(false)
+      setOpenDeleteAllGuests(false)
     }
   }
 
   const handleClose = () => {
-    setOpen(false)
+    setOpenDeleteUser(false)
+    setOpenDeleteAllGuests(false)
   }
 
   if (usersError) {
@@ -127,12 +161,38 @@ const ManageUsers: NextPage = () => {
       >
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 4 } }}>
           <Box sx={{ width: '100%' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                p: 2,
+              }}
+            >
               <Typography
-                sx={{ fontSize: { xs: 18, sm: 24 }, fontWeight: 'bold', m: 2 }}
+                sx={{
+                  fontSize: { xs: 18, sm: 24 },
+                  fontWeight: 'bold',
+                }}
               >
                 ユーザー管理
               </Typography>
+              <Box>
+                <Button
+                  onClick={handleDeleteAllGuests}
+                  color="error"
+                  variant="contained"
+                  sx={{
+                    color: 'white',
+                    fontSize: { xs: 14, sm: 16 },
+                    borderRadius: 2,
+                    boxShadow: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  ゲスト削除
+                </Button>
+              </Box>
             </Box>
 
             <TableContainer component={Paper} sx={{ borderRadius: 2, p: 2 }}>
@@ -147,6 +207,7 @@ const ManageUsers: NextPage = () => {
                       メールアドレス
                     </TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>権限</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>ゲスト</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }} align="right">
                       アクション
                     </TableCell>
@@ -159,6 +220,9 @@ const ManageUsers: NextPage = () => {
                       <TableCell sx={{ py: 1 }}>{user.name}</TableCell>
                       <TableCell sx={{ py: 1 }}>{user.email}</TableCell>
                       <TableCell sx={{ py: 1 }}>{user.role}</TableCell>
+                      <TableCell sx={{ py: 1 }}>
+                        {user.guest ? 'guest' : ''}
+                      </TableCell>
                       <TableCell align="right" sx={{ py: 1 }}>
                         <Button
                           color="error"
@@ -188,10 +252,20 @@ const ManageUsers: NextPage = () => {
 
       {/* アカウント削除の確認画面 */}
       <ConfirmDialog
-        open={open}
+        open={openDeleteUser}
         onClose={handleClose}
-        onConfirm={handleConfirm}
+        onConfirm={handleConfirmDeleteUser}
         message={'アカウントを削除しますか？'}
+        confirmText="実行"
+        isLoading={isLoading}
+      />
+
+      {/* すべてのゲストユーザー削除の確認画面 */}
+      <ConfirmDialog
+        open={openDeleteAllGuests}
+        onClose={handleClose}
+        onConfirm={handleConfirmDeleteAllGuests}
+        message={'すべてのゲストユーザーを削除しますか？'}
         confirmText="実行"
         isLoading={isLoading}
       />

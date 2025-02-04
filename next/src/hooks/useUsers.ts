@@ -10,6 +10,7 @@ export interface UserSystemData {
   name: string
   email: string
   role: string
+  guest: boolean
 }
 
 export interface PagenatedUsersSystemData {

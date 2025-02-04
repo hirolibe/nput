@@ -10,6 +10,11 @@ Rails.application.routes.draw do
 
       namespace :admin do
         resources :users, only: [:index, :destroy]
+        resources :guests, only: [] do
+          collection do
+            delete :destroy_all
+          end
+        end
       end
 
       resource :profile, only: [:show, :update]

@@ -96,9 +96,9 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await router.push('/')
       await signOut(auth)
       destroyCookieToken()
+      await router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({

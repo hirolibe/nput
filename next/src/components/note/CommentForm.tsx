@@ -202,7 +202,7 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
                         border: '1px solid',
                         borderColor: 'grey.400',
                         borderRadius: 2,
-                        minHeight: '163px',
+                        minHeight: '130px',
                         overflowWrap: 'break-word',
                         px: '13px',
                         py: '15.5px',
@@ -216,7 +216,7 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            height: '114px',
+                            height: '130px',
                           }}
                         >
                           <Typography

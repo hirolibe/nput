@@ -1,6 +1,5 @@
 class Api::V1::ProfilesController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:show, :update]
-  before_action :restrict_guest_user!, only: [:update]
 
   def show
     profile = current_user.profile

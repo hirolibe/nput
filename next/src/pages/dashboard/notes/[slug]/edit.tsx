@@ -25,7 +25,7 @@ import {
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import CheerPoints from '@/components/common/CheerPoints'
@@ -89,22 +89,6 @@ const EditNote: NextPage = () => {
   const [noteSlugToDelete, setNoteSlugToDelete] = useState<string | null>(null)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  const boxRef = useRef<HTMLDivElement>(null)
-  const [scrollPosition, setScrollPosition] = useState<number>(0)
-
-  useEffect(() => {
-    if (isPreviewActive && boxRef.current) {
-      console.log(scrollPosition)
-      boxRef.current.scrollTop = scrollPosition
-    }
-  }, [isPreviewActive, scrollPosition])
-
-  const handleScroll = () => {
-    if (boxRef.current) {
-      setScrollPosition(boxRef.current.scrollTop)
-    }
-  }
 
   const { saveContent, loadSavedContent, removeSavedContent } = useLocalStorage(
     noteSlug || '',
@@ -230,8 +214,19 @@ const EditNote: NextPage = () => {
     }
   }, [note, reset])
 
-  const togglePreviewDisplay = () => {
-    setIsPreviewActive(!isPreviewActive)
+  const boxRef = useRef<HTMLDivElement>(null)
+  const [scrollPosition, setScrollPosition] = useState<number>(0)
+
+  const handleScroll = useCallback(() => {
+    if (!boxRef.current) return
+    setScrollPosition(boxRef.current.scrollTop)
+  }, [])
+
+  const togglePreviewDisplay = async () => {
+    await setIsPreviewActive(!isPreviewActive)
+
+    if (!boxRef.current) return
+    boxRef.current.scrollTop = scrollPosition
   }
 
   const toggleStatusChecked = () => {

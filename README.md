@@ -187,7 +187,6 @@ URL: [https://n-put.com](https://n-put.com)
 
 ## 6. 今後の展望
 ### 6-1. 課題と解決策
-#### セキュリティの向上
 - 認証
 
 → GoogleやGitHubなどのソーシャルログインを利用

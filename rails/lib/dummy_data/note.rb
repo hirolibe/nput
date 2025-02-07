@@ -5,42 +5,39 @@ module DummyData
       content: <<~CONTENT,
         このページでは、NputのMarkdown記法を一覧で紹介します。
 
-        # 見出し
+        ## 見出し
         ```
         # 見出し1
         ## 見出し2
         ### 見出し3
         #### 見出し4
         ```
-        <br><br>
 
-        # リスト
+        ## リスト
         ```
         - Hello World!
           - Hello!
+          - World!
         ```
         - Hello World!
           - Hello!
-          * Hi!
-        <br><br>
+          - World!
 
-        # 番号付きリスト
+        ## 番号付きリスト
         ```
         1. First
         2. Second
         ```
         1. First
         2. Second
-        <br><br>
 
-        # テキストリンク
+        ## テキストリンク
         ```
         [アンカーテキスト](リンクのURL)
         ```
         [アンカーテキスト](リンクのURL)
-        <br><br>
 
-        # 画像
+        ## 画像
         ```
         <img src="https://画像のURL" width="700" />
         ```
@@ -74,9 +71,8 @@ module DummyData
         ```
         [<img src="https://画像のURL" width="700" />](リンクのURL)
         ```
-        <br><br>
 
-        # テーブル
+        ## テーブル
         ```
         | Header 1 | Header 2 | Header 3 |
         | -------- | -------- | -------- |
@@ -90,33 +86,29 @@ module DummyData
         | Row 1    | Row 1    | Row 1    |
         | Row 2    | Row 2    | Row 2    |
 
-        <br><br>
 
-        # コードブロック
+        ## コードブロック
         コードは「```」で挟むことでブロックとして挿入できます。以下のように言語を指定するとコードへ装飾（シンタックスハイライト）が適用されます。
 
         ```js
         console.log("javascript")
         ```
         シンタックスハイライトにはPrismLightを使用しています。
-        <br><br>
 
-        # 引用
+        ## 引用
         ```
         > 引用文
         ```
         > 引用文
 
-        <br><br>
 
-        # 区切り線
+        ## 区切り線
         ```
         ---
         ```
         ---
-        <br><br>
 
-        # インラインスタイル
+        ## インラインスタイル
         ```
         *イタリック*
         **太字**
@@ -130,14 +122,12 @@ module DummyData
         ~~打ち消し線~~
 
         インラインで`code`を挿入する
-        <br><br>
 
-        # メモ
+        ## メモ
         ```
         <!-- ここに記載したコメントはページ上に表示されません -->
         ```
         <!-- ここに記載したコメントはページ上に表示されません -->
-        <br><br>
       CONTENT
     }.freeze
   end

@@ -8,9 +8,9 @@ import ConfirmDialog from '../common/ConfirmDialog'
 import CommentForm from './CommentForm'
 import MarkdownText from './MarkdownText'
 import { useAuthContext } from '@/hooks/useAuthContext'
+import { CommentData, NoteData } from '@/hooks/useNotes'
 import { ProfileData } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { CommentData, NoteData } from '@/pages/[name]/notes/[slug]'
 import { handleError } from '@/utils/handleError'
 
 interface CommentProps {

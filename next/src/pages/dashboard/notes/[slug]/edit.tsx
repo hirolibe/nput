@@ -40,7 +40,7 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useDuration } from '@/hooks/useDuration'
 import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { useNote } from '@/hooks/useNote'
+import { useMyNote } from '@/hooks/useMyNote'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useTags } from '@/hooks/useTags'
 import { styles } from '@/styles'
@@ -62,7 +62,7 @@ const EditNote: NextPage = () => {
   const router = useRouter()
   const { slug } = router.query
   const noteSlug = typeof slug === 'string' ? slug : undefined
-  const { noteData, noteError } = useNote()
+  const { noteData, noteError } = useMyNote()
 
   const { tagsData } = useTags()
 
@@ -202,16 +202,17 @@ const EditNote: NextPage = () => {
     setIsChanged(isDirty)
   }, [setIsChanged, isDirty])
 
-  useEffect(() => {
-    if (note === undefined) return
+  const initializedRef = useRef(false)
 
-    if (note) {
-      reset(note)
-      setContent(note.content)
-      setStatusChecked(note.status == '公開中')
-      setInputTags(note.tags)
-      setIsFetched(true)
-    }
+  useEffect(() => {
+    if (!note || initializedRef.current) return
+
+    reset(note)
+    setContent(note.content)
+    setStatusChecked(note.status == '公開中')
+    setInputTags(note.tags)
+    setIsFetched(true)
+    initializedRef.current = true
   }, [note, reset])
 
   const boxRef = useRef<HTMLDivElement>(null)

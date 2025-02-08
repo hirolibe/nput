@@ -17,9 +17,9 @@ import AuthLinks from '../auth/AuthLinks'
 import { UploadImagesButton } from '../common/UploadImagesButton'
 import MarkdownText from './MarkdownText'
 import { useAuthContext } from '@/hooks/useAuthContext'
+import { CommentData } from '@/hooks/useNotes'
 import { ProfileData } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { CommentData } from '@/pages/[name]/notes/[slug]'
 import { handleError } from '@/utils/handleError'
 
 interface CommentProps {

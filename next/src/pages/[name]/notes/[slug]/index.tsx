@@ -22,52 +22,11 @@ import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { CheerStatusData } from '@/hooks/useCheerStatus'
 import { FollowStatusData } from '@/hooks/useFollowStatus'
+import { NoteData } from '@/hooks/useNotes'
 import { ProfileData } from '@/hooks/useProfile'
 import { styles } from '@/styles'
 import { fetcher } from '@/utils/fetcher'
 import { handleError } from '@/utils/handleError'
-
-export interface CommentData {
-  id: number
-  content: string
-  fromToday: string
-  user: {
-    name: string
-    profile: {
-      nickname?: string
-      avatarUrl?: string
-    }
-  }
-}
-
-export interface NoteData {
-  id: number
-  title?: string
-  description?: string
-  content?: string
-  statusJp: '未保存' | '下書き' | '公開中'
-  publishedDate?: string
-  updatedDate: string
-  cheersCount: number
-  slug: string
-  totalDuration: number
-  comments?: CommentData[]
-  tags?: {
-    id: number
-    name: string
-  }[]
-  user: {
-    name: string
-    cheerPoints: number
-    profile: {
-      nickname?: string
-      bio?: string
-      xLink?: string
-      githubLink?: string
-      avatarUrl?: string
-    }
-  }
-}
 
 const fetchProfileData = async (
   baseUrl: string,
@@ -128,6 +87,7 @@ const fetchNoteData = async (
     return null
   }
 }
+
 interface NoteDetailProps {
   name: string
   slug: string

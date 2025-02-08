@@ -2,6 +2,48 @@ import { useRouter } from 'next/router'
 import useSWR, { SWRResponse } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 
+export interface CommentData {
+  id: number
+  content: string
+  fromToday: string
+  user: {
+    name: string
+    profile: {
+      nickname?: string
+      avatarUrl?: string
+    }
+  }
+}
+
+export interface NoteData {
+  id: number
+  title?: string
+  description?: string
+  content?: string
+  statusJp: '未保存' | '下書き' | '公開中'
+  publishedDate?: string
+  updatedDate: string
+  cheersCount: number
+  slug: string
+  totalDuration: number
+  comments?: CommentData[]
+  tags?: {
+    id: number
+    name: string
+  }[]
+  user: {
+    name: string
+    cheerPoints: number
+    profile: {
+      nickname?: string
+      bio?: string
+      xLink?: string
+      githubLink?: string
+      avatarUrl?: string
+    }
+  }
+}
+
 export interface BasicNoteData {
   id: number
   title: string

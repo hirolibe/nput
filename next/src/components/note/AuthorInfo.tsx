@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { Dispatch, SetStateAction } from 'react'
 import { FaGithub, FaXTwitter } from 'react-icons/fa6'
 import { FollowButton } from '../common/FollowButton'
-import { NoteData } from '@/hooks/useNote'
+import { NoteData } from '@/hooks/useNotes'
 import { ProfileData } from '@/hooks/useProfile'
 import { goToUserX, goToUserGithub } from '@/utils/socialLinkHandlers'
 

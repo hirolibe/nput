@@ -1,4 +1,4 @@
-import { AppBar, Box, Fade, Stack, TextField, Typography } from '@mui/material'
+import { AppBar, Box, Fade, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -364,174 +364,84 @@ const EditNote: NextPage = () => {
                           px: 2,
                         }}
                       >
-                        {!openSidebar && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            width: '100%',
+                            height: '100%',
+                          }}
+                        >
                           <Box
                             sx={{
-                              display: 'flex',
-                              width: '100%',
-                              height: '100%',
+                              width: {
+                                xs: isPreviewActive ? 0 : '100%',
+                                md: openSidebar
+                                  ? isPreviewActive
+                                    ? 0
+                                    : '100%'
+                                  : isPreviewActive
+                                    ? '50%'
+                                    : '100%',
+                              },
+                            }}
+                          >
+                            <TextField
+                              {...field}
+                              type="textarea"
+                              error={fieldState.invalid}
+                              helperText={fieldState.error?.message}
+                              multiline
+                              fullWidth
+                              placeholder="本文を入力してください（マークダウン記法）"
+                              inputRef={textareaRef}
+                              value={content}
+                              onChange={(e) => {
+                                field.onChange(e)
+                                handleContentChange(e)
+                              }}
+                              rows={28}
+                              sx={{
+                                '& .MuiInputBase-input': {
+                                  fontSize: { xs: 14, md: 16 },
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none',
+                                },
+                              }}
+                            />
+                          </Box>
+                          <Box
+                            sx={{
+                              borderLeft: {
+                                md: openSidebar ? 0 : '0.5px solid',
+                              },
+                              borderLeftColor: { md: 'divider' },
+                              width: {
+                                xs: isPreviewActive ? '100%' : 0,
+                                md: isPreviewActive
+                                  ? openSidebar
+                                    ? '100%'
+                                    : '50%'
+                                  : 0,
+                              },
+                              height: '677px',
+                              px: isPreviewActive ? '14px' : 0,
+                              py: '16.5px',
                             }}
                           >
                             <Box
+                              ref={boxRef}
+                              onScroll={handleScroll}
                               sx={{
-                                width: {
-                                  xs: isPreviewActive ? 0 : '100%',
-                                  md: isPreviewActive ? '50%' : '100%',
-                                },
+                                fontSize: { xs: 14, md: 16 },
+                                height: '100%',
+                                overflow: 'auto',
                               }}
                             >
-                              <TextField
-                                {...field}
-                                type="textarea"
-                                error={fieldState.invalid}
-                                helperText={fieldState.error?.message}
-                                multiline
-                                fullWidth
-                                placeholder="本文を入力してください（マークダウン記法）"
-                                inputRef={textareaRef}
-                                value={content}
-                                onChange={(e) => {
-                                  field.onChange(e)
-                                  handleContentChange(e)
-                                }}
-                                rows={28}
-                                sx={{
-                                  '& .MuiInputBase-input': {
-                                    fontSize: { xs: 14, md: 16 },
-                                  },
-                                  '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none',
-                                  },
-                                }}
-                              />
+                              <MarkdownText content={content || 'No content'} />
                             </Box>
-                            {isPreviewActive && (
-                              <Box
-                                sx={{
-                                  borderLeft: { md: '0.5px solid' },
-                                  borderLeftColor: { md: 'divider' },
-                                  width: { xs: '100%', md: '50%' },
-                                  height: '677px',
-                                  px: '14px',
-                                  py: '16.5px',
-                                }}
-                              >
-                                {content ? (
-                                  <Box
-                                    ref={boxRef}
-                                    onScroll={handleScroll}
-                                    sx={{
-                                      fontSize: { xs: 14, md: 16 },
-                                      height: '100%',
-                                      overflow: 'auto',
-                                    }}
-                                  >
-                                    <MarkdownText content={content} />
-                                  </Box>
-                                ) : (
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      height: '100%',
-                                    }}
-                                  >
-                                    <Typography
-                                      sx={{
-                                        fontSize: { xs: 20, md: 24 },
-                                        color: 'text.placeholder',
-                                        fontFamily:
-                                          'Roboto, Helvetica, Arial, sans-serif',
-                                      }}
-                                    >
-                                      No content
-                                    </Typography>
-                                  </Box>
-                                )}
-                              </Box>
-                            )}
                           </Box>
-                        )}
-                        {openSidebar && (
-                          <>
-                            {!isPreviewActive && (
-                              <Controller
-                                name="content"
-                                control={control}
-                                render={({ field, fieldState }) => (
-                                  <TextField
-                                    {...field}
-                                    type="textarea"
-                                    error={fieldState.invalid}
-                                    helperText={fieldState.error?.message}
-                                    multiline
-                                    fullWidth
-                                    placeholder="本文を入力してください（マークダウン記法）"
-                                    inputRef={textareaRef}
-                                    value={content}
-                                    onChange={(e) => {
-                                      field.onChange(e)
-                                      handleContentChange(e)
-                                    }}
-                                    rows={28}
-                                    sx={{
-                                      '& .MuiInputBase-input': {
-                                        fontSize: { xs: 14, md: 16 },
-                                      },
-                                      '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                      },
-                                    }}
-                                  />
-                                )}
-                              />
-                            )}
-                            {isPreviewActive && (
-                              <Box
-                                sx={{
-                                  height: '677px',
-                                  px: '14px',
-                                  py: '15.5px',
-                                }}
-                              >
-                                {content ? (
-                                  <Box
-                                    ref={boxRef}
-                                    onScroll={handleScroll}
-                                    sx={{
-                                      fontSize: { xs: 14, md: 16 },
-                                      height: '100%',
-                                      overflow: 'auto',
-                                    }}
-                                  >
-                                    <MarkdownText content={content} />
-                                  </Box>
-                                ) : (
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      height: '540px',
-                                    }}
-                                  >
-                                    <Typography
-                                      sx={{
-                                        fontSize: { xs: 20, md: 24 },
-                                        color: 'text.placeholder',
-                                        fontFamily:
-                                          'Roboto, Helvetica, Arial, sans-serif',
-                                      }}
-                                    >
-                                      No content
-                                    </Typography>
-                                  </Box>
-                                )}
-                              </Box>
-                            )}
-                          </>
-                        )}
+                        </Box>
                       </Box>
                     </Box>
                   )}

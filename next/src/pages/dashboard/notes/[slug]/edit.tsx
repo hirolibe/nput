@@ -7,7 +7,6 @@ import {
   AppBar,
   Autocomplete,
   Box,
-  Button,
   Chip,
   Divider,
   Drawer,
@@ -30,7 +29,7 @@ import Loading from '@/components/common/Loading'
 import MarkdownText from '@/components/note/MarkdownText'
 import { MarkdownToolbar } from '@/components/note/MarkdownToolbar'
 import { NoteEditorToolbar } from '@/components/note/NoteEditorToolbar'
-import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
+import { RestoreConfirmationBanner } from '@/components/note/RestoreConfirmagionBanner'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useDuration } from '@/hooks/useDuration'
 import useEnsureAuth from '@/hooks/useEnsureAuth'
@@ -83,37 +82,16 @@ const EditNote: NextPage = () => {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const { saveContent, loadSavedContent, removeSavedContent } = useLocalStorage(
+  const { loadSavedContent, saveContent, removeSavedContent } = useLocalStorage(
     noteSlug || '',
   )
-  const [restoreContent, setRestoreContent] = useState<string>('')
+
   const loadedContent = useMemo(() => loadSavedContent(), [loadSavedContent])
+  const [restoreContent, setRestoreContent] = useState<string>('')
 
   useEffect(() => {
     if (loadedContent) setRestoreContent(loadedContent)
-  }, [loadedContent])
-
-  const [openRestoreConfirmDialog, setOpenRestoreConfirmDialog] =
-    useState<boolean>(false)
-
-  const handleOpenRestoreConfirmDialog = () => {
-    setOpenRestoreConfirmDialog(true)
-  }
-
-  const handleRestore = () => {
-    setContent(restoreContent)
-    setRestoreContent('')
-    setOpenRestoreConfirmDialog(false)
-  }
-
-  const handleRejectRestore = () => {
-    setRestoreContent('')
-    setOpenRestoreConfirmDialog(false)
-  }
-
-  const handleCloseRestoreConfirmDialog = () => {
-    setOpenRestoreConfirmDialog(false)
-  }
+  }, [loadedContent, setRestoreContent])
 
   const handleContentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -375,98 +353,14 @@ const EditNote: NextPage = () => {
 
         {/* ローカルストレージのデータ復元 */}
         {restoreContent && (
-          <Box
-            sx={{
-              backgroundColor: 'secondary.main',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minheight: '60px',
-                pl: 2,
-                pr: openSidebar ? 4 : 2,
-                py: 2,
-                mb: { xs: 1, sm: 3 },
-              }}
-            >
-              <Box
-                sx={{
-                  display: { sm: 'flex' },
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography
-                  sx={{
-                    textAlign: 'center',
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: 'text.light',
-                    mr: { xs: 0, sm: 3 },
-                    mb: { xs: 1, sm: 0 },
-                  }}
-                >
-                  保存されていないデータがあります
-                </Typography>
-                <Box sx={{ textAlign: { xs: 'center', sm: undefined } }}>
-                  <Button
-                    onClick={handleRejectRestore}
-                    variant="contained"
-                    sx={{
-                      fontSize: { xs: 12, sm: 14 },
-                      fontWeight: 'bold',
-                      color: 'text.light',
-                      boxShadow: 'none',
-                      borderRadius: 50,
-                      backgroundColor: 'white',
-                      width: '90px',
-                      height: '30px',
-                      mr: 2,
-                      '&:hover': {
-                        boxShadow: 'none',
-                        backgroundColor: 'backgroundColor.hover',
-                      },
-                    }}
-                  >
-                    削除する
-                  </Button>
-                  <Button
-                    onClick={handleOpenRestoreConfirmDialog}
-                    variant="contained"
-                    sx={{
-                      fontSize: { xs: 12, sm: 14 },
-                      fontWeight: 'bold',
-                      color: 'text.light',
-                      boxShadow: 'none',
-                      borderRadius: 50,
-                      backgroundColor: 'white',
-                      width: '90px',
-                      height: '30px',
-                      '&:hover': {
-                        boxShadow: 'none',
-                        backgroundColor: 'backgroundColor.hover',
-                      },
-                    }}
-                  >
-                    確認する
-                  </Button>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
+          <RestoreConfirmationBanner
+            openSidebar={openSidebar}
+            content={content}
+            setContent={setContent}
+            restoreContent={restoreContent}
+            setRestoreContent={setRestoreContent}
+          />
         )}
-
-        <RestoreConfirmDialog
-          open={openRestoreConfirmDialog}
-          onReject={handleRejectRestore}
-          onRestore={handleRestore}
-          onClose={handleCloseRestoreConfirmDialog}
-          currentContent={content}
-          restoreContent={loadSavedContent()}
-        />
 
         {/* ノート */}
         <Fade in={true} timeout={{ enter: 1000 }}>

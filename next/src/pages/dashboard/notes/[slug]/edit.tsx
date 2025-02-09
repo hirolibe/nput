@@ -1,10 +1,8 @@
-import ArrowBackSharpIcon from '@mui/icons-material/ArrowBackSharp'
 import CloseIcon from '@mui/icons-material/Close'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined'
 import SellOutlinedIcon from '@mui/icons-material/SellOutlined'
-import { LoadingButton } from '@mui/lab'
 import {
   AppBar,
   Autocomplete,
@@ -16,9 +14,7 @@ import {
   Fade,
   IconButton,
   Stack,
-  Switch,
   TextField,
-  Toolbar,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -28,13 +24,12 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
-import CheerPoints from '@/components/common/CheerPoints'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
-import DisplayDuration from '@/components/note/DisplayDuration'
 import MarkdownText from '@/components/note/MarkdownText'
 import { MarkdownToolbar } from '@/components/note/MarkdownToolbar'
+import { NoteEditorToolbar } from '@/components/note/NoteEditorToolbar'
 import { RestoreConfirmDialog } from '@/components/note/RestoreConfirmDialog'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useDuration } from '@/hooks/useDuration'
@@ -82,8 +77,6 @@ const EditNote: NextPage = () => {
   const { getElapsedSeconds } = useDuration()
   const [previousSeconds, setPreviousSeconds] = useState<number>(0)
 
-  const [openBackConfirmDialog, setOpenBackConfirmDialog] =
-    useState<boolean>(false)
   const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] =
     useState<boolean>(false)
   const [noteSlugToDelete, setNoteSlugToDelete] = useState<string | null>(null)
@@ -230,10 +223,6 @@ const EditNote: NextPage = () => {
     boxRef.current.scrollTop = scrollPosition
   }
 
-  const toggleStatusChecked = () => {
-    setStatusChecked(!statusChecked)
-  }
-
   const toggleSidebar = () => {
     setOpenSidebar(!openSidebar)
   }
@@ -296,23 +285,6 @@ const EditNote: NextPage = () => {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleBackWithConfirmation = () => {
-    if (isChanged) {
-      setOpenBackConfirmDialog(true)
-      return
-    }
-    router.push('/dashboard')
-  }
-
-  const handleBackConfirm = () => {
-    setOpenBackConfirmDialog(false)
-    router.push('/dashboard')
-  }
-
-  const handleCloseBackConfirmDialog = () => {
-    setOpenBackConfirmDialog(false)
   }
 
   const handleDeleteNote = (noteSlug?: string) => {
@@ -390,93 +362,13 @@ const EditNote: NextPage = () => {
             boxShadow: 'none',
           }}
         >
-          <Toolbar
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              transition: 'margin 0.2s',
-              marginRight: openSidebar ? '385px' : 0,
-            }}
-          >
-            <Box sx={{ maxWidth: 35 }}>
-              <IconButton onClick={handleBackWithConfirmation}>
-                <ArrowBackSharpIcon />
-              </IconButton>
-            </Box>
-            <Fade in={true} timeout={{ enter: 1000 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box>
-                  <Stack direction={'row'} spacing={2} sx={{ mr: 2 }}>
-                    <Box
-                      sx={{
-                        display: {
-                          xs: 'none',
-                          md: openSidebar ? 'none' : 'flex',
-                        },
-                        alignItems: 'center',
-                      }}
-                    >
-                      <CheerPoints />
-                    </Box>
-                    <Box
-                      sx={{
-                        display: { xs: undefined, md: 'flex' },
-                        alignItems: 'center',
-                        textAlign: 'center',
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: { xs: 13, md: 15 },
-                          mr: { xs: 0, md: 1 },
-                          my: { xs: 0.5, md: 0 },
-                        }}
-                      >
-                        作成時間
-                      </Typography>
-                      <DisplayDuration />
-                    </Box>
-                  </Stack>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      display: { xs: undefined, md: 'flex' },
-                      alignItems: 'center',
-                      textAlign: 'center',
-                      mr: 2,
-                      mt: { xs: 1, md: 0 },
-                    }}
-                  >
-                    <Typography sx={{ fontSize: { xs: 12, md: 15 } }}>
-                      公開設定
-                    </Typography>
-                    <Switch
-                      checked={statusChecked}
-                      onChange={toggleStatusChecked}
-                    />
-                  </Box>
-                  <LoadingButton
-                    variant={statusChecked ? 'contained' : 'outlined'}
-                    type="submit"
-                    loading={isLoading}
-                    sx={{
-                      color: statusChecked ? 'white' : 'primary',
-                      fontWeight: 'bold',
-                      fontSize: { xs: 14, md: 16 },
-                      border: statusChecked ? 'none' : '2px solid',
-                      borderRadius: 2,
-                      width: { xs: '115px', md: '120px' },
-                      height: '40px',
-                    }}
-                  >
-                    {statusChecked ? '公開する' : '下書き保存'}
-                  </LoadingButton>
-                </Box>
-              </Box>
-            </Fade>
-          </Toolbar>
+          <NoteEditorToolbar
+            openSidebar={openSidebar}
+            statusChecked={statusChecked}
+            isLoading={isLoading}
+            isChanged={isChanged}
+            setStatusChecked={setStatusChecked}
+          />
         </AppBar>
 
         <Box sx={{ backgroundColor: 'backgroundColor.page', height: '64px' }} />
@@ -916,26 +808,17 @@ const EditNote: NextPage = () => {
                 </Box>
               </Box>
             </Stack>
-
-            {/* 変更内容破棄の確認画面 */}
-            <ConfirmDialog
-              open={openBackConfirmDialog}
-              onClose={handleCloseBackConfirmDialog}
-              onConfirm={handleBackConfirm}
-              message={'変更内容を保存せずに編集を終了しますか？'}
-              confirmText="終了"
-            />
-
-            {/* ノート削除の確認画面 */}
-            <ConfirmDialog
-              open={openDeleteConfirmDialog}
-              onClose={handleCloseDeleteConfirmDialog}
-              onConfirm={handleDeleteConfirm}
-              message={'ノートを削除しますか？'}
-              confirmText="実行"
-            />
           </Box>
         </Fade>
+
+        {/* ノート削除の確認画面 */}
+        <ConfirmDialog
+          open={openDeleteConfirmDialog}
+          onClose={handleCloseDeleteConfirmDialog}
+          onConfirm={handleDeleteConfirm}
+          message={'ノートを削除しますか？'}
+          confirmText="実行"
+        />
 
         <Drawer
           open={openSidebar}

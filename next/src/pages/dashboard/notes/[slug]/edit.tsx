@@ -1,4 +1,4 @@
-import { AppBar, Box, Fade, Stack, TextField } from '@mui/material'
+import { AppBar, Box, Fade, Stack, TextField, Typography } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -438,7 +438,13 @@ const EditNote: NextPage = () => {
                                 overflow: 'auto',
                               }}
                             >
-                              <MarkdownText content={content || 'No content'} />
+                              {content ? (
+                                <MarkdownText content={content} />
+                              ) : (
+                                <Typography sx={{ color: 'text.placeholder' }}>
+                                  No content
+                                </Typography>
+                              )}
                             </Box>
                           </Box>
                         </Box>

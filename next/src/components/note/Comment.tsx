@@ -14,10 +14,10 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 interface CommentProps {
-  name: string
-  slug: string
-  profileData: ProfileData | null
-  noteData: NoteData
+  name?: string
+  slug?: string
+  profileData?: ProfileData | null
+  noteData?: NoteData
 }
 
 const Comment = ({ name, slug, profileData, noteData }: CommentProps) => {
@@ -28,7 +28,7 @@ const Comment = ({ name, slug, profileData, noteData }: CommentProps) => {
   const currentUserName = profileData?.user.name
 
   const [comments, setComments] = useState<CommentData[]>(
-    noteData.comments || [],
+    noteData?.comments || [],
   )
   const [commentIdToDelete, setCommentIdToDelete] = useState<number | null>(
     null,

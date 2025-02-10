@@ -15,8 +15,8 @@ import { ProfileData } from '@/hooks/useProfile'
 import { goToUserX, goToUserGithub } from '@/utils/socialLinkHandlers'
 
 export interface AuthorInfoProps {
-  profileData: ProfileData | null
-  noteData: NoteData
+  profileData?: ProfileData | null
+  noteData?: NoteData
   followState: {
     isFollowed: boolean | undefined
     setIsFollowed: Dispatch<SetStateAction<boolean | undefined>>
@@ -28,7 +28,9 @@ export const AuthorInfo = ({
   noteData,
   followState,
 }: AuthorInfoProps) => {
-  const authorName = noteData.user.name
+  if (!noteData) return
+
+  const authorName = noteData?.user.name
   const {
     nickname: authorNickname,
     avatarUrl: authorAvatarUrl,

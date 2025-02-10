@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { parseCookies } from 'nookies'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import Error from '@/components/common/Error'
 import { AuthorInfo } from '@/components/note/AuthorInfo'
 import { CheerButton } from '@/components/note/CheerButton'
 import Comment from '@/components/note/Comment'
@@ -32,12 +33,13 @@ import { fetchProfileData } from '@/utils/fetchProfileData'
 import { handleError } from '@/utils/handleError'
 
 interface NoteDetailProps {
-  name: string
-  slug: string
-  profileData: ProfileData | null
-  noteData: NoteData
-  cheerStatusData: CheerStatusData | null
-  followStatusData: FollowStatusData | null
+  name?: string
+  slug?: string
+  profileData?: ProfileData | null
+  noteData?: NoteData
+  cheerStatusData?: CheerStatusData | null
+  followStatusData?: FollowStatusData | null
+  error?: { statusCode: number | null; errorMessage: string | null }
 }
 
 export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
@@ -73,10 +75,6 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
     }
     noteData = await fetchNoteData(baseUrl, name, slug, idToken, userName)
 
-    if (!noteData) {
-      return { notFound: true }
-    }
-
     return {
       props: {
         name,
@@ -88,8 +86,12 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
       },
     }
   } catch (err) {
-    handleError(err)
-    return { notFound: true }
+    const { statusCode, errorMessage } = handleError(err)
+    return {
+      props: {
+        error: { statusCode, errorMessage },
+      },
+    }
   }
 }
 
@@ -101,15 +103,16 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     noteData,
     cheerStatusData,
     followStatusData,
+    error,
   } = props
 
   const currentUserName = profileData?.user.name
-  const isDraft = noteData.statusJp === '下書き'
+  const isDraft = noteData?.statusJp === '下書き'
 
   const [isCheered, setIsCheered] = useState<boolean | undefined>(
     cheerStatusData?.hasCheered ?? false,
   )
-  const [cheersCount, setCheersCount] = useState(noteData.cheersCount)
+  const [cheersCount, setCheersCount] = useState(noteData?.cheersCount)
   const cheerState = {
     isCheered,
     setIsCheered,
@@ -125,12 +128,21 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     setIsFollowed,
   }
 
+  if (error) {
+    return (
+      <Error
+        statusCode={error?.statusCode}
+        errorMessage={error?.errorMessage}
+      />
+    )
+  }
+
   return (
     <>
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>{noteData.title}</title>
+          <title>{noteData?.title}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -199,10 +211,10 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               alignItems: 'center',
             }}
           >
-            <Link href={`/${noteData.user.name}`}>
+            <Link href={`/${noteData?.user.name}`}>
               <Avatar
-                alt={noteData.user.profile.nickname || noteData.user.name}
-                src={noteData.user.profile.avatarUrl}
+                alt={noteData?.user.profile.nickname || noteData?.user.name}
+                src={noteData?.user.profile.avatarUrl}
               />
             </Link>
           </Box>
@@ -224,11 +236,11 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 sx={{
                   fontSize: { xs: 24, sm: 36 },
                   fontWeight: 'bold',
-                  color: noteData.title ? 'black' : 'text.placeholder',
+                  color: noteData?.title ? 'black' : 'text.placeholder',
                   mb: 2,
                 }}
               >
-                {noteData.title || 'No title'}
+                {noteData?.title || 'No title'}
               </Typography>
             </Box>
             <Stack
@@ -243,13 +255,13 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               }}
             >
               {!isDraft && (
-                <Typography>投稿日：{noteData.publishedDate}</Typography>
+                <Typography>投稿日：{noteData?.publishedDate}</Typography>
               )}
-              <Typography>最終更新日：{noteData.updatedDate}</Typography>
+              <Typography>最終更新日：{noteData?.updatedDate}</Typography>
               <Typography>
                 作成時間：
-                {Math.floor(noteData.totalDuration / 3600)}時間
-                {Math.floor((noteData.totalDuration % 3600) / 60)}分
+                {Math.floor((noteData?.totalDuration ?? 0) / 3600)}時間
+                {Math.floor(((noteData?.totalDuration ?? 0) % 3600) / 60)}分
               </Typography>
             </Stack>
           </Box>
@@ -332,7 +344,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 }}
               >
                 {/* タグ */}
-                {noteData.tags?.length !== 0 && (
+                {noteData?.tags?.length !== 0 && (
                   <Box
                     sx={{
                       overflowX: 'auto',
@@ -344,7 +356,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                     }}
                   >
                     <Stack direction="row" spacing={1}>
-                      {noteData.tags?.map((tag, i: number) => (
+                      {noteData?.tags?.map((tag, i: number) => (
                         <Link key={i} href={`/tags/${tag.name}`}>
                           <Chip
                             label={tag.name}
@@ -364,8 +376,8 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
                 {/* 本文 */}
                 <Box sx={{ fontSize: { xs: '14px', sm: '16px' }, mb: 5 }}>
-                  {noteData.content && (
-                    <MarkdownText content={noteData.content} />
+                  {noteData?.content && (
+                    <MarkdownText content={noteData?.content} />
                   )}
                 </Box>
 

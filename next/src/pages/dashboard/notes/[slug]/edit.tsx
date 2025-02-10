@@ -1,13 +1,13 @@
-import { AppBar, Box, Fade, Stack, TextField, Typography } from '@mui/material'
+import { AppBar, Box, Fade, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
-import MarkdownText from '@/components/note/MarkdownText'
+import ContentBox from '@/components/note/ContentBox'
 import { MarkdownToolbar } from '@/components/note/MarkdownToolbar'
 import NoteEditorButtons from '@/components/note/NoteEditorButtons'
 import NoteEditorSidebar from '@/components/note/NoteEditorSidebar'
@@ -33,49 +33,21 @@ export interface NoteFormData {
 const EditNote: NextPage = () => {
   const isAuthorized = useEnsureAuth()
 
-  const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuthContext()
+  // ローカルストレージからのcontentデータ取得
   const router = useRouter()
   const { slug } = router.query
   const noteSlug = typeof slug === 'string' ? slug : undefined
-  const { noteData, noteError } = useMyNote()
-
-  const [isPreviewActive, setIsPreviewActive] = useState<boolean>(false)
-  const [statusChecked, setStatusChecked] = useState<boolean>(false)
-  const [isFetched, setIsFetched] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [openSidebar, setOpenSidebar] = useState<boolean>(false)
-  const [content, setContent] = useState<string>('')
-  const [inputTags, setInputTags] = useState<string[]>([])
-
-  const { getElapsedSeconds } = useDuration()
-  const [previousSeconds, setPreviousSeconds] = useState<number>(0)
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-
   const { loadSavedContent, saveContent, removeSavedContent } = useLocalStorage(
     noteSlug || '',
   )
-
   const loadedContent = useMemo(() => loadSavedContent(), [loadSavedContent])
   const [restoreContent, setRestoreContent] = useState<string>('')
-
   useEffect(() => {
     if (loadedContent) setRestoreContent(loadedContent)
   }, [loadedContent, setRestoreContent])
 
-  const handleContentChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const newValue = e.target.value
-    setContent(newValue)
-    if (!restoreContent) saveContent(newValue)
-  }
-
-  const [imageSignedIds, setImageSignedIds] = useState<
-    string | string[] | undefined
-  >(undefined)
-
+  // ノートデータの取得
+  const { noteData, noteError } = useMyNote()
   const note: NoteFormData | undefined = useMemo(() => {
     if (noteData === undefined) return
 
@@ -88,6 +60,61 @@ const EditNote: NextPage = () => {
     }
   }, [noteData])
 
+  // 初回レンダリング時のノートデータ反映処理
+  const { handleSubmit, control, reset, formState } = useForm<NoteFormData>()
+  const initializedRef = useRef(false)
+  const [content, setContent] = useState<string>('')
+  const [statusChecked, setStatusChecked] = useState<boolean>(false)
+  const [inputTags, setInputTags] = useState<string[]>([])
+  const [isFetched, setIsFetched] = useState<boolean>(false)
+  useEffect(() => {
+    if (!note || initializedRef.current) return
+
+    reset(note)
+    setContent(note.content)
+    setStatusChecked(note.status == '公開中')
+    setInputTags(note.tags)
+    setIsFetched(true)
+    initializedRef.current = true
+  }, [note, reset])
+
+  // 編集有無のチェック
+  const { isDirty } = formState
+  const [isChanged, setIsChanged] = useState<boolean>(false)
+  useEffect(() => {
+    setIsChanged(isDirty)
+  }, [setIsChanged, isDirty])
+
+  // content入力内容の反映とローカルストレージへの保存
+  const handleContentChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const newValue = e.target.value
+    setContent(newValue)
+    if (!restoreContent) saveContent(newValue)
+  }
+
+  // プレビュー画面の表示切り替え
+  const [isPreviewActive, setIsPreviewActive] = useState<boolean>(false)
+  const boxRef = useRef<HTMLDivElement>(null) // ContentBoxのプレビュー画面のRef
+  const [scrollPosition, setScrollPosition] = useState<number>(0) // プレビュー画面のスクロール位置の状態管理
+  const togglePreviewDisplay = async () => {
+    await setIsPreviewActive(!isPreviewActive)
+
+    if (!boxRef.current) return
+    boxRef.current.scrollTop = scrollPosition // プレビュー画面のスクロール位置復元処理
+  }
+
+  // サイドバー（タグ・概要入力フィールド）の表示切り替え
+  const [openSidebar, setOpenSidebar] = useState<boolean>(false)
+  const toggleSidebar = () => {
+    setOpenSidebar(!openSidebar)
+  }
+
+  // マークダウンテキスト編集用の状態管理
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // バリデーションルール
   const validationRules = {
     title: {
       maxLength: {
@@ -103,66 +130,25 @@ const EditNote: NextPage = () => {
     },
   }
 
-  const { handleSubmit, control, reset, formState } = useForm<NoteFormData>({
-    defaultValues: note,
-  })
-  const { isDirty } = formState
-  const [isChanged, setIsChanged] = useState<boolean>(false)
-  useEffect(() => {
-    setIsChanged(isDirty)
-  }, [setIsChanged, isDirty])
-
-  const initializedRef = useRef(false)
-
-  useEffect(() => {
-    if (!note || initializedRef.current) return
-
-    reset(note)
-    setContent(note.content)
-    setStatusChecked(note.status == '公開中')
-    setInputTags(note.tags)
-    setIsFetched(true)
-    initializedRef.current = true
-  }, [note, reset])
-
-  const boxRef = useRef<HTMLDivElement>(null)
-  const [scrollPosition, setScrollPosition] = useState<number>(0)
-
-  const handleScroll = useCallback(() => {
-    if (!boxRef.current) return
-    setScrollPosition(boxRef.current.scrollTop)
-  }, [])
-
-  const togglePreviewDisplay = async () => {
-    await setIsPreviewActive(!isPreviewActive)
-
-    if (!boxRef.current) return
-    boxRef.current.scrollTop = scrollPosition
-  }
-
-  const toggleSidebar = () => {
-    setOpenSidebar(!openSidebar)
-  }
-
+  // ノート保存処理
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [, setSnackbar] = useSnackbarState()
+  const { idToken } = useAuthContext()
+  const { getElapsedSeconds } = useDuration()
+  const [previousSeconds, setPreviousSeconds] = useState<number>(0)
+  const [imageSignedIds, setImageSignedIds] = useState<
+    string | string[] | undefined
+  >(undefined)
   const onSubmit: SubmitHandler<NoteFormData> = async (data) => {
-    if (statusChecked && (data.title == '' || data.content == '')) {
-      return setSnackbar({
-        message: 'タイトルまたは本文が入力されていません',
-        severity: 'error',
-        pathname: router.pathname,
-      })
-    }
-
     setIsLoading(true)
 
-    // URL
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
+    const headers = { Authorization: `Bearer ${idToken}` }
 
     // 送信するデータ
     const status = statusChecked ? 'published' : 'draft'
     const currentSeconds = getElapsedSeconds()
     const workDuration = currentSeconds - previousSeconds
-
     const patchData = {
       note: {
         ...data,
@@ -174,24 +160,18 @@ const EditNote: NextPage = () => {
       duration: workDuration,
     }
 
-    // ヘッダー
-    const headers = { Authorization: `Bearer ${idToken}` }
-
     try {
       const res = await axios.patch(url, patchData, { headers })
-
       setPreviousSeconds(currentSeconds)
-
+      setIsChanged(false)
+      removeSavedContent()
+      setRestoreContent('')
+      reset(data)
       setSnackbar({
         message: res.data.message,
         severity: 'success',
         pathname: router.pathname,
       })
-
-      setIsChanged(false)
-      removeSavedContent()
-      setRestoreContent('')
-      reset(data)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -356,99 +336,17 @@ const EditNote: NextPage = () => {
                         saveContent={saveContent}
                         setIsChanged={setIsChanged}
                       />
-                      <Box
-                        sx={{
-                          backgroundColor: 'white',
-                          width: '100%',
-                          minHeight: '600px',
-                          px: 2,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            width: '100%',
-                            height: '100%',
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              width: {
-                                xs: isPreviewActive ? 0 : '100%',
-                                md: openSidebar
-                                  ? isPreviewActive
-                                    ? 0
-                                    : '100%'
-                                  : isPreviewActive
-                                    ? '50%'
-                                    : '100%',
-                              },
-                            }}
-                          >
-                            <TextField
-                              {...field}
-                              type="textarea"
-                              error={fieldState.invalid}
-                              helperText={fieldState.error?.message}
-                              multiline
-                              fullWidth
-                              placeholder="本文を入力してください（マークダウン記法）"
-                              inputRef={textareaRef}
-                              value={content}
-                              onChange={(e) => {
-                                field.onChange(e)
-                                handleContentChange(e)
-                              }}
-                              rows={28}
-                              sx={{
-                                '& .MuiInputBase-input': {
-                                  fontSize: { xs: 14, md: 16 },
-                                },
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                  border: 'none',
-                                },
-                              }}
-                            />
-                          </Box>
-                          <Box
-                            sx={{
-                              borderLeft: {
-                                md: openSidebar ? 0 : '0.5px solid',
-                              },
-                              borderLeftColor: { md: 'divider' },
-                              width: {
-                                xs: isPreviewActive ? '100%' : 0,
-                                md: isPreviewActive
-                                  ? openSidebar
-                                    ? '100%'
-                                    : '50%'
-                                  : 0,
-                              },
-                              height: '677px',
-                              px: isPreviewActive ? '14px' : 0,
-                              py: '16.5px',
-                            }}
-                          >
-                            <Box
-                              ref={boxRef}
-                              onScroll={handleScroll}
-                              sx={{
-                                fontSize: { xs: 14, md: 16 },
-                                height: '100%',
-                                overflow: 'auto',
-                              }}
-                            >
-                              {content ? (
-                                <MarkdownText content={content} />
-                              ) : (
-                                <Typography sx={{ color: 'text.placeholder' }}>
-                                  No content
-                                </Typography>
-                              )}
-                            </Box>
-                          </Box>
-                        </Box>
-                      </Box>
+                      <ContentBox
+                        isPreviewActive={isPreviewActive}
+                        openSidebar={openSidebar}
+                        field={field}
+                        fieldState={fieldState}
+                        textareaRef={textareaRef}
+                        content={content}
+                        handleContentChange={handleContentChange}
+                        boxRef={boxRef}
+                        setScrollPosition={setScrollPosition}
+                      />
                     </Box>
                   )}
                 />

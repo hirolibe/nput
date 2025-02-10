@@ -23,10 +23,10 @@ import { handleError } from '@/utils/handleError'
 
 export interface CheerButtonProps {
   cheerState: {
-    isCheered: boolean | undefined
+    isCheered?: boolean
     setIsCheered: Dispatch<SetStateAction<boolean | undefined>>
-    cheersCount: number
-    setCheersCount: Dispatch<SetStateAction<number>>
+    cheersCount?: number
+    setCheersCount: Dispatch<SetStateAction<number | undefined>>
   }
   boxParams?: { flexDirection?: string; gap?: number }
   backgroundColor?: string

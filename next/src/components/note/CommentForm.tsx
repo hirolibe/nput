@@ -23,9 +23,9 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 interface CommentProps {
-  name: string
-  slug: string
-  profileData: ProfileData | null
+  name?: string
+  slug?: string
+  profileData?: ProfileData | null
   addComment: (newComment: CommentData) => void
 }
 

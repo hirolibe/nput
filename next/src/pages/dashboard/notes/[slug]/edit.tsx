@@ -219,6 +219,7 @@ const EditNote: NextPage = () => {
           mr: openSidebar ? '385px' : 0,
         }}
       >
+        {/* ヘッダー表示（矢印・エールポイント・公開設定・保存ボタン） */}
         <AppBar
           position="fixed"
           sx={{
@@ -235,7 +236,6 @@ const EditNote: NextPage = () => {
             setStatusChecked={setStatusChecked}
           />
         </AppBar>
-
         <Box sx={{ backgroundColor: 'backgroundColor.page', height: '64px' }} />
 
         {/* ローカルストレージのデータ復元 */}
@@ -325,6 +325,7 @@ const EditNote: NextPage = () => {
                         width: '100%',
                       }}
                     >
+                      {/* マークダウン挿入ボタン */}
                       <MarkdownToolbar
                         textareaRef={textareaRef}
                         content={content}
@@ -336,6 +337,8 @@ const EditNote: NextPage = () => {
                         saveContent={saveContent}
                         setIsChanged={setIsChanged}
                       />
+
+                      {/* 本文編集・プレビュー画面 */}
                       <ContentBox
                         isPreviewActive={isPreviewActive}
                         openSidebar={openSidebar}
@@ -362,7 +365,7 @@ const EditNote: NextPage = () => {
           </Box>
         </Fade>
 
-        {/* サイドバー（タグ・概要入力フィールド） */}
+        {/* サイドバー（タグ・概要） */}
         <NoteEditorSidebar
           open={openSidebar}
           onClose={toggleSidebar}

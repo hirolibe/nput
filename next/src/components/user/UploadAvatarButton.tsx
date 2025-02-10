@@ -20,7 +20,7 @@ const UploadAvatarButton = () => {
   const handleUploadAvatar = () => {
     const input = document.createElement('input')
     input.type = 'file'
-    input.accept = 'image/png, image/jpg, image/jpeg, image/gif'
+    input.accept = 'image/png, image/jpeg, image/webp'
     input.click()
 
     input.addEventListener('change', async (event) => {
@@ -39,13 +39,13 @@ const UploadAvatarButton = () => {
 
       try {
         const imageSignedId = await uploadImage(image)
-        await attachAvatarImage(imageSignedId)
+        const message = await attachAvatarImage(imageSignedId)
 
         const imageUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/rails/active_storage/blobs/redirect/${imageSignedId}/${image.name}`
         setAvatarUrl(imageUrl)
 
         setSnackbar({
-          message: '画像を更新しました',
+          message: message,
           severity: 'success',
           pathname: router.pathname,
         })
@@ -77,7 +77,8 @@ const UploadAvatarButton = () => {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/image_uploads/attach_avatar`
     const imageIdData = { image_signed_id: imageSignedId }
     const headers = { Authorization: `Bearer ${idToken}` }
-    await axios.post(url, imageIdData, { headers })
+    const res = await axios.post(url, imageIdData, { headers })
+    return res.data.message
   }
 
   return (

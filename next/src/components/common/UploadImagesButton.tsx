@@ -20,7 +20,7 @@ export const UploadImagesButton = (props: MarkdownToolbarProps) => {
     const input = document.createElement('input')
     input.type = 'file'
     input.multiple = true
-    input.accept = 'image/png, image/jpg, image/jpeg, image/gif'
+    input.accept = 'image/png, image/jpeg, image/webp, image/gif'
     input.click()
 
     input.addEventListener('change', async (event) => {

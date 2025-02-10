@@ -6,6 +6,9 @@ ruby "3.1.2"
 # レスポンスJSONを制御する
 gem "active_model_serializers"
 
+# active_storageのバリデーション
+gem "active_storage_validations"
+
 # AWS Secrets Managerからシークレットを取得する
 gem "aws-sdk-secretsmanager"
 

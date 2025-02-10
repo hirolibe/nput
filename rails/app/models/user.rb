@@ -1,4 +1,24 @@
 class User < ApplicationRecord
+  has_many :notes, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :cheers, dependent: :destroy
+  has_many :cheered_notes, through: :cheers, source: :note
+  has_many :following_relationships,
+           class_name: "Relationship",
+           foreign_key: :follower_id,
+           dependent: :destroy,
+           inverse_of: :follower
+  has_many :followings, through: :following_relationships, source: :following
+  has_many :follower_relationships,
+           class_name: "Relationship",
+           foreign_key: :following_id,
+           dependent: :destroy,
+           inverse_of: :following
+  has_many :followers, through: :follower_relationships, source: :follower
+  has_many :durations, dependent: :destroy
+
+  has_one :profile, dependent: :destroy
+
   validates :uid, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: { message: "%<value>sはすでに存在します" }
   validates :name,
@@ -13,31 +33,6 @@ class User < ApplicationRecord
   validates :terms_version, presence: true, unless: :guest?
   validates :privacy_version, presence: true, unless: :guest?
   validates :agreed_at, presence: true, unless: :guest?
-
-  has_many :notes, dependent: :destroy
-
-  has_many :comments, dependent: :destroy
-
-  has_many :cheers, dependent: :destroy
-  has_many :cheered_notes, through: :cheers, source: :note
-
-  has_many :following_relationships,
-           class_name: "Relationship",
-           foreign_key: :follower_id,
-           dependent: :destroy,
-           inverse_of: :follower
-  has_many :followings, through: :following_relationships, source: :following
-
-  has_many :follower_relationships,
-           class_name: "Relationship",
-           foreign_key: :following_id,
-           dependent: :destroy,
-           inverse_of: :following
-  has_many :followers, through: :follower_relationships, source: :follower
-
-  has_many :durations, dependent: :destroy
-
-  has_one :profile, dependent: :destroy
 
   after_create :create_profile!
 

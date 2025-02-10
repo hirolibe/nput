@@ -21,6 +21,10 @@ class Note < ApplicationRecord
   validate :validate_single_unsaved
   validate :validate_durations
   validate :tag_limit
+  validates :images, content_type: {
+    in: %w[image/png image/jpeg image/webp image/gif],
+    message: "はPNG、JPEG、WebPまたはGIF形式のみ対応しています",
+  }, if: -> { images.attached? }
 
   def self.calculate_total_durations(notes)
     Duration.where(note_id: notes.map(&:id)).

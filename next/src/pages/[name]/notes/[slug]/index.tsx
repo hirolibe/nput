@@ -25,68 +25,11 @@ import { FollowStatusData } from '@/hooks/useFollowStatus'
 import { NoteData } from '@/hooks/useNotes'
 import { ProfileData } from '@/hooks/useProfile'
 import { styles } from '@/styles'
-import { fetcher } from '@/utils/fetcher'
+import { fetchCheerStatusData } from '@/utils/fetchCheerStatusData'
+import { fetchFollowStatusData } from '@/utils/fetchFollowStatusData'
+import { fetchNoteData } from '@/utils/fetchNoteData'
+import { fetchProfileData } from '@/utils/fetchProfileData'
 import { handleError } from '@/utils/handleError'
-
-const fetchProfileData = async (
-  baseUrl: string,
-  idToken: string,
-): Promise<ProfileData | null> => {
-  try {
-    const url = `${baseUrl}/profile`
-    return await fetcher([url, idToken])
-  } catch (err) {
-    handleError(err)
-    return null
-  }
-}
-
-const fetchCheerStatusData = async (
-  baseUrl: string,
-  name: string,
-  slug: string,
-  idToken: string,
-): Promise<CheerStatusData | null> => {
-  try {
-    const url = `${baseUrl}/${name}/notes/${slug}/cheer`
-    return await fetcher([url, idToken])
-  } catch (err) {
-    handleError(err)
-    return null
-  }
-}
-
-const fetchFollowStatusData = async (
-  baseUrl: string,
-  name: string,
-  idToken: string,
-): Promise<FollowStatusData | null> => {
-  try {
-    const url = `${baseUrl}/${name}/relationship`
-    return await fetcher([url, idToken])
-  } catch (err) {
-    handleError(err)
-    return null
-  }
-}
-
-const fetchNoteData = async (
-  baseUrl: string,
-  name: string,
-  slug: string,
-  idToken?: string,
-  userName?: string,
-): Promise<NoteData | null> => {
-  try {
-    const urlPath =
-      userName === name ? `my_notes/${slug}` : `${name}/notes/${slug}`
-    const url = `${baseUrl}/${urlPath}`
-    return await fetcher([url, idToken])
-  } catch (err) {
-    handleError(err)
-    return null
-  }
-}
 
 interface NoteDetailProps {
   name: string
@@ -125,11 +68,9 @@ export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
     if (idToken) {
       profileData = await fetchProfileData(baseUrl, idToken)
       userName = profileData?.user?.name
-
       cheerStatusData = await fetchCheerStatusData(baseUrl, name, slug, idToken)
       followStatusData = await fetchFollowStatusData(baseUrl, name, idToken)
     }
-
     noteData = await fetchNoteData(baseUrl, name, slug, idToken, userName)
 
     if (!noteData) {

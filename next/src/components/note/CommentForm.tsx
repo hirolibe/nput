@@ -88,7 +88,10 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
 
     setIsLoading(true)
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/comments`
-    const commentData = { content: comment, image_signed_ids: imageSignedIds }
+    const commentData = {
+      comment: { content: comment },
+      image_signed_ids: imageSignedIds,
+    }
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {

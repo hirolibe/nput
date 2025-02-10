@@ -154,8 +154,8 @@ const EditNote: NextPage = () => {
         ...data,
         content: content,
         status: status,
-        image_signed_ids: imageSignedIds,
       },
+      image_signed_ids: imageSignedIds,
       tag_names: inputTags,
       duration: workDuration,
     }

@@ -31,7 +31,7 @@ RSpec.describe "Api::V1::ImageUploads POST /api/v1/image_uploads/attach_avatar",
       it "画像が更新され、200ステータスとメッセージが返る" do
         subject
         expect(response).to have_http_status(:ok)
-        expect(json_response["message"]).to eq("画像を変更しました！")
+        expect(json_response["message"]).to eq("画像を更新しました！")
         expect(profile.reload.avatar).to be_attached
       end
     end

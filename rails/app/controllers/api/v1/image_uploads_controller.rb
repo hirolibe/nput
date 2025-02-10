@@ -19,8 +19,8 @@ class Api::V1::ImageUploadsController < Api::V1::ApplicationController
       profile = current_user.profile
       profile.avatar.attach(params[:image_signed_id])
 
-      if profile.avatar.attached?
-        render json: { message: "画像を変更しました！" }, status: :ok
+      if profile.save
+        render json: { message: "画像を更新しました！" }, status: :ok
       else
         render json: { error: "画像の変更に失敗しました" }, status: :unprocessable_entity
       end
@@ -32,6 +32,6 @@ class Api::V1::ImageUploadsController < Api::V1::ApplicationController
   private
 
     def valid_image_type?(content_type)
-      %w[image/png image/jpg image/jpeg image/gif].include?(content_type)
+      %w[image/png image/jpeg image/webp image/gif].include?(content_type)
     end
 end

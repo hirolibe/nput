@@ -4,9 +4,8 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
 
   def index
     notes = current_user.notes.
-              includes(
-                tags: {},
-              ).where(status: [:published, :draft]).
+              includes(tags: {}).
+              where(status: [:published, :draft]).
               order(created_at: :desc).
               page(params[:page] || 1).
               per(10)
@@ -57,6 +56,9 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
 
       note_params = prepare_note_params(note)
       note.update!(note_params)
+
+      attach_images(note, params[:image_signed_ids])
+      note.save!
     end
 
     render json: { message: "ノートを更新しました！" }, status: :ok

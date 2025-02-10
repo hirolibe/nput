@@ -48,20 +48,19 @@ const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
       if (typeof width !== 'number') return null
 
       return (
-        <div style={{ margin: '16px' }}>
-          <Image
-            src={src}
-            alt={alt}
-            width={Number(width)}
-            height={1}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-              borderRadius: 2,
-            }}
-            unoptimized
-          />
-        </div>
+        <Image
+          src={src}
+          alt={alt}
+          width={Number(width)}
+          height={1}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+            borderRadius: 2,
+            margin: '16px 0',
+          }}
+          unoptimized
+        />
       )
     },
     a({ href, children }) {

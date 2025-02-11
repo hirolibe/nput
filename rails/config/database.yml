@@ -16,6 +16,9 @@ test:
   host: db
   database: myapp_test
   password: password
+  pool: 5
+  reconnect: true
+  connect_timeout: 60
 
 production:
   <<: *default

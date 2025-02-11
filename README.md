@@ -44,7 +44,7 @@ URL: [https://n-put.com](https://n-put.com)
 - 新規登録ページにて、ユーザー名・メールアドレス・パスワードを入力して「新規登録する」ボタンをクリック
 - ログインページにて、メールアドレス・パスワードを入力して「Nputにログイン」ボタンをクリック
 
-![Image](https://github.com/user-attachments/assets/6cf3f070-8858-4955-9aea-d509553771c5)
+![Image](https://github.com/user-attachments/assets/565a19b6-4ebc-47c0-a6ad-ee9933089f00)
 
 ### 3-2. ノートページの閲覧
 ノート一覧・詳細ページでは、以下の操作ができます。（UI/UXは「Zenn」や「Qiita」などの既存のサービスを参考に設計しています）

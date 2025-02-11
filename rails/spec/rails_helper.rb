@@ -78,22 +78,34 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
+    retries = 3
+    begin
+      ActiveRecord::Base.establish_connection
+      # データベース接続を確認
+      ActiveRecord::Base.connection
+      # 接続が確立されたらデータベースをクリーン
+      DatabaseCleaner.clean_with(:truncation)
+    rescue ActiveRecord::ConnectionNotEstablished, Mysql2::Error
+      retries -= 1
+      if retries > 0
+        sleep 2
+        retry
+      else
+        raise
+      end
+    end
   end
 
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
-  end
-
-  config.before(:each) do
     DatabaseCleaner.start
   end
 
   config.after(:each) do
     DatabaseCleaner.clean
-  end
-
-  config.after(:each) do
     FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
+  rescue ActiveRecord::ConnectionNotEstablished, Mysql2::Error
+    ActiveRecord::Base.establish_connection
+    retry
   end
 end

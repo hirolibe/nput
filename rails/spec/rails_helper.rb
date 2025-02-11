@@ -88,5 +88,6 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
+    FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
   end
 end

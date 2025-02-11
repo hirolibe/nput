@@ -81,9 +81,7 @@ RSpec.configure do |config|
     retries = 3
     begin
       ActiveRecord::Base.establish_connection
-      # データベース接続を確認
       ActiveRecord::Base.connection
-      # 接続が確立されたらデータベースをクリーン
       DatabaseCleaner.clean_with(:truncation)
     rescue ActiveRecord::ConnectionNotEstablished, Mysql2::Error
       retries -= 1

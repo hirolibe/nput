@@ -117,6 +117,10 @@ GEM
       ostruct
     connection_pool (2.4.1)
     crass (1.0.6)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.3.4)
     deep_merge (1.2.2)
     diff-lcs (1.5.1)
@@ -350,6 +354,7 @@ DEPENDENCIES
   bootsnap
   bullet
   config
+  database_cleaner-active_record
   dotenv
   down
   enum_help

@@ -58,6 +58,9 @@ group :development, :test do
   # N+1発生時にアラートを表示する
   gem "bullet"
 
+  # データベースをクリーンアップする
+  gem 'database_cleaner-active_record'
+
   # 環境変数の読み込み
   gem "dotenv"
 

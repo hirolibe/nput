@@ -16,6 +16,9 @@ RSpec.describe User, type: :model do
     subject(:record) { build(:user) }
 
     include_examples "入力必須項目のバリデーションエラー", "user", "email", "メールアドレス"
+    include_examples "入力必須項目のバリデーションエラー", "user", "terms_version", "利用規約のバージョン"
+    include_examples "入力必須項目のバリデーションエラー", "user", "privacy_version", "プライバシーポリシーのバージョン"
+    include_examples "入力必須項目のバリデーションエラー", "user", "agreed_at", "利用規約とプライバシーポリシーに同意した日"
 
     context "入力必須項目、入力パターン、最大文字数に関するバリデーションエラー" do
       context "ユーザー名が空の場合" do

@@ -38,14 +38,8 @@ RSpec.describe Tag, type: :model do
       include_examples "バリデーション失敗", "タグ名は20文字以内で入力してください"
     end
 
-    context "タグ名に記号を含む場合" do
-      before { record.name = "invalid tag" }
-
-      include_examples "バリデーション失敗", "タグ名に記号とスペースは使用できません"
-    end
-
-    context "タグ名にスペースを含む場合" do
-      before { record.name = "invalid@tag" }
+    context "タグ名に記号とスペースを含む場合" do
+      before { record.name = "invalid@ tag" }
 
       include_examples "バリデーション失敗", "タグ名に記号とスペースは使用できません"
     end

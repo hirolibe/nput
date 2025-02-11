@@ -30,9 +30,9 @@ class User < ApplicationRecord
             },
             length: { maximum: 20 }
   validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 3600 }
-  validates :terms_version, presence: true, unless: :guest?
-  validates :privacy_version, presence: true, unless: :guest?
-  validates :agreed_at, presence: true, unless: :guest?
+  validates :terms_version, presence: true
+  validates :privacy_version, presence: true
+  validates :agreed_at, presence: true
 
   after_create :create_profile!
 

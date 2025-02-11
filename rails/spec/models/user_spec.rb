@@ -6,7 +6,6 @@ RSpec.describe User, type: :model do
       subject { create(:user) }
 
       it "ユーザーとプロフィールを新規作成できる" do
-        binding.pry
         expect { subject }.to change { User.count }.by(1) and
           change { Profile.count }.by(1)
       end
@@ -32,8 +31,6 @@ RSpec.describe User, type: :model do
         before { record.name = Faker::Lorem.characters(number: 21) }
 
         it "バリデーションが失敗し、エラーメッセージが返る" do
-          binding.pry
-
           expect(subject).not_to be_valid
           expect(record.errors.full_messages).to eq ["ユーザー名は20文字以内で入力してください"]
         end

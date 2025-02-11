@@ -94,7 +94,13 @@ RSpec.configure do |config|
     end
   end
 
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.start
+  end
+
   config.after(:each) do
+    DatabaseCleaner.clean
     FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
   end
 end

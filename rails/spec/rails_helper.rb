@@ -77,7 +77,11 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  config.before(:suite) do
+    ActiveStorage::Current.url_options = { host: 'localhost:3000' }
+  end
+
   config.after(:each) do
-    FileUtils.rm_rf(Rails.root.join('tmp/storage'))
+    FileUtils.rm_rf(Rails.root.join('tmp', 'storage'))
   end
 end

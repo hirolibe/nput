@@ -8,6 +8,7 @@ ja:
       profile:
         nickname: "ニックネーム"
         bio: "自己紹介文"
+        avatar: "アバター画像"
       note:
         title: "タイトル"
         description: "概要"
@@ -16,8 +17,10 @@ ja:
         published_at: "公開日"
         durations: ""
         tags: ""
+        images: "画像"
       comment:
         content: "コメント"
+        images: "画像"
       cheer:
         user_id: ""
       relationship:

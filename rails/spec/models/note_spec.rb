@@ -13,6 +13,8 @@ RSpec.describe Note, type: :model do
   end
 
   describe "バリデーション" do
+    subject(:record) { build(:note) }
+
     include_examples "入力必須項目のバリデーションエラー", "note", "status", "ステータス"
 
     context "概要が200文字を超える場合" do
@@ -24,13 +26,25 @@ RSpec.describe Note, type: :model do
       end
     end
 
-    context "ステータスが公開中の場合" do
-      include_examples "ノートのバリデーションエラー"
+    context "タグを6個以上設定した場合" do
+      before { record.tags = create_list(:tag, 6) }
+
+      include_examples "バリデーション失敗", "タグは5個まで設定できます"
+    end
+
+    context "画像が不適切なファイル形式の場合" do
+      before do
+        file_path = Rails.root.join("spec", "fixtures", "files", "invalid_file.txt")
+        record.images.attach(io: File.open(file_path), filename: "invalid_file.txt", content_type: "text/plain")
+      end
+
+      it "バリデーションが失敗し、エラーメッセージが返る" do
+        expect(subject).not_to be_valid
+        expect(record.errors.full_messages).to eq ["画像はPNG、JPEG、WebPまたはGIF形式のみ対応しています"]
+      end
     end
 
     context "ステータスが未保存かつ、すでに未保存ステータスのノートを所有している場合" do
-      subject(:record) { build(:note) }
-
       before do
         create(:note, user: record.user, status: "unsaved")
         record.status = "unsaved"
@@ -45,14 +59,8 @@ RSpec.describe Note, type: :model do
       include_examples "バリデーション失敗", "下書きまたは公開中のノートにはデュレーションレコードが必要です"
     end
 
-    context "タグを6個以上設定した場合" do
-      subject(:record) { build(:note) }
-
-      before do
-        record.tags = create_list(:tag, 6)
-      end
-
-      include_examples "バリデーション失敗", "タグは5個まで設定できます"
+    context "ステータスが公開中の場合" do
+      include_examples "ノートのバリデーションエラー"
     end
 
     include_examples "バリデーション成功"

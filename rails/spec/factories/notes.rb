@@ -13,6 +13,15 @@ FactoryBot.define do
     end
 
     after(:build) do |note, evaluator|
+      2.times do |i|
+        file_path = Rails.root.join("spec", "fixtures", "files", "valid_image#{i}.jpg")
+        note.images.attach(
+          io: File.open(file_path),
+          filename: "valid_image#{i}.jpg",
+          content_type: "image/jpeg",
+        )
+      end
+
       if evaluator.with_durations
         note.durations = build_list(:duration, 3, note:)
       end

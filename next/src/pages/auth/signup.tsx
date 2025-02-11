@@ -345,6 +345,7 @@ const SignUp: NextPage = () => {
             <LoadingButton
               variant="outlined"
               type="submit"
+              disabled={!isTermsChecked || !isPrivacyChecked}
               onClick={handleGuestLogin}
               loading={isGuestLoggingIn}
               sx={{

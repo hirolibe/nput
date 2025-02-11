@@ -5,6 +5,9 @@ ja:
         email: "メールアドレス"
         name: "ユーザー名"
         cheer_points: "保有エールポイント"
+        terms_version: "利用規約のバージョン"
+        privacy_version: "プライバシーポリシーのバージョン"
+        agreed_at: "利用規約とプライバシーポリシーに同意した日"
       profile:
         nickname: "ニックネーム"
         bio: "自己紹介文"

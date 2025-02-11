@@ -6,6 +6,8 @@ FactoryBot.define do
     terms_version { "1" }
     privacy_version { "1" }
     agreed_at { Time.current }
+    role { "user" }
+    guest { false }
 
     name do
       loop do

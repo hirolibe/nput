@@ -59,7 +59,7 @@ group :development, :test do
   gem "bullet"
 
   # データベースをクリーンアップする
-  gem 'database_cleaner-active_record'
+  gem "database_cleaner-active_record"
 
   # 環境変数の読み込み
   gem "dotenv"

@@ -8,7 +8,7 @@ RSpec.describe "Api::V1::Supporters GET /api/v1/:name/notes/:note_slug/supporter
   let(:note_slug) { note.slug }
   let(:params) { nil }
 
-  before { create_list(:cheer, 80, note:) }
+  before { create_list(:cheer, 41, note:) }
 
   include_examples "リソース不在エラー", "ノート", "note_slug"
   include_examples "ノート非公開エラー"

@@ -27,6 +27,7 @@ RSpec.describe "Api::V1::Admin::Users DELETE /api/v1/admin/users/[:id]", type: :
 
     context "管理者以外のアカウントを削除する場合" do
       before { stub_firebase_account_deletion }
+
       include_examples "リソースの削除成功", "アカウント"
     end
   end

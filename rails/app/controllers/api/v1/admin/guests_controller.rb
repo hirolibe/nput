@@ -3,14 +3,12 @@ class Api::V1::Admin::GuestsController < Api::V1::ApplicationController
 
   def destroy_all
     users = User.where(guest: true)
-    binding.pry
     delete_user(users)
 
     render json: { message: "すべてのゲストユーザーを削除しました" }, status: :ok
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
-
 
   private
 

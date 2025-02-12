@@ -1,30 +1,33 @@
-# require "rails_helper"
+require "rails_helper"
 
-# RSpec.describe "Api::V1::Users DELETE /api/v1/:name", type: :request do
-#   subject { delete(api_v1_delete_user_path(name), headers:) }
+RSpec.describe "Api::V1::Admin::Users DELETE /api/v1/admin/users/[:id]", type: :request do
+  subject { delete(api_v1_admin_user_path(id), headers:) }
 
-#   let(:headers) { { Authorization: "Bearer token" } }
-#   let(:user) { create(:user, role: "admin") }
-#   let(:name) { user.name }
+  let(:headers) { { Authorization: "Bearer token" } }
+  let(:non_administrator) { create(:user, role: "user") }
+  let(:id) { non_administrator.id }
 
-#   include_examples "ユーザー認証エラー"
+  include_examples "管理者認証エラー"
 
-#   context "ユーザー認証に成功した場合" do
-#     before { stub_token_verification.and_return({ "sub" => user.uid }) }
+  context "管理者認証に成功した場合" do
+    let(:administrator) { create(:user, role: "admin") }
+    before { login_as(administrator) }
 
-#     include_examples "リソース不在エラー", "アカウント", "name"
+    include_examples "リソース不在エラー", "アカウント", "id"
 
-#     context "ログインユーザーが作成したアカウントではない場合" do
-#       let(:other_user) { create(:user) }
-#       let(:name) { other_user.name }
+    context "管理者のアカウントを削除しようとした場合" do
+      let(:id) { administrator.id }
 
-#       it "403エラーとエラーメッセージが返る" do
-#         subject
-#         expect(response).to have_http_status(:forbidden)
-#         expect(json_response["error"]).to eq("他のアカウントは削除できません")
-#       end
-#     end
+      it "エラーメッセージが返る" do
+        subject
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["error"]).to eq("自分のアカウントは削除できません")
+      end
+    end
 
-#     include_examples "リソースの削除成功", "アカウント"
-#   end
-# end
+    context "管理者以外のアカウントを削除する場合" do
+      before { stub_firebase_account_deletion }
+      include_examples "リソースの削除成功", "アカウント"
+    end
+  end
+end

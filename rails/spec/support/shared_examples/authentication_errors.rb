@@ -42,7 +42,7 @@ RSpec.shared_examples "アカウントエラー" do
   end
 end
 
-RSpec.shared_examples "ユーザー認証エラー" do
+RSpec.shared_examples "トークン検証エラー" do
   context "トークンが欠落している場合" do
     include_examples "トークン欠落エラー"
   end
@@ -54,6 +54,10 @@ RSpec.shared_examples "ユーザー認証エラー" do
   context "無効なトークンを受け取り、ユーザー情報を取得できなかった場合" do
     include_examples "トークン無効エラー"
   end
+end
+
+RSpec.shared_examples "ユーザー認証エラー" do
+  include_examples "トークン検証エラー"
 
   context "有効なトークンを受け取ったが、データベースにアカウントが存在しなかった場合" do
     include_examples "アカウントエラー"

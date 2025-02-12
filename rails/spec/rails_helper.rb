@@ -43,7 +43,7 @@ RSpec.configure do |config|
   # Firebaseのトークン検証のスタブ
   config.include FirebaseHelpers
 
-  # response.bodyのJSONをパース
+  # request specにおけるヘルパーメソッドの呼び出し
   config.include ResponseHelpers, type: :request
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

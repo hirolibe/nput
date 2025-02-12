@@ -5,17 +5,7 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
 
   let(:headers) { { Authorization: "Bearer token" } }
 
-  context "トークンが欠落している場合" do
-    include_examples "トークン欠落エラー"
-  end
-
-  context "トークンの有効期限が切れている場合" do
-    include_examples "トークン期限切れエラー"
-  end
-
-  context "無効なトークンを受け取り、ユーザー情報を取得できなかった場合" do
-    include_examples "トークン無効エラー"
-  end
+  include_examples "トークン検証エラー"
 
   context "有効なトークンを受け取り、ユーザー情報を取得できた場合" do
     subject { post api_v1_auth_registration_path, params: params.to_json, headers: }
@@ -35,7 +25,11 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
       expect(user.uid).to eq(uid)
       expect(user.email).to eq(email)
       expect(user.name).to eq(params[:name])
-      expect(user.cheer_points).to eq(3600)
+      expect(user.terms_version).to eq(params[:terms_version])
+      expect(user.privacy_version).to eq(params[:privacy_version])
+      expect(user.agreed_at).to be_within(1.second).of(params[:agreed_at])
+      expect(user.role).to eq("user")
+      expect(user.guest).to be(false)
       expect(json_response["message"]).to eq("新規登録に成功しました！")
     end
   end

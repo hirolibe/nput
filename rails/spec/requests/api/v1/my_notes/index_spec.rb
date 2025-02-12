@@ -13,7 +13,7 @@ RSpec.describe "Api::V1::MyNotes GET /api/v1/my_notes", type: :request do
     before do
       stub_token_verification.and_return({ "sub" => user.uid })
       create_list(:note, 10, status: :published, user:)
-      create_list(:note, 10, status: :draft, user:)
+      create_list(:note, 1, status: :draft, user:)
     end
 
     include_examples "ページネーションのテスト", "ノート"

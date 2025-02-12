@@ -7,7 +7,7 @@ RSpec.describe "Api::V1::CheeredNotes GET /api/v1/:name/cheered_notes", type: :r
   let(:name) { user.name }
   let(:params) { nil }
 
-  before { create_list(:cheer, 20, user:) }
+  before { create_list(:cheer, 11, user:) }
 
   include_examples "リソース不在エラー", "アカウント", "name"
 

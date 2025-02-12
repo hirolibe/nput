@@ -66,6 +66,14 @@ EXPECTED_BASIC_USER_KEYS = [
   "profile",
 ].freeze
 
+EXPECTED_ADMIN_USER_KEYS = [
+  "id",
+  "name",
+  "email",
+  "role",
+  "guest",
+].freeze
+
 EXPECTED_TAG_KEYS = [
   "id",
   "name",

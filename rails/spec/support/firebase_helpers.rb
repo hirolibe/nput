@@ -9,6 +9,6 @@ module FirebaseHelpers
   end
 
   def stub_firebase_account_deletion
-    allow_any_instance_of(Api::V1::ApplicationController).to receive(:delete_firebase_account).and_return(true)
+    allow(FirebaseAccountService).to receive(:delete_firebase_account).and_return(true)
   end
 end

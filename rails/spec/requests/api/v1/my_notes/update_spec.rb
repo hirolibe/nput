@@ -32,33 +32,46 @@ RSpec.describe "Api::V1::MyNotes PATCH /api/v1/my_notes/slug", type: :request do
       end
 
       context "バリデーションに成功した場合" do
+        let(:image_signed_ids) { [create(:blob).signed_id, create(:blob).signed_id] }
         let(:params) {
           {
-            "note": {
-              "title": "更新後のタイトル",
-              "description": "更新後の概要",
-              "content": "更新後の本文",
-              "status": "draft",
+            note: {
+              title: "更新後のタイトル",
+              description: "更新後の概要",
+              content: "更新後の本文",
+              status: "draft",
             },
-            "duration": 1,
-            "tag_names": ["a", "b", "c", "d", "e"],
+            duration: 1,
+            tag_names: ["a", "b", "c", "d", "e"],
+            image_signed_ids:,
           }
         }
 
-        it "ノート更新に伴う処理が実行され、200ステータスとノートの情報が返る" do
+        it "ノートが更新され、200ステータスとメッセージが返る" do
           initial_published_at = note.published_at
-          initial_cheer_points = user.cheer_points
 
           subject
-          expect(note.reload.title).to eq("更新後のタイトル")
-          expect(note.reload.description).to eq("更新後の概要")
-          expect(note.reload.content).to eq("更新後の本文")
-          expect(note.reload.status).to eq("draft")
-          expect(note.reload.published_at).to eq(initial_published_at)
-
+          expect(note.reload).to have_attributes(
+            title: "更新後のタイトル",
+            description: "更新後の概要",
+            content: "更新後の本文",
+            status: "draft",
+            published_at: initial_published_at,
+          )
           expect(response).to have_http_status(:ok)
-          expect(user.reload.cheer_points).to eq(initial_cheer_points + 1)
+          expect(json_response["message"]).to eq("ノートを更新しました！")
+        end
 
+        it "画像が2枚追加される" do
+          expect { subject }.to change { note.reload.images.count }.by(2)
+        end
+
+        it "エールポイントが1増加する" do
+          expect { subject }.to change { user.reload.cheer_points }.by(1)
+        end
+
+        it "タグが更新される" do
+          subject
           tag_names = note.reload.tags.map {|tag| tag["name"] }
           expect(tag_names).to contain_exactly("a", "b", "c", "d", "e")
         end

@@ -4,9 +4,8 @@ RSpec.describe "Api::V1::Comments POST /api/v1/:name/notes/:note_slug/comments",
   subject { post(api_v1_user_note_comments_path(name, note_slug), headers:, params:) }
 
   let(:current_user) { create(:user) }
-  let(:user) { create(:user) }
-  let(:name) { user.name }
-  let(:note) { create(:note, user:) }
+  let(:note) { create(:note, user: create(:user)) }
+  let(:name) { note.user.name }
   let(:note_slug) { note.slug }
 
   let(:headers) { { Authorization: "Bearer token" } }
@@ -33,10 +32,24 @@ RSpec.describe "Api::V1::Comments POST /api/v1/:name/notes/:note_slug/comments",
       end
 
       context "バリデーションに成功した場合" do
+        let(:image_signed_ids) { [create(:blob).signed_id, create(:blob).signed_id] }
+        let(:params) {
+          {
+            comment: { content: Faker::Lorem.sentence },
+            image_signed_ids:,
+          }
+        }
+
         it "コメントが新規作成され、201ステータスとコメントの情報が返る" do
           expect { subject }.to change { note.comments.count }.by(1)
           expect(response).to have_http_status(:created)
           expect(json_response.keys).to eq EXPECTED_COMMENT_KEYS
+        end
+
+        it "画像が2枚追加される" do
+          subject
+          created_comment = Comment.last
+          expect(created_comment.images.count).to eq(2)
         end
       end
     end

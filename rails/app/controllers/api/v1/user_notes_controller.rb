@@ -20,6 +20,6 @@ class Api::V1::UserNotesController < Api::V1::ApplicationController
            adapter: :json,
            status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
+    render json: { error: "アカウントにアクセスできません" }, status: :not_found
   end
 end

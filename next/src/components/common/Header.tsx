@@ -71,7 +71,7 @@ const Header = () => {
       return
     }
 
-    if (userRoleData !== 'admin') {
+    if (userRoleData?.role !== 'admin') {
       setIsAdmin(false)
       return
     }

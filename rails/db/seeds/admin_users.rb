@@ -4,5 +4,5 @@ User.where(role: nil).find_each do |user|
 end
 
 # 管理者ユーザーを作成
-user = User.find_by!(email: "hirolibe.nput@gmail.com")
+user = User.find_by!(email: "a@a.com")
 user.update!(role: "admin")

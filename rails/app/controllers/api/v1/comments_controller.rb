@@ -1,4 +1,5 @@
 class Api::V1::CommentsController < Api::V1::ApplicationController
+  include AttachableImages
   before_action :authenticate_user!, only: [:create, :destroy]
 
   def create

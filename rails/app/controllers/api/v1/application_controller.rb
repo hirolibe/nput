@@ -47,12 +47,4 @@ class Api::V1::ApplicationController < ApplicationController
         render json: { error: "アクセス権限がありません" }, status: :forbidden
       end
     end
-
-    def attach_images(record, signed_ids)
-      return if signed_ids.blank?
-
-      signed_ids.each do |signed_id|
-        record.images.attach(signed_id)
-      end
-    end
 end

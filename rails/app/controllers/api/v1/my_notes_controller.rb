@@ -1,5 +1,6 @@
 class Api::V1::MyNotesController < Api::V1::ApplicationController
   include Pagination
+  include AttachableImages
   before_action :authenticate_user!, only: [:index, :show, :create, :update, :destroy]
 
   def index

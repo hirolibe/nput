@@ -63,3 +63,17 @@ RSpec.shared_examples "ユーザー認証エラー" do
     include_examples "アカウントエラー"
   end
 end
+
+RSpec.shared_examples "管理者認証エラー" do
+  context "管理者以外の場合" do
+    let(:non_administrator) { create(:user, role: "user") }
+
+    before { login_as(non_administrator) }
+
+    it "認証が失敗し、403エラーとエラーメッセージが返る" do
+      subject
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["error"]).to eq("アクセス権限がありません")
+    end
+  end
+end

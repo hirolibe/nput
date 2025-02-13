@@ -7,7 +7,7 @@ RSpec.describe "Api::V1::TaggedNotes GET /api/v1/tags/:name/tagged_notes", type:
   let(:name) { tag.name }
   let(:params) { nil }
 
-  before { create_list(:note_tag, 20, tag:) }
+  before { create_list(:note_tag, 11, tag:) }
 
   include_examples "リソース不在エラー", "タグ", "name"
 

@@ -16,7 +16,7 @@ class Api::V1::Admin::GuestsController < Api::V1::ApplicationController
       ActiveRecord::Base.transaction do
         users.destroy_all
         users.map do |user|
-          delete_firebase_account(user.uid)
+          FirebaseAccountService.delete_firebase_account(user.uid)
         end
       end
     end

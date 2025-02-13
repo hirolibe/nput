@@ -36,8 +36,9 @@ module Myapp
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.i18n.default_locale = :ja
-    config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.yml").to_s]
+    config.i18n.load_path += %W[#{config.root}/config/locales/**/*.yml]
     config.time_zone = "Tokyo"
     config.autoload_paths += %W[#{config.root}/lib]
+    config.autoload_paths += %W[#{config.root}/app/services]
   end
 end

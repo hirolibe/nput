@@ -26,8 +26,8 @@ RSpec.describe "Api::V1::Cheers GET /api/v1/:name/notes/:note_slug/cheer", type:
 
       it "200ステータス、エール状態が返る" do
         subject
-        expect(json_response["has_cheered"]).to be true
         expect(response).to have_http_status(:ok)
+        expect(json_response["has_cheered"]).to be true
       end
     end
   end

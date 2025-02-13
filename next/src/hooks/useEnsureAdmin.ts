@@ -28,7 +28,7 @@ const useEnsureAdmin = () => {
       return
     }
 
-    if (userRoleData !== 'admin') {
+    if (userRoleData?.role !== 'admin') {
       setIsAdmin(false)
       setSnackbar({
         message: 'アクセス権限がありません',

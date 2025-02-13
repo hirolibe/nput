@@ -4,6 +4,6 @@ class Api::V1::RolesController < Api::V1::ApplicationController
   def show
     role = current_user.role
 
-    render json: role, status: :ok
+    render json: { role: }, status: :ok
   end
 end

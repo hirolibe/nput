@@ -4,10 +4,21 @@ import ReactMarkdown from 'react-markdown'
 import type { Components } from 'react-markdown'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash'
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python'
+import ruby from 'react-syntax-highlighter/dist/esm/languages/prism/ruby'
+import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript'
+import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import styles from '@/styles/MarkdownText.module.css'
+
+SyntaxHighlighter.registerLanguage('ruby', ruby)
+SyntaxHighlighter.registerLanguage('yaml', yaml)
+SyntaxHighlighter.registerLanguage('bash', bash)
+SyntaxHighlighter.registerLanguage('typescript', typescript)
+SyntaxHighlighter.registerLanguage('python', python)
 
 interface MarkdownTextProps {
   content: string
@@ -29,16 +40,28 @@ const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
       }
 
       const match = /language-(\w+)/.exec(className || '')
-      if (!match) {
-        return (
-          <SyntaxHighlighter style={oneDark} language={'plaintext'}>
-            {String(children).replace(/\n$/, '')}
-          </SyntaxHighlighter>
-        )
+      const language = match ? match[1] : 'plaintext'
+
+      const languageMap: { [key: string]: string } = {
+        rb: 'ruby',
+        ruby: 'ruby',
+        yml: 'yaml',
+        yaml: 'yaml',
+        bash: 'bash',
+        sh: 'bash',
+        shell: 'bash',
+        zsh: 'bash',
+        ts: 'typescript',
+        typescript: 'typescript',
+        py: 'python',
+        python: 'python',
+        pyc: 'python',
       }
 
+      const mappedLanguage = languageMap[language.toLowerCase()] || language
+
       return (
-        <SyntaxHighlighter style={oneDark} language={match[1]}>
+        <SyntaxHighlighter style={oneDark} language={mappedLanguage}>
           {String(children).replace(/\n$/, '')}
         </SyntaxHighlighter>
       )

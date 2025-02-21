@@ -1,14 +1,14 @@
 import { Box } from '@mui/material'
 import Image from 'next/image'
-import { useRef, MutableRefObject } from 'react'
+import { useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import type { Components } from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import CodeBlock from './CodeBlock'
+import { H1, H2 } from './Heading'
 import styles from '@/styles/MarkdownText.module.css'
-import generateHeadingId from '@/utils/generateHeadingId'
 
 interface MarkdownTextProps {
   content: string
@@ -18,40 +18,6 @@ interface MarkdownTextProps {
 interface HeadingCounts {
   [level: number]: { [text: string]: number }
 }
-
-interface HeadingProps {
-  children?: React.ReactNode
-  level: number
-  headingCounts: MutableRefObject<HeadingCounts>
-}
-
-const Heading = ({ children, level, headingCounts }: HeadingProps) => {
-  const text = children?.toString() ?? ''
-
-  // レベルごとのカウントを初期化
-  if (!headingCounts.current[level]) {
-    headingCounts.current[level] = {}
-  }
-
-  // レベルごとのテキストカウントを更新
-  headingCounts.current[level][text] =
-    (headingCounts.current[level][text] ?? 0) + 1
-
-  const id = generateHeadingId(text, headingCounts.current[level][text] - 1)
-
-  const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements
-
-  return <HeadingTag id={id}>{children}</HeadingTag>
-}
-
-// H1とH2コンポーネント
-const H1 = (props: Omit<HeadingProps, 'level'>) => (
-  <Heading {...props} level={1} />
-)
-
-const H2 = (props: Omit<HeadingProps, 'level'>) => (
-  <Heading {...props} level={2} />
-)
 
 const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
   const headingCounts = useRef<HeadingCounts>({}) // 同じ文字列の出現回数を管理

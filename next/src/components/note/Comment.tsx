@@ -77,7 +77,6 @@ const Comment = ({ name, slug, profileData, noteData }: CommentProps) => {
         borderRadius: 2,
         backgroundColor: 'white',
         p: 5,
-        mb: 3,
       }}
     >
       {/* コメントタイトル */}

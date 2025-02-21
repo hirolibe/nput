@@ -75,7 +75,6 @@ const ContentBox = ({
       sx={{
         backgroundColor: 'white',
         width: '100%',
-        px: 2,
       }}
     >
       <Box
@@ -122,6 +121,10 @@ const ContentBox = ({
               '& .MuiOutlinedInput-notchedOutline': {
                 border: 'none',
               },
+              '& .MuiOutlinedInput-root': {
+                paddingLeft: '14px',
+                paddingRight: 0,
+              },
             }}
           />
         </Box>
@@ -136,7 +139,7 @@ const ContentBox = ({
               md: isPreviewActive ? (openSidebar ? '100%' : '50%') : 0,
             },
             height: '100%',
-            px: isPreviewActive ? '14px' : 0,
+            pl: isPreviewActive ? '14px' : 0,
             py: '16.5px',
           }}
         >

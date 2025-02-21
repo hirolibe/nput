@@ -48,6 +48,7 @@
     "rehype-toc": "^3.0.2",
     "remark-gfm": "^4.0.0",
     "swr": "^2.2.2",
+    "tocbot": "^4.35.0",
     "typescript": "5.3.3"
   },
   "devDependencies": {

@@ -21,6 +21,7 @@ import { CheerButton } from '@/components/note/CheerButton'
 import Comment from '@/components/note/Comment'
 import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
+import { TableOfContents } from '@/components/note/TableOfContents'
 import { CheerStatusData } from '@/hooks/useCheerStatus'
 import { FollowStatusData } from '@/hooks/useFollowStatus'
 import { NoteData } from '@/hooks/useNotes'
@@ -328,6 +329,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               display: 'flex',
               justifyContent: 'center',
               width: '100%',
+              minHeight: '100%',
               gap: '0 40px',
             }}
           >
@@ -447,19 +449,21 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               )}
             </Box>
 
-            {/* プロフィール（サイドバー） */}
+            {/* プロフィール・目次（サイドバー） */}
             <Box
               sx={{
                 display: { xs: 'none', lg: 'block' },
                 width: '340px',
               }}
             >
+              {/* プロフィール */}
               <Box
                 sx={{
                   boxShadow: 'none',
                   borderRadius: 2,
                   backgroundColor: 'white',
                   width: '100%',
+                  mb: 3,
                 }}
               >
                 <AuthorInfo
@@ -468,6 +472,19 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                   followState={followState}
                 />
               </Box>
+
+              {/* 目次 */}
+              {noteData?.content && (
+                <Box
+                  sx={{
+                    position: 'sticky',
+                    top: '24px',
+                    zIndex: 1,
+                  }}
+                >
+                  <TableOfContents content={noteData.content} />
+                </Box>
+              )}
             </Box>
           </Box>
         </Container>

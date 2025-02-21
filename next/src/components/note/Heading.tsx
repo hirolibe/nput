@@ -1,5 +1,5 @@
-import generateHeadingId from '@/utils/generateHeadingId'
 import { MutableRefObject } from 'react'
+import generateHeadingId from '@/utils/generateHeadingId'
 
 export interface HeadingCounts {
   [level: number]: { [text: string]: number }

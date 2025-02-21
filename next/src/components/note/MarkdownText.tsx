@@ -7,8 +7,8 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import CodeBlock from './CodeBlock'
-import styles from '@/styles/MarkdownText.module.css'
 import { H1, H2 } from './Heading'
+import styles from '@/styles/MarkdownText.module.css'
 
 interface MarkdownTextProps {
   content: string

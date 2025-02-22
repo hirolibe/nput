@@ -88,15 +88,15 @@ URL: [https://n-put.com](https://n-put.com)
 
 ## 5. 技術スタック
 ### 5-1. 使用技術
-#### 開発言語・フレームワーク
+#### 【開発言語・フレームワーク】
 
 モダンな技術かつ、学習時に豊富な情報とコミュニティサポートがある言語・フレームワークを中心に、下記の点を考慮して技術選定を行いました。
 
-*フロントエンド*
+**フロントエンド**
 - Next.js：SSGやSSRをサポートしており、ブログに最適な表示速度と検索エンジン最適化(SEO)が実現可能です。また、ファイルベースのルーティングシステムが標準搭載されているなど、優れた開発者体験を提供します。
 - TypeScript：型安全性によって堅牢なコードベースを維持でき、VSCodeなどのIDEと組み合わせることで開発効率を向上させることができます。
 
-*バックエンド*
+**バックエンド**
 - Ruby on Rails(API mode)：API modeを採用することで、必要最小限の機能に絞った軽量な実装が可能となり、APIサーバーとして効率的な運用ができます。
 
 | 区分 | 名称 | 説明 |
@@ -108,7 +108,7 @@ URL: [https://n-put.com](https://n-put.com)
 | | Ruby on Rails(API mode)(7.0.8.4c) | バックエンドフレームワーク |
 <br>
 
-#### ライブラリ・ツール
+#### 【ライブラリ・ツール】
 
 - フロントエンド
 
@@ -134,7 +134,7 @@ URL: [https://n-put.com](https://n-put.com)
 | | Faker | ランダムなデータを生成するライブラリ |
 <br>
 
-#### インフラ
+#### 【インフラ】
 - 開発環境
 
 | 区分 | 名称 | 説明 |
@@ -167,11 +167,11 @@ URL: [https://n-put.com](https://n-put.com)
 | 監視           | CloudWatch      | ログ監視                                            |
 <br>
 
-#### 外部サービス
+#### 【外部サービス】
 - Firebase Authentication（アカウント認証）
 - Firebase Admin SDK（アカウント管理）
 
-#### Continuous Integration / Continuous Delivery(CI/CD)
+#### 【Continuous Integration / Continuous Delivery(CI/CD)】
 - GitHub Actions
 <br><br>
 

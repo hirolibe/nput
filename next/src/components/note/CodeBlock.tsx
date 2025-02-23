@@ -4,6 +4,7 @@ import { IconButton, Tooltip, Box } from '@mui/material'
 import React, { useState } from 'react'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash'
+import json from 'react-syntax-highlighter/dist/cjs/languages/prism/json'
 import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python'
 import ruby from 'react-syntax-highlighter/dist/cjs/languages/prism/ruby'
 import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript'
@@ -15,6 +16,7 @@ SyntaxHighlighter.registerLanguage('yaml', yaml)
 SyntaxHighlighter.registerLanguage('bash', bash)
 SyntaxHighlighter.registerLanguage('typescript', typescript)
 SyntaxHighlighter.registerLanguage('python', python)
+SyntaxHighlighter.registerLanguage('json', json)
 
 interface CustomCodeProps {
   className?: string
@@ -46,6 +48,7 @@ const CodeBlock = ({ className, children }: CustomCodeProps) => {
     py: 'python',
     python: 'python',
     pyc: 'python',
+    json: 'json',
   }
 
   const mappedLanguage = languageMap[language.toLowerCase()] || language

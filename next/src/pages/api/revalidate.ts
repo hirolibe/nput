@@ -4,16 +4,12 @@ interface RevalidateResponse {
   revalidated: boolean
 }
 
-const revalidate = async (
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<RevalidateResponse | string>,
 ) => {
-  try {
-    await res.revalidate(req.body.path)
-    return res.json({ revalidated: true })
-  } catch (err) {
-    return res.status(500).send('再検証エラーが発生しました')
-  }
+  await res.revalidate(req.body.path)
+  res.status(200).json({ revalidated: true })
 }
 
-export default revalidate
+export default handler

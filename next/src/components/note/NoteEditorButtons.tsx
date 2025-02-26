@@ -14,12 +14,14 @@ interface NoteEditorButtonsProps {
   isPreviewActive: boolean
   togglePreviewDisplay: () => void
   toggleSidebar: () => void
+  name?: string
 }
 
 const NoteEditorButtons = ({
   isPreviewActive,
   togglePreviewDisplay,
   toggleSidebar,
+  name,
 }: NoteEditorButtonsProps) => {
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
@@ -47,6 +49,12 @@ const NoteEditorButtons = ({
 
     try {
       await axios.delete(url, { headers })
+
+      // ノート詳細データを再検証
+      await axios.post('/api/revalidate', {
+        path: `/${name}/notes/${slug}`,
+      })
+
       router.push('/dashboard')
     } catch (err) {
       const { errorMessage } = handleError(err)

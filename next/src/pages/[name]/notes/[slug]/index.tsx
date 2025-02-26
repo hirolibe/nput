@@ -64,7 +64,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const noteData = await fetchNoteData(baseUrl, name, slug)
     return {
       props: { name, slug, noteData },
-      revalidate: 60 * 60 * 24, // 24時間ごとにノートデータを更新
+      revalidate: 60 * 60 * 24 * 365, // 1年間キャッシュする
     }
   } catch {
     return { props: { name, slug } }

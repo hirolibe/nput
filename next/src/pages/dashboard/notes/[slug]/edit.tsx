@@ -171,12 +171,10 @@ const EditNote: NextPage = () => {
       setRestoreContent('')
       reset(data)
 
-      // ステータスが下書きの場合、ノート詳細データを再検証
-      if (status === 'draft') {
-        await axios.post('/api/revalidate', {
-          path: `/${profileData?.user.name}/notes/${slug}`,
-        })
-      }
+      // ノート詳細データを再検証
+      await axios.post('/api/revalidate', {
+        path: `/${profileData?.user.name}/notes/${slug}`,
+      })
 
       setSnackbar({
         message: res.data.message,
@@ -365,11 +363,12 @@ const EditNote: NextPage = () => {
                   )}
                 />
 
-                {/* ボタン（プレビュー表示・タグ入力欄表示・画像追加・削除） */}
+                {/* ボタン（プレビュー表示・タグ入力欄表示・削除） */}
                 <NoteEditorButtons
                   isPreviewActive={isPreviewActive}
                   togglePreviewDisplay={togglePreviewDisplay}
                   toggleSidebar={toggleSidebar}
+                  name={profileData?.user.name}
                 />
               </Box>
             </Stack>

@@ -18,6 +18,7 @@ import { useDuration } from '@/hooks/useDuration'
 import useEnsureAuth from '@/hooks/useEnsureAuth'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { useMyNote } from '@/hooks/useMyNote'
+import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
@@ -32,6 +33,8 @@ export interface NoteFormData {
 
 const EditNote: NextPage = () => {
   const isAuthorized = useEnsureAuth()
+
+  const { profileData } = useProfile()
 
   // ローカルストレージからのcontentデータ取得
   const router = useRouter()
@@ -167,6 +170,14 @@ const EditNote: NextPage = () => {
       removeSavedContent()
       setRestoreContent('')
       reset(data)
+
+      // ステータスが下書きの場合、ノート詳細データを再検証
+      if (status === 'draft') {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/revalidate`, {
+          path: `/${profileData?.user.name}/notes/${slug}`,
+        })
+      }
+
       setSnackbar({
         message: res.data.message,
         severity: 'success',

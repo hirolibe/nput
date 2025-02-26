@@ -173,7 +173,7 @@ const EditNote: NextPage = () => {
 
       // ステータスが下書きの場合、ノート詳細データを再検証
       if (status === 'draft') {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/revalidate`, {
+        await axios.post('/api/revalidate', {
           path: `/${profileData?.user.name}/notes/${slug}`,
         })
       }

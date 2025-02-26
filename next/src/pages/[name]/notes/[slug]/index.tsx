@@ -1,3 +1,4 @@
+import { ParsedUrlQuery } from 'querystring'
 import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
@@ -5,136 +6,146 @@ import {
   Chip,
   Container,
   Divider,
+  Fade,
   IconButton,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material'
-import { NextPage, GetServerSideProps } from 'next'
+import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
-import { parseCookies } from 'nookies'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
+import Loading from '@/components/common/Loading'
 import { AuthorInfo } from '@/components/note/AuthorInfo'
 import { CheerButton } from '@/components/note/CheerButton'
 import Comment from '@/components/note/Comment'
 import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { TableOfContents } from '@/components/note/TableOfContents'
-import { CheerStatusData } from '@/hooks/useCheerStatus'
-import { FollowStatusData } from '@/hooks/useFollowStatus'
+import { useCheerStatus } from '@/hooks/useCheerStatus'
+import { useFollowStatus } from '@/hooks/useFollowStatus'
+import { useMyNote } from '@/hooks/useMyNote'
 import { NoteData } from '@/hooks/useNotes'
-import { ProfileData } from '@/hooks/useProfile'
+import { useProfile } from '@/hooks/useProfile'
 import { styles } from '@/styles'
-import { fetchCheerStatusData } from '@/utils/fetchCheerStatusData'
-import { fetchFollowStatusData } from '@/utils/fetchFollowStatusData'
 import { fetchNoteData } from '@/utils/fetchNoteData'
-import { fetchProfileData } from '@/utils/fetchProfileData'
 import { handleError } from '@/utils/handleError'
 
+interface Params extends ParsedUrlQuery {
+  name: string
+  slug: string
+}
+
 interface NoteDetailProps {
-  name?: string
-  slug?: string
-  profileData?: ProfileData | null
-  noteData?: NoteData
-  cheerStatusData?: CheerStatusData | null
-  followStatusData?: FollowStatusData | null
+  name: string
+  slug: string
+  noteData: NoteData
   error?: { statusCode: number | null; errorMessage: string | null }
 }
 
-export const getServerSideProps: GetServerSideProps<NoteDetailProps> = async (
-  context,
-) => {
-  const cookies = parseCookies(context)
-  const idToken = cookies['firebase_auth_token']
-
-  const { name, slug } = context.query
-  if (typeof name !== 'string' || typeof slug !== 'string') {
-    return {
-      notFound: true,
-    }
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
   }
+}
 
+// getStaticProps - ISRでの初期データ取得
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { name, slug } = params as Params
   const baseUrl =
     process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
     process.env.NEXT_PUBLIC_API_BASE_URL ?? // 本番環境ではALB経由
     ''
 
-  try {
-    let profileData: ProfileData | null = null
-    let userName: string | undefined
-    let noteData: NoteData | null = null
-    let cheerStatusData: CheerStatusData | null = null
-    let followStatusData: FollowStatusData | null = null
+  const noteData = await fetchNoteData(baseUrl, name, slug)
 
-    if (idToken) {
-      profileData = await fetchProfileData(baseUrl, idToken)
-      userName = profileData?.user?.name
-      cheerStatusData = await fetchCheerStatusData(baseUrl, name, slug, idToken)
-      followStatusData = await fetchFollowStatusData(baseUrl, name, idToken)
-    }
-    noteData = await fetchNoteData(baseUrl, name, slug, idToken, userName)
+  if (!noteData) {
+    return { props: { name, slug } }
+  }
 
-    return {
-      props: {
-        name,
-        slug,
-        profileData,
-        noteData,
-        cheerStatusData,
-        followStatusData,
-      },
-    }
-  } catch (err) {
-    const { statusCode, errorMessage } = handleError(err)
-    return {
-      props: {
-        error: { statusCode, errorMessage },
-      },
-    }
+  return {
+    props: { name, slug, noteData },
+    revalidate: 60,
   }
 }
 
 const NoteDetail: NextPage<NoteDetailProps> = (props) => {
-  const {
-    name,
-    slug,
-    profileData,
-    noteData,
-    cheerStatusData,
-    followStatusData,
-    error,
-  } = props
+  const { name, slug, noteData: initialNoteData } = props
+  const { noteData: myNoteData, noteError: myNoteError } = useMyNote() // 下書きのノートデータを取得
+  const [noteData, setNoteData] = useState<NoteData | undefined>(undefined)
+  const [isDraft, setIsDraft] = useState<boolean | undefined>(undefined)
+  const [error, setError] = useState<Error | undefined>(undefined)
 
-  const currentUserName = profileData?.user.name
-  const isDraft = noteData?.statusJp === '下書き'
+  useEffect(() => {
+    // 公開ノートの場合
+    if (initialNoteData) {
+      setNoteData(initialNoteData)
+    }
 
-  const [isCheered, setIsCheered] = useState<boolean | undefined>(
-    cheerStatusData?.hasCheered ?? false,
+    // 下書きかつログインユーザーのノートの場合
+    if (!initialNoteData && myNoteData) {
+      setNoteData(myNoteData)
+      setIsDraft(myNoteData.statusJp === '下書き')
+    }
+
+    // ノートを取得できなかった場合
+    if (!initialNoteData && myNoteError) {
+      setError(myNoteError)
+    }
+  }, [initialNoteData, myNoteData, myNoteError])
+
+  const { profileData } = useProfile()
+  const [currentUserName, setCurrrentUserName] = useState<string | undefined>(
+    undefined,
   )
-  const [cheersCount, setCheersCount] = useState(noteData?.cheersCount)
+  useEffect(() => {
+    setCurrrentUserName(profileData?.user.name)
+  }, [profileData])
+
+  const { cheerStatusData } = useCheerStatus({
+    authorName: name,
+    noteSlug: slug,
+  })
+  const [isCheered, setIsCheered] = useState<boolean | undefined>(false)
+  const [cheersCount, setCheersCount] = useState<number | undefined>(undefined)
   const cheerState = {
     isCheered,
     setIsCheered,
     cheersCount,
     setCheersCount,
   }
+  useEffect(() => {
+    setIsCheered(cheerStatusData)
+    setCheersCount(noteData?.cheersCount)
+  }, [cheerStatusData, noteData?.cheersCount])
 
-  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(
-    followStatusData?.hasFollowed ?? false,
-  )
+  const { followStatusData } = useFollowStatus(name)
+  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(false)
   const followState = {
     isFollowed,
     setIsFollowed,
   }
+  useEffect(() => {
+    setIsFollowed(followStatusData)
+  }, [followStatusData])
 
   if (error) {
+    const { statusCode, errorMessage } = handleError(error)
+
+    return <Error statusCode={statusCode} errorMessage={errorMessage} />
+  }
+
+  if (!noteData) {
     return (
-      <Error
-        statusCode={error?.statusCode}
-        errorMessage={error?.errorMessage}
-      />
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <Loading />
+      </Box>
     )
   }
 
@@ -212,7 +223,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               alignItems: 'center',
             }}
           >
-            <Link href={`/${noteData?.user.name}`}>
+            <Link href={`/${noteData?.user.name}/`}>
               <Avatar
                 alt={noteData?.user.profile.nickname || noteData?.user.name}
                 src={noteData?.user.profile.avatarUrl}
@@ -474,7 +485,10 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               </Box>
 
               {/* 目次 */}
-              {noteData?.content && (
+              <Fade
+                in={noteData?.content ? true : false}
+                timeout={{ enter: 1000 }}
+              >
                 <Box
                   sx={{
                     position: 'sticky',
@@ -482,9 +496,9 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                     zIndex: 1,
                   }}
                 >
-                  <TableOfContents content={noteData.content} />
+                  <TableOfContents content={noteData?.content ?? ''} />
                 </Box>
-              )}
+              </Fade>
             </Box>
           </Box>
         </Container>

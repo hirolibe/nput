@@ -5,11 +5,7 @@ export const fetchNoteData = async (
   baseUrl: string,
   name: string,
   slug: string,
-  idToken?: string,
-  userName?: string,
 ): Promise<NoteData> => {
-  const urlPath =
-    userName === name ? `my_notes/${slug}` : `${name}/notes/${slug}`
-  const url = `${baseUrl}/${urlPath}`
-  return await fetcher([url, idToken])
+  const url = `${baseUrl}/${name}/notes/${slug}`
+  return await fetcher([url, undefined])
 }

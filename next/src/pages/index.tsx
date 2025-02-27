@@ -9,29 +9,55 @@ import {
   Pagination,
   Typography,
 } from '@mui/material'
-import type { NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
-import { useNotes, BasicNoteData } from '@/hooks/useNotes'
+import {
+  BasicNoteData,
+  PageData,
+  PagenatedNotesData,
+  useNotes,
+} from '@/hooks/useNotes'
 import { styles } from '@/styles'
+import { fetchNotesData } from '@/utils/fetchNotesData'
 import { handleError } from '@/utils/handleError'
 
-const PublicNotes: NextPage = () => {
+// ISRによるノートデータ取得
+export const getStaticProps: GetStaticProps = async () => {
+  const { notes, meta } = await fetchNotesData()
+  return {
+    props: { notes, meta },
+    revalidate: 60, // 1分間キャッシュする
+  }
+}
+
+const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
+  const { notes: initialNotes, meta: initialMeta } = props
   const router = useRouter()
-  const { notesData, notesError } = useNotes()
-  const notes = notesData?.notes
-  const meta = notesData?.meta
+  const { notesData: pagenatedNotesData, notesError } = useNotes()
+
+  const [notesData, setNotesData] = useState<BasicNoteData[] | undefined>(
+    initialNotes,
+  )
+  const [meta, setMeta] = useState<PageData>(initialMeta)
+
+  useEffect(() => {
+    if (pagenatedNotesData) {
+      setNotesData(pagenatedNotesData.notes)
+      setMeta(pagenatedNotesData.meta)
+    }
+  }, [pagenatedNotesData])
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
   const [description, setDescription] = useState<string | undefined>(undefined)
 
   const handleOpenDescription = (slug: string) => {
-    const note = notes?.find((note) => note.slug === slug)
+    const note = notesData?.find((note) => note.slug === slug)
     setTitle(note?.title)
     setDescription(note?.description)
     setIsOpen(true)
@@ -82,7 +108,7 @@ const PublicNotes: NextPage = () => {
                   <NoteCardSkeleton key={i} />
                 </Grid>
               ))}
-            {notes?.map((note: BasicNoteData, i: number) => (
+            {notesData?.map((note: BasicNoteData, i: number) => (
               <Grid item key={i} xs={12}>
                 <Card>
                   <NoteCard

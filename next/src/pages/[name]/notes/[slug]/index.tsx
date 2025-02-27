@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -42,7 +42,6 @@ interface NoteDetailProps {
   name: string
   slug: string
   noteData: NoteData
-  error?: { statusCode: number | null; errorMessage: string | null }
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -52,16 +51,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-// getStaticProps - ISRでの初期データ取得
+// ISRによるノートデータ取得
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { name, slug } = params as Params
-  const baseUrl =
-    process.env.NEXT_PUBLIC_INTERNAL_API_BASE_URL ?? // 開発環境ではコンテナ間通信
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? // 本番環境ではALB経由
-    ''
 
   try {
-    const noteData = await fetchNoteData(baseUrl, name, slug)
+    const noteData = await fetchNoteData(name, slug)
     return {
       props: { name, slug, noteData },
       revalidate: 60 * 60 * 24 * 365, // 1年間キャッシュする
@@ -78,20 +73,25 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   const [isDraft, setIsDraft] = useState<boolean | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
 
+  // 公開ノートの場合
   useEffect(() => {
-    // 公開ノートの場合
     if (initialNoteData) {
       setNoteData(initialNoteData)
+      setIsDraft(false)
     }
+  }, [initialNoteData])
+
+  useEffect(() => {
+    if (initialNoteData) return
 
     // 下書きかつログインユーザーのノートの場合
-    if (!initialNoteData && myNoteData) {
+    if (myNoteData) {
       setNoteData(myNoteData)
-      setIsDraft(myNoteData.statusJp === '下書き')
+      setIsDraft(true)
     }
 
     // ノートを取得できなかった場合
-    if (!initialNoteData && myNoteError) {
+    if (myNoteError) {
       setError(myNoteError)
     }
   }, [initialNoteData, myNoteData, myNoteError])
@@ -130,6 +130,12 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   useEffect(() => {
     setIsFollowed(followStatusData)
   }, [followStatusData])
+
+  const markdownContent = useMemo(() => {
+    return noteData?.content ? (
+      <MarkdownText content={noteData.content} />
+    ) : null
+  }, [noteData?.content])
 
   if (error) {
     const { statusCode, errorMessage } = handleError(error)
@@ -388,9 +394,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
                 {/* 本文 */}
                 <Box sx={{ fontSize: { xs: '14px', sm: '16px' }, mb: 5 }}>
-                  {noteData?.content && (
-                    <MarkdownText content={noteData?.content} />
-                  )}
+                  {markdownContent}
                 </Box>
 
                 {/* ボタン */}

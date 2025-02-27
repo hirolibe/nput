@@ -1,6 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { IconButton, Tooltip, Box } from '@mui/material'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash'
@@ -10,6 +11,8 @@ import ruby from 'react-syntax-highlighter/dist/cjs/languages/prism/ruby'
 import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript'
 import yaml from 'react-syntax-highlighter/dist/cjs/languages/prism/yaml'
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { handleError } from '@/utils/handleError'
 
 SyntaxHighlighter.registerLanguage('ruby', ruby)
 SyntaxHighlighter.registerLanguage('yaml', yaml)
@@ -24,6 +27,8 @@ interface CustomCodeProps {
 }
 
 const CodeBlock = ({ className, children }: CustomCodeProps) => {
+  const router = useRouter()
+  const [, setSnackbar] = useSnackbarState()
   const [isCopied, setIsCopied] = useState(false)
 
   const isInline = !String(children).includes('\n')
@@ -59,7 +64,12 @@ const CodeBlock = ({ className, children }: CustomCodeProps) => {
       setIsCopied(true)
       setTimeout(() => setIsCopied(false), 3000)
     } catch (err) {
-      console.error('Failed to copy text:', err)
+      const { errorMessage } = handleError(err)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: router.pathname,
+      })
     }
   }
 

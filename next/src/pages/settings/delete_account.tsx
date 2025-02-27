@@ -24,7 +24,6 @@ import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
-import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
@@ -77,7 +76,6 @@ const DeleteAccount: NextPage = () => {
 
       const message = await handleDeleteUser()
       await deleteUser(user)
-      destroyCookieToken()
       setSnackbar({
         message: message,
         severity: 'success',

@@ -26,7 +26,6 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import { setCookieToken } from '@/utils/setCookieToken'
 
 interface SignUpFormData {
   name: string
@@ -145,7 +144,6 @@ const SignUp: NextPage = () => {
 
       const token = await createdUser.getIdToken(true)
       setIdToken(token)
-      setCookieToken(token)
 
       setSnackbar({
         message: message,
@@ -183,7 +181,6 @@ const SignUp: NextPage = () => {
 
       const token = await guestUser.getIdToken(true)
       setIdToken(token)
-      setCookieToken(token)
 
       setSnackbar({
         message: message,

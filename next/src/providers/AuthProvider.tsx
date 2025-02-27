@@ -1,13 +1,10 @@
 import { onIdTokenChanged, User } from 'firebase/auth'
 import { useRouter } from 'next/router'
-import { parseCookies } from 'nookies'
 import { ReactNode, useEffect, useState, useCallback } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import { setCookieToken } from '@/utils/setCookieToken'
 
 export interface AuthProviderProps {
   children: ReactNode
@@ -19,18 +16,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
 
-  useEffect(() => {
-    const cookies = parseCookies()
-    if (cookies.firebase_auth_token) {
-      setIdToken(cookies.firebase_auth_token)
-    }
-  }, [])
-
   const fetchToken = useCallback(
     async (user: User) => {
       try {
         const token = await user.getIdToken(true)
-        setCookieToken(token)
         setIdToken(token)
       } catch (error) {
         const { errorMessage } = handleError(error)
@@ -49,7 +38,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (user) {
         await fetchToken(user)
       } else {
-        destroyCookieToken()
         setIdToken(null)
       }
       setIsAuthLoading(false)
@@ -63,7 +51,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (auth.currentUser) {
         await fetchToken(auth.currentUser)
       } else {
-        destroyCookieToken()
         setIdToken(null)
       }
       setIsAuthLoading(false)
@@ -82,12 +69,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (currentUser) {
           await fetchToken(currentUser)
         } else {
-          destroyCookieToken()
           setIdToken(null)
         }
         setIsAuthLoading(false)
       },
-      55 * 60 * 1000,
+      45 * 60 * 1000,
     )
 
     return () => clearInterval(refreshToken)

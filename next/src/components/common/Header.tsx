@@ -32,7 +32,6 @@ import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useUserRole } from '@/hooks/useUserRole'
-import { destroyCookieToken } from '@/utils/destroyCookieToken'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
@@ -97,7 +96,6 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth)
-      destroyCookieToken()
       await router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)

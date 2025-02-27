@@ -12,7 +12,6 @@ import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
-import { setCookieToken } from '@/utils/setCookieToken'
 
 interface LogInFormData {
   email: string
@@ -64,7 +63,6 @@ const LogIn: NextPage = () => {
       const token = await currentUser.getIdToken(true)
 
       setIdToken(token)
-      setCookieToken(token)
 
       setSnackbar({
         message: 'ログインに成功しました！',

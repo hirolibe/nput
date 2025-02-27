@@ -1,3 +1,4 @@
+import { ParsedUrlQuery } from 'querystring'
 import {
   AppBar,
   Box,
@@ -13,11 +14,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
-import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import { useState, useEffect, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import TabPanel from '@/components/common/TabPanel'
 import CheeredNotes from '@/components/user/CheeredNotes'
@@ -27,15 +26,44 @@ import Followings from '@/components/user/Followings'
 import { UserInfo } from '@/components/user/UserInfo'
 import UserNotes from '@/components/user/UserNotes'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
-import { useUser } from '@/hooks/useUser'
+import { UserData } from '@/hooks/useUser'
 import { styles } from '@/styles'
-import { handleError } from '@/utils/handleError'
+import { fetchUserData } from '@/utils/fetchUserData'
 
-const UsersIndex: NextPage = () => {
-  const router = useRouter()
-  const { name } = router.query
+interface Params extends ParsedUrlQuery {
+  userName: string
+}
+
+interface UsersIndexProps {
+  userName: string
+  userData: UserData
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
+  }
+}
+
+// ISRによるユーザーデータ取得
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { name } = params as Params
   const userName = typeof name === 'string' ? name : undefined
-  const { userData, userError } = useUser()
+
+  try {
+    const userData = await fetchUserData(userName)
+    return {
+      props: { userName, userData },
+      revalidate: 60 * 60 * 24, // 24時間キャッシュする
+    }
+  } catch {
+    return { props: { userName } }
+  }
+}
+
+const UsersIndex: NextPage<UsersIndexProps> = (props) => {
+  const { userName, userData } = props
 
   const data = [
     {
@@ -79,11 +107,6 @@ const UsersIndex: NextPage = () => {
   useEffect(() => {
     setChangedFollowersCount(userData?.followersCount)
   }, [userData?.followersCount])
-
-  if (userError) {
-    const { statusCode, errorMessage } = handleError(userError)
-    return <Error statusCode={statusCode} errorMessage={errorMessage} />
-  }
 
   if (!userData) {
     return (

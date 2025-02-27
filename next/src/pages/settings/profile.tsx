@@ -79,6 +79,12 @@ const EditProfile: NextPage = () => {
 
     try {
       const res = await axios.patch(url, patchData, { headers })
+
+      // ユーザー詳細データを再検証
+      await axios.post('/api/revalidate', {
+        path: `/${profileData?.user.name}`,
+      })
+
       setSnackbar({
         message: res.data.message,
         severity: 'success',

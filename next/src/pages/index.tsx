@@ -39,18 +39,32 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
   const { notes: initialNotes, meta: initialMeta } = props
   const router = useRouter()
   const { notesData: pagenatedNotesData, notesError } = useNotes()
+  const page =
+    'page' in router.query ? parseInt(String(router.query.page), 10) : 1
 
   const [notesData, setNotesData] = useState<BasicNoteData[] | undefined>(
-    initialNotes,
+    undefined,
   )
   const [meta, setMeta] = useState<PageData>(initialMeta)
 
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
-    if (pagenatedNotesData) {
-      setNotesData(pagenatedNotesData.notes)
-      setMeta(pagenatedNotesData.meta)
+    if (!router.isReady) return
+
+    if (page === 1) {
+      setNotesData(initialNotes)
+      setMeta(initialMeta)
+      setIsLoading(false)
+      return
     }
-  }, [pagenatedNotesData])
+
+    if (!pagenatedNotesData) return
+
+    setNotesData(pagenatedNotesData.notes)
+    setMeta(pagenatedNotesData.meta)
+    setIsLoading(false)
+  }, [router.isReady, page, initialNotes, initialMeta, pagenatedNotesData])
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string | undefined>(undefined)
@@ -68,6 +82,7 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
   }
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setIsLoading(true)
     router.push(`/?page=${value}`)
   }
 
@@ -102,33 +117,34 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
             新着ノート一覧
           </Typography>
           <Grid container spacing={4}>
-            {!notesData &&
+            {isLoading &&
               Array.from({ length: 10 }).map((_, i) => (
                 <Grid item key={i} xs={12}>
                   <NoteCardSkeleton key={i} />
                 </Grid>
               ))}
-            {notesData?.map((note: BasicNoteData, i: number) => (
-              <Grid item key={i} xs={12}>
-                <Card>
-                  <NoteCard
-                    id={note.id}
-                    title={note.title}
-                    description={note.description}
-                    fromToday={note.fromToday}
-                    cheersCount={note.cheersCount}
-                    slug={note.slug}
-                    totalDuration={note.totalDuration}
-                    user={note.user}
-                    tags={note.tags.map((tag) => ({
-                      id: tag.id,
-                      name: tag.name,
-                    }))}
-                    handleOpenDescription={handleOpenDescription}
-                  />
-                </Card>
-              </Grid>
-            ))}
+            {!isLoading &&
+              notesData?.map((note: BasicNoteData, i: number) => (
+                <Grid item key={i} xs={12}>
+                  <Card>
+                    <NoteCard
+                      id={note.id}
+                      title={note.title}
+                      description={note.description}
+                      fromToday={note.fromToday}
+                      cheersCount={note.cheersCount}
+                      slug={note.slug}
+                      totalDuration={note.totalDuration}
+                      user={note.user}
+                      tags={note.tags.map((tag) => ({
+                        id: tag.id,
+                        name: tag.name,
+                      }))}
+                      handleOpenDescription={handleOpenDescription}
+                    />
+                  </Card>
+                </Grid>
+              ))}
           </Grid>
 
           <Modal open={isOpen} onClose={handleClose}>

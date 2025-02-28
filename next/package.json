@@ -21,6 +21,7 @@
     "@types/prop-types": "^15.7.14",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
+    "aws-amplify": "^6.13.2",
     "axios": "^1.5.0",
     "camelcase-keys": "^9.0.0",
     "chart.js": "^4.4.7",
@@ -47,14 +48,19 @@
     "rehype-toc": "^3.0.2",
     "remark-gfm": "^4.0.0",
     "swr": "^2.2.2",
-    "tocbot": "^4.35.0",
-    "typescript": "5.3.3"
+    "tocbot": "^4.35.0"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.14.1",
+    "@aws-amplify/backend-cli": "^1.4.11",
     "@emotion/babel-plugin": "^11.11.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
+    "aws-cdk": "^2.1001.0",
+    "aws-cdk-lib": "^2.181.0",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.0",
     "eslint": "^8.48.0",
     "eslint-config-next": "^13.4.19",
     "eslint-config-prettier": "^9.0.0",
@@ -63,6 +69,8 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.0.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^0.0.1-alpha.0"
   }
 }

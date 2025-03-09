@@ -8,12 +8,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { deleteUser } from 'aws-amplify/auth'
 import axios from 'axios'
-import {
-  deleteUser,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-} from 'firebase/auth'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -24,7 +20,6 @@ import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
-import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
 interface DeleteAccountFormData {
@@ -62,22 +57,13 @@ const DeleteAccount: NextPage = () => {
     return res.data.message
   }
 
-  const onSubmit: SubmitHandler<DeleteAccountFormData> = async (data) => {
+  const onSubmit: SubmitHandler<DeleteAccountFormData> = async () => {
     setIsLoading(true)
     try {
-      const user = auth.currentUser
-      if (!user || !user?.email) {
-        throw new Error('ユーザー情報を取得できませんでした')
-      }
-      const email = user.email
-
-      const credential = EmailAuthProvider.credential(email, data.password)
-      await reauthenticateWithCredential(user, credential)
-
-      const message = await handleDeleteUser()
-      await deleteUser(user)
+      await handleDeleteUser()
+      await deleteUser()
       setSnackbar({
-        message: message,
+        message: 'アカウントを削除しました',
         severity: 'success',
         pathname: '/',
       })

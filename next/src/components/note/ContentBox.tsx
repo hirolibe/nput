@@ -50,13 +50,13 @@ const ContentBox = ({
       const margin = 230
 
       const calculatedHeight = window.innerHeight - margin
-      const minHeight = 516
+      const minHeight = 493
       const height = Math.max(calculatedHeight, minHeight)
       setTextFieldHeight(height)
 
       const padding = 33
       const calculatedRows = Math.floor((height - padding) / lineHeight)
-      const minRows = 21
+      const minRows = 20
       const rows = Math.max(calculatedRows, minRows)
       setTextFieldRows(rows)
     }

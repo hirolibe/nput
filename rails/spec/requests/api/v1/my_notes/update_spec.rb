@@ -25,7 +25,7 @@ RSpec.describe "Api::V1::MyNotes PATCH /api/v1/my_notes/slug", type: :request do
     context "ログインユーザーが作成したノートが存在する場合" do
       context "バリデーションに失敗した場合" do
         let(:params) {
-          { "note": { "title": "" }, "duration": 1 }
+          { note: { title: "" }, duration: 1 }
         }
 
         include_examples "バリデーションエラーのレスポンス検証"

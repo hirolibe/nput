@@ -16,6 +16,7 @@ class User < ApplicationRecord
            inverse_of: :following
   has_many :followers, through: :follower_relationships, source: :follower
   has_many :durations, dependent: :destroy
+  has_many :consents, dependent: :destroy
 
   has_one :profile, dependent: :destroy
 
@@ -30,9 +31,6 @@ class User < ApplicationRecord
             },
             length: { maximum: 20 }
   validates :cheer_points, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 3600 }
-  validates :terms_version, presence: true
-  validates :privacy_version, presence: true
-  validates :agreed_at, presence: true
 
   after_create :create_profile!
 
@@ -49,7 +47,7 @@ class User < ApplicationRecord
   end
 
   def guest?
-    name.start_with?("Guest_")
+    email == "nput.guest@gmail.com"
   end
 
   def admin?

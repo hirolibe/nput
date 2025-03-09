@@ -1,9 +1,10 @@
 class Api::V1::RelationshipsController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:show, :create, :destroy]
+  before_action :fetch_authenticated_current_user, only: [:show]
+  before_action :authenticate_user!, only: [:create, :destroy]
 
   def show
     following = User.find_by!(name: params[:name])
-    follow_status = current_user.has_followed?(following)
+    follow_status = current_user ? current_user.has_followed?(following) : false
 
     render json: { has_followed: follow_status }, status: :ok
   rescue ActiveRecord::RecordNotFound

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_11_220812) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_06_064649) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -57,6 +57,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_11_220812) do
     t.datetime "updated_at", null: false
     t.index ["note_id"], name: "index_comments_on_note_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "consents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "terms_version", null: false
+    t.string "privacy_version", null: false
+    t.datetime "consent_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_consents_on_user_id"
   end
 
   create_table "durations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -133,9 +143,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_11_220812) do
     t.integer "cheers_count", default: 0, null: false, comment: "エールした合計回数"
     t.integer "followings_count", default: 0, null: false, comment: "フォローした数"
     t.integer "followers_count", default: 0, null: false, comment: "フォロワー数"
-    t.string "terms_version", null: false, comment: "利用規約のバージョン"
-    t.string "privacy_version", null: false, comment: "プライバシーポリシーのバージョン"
-    t.datetime "agreed_at", null: false, comment: "利用規約とプライバシーポリシーに同意した日"
     t.string "role", default: "user", null: false, comment: "権限"
     t.boolean "guest", default: false, null: false, comment: "ゲストユーザーの識別"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -149,6 +156,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_11_220812) do
   add_foreign_key "cheers", "users"
   add_foreign_key "comments", "notes"
   add_foreign_key "comments", "users"
+  add_foreign_key "consents", "users"
   add_foreign_key "durations", "notes"
   add_foreign_key "durations", "users"
   add_foreign_key "note_tags", "notes"

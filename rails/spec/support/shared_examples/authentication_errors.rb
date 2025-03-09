@@ -17,7 +17,7 @@ RSpec.shared_examples "トークン期限切れエラー" do
   it "トークンの検証が失敗し、401エラーとエラーメッセージが返る" do
     subject
     expect(response).to have_http_status(:unauthorized)
-    expect(Rails.logger).to have_received(:error).with("Firebase認証エラー: トークンが期限切れです")
+    expect(Rails.logger).to have_received(:error).with("トークンが期限切れです")
     expect(json_response["error"]).to eq("トークンが期限切れです")
   end
 end
@@ -38,7 +38,7 @@ RSpec.shared_examples "アカウントエラー" do
   it "認証が失敗し、401エラーとエラーメッセージが返る" do
     subject
     expect(response).to have_http_status(:unauthorized)
-    expect(json_response["error"]).to eq("アカウントが見つかりません")
+    expect(json_response["error"]).to eq("アカウント登録が完了していません")
   end
 end
 
@@ -68,7 +68,9 @@ RSpec.shared_examples "管理者認証エラー" do
   context "管理者以外の場合" do
     let(:non_administrator) { create(:user, role: "user") }
 
-    before { login_as(non_administrator) }
+    before do
+      stub_token_verification.and_return({ "sub" => non_administrator.uid })
+    end
 
     it "認証が失敗し、403エラーとエラーメッセージが返る" do
       subject

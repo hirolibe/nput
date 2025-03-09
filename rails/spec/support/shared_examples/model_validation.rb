@@ -34,3 +34,15 @@ RSpec.shared_examples "ノートのバリデーションエラー" do
     include_examples "入力必須項目のバリデーションエラー", "note", column, column_name
   end
 end
+
+CONSENT_COLUMNS = {
+  "terms_version": "利用規約",
+  "privacy_version": "プライバシーポリシー",
+  "consent_date": "同意日",
+}.freeze
+
+RSpec.shared_examples "同意情報のバリデーションエラー" do
+  CONSENT_COLUMNS.each do |column, column_name|
+    include_examples "入力必須項目のバリデーションエラー", "consent", column, column_name
+  end
+end

@@ -1,5 +1,4 @@
 import { isAxiosError, AxiosError } from 'axios'
-import { FirebaseError } from 'firebase/app'
 
 const handleAxiosError = (
   err: AxiosError,
@@ -47,40 +46,12 @@ const handleAxiosError = (
   }
 }
 
-const handleFirebaseError = (
-  err: FirebaseError,
-): { statusCode: number; errorMessage: string } => {
-  if (err.code === 'auth/invalid-credential') {
-    return {
-      statusCode: 401,
-      errorMessage: '認証情報が無効です',
-    }
-  }
-
-  if (err.code === 'auth/network-request-failed') {
-    return {
-      statusCode: 503,
-      errorMessage: 'ネットワークエラーが発生しました',
-    }
-  }
-
-  return {
-    statusCode: 400,
-    errorMessage: err.message,
-  }
-}
-
 export const handleError = (
   err: unknown,
 ): { statusCode: number | null; errorMessage: string | null } => {
   if (isAxiosError(err)) {
     console.error(err)
     return handleAxiosError(err)
-  }
-
-  if (err instanceof FirebaseError) {
-    console.error(err)
-    return handleFirebaseError(err)
   }
 
   if (err instanceof Error) {

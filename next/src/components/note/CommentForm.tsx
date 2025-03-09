@@ -13,7 +13,7 @@ import camelcaseKeys from 'camelcase-keys'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
-import AuthLinks from '../auth/AuthLinks'
+import LoginButton from '../auth/LoginButton'
 import { UploadImagesButton } from '../common/UploadImagesButton'
 import MarkdownText from './MarkdownText'
 import { useAuthContext } from '@/hooks/useAuthContext'
@@ -118,9 +118,9 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
           <Typography
             sx={{ fontSize: { xs: 14, sm: 16 }, color: 'text.light' }}
           >
-            ログインまたは新規登録してコメントする
+            ログインしてコメントする
           </Typography>
-          <AuthLinks />
+          <LoginButton />
         </Stack>
       )}
       {profileData && (

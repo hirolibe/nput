@@ -1,6 +1,6 @@
 module TimeCalculateHelper
   def self.time_passed_from(reference_time)
-    now = Time.zone.now
+    now = Time.current
 
     months = (now.year - reference_time.year) * 12 + now.month - reference_time.month - ((now.day >= reference_time.day) ? 0 : 1)
     years = months.div(12)

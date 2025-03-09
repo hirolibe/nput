@@ -1,5 +1,5 @@
 :root {
-  --background: #ffffff;
+  --background: white;
   --foreground: #171717;
 }
 
@@ -35,8 +35,32 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+[data-amplify-authenticator] {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.amplify-tabs__item {
+  background-color: white;
+  color: #acbcc7;
+  border-top: none;
+}
+
+.amplify-tabs__item:hover {
+  background-color: #d8d8d8;
+  color: #50A0B4;
+}
+
+.amplify-tabs__item--active {
+  color: #50A0B4;
+  border-bottom: solid 1px;
+  border-bottom-color: #50A0B4;
+}
+
+.amplify-tabs__item--active:hover {
+  background-color: white;
+}
+
+.amplify-flex.amplify-field.amplify-passwordfield:has(input[name="confirm_password"]) {
+  display: none;
 }

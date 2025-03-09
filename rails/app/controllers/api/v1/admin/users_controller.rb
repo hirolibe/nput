@@ -16,7 +16,6 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
   def destroy
     user = User.find(params[:id])
     validate_user_deletion(user)
-    delete_user(user)
     render json: { message: "アカウントを削除しました" }, status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: "アカウントにアクセスできません" }, status: :not_found
@@ -29,13 +28,6 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
     def validate_user_deletion(user)
       if user == current_user
         raise "自分のアカウントは削除できません"
-      end
-    end
-
-    def delete_user(user)
-      ActiveRecord::Base.transaction do
-        user.destroy!
-        FirebaseAccountService.delete_firebase_account(user.uid)
       end
     end
 end

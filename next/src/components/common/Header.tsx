@@ -19,30 +19,40 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material'
+import { signOut } from 'aws-amplify/auth'
 import axios from 'axios'
-import { signOut } from 'firebase/auth'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react'
-import AuthLinks from '../auth/AuthLinks'
+import LoginButton from '../auth/LoginButton'
 import CheerPoints from './CheerPoints'
 import Logo from './Logo'
 import { useAuthContext } from '@/hooks/useAuthContext'
-import { useProfile } from '@/hooks/useProfile'
+import { useProfile, ProfileData } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { useUserRole } from '@/hooks/useUserRole'
-import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
+  const pathname = usePathname()
+
   const [, setSnackbar] = useSnackbarState()
-  const { idToken, isAuthLoading } = useAuthContext()
-  const { profileData, profileError, isProfileLoading } = useProfile()
+  const { idToken } = useAuthContext()
+  const { profileData, profileError } = useProfile()
   const { avatarUrl } = useProfileContext()
+
+  const [profile, setProfile] = useState<ProfileData | null | undefined>(
+    undefined,
+  )
+
+  useEffect(() => {
+    setProfile(profileData)
+  }, [profileData])
 
   useEffect(() => {
     if (profileError) {
@@ -50,10 +60,10 @@ const Header = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
-  }, [profileError, router.pathname, setSnackbar])
+  }, [profileError, pathname, setSnackbar])
 
   const { userRoleData, userRoleError } = useUserRole()
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
@@ -65,7 +75,7 @@ const Header = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
       return
     }
@@ -76,14 +86,10 @@ const Header = () => {
     }
 
     setIsAdmin(true)
-  }, [userRoleError, setSnackbar, router, userRoleData])
+  }, [userRoleError, setSnackbar, pathname, userRoleData])
 
-  const hideHeaderPathnames = [
-    '/auth/signup',
-    '/auth/login',
-    '/dashboard/notes/[slug]/edit',
-  ]
-  if (hideHeaderPathnames.includes(router.pathname)) return
+  const hideHeaderPathnames = ['/dashboard/notes/[slug]/edit', '/auth/init']
+  if (hideHeaderPathnames.includes(pathname)) return
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -95,7 +101,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth)
+      await signOut()
       await router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
@@ -119,7 +125,7 @@ const Header = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
   }
@@ -145,11 +151,7 @@ const Header = () => {
           }}
         >
           <Logo />
-          {((!isAuthLoading &&
-            idToken === null &&
-            !isProfileLoading &&
-            profileData === null) ||
-            profileError) && (
+          {(profile === null || profileError) && (
             <Box sx={{ display: 'flex' }}>
               <Link href="/search">
                 <Box
@@ -163,10 +165,10 @@ const Header = () => {
                   <SearchIcon sx={{ fontSize: 26, color: 'text.light' }} />
                 </Box>
               </Link>
-              <AuthLinks />
+              <LoginButton />
             </Box>
           )}
-          {profileData && (
+          {profile && (
             <Fade in={true} timeout={1000}>
               <Box sx={{ display: 'flex' }}>
                 <Link href="/search">
@@ -183,7 +185,7 @@ const Header = () => {
                 </Link>
                 <IconButton onClick={handleClick} sx={{ p: 0, mr: 2 }}>
                   <Avatar
-                    alt={profileData.nickname || profileData.user.name}
+                    alt={profile.nickname || profile.user.name}
                     src={avatarUrl}
                   />
                 </IconButton>
@@ -211,6 +213,7 @@ const Header = () => {
                   open={open}
                   onClose={handleClose}
                   onClick={handleClose}
+                  disableScrollLock={true}
                 >
                   {/* 管理者用メニュー */}
                   {isAdmin && (
@@ -228,7 +231,7 @@ const Header = () => {
                   )}
 
                   {/* ログインユーザー用メニュー */}
-                  <Link href={`/${profileData?.user.name}`}>
+                  <Link href={`/${profile?.user.name}`}>
                     <MenuItem>
                       <ListItemIcon>
                         <PersonIcon fontSize="small" />

@@ -8,21 +8,17 @@ RSpec.describe "Api::V1::Relationships GET /api/v1/:name/relationship", type: :r
   let(:name) { following.name }
   let(:headers) { { Authorization: "Bearer token" } }
 
-  include_examples "ユーザー認証エラー"
+  before { stub_token_verification.and_return({ "sub" => follower.uid }) }
 
-  context "ユーザー認証に成功した場合" do
-    before { stub_token_verification.and_return({ "sub" => follower.uid }) }
+  include_examples "リソース不在エラー", "アカウント", "name"
 
-    include_examples "リソース不在エラー", "アカウント", "name"
+  context "アカウントが存在する場合" do
+    before { create(:relationship, follower:, following:) }
 
-    context "アカウントが存在する場合" do
-      before { create(:relationship, follower:, following:) }
-
-      it "200ステータス、フォロー状態が返る" do
-        subject
-        expect(json_response["has_followed"]).to be true
-        expect(response).to have_http_status(:ok)
-      end
+    it "200ステータス、フォロー状態が返る" do
+      subject
+      expect(json_response["has_followed"]).to be true
+      expect(response).to have_http_status(:ok)
     end
   end
 end

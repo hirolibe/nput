@@ -210,6 +210,7 @@ export const RestoreConfirmDialog = ({
     <Dialog
       open={open}
       onClose={onClose}
+      disableScrollLock={true}
       maxWidth="lg"
       fullWidth
       PaperProps={{

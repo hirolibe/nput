@@ -34,7 +34,13 @@ const ConfirmDialog = ({
   isLoading = false,
 }: ConfirmDialogProps) => {
   return (
-    <Dialog open={open} onClose={onClose} disableScrollLock={true} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      disableScrollLock={true}
+      maxWidth="xs"
+      fullWidth
+    >
       <DialogTitle
         sx={{
           display: 'flex',

@@ -1,4 +1,3 @@
-version: '3'
 services:
   db:
     image: mysql:8.0.39
@@ -12,8 +11,6 @@ services:
   rails:
     build:
       context: ./rails
-    environment:
-      - FIREBASE_PROJECT_ID=nput-auth
     command: bash -c "tail -f log/development.log"
     tty: true
     stdin_open: true

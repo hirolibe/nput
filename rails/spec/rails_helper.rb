@@ -40,8 +40,8 @@ RSpec.configure do |config|
   # FactoryBotの宣言を省略
   config.include FactoryBot::Syntax::Methods
 
-  # Firebaseのトークン検証のスタブ
-  config.include FirebaseHelpers
+  # トークン検証のスタブ
+  config.include AuthenticationHelpers, type: :request
 
   # request specにおけるヘルパーメソッドの呼び出し
   config.include ResponseHelpers, type: :request

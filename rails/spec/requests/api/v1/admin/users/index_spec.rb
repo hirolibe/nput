@@ -12,7 +12,7 @@ RSpec.describe "Api::V1::Admin::Users GET /api/v1/admin/users", type: :request d
   context "管理者認証に成功した場合" do
     before do
       create_list(:user, 51)
-      login_as(administrator)
+      stub_token_verification.and_return({ "sub" => administrator.uid })
     end
 
     include_examples "ページネーションのテスト", "アカウント管理情報"

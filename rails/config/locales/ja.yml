@@ -5,9 +5,6 @@ ja:
         email: "メールアドレス"
         name: "ユーザー名"
         cheer_points: "保有エールポイント"
-        terms_version: "利用規約のバージョン"
-        privacy_version: "プライバシーポリシーのバージョン"
-        agreed_at: "利用規約とプライバシーポリシーに同意した日"
       profile:
         nickname: "ニックネーム"
         bio: "自己紹介文"
@@ -32,6 +29,10 @@ ja:
         name: "タグ名"
       note_tag:
         note_id: ""
+      consent:
+        terms_version: "利用規約"
+        privacy_version: "プライバシーポリシー"
+        consent_date: "同意日"
   enums:
     note:
       status:

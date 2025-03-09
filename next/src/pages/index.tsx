@@ -1,11 +1,8 @@
-import CloseIcon from '@mui/icons-material/Close'
 import {
   Box,
   Card,
   Container,
-  Divider,
   Grid,
-  Modal,
   Pagination,
   Typography,
 } from '@mui/material'
@@ -14,6 +11,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
+import DescriptionModal from '@/components/note/DescriptionModal'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
 import {
@@ -75,10 +73,6 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
     setTitle(note?.title)
     setDescription(note?.description)
     setIsOpen(true)
-  }
-
-  const handleClose = () => {
-    setIsOpen(false)
   }
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -147,51 +141,12 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
               ))}
           </Grid>
 
-          <Modal open={isOpen} onClose={handleClose}>
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                backgroundColor: 'white',
-                px: 3,
-                pt: 2,
-                pb: 3,
-                borderRadius: 2,
-                boxShadow: 24,
-                width: '600px',
-                maxWidth: '90%',
-              }}
-            >
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <CloseIcon
-                  onClick={handleClose}
-                  sx={{
-                    cursor: 'pointer',
-                    opacity: 0.7,
-                    '&:hover': { opacity: 1 },
-                  }}
-                />
-              </Box>
-              <Typography
-                sx={{ fontSize: 18, fontWeight: 'bold', px: 3, mb: 1 }}
-              >
-                {title}
-              </Typography>
-              <Divider sx={{ mx: 3, mb: 3 }} />
-              <Typography
-                sx={{
-                  px: 4,
-                  mb: 2,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {description}
-              </Typography>
-            </Box>
-          </Modal>
+          <DescriptionModal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            title={title ?? ''}
+            description={description ?? ''}
+          />
 
           {!!meta?.totalPages && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>

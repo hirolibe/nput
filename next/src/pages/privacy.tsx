@@ -1,21 +1,48 @@
 import { Box, Container, Divider, Paper, Typography } from '@mui/material'
-import type { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { GetStaticProps, NextPage } from 'next'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import Error from '@/components/common/Error'
 import MarkdownText from '@/components/note/MarkdownText'
 import { styles } from '@/styles'
+import getDocumentText from '@/utils/getDocumentText'
+import { handleError } from '@/utils/handleError'
 
-const Terms: NextPage = () => {
-  const [markdownContent, setMarkdownContent] = useState('')
-  useEffect(() => {
-    const fetchMarkdown = async () => {
-      const response = await fetch('/privacy/privacy-v1.md')
-      const text = await response.text()
-      setMarkdownContent(text)
+interface PrivacyProps {
+  privacyText: string
+  error?: {
+    statusCode: number | null
+    errorMessage: string | null
+  }
+}
+
+// ISRによる利用規約のバージョン取得
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const { privacyText } = await getDocumentText()
+
+    return {
+      props: { privacyText },
+      revalidate: 60 * 60 * 24 * 365, // 1年間キャッシュする
     }
+  } catch (err) {
+    const { statusCode, errorMessage } = handleError(err)
 
-    fetchMarkdown()
-  }, [])
+    return {
+      props: {
+        privacyText: '',
+        error: { statusCode, errorMessage },
+      },
+    }
+  }
+}
+
+const privacy: NextPage<PrivacyProps> = (props) => {
+  const { privacyText, error } = props
+
+  if (error) {
+    const { statusCode, errorMessage } = handleError(error)
+    return <Error statusCode={statusCode} errorMessage={errorMessage} />
+  }
 
   return (
     <>
@@ -44,7 +71,7 @@ const Terms: NextPage = () => {
               プライバシーポリシー
             </Typography>
             <Divider sx={{ mb: 4 }} />
-            <MarkdownText content={markdownContent} />
+            <MarkdownText content={privacyText} />
           </Paper>
         </Container>
       </Box>
@@ -52,4 +79,4 @@ const Terms: NextPage = () => {
   )
 }
 
-export default Terms
+export default privacy

@@ -63,12 +63,9 @@ export const MarkdownToolbar = (props: MarkdownToolbarProps) => {
       direction="row"
       spacing={1}
       sx={{
-        position: 'sticky',
-        top: 64,
-        zIndex: 10,
         backgroundColor: 'white',
         borderBottom: 0.5,
-        borderColor: 'divider',
+        borderBottomColor: 'divider',
         px: 2,
         py: 1,
       }}

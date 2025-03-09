@@ -16,9 +16,6 @@ users_count.times do
     email: Faker::Internet.email,
     name: generated_name,
     cheer_points: Faker::Number.between(from: 0, to: 3600),
-    terms_version: "1",
-    privacy_version: "1",
-    agreed_at: Time.current,
   )
   users.push(user)
 end
@@ -47,6 +44,8 @@ users.each do |user|
 end
 
 users.each do |user|
+  user.consents.create!(terms_version: "1.0", privacy_version: "1.0", consent_date: Time.current)
+
   notes = Note.where.not(user_id: user.id)
 
   notes.each do |note|

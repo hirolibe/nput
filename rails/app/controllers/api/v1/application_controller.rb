@@ -1,20 +1,17 @@
 class Api::V1::ApplicationController < ApplicationController
+  include CognitoAuthenticatable
+
   private
 
-    def firebase_token
-      request.headers["Authorization"]&.split&.last
-    end
-
-    def verify_token
-      FirebaseIdToken::Certificates.request
-      FirebaseIdToken::Signature.verify(firebase_token)
-    end
-
     def fetch_authenticated_current_user
+      if cognito_token.blank?
+        return render json: { error: "トークンが見つかりません" }, status: :bad_request
+      end
+
       begin
-        decoded_token = verify_token
+        decoded_token = verify(cognito_token)
       rescue => e
-        Rails.logger.error("Firebase認証エラー: #{e.message}")
+        Rails.logger.error(e.message)
         return render json: { error: e.message }, status: :unauthorized
       end
 
@@ -23,18 +20,14 @@ class Api::V1::ApplicationController < ApplicationController
       end
 
       @current_user = User.find_by(uid: decoded_token["sub"])
-
-      if @current_user.blank?
-        render json: { error: "アカウントが見つかりません" }, status: :unauthorized
-      end
     end
 
     def authenticate_user!
-      if firebase_token.blank?
-        return render json: { error: "トークンが見つかりません" }, status: :bad_request
-      end
+      current_user = fetch_authenticated_current_user
 
-      fetch_authenticated_current_user
+      if current_user.blank?
+        render json: { error: "アカウント登録が完了していません" }, status: :unauthorized
+      end
     end
 
     attr_reader :current_user

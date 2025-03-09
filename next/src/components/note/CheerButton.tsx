@@ -11,7 +11,7 @@ import {
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, Dispatch, SetStateAction } from 'react'
-import LoginDialog from '../auth/LoginDialog'
+import { CustomAuthenticator } from '../auth/CustomAuthenticator'
 import ConfirmDialog from '../common/ConfirmDialog'
 import Supporters from '../user/Supporters'
 import AnimatedIconWrapper from './AnimatedIconWrapper'
@@ -47,11 +47,12 @@ export const CheerButton = ({
   const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
   const [isAnimated, setIsAnimated] = useState<boolean>(false)
-  const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false)
+  const [isOpenAuthForm, setIsOpenAuthForm] = useState<boolean>(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false)
   const { isCheered, setIsCheered, cheersCount, setCheersCount } = cheerState
   const { setCheerPoints } = useCheerPointsContext()
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpenSupportersList, setIsOpenSupportersList] =
+    useState<boolean>(false)
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const headers = { Authorization: `Bearer ${idToken}` }
@@ -60,7 +61,7 @@ export const CheerButton = ({
     if (isAuthLoading) return
 
     if (!idToken) {
-      setOpenLoginDialog(true)
+      setIsOpenAuthForm(true)
       return
     }
 
@@ -105,13 +106,12 @@ export const CheerButton = ({
   }
 
   const handleOpenModal = () => {
-    setIsOpen(true)
+    setIsOpenSupportersList(true)
   }
 
   const handleClose = () => {
-    setOpenLoginDialog(false)
     setOpenConfirmDialog(false)
-    setIsOpen(false)
+    setIsOpenSupportersList(false)
   }
 
   return (
@@ -169,8 +169,9 @@ export const CheerButton = ({
       </Box>
 
       <Modal
-        open={isOpen}
+        open={isOpenSupportersList}
         onClose={handleClose}
+        disableScrollLock={true}
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -216,7 +217,10 @@ export const CheerButton = ({
         </Box>
       </Modal>
 
-      <LoginDialog open={openLoginDialog} onClose={handleClose} />
+      <CustomAuthenticator
+        isOpen={isOpenAuthForm}
+        setIsOpen={setIsOpenAuthForm}
+      />
 
       <ConfirmDialog
         open={openConfirmDialog}

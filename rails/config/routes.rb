@@ -5,7 +5,6 @@ Rails.application.routes.draw do
 
       namespace :auth do
         resource :registration, only: [:create]
-        resource :guest_registration, only: [:create]
       end
 
       namespace :admin do
@@ -24,6 +23,7 @@ Rails.application.routes.draw do
       resources :my_notes, only: [:index, :show, :create, :update, :destroy], param: :slug
       resources :tags, only: [:index]
       resources :searched_notes, only: [:index]
+      resources :consents, only: [:create]
 
       get "/:name", to: "users#show", as: :user
       delete "/:name", to: "users#destroy", as: :delete_user

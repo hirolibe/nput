@@ -1,9 +1,9 @@
-import { onIdTokenChanged, User } from 'firebase/auth'
-import { useRouter } from 'next/router'
+import { fetchAuthSession, getCurrentUser } from 'aws-amplify/auth'
+import { Hub } from 'aws-amplify/utils'
+import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState, useCallback } from 'react'
 import { AuthContext } from '@/contexts/AuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import auth from '@/utils/firebaseConfig'
 import { handleError } from '@/utils/handleError'
 
 export interface AuthProviderProps {
@@ -14,69 +14,73 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [idToken, setIdToken] = useState<string | null | undefined>(undefined)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
   const [, setSnackbar] = useSnackbarState()
-  const router = useRouter()
+  const pathname = usePathname()
 
-  const fetchToken = useCallback(
-    async (user: User) => {
-      try {
-        const token = await user.getIdToken(true)
-        setIdToken(token)
-      } catch (error) {
-        const { errorMessage } = handleError(error)
-        setSnackbar({
-          message: errorMessage,
-          severity: 'error',
-          pathname: router.pathname,
-        })
-      }
-    },
-    [router.pathname, setSnackbar],
-  )
-
-  useEffect(() => {
-    const unsubscribe = onIdTokenChanged(auth, async (user) => {
-      if (user) {
-        await fetchToken(user)
-      } else {
-        setIdToken(null)
-      }
+  const fetchToken = useCallback(async () => {
+    try {
+      const session = await fetchAuthSession()
+      const token = session.tokens?.idToken?.toString()
+      setIdToken(token)
+    } catch (err) {
+      const { errorMessage } = handleError(err)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: pathname,
+      })
+      setIdToken(null)
+    } finally {
       setIsAuthLoading(false)
+    }
+  }, [pathname, setSnackbar])
+
+  const setupAuth = useCallback(async () => {
+    try {
+      await getCurrentUser()
+      await fetchToken()
+    } catch (err) {
+      setIdToken(null)
+      setIsAuthLoading(false)
+    }
+  }, [fetchToken])
+
+  // 初回マウント時のトークン取得
+  useEffect(() => {
+    setupAuth()
+  }, [setupAuth])
+
+  // トークンの定期更新（55分ごと）
+  useEffect(() => {
+    const refreshToken = setInterval(setupAuth, 55 * 60 * 1000)
+
+    return () => clearInterval(refreshToken)
+  }, [setupAuth])
+
+  // 画面フォーカス時のトークン取得
+  useEffect(() => {
+    window.addEventListener('online', setupAuth)
+    return () => {
+      window.removeEventListener('online', setupAuth)
+    }
+  }, [setupAuth])
+
+  // 認証状態変更時の処理
+  useEffect(() => {
+    const unsubscribe = Hub.listen('auth', async (data) => {
+      const { payload } = data
+
+      if (payload.event === 'signedIn') {
+        await fetchToken()
+      } else if (
+        payload.event === 'signedOut' ||
+        payload.event === 'tokenRefresh_failure'
+      ) {
+        setIdToken(null)
+        setIsAuthLoading(false)
+      }
     })
 
     return () => unsubscribe()
-  }, [fetchToken])
-
-  useEffect(() => {
-    const handleOnlineStatus = async () => {
-      if (auth.currentUser) {
-        await fetchToken(auth.currentUser)
-      } else {
-        setIdToken(null)
-      }
-      setIsAuthLoading(false)
-    }
-
-    window.addEventListener('online', handleOnlineStatus)
-    return () => {
-      window.removeEventListener('online', handleOnlineStatus)
-    }
-  }, [fetchToken])
-
-  useEffect(() => {
-    const refreshToken = setInterval(
-      async () => {
-        const currentUser = auth.currentUser
-        if (currentUser) {
-          await fetchToken(currentUser)
-        } else {
-          setIdToken(null)
-        }
-        setIsAuthLoading(false)
-      },
-      45 * 60 * 1000,
-    )
-
-    return () => clearInterval(refreshToken)
   }, [fetchToken])
 
   return (

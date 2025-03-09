@@ -2,7 +2,7 @@ import { Button } from '@mui/material'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Dispatch, SetStateAction, useState } from 'react'
-import LoginDialog from '../auth/LoginDialog'
+import { CustomAuthenticator } from '../auth/CustomAuthenticator'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
@@ -29,7 +29,7 @@ export const FollowButton = ({
 
   const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
-  const [openLoginDialog, setOpenLoginDialog] = useState(false)
+  const [isOpenAuthForm, setIsOpenAuthForm] = useState<boolean>(false)
 
   const { isFollowed, setIsFollowed } = followState
 
@@ -40,7 +40,7 @@ export const FollowButton = ({
     if (isAuthLoading) return
 
     if (!idToken) {
-      setOpenLoginDialog(true)
+      setIsOpenAuthForm(true)
       return
     }
 
@@ -57,10 +57,6 @@ export const FollowButton = ({
         pathname: router.pathname,
       })
     }
-  }
-
-  const handleClose = () => {
-    setOpenLoginDialog(false)
   }
 
   const handleUnFollow = async () => {
@@ -103,7 +99,11 @@ export const FollowButton = ({
       >
         {!isFollowed ? 'フォロー' : 'フォロー中'}
       </Button>
-      <LoginDialog open={openLoginDialog} onClose={handleClose} />
+
+      <CustomAuthenticator
+        isOpen={isOpenAuthForm}
+        setIsOpen={setIsOpenAuthForm}
+      />
     </>
   )
 }

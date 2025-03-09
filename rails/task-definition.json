@@ -25,22 +25,14 @@
                     "value": "n-put-image-storage"
                 },
                 {
-                    "name": "FIREBASE_PROJECT_ID",
-                    "value": "nput-auth"
-                },
-                {
                     "name": "REDIS_URL",
                     "value": "redis://n-put-redis.3cecvj.ng.0001.apne1.cache.amazonaws.com:6379"
-                },
-                {
-                    "name": "FIREBASE_CREDENTIALS",
-                    "value": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/firebase/credentials-m90cFz"
                 }
             ],
             "secrets": [
                 {
                     "name": "RAILS_MASTER_KEY",
-                    "valueFrom": "arn:aws:secretsmanager:ap-northeast-1:715841369727:secret:n-put/rails/master-key-TexOKO:RAILS_MASTER_KEY::"
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:715841369727:parameter/RAILS_MASTER_KEY"
                 }
             ],
             "mountPoints": [],

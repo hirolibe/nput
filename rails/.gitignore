@@ -29,5 +29,3 @@
 /config/master.key
 
 .env
-
-/config/firebase/firebase-service-account.json

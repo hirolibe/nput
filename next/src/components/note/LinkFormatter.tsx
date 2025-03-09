@@ -50,7 +50,13 @@ const LinkFormatter = (props: MarkdownToolbarProps) => {
           <Link />
         </IconButton>
       </Tooltip>
-      <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        disableScrollLock={true}
+        maxWidth="xs"
+        fullWidth
+      >
         <DialogTitle sx={{ pt: 3, pb: 1 }}>リンクを挿入</DialogTitle>
         <DialogContent>
           <TextField

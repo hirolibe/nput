@@ -1,5 +1,6 @@
 class Api::V1::CheersController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:show, :create, :destroy]
+  before_action :fetch_authenticated_current_user, only: [:show]
+  before_action :authenticate_user!, only: [:create, :destroy]
 
   def show
     note = Note.find_by(slug: params[:note_slug])
@@ -7,7 +8,7 @@ class Api::V1::CheersController < Api::V1::ApplicationController
       return render json: { error: "ノートにアクセスできません" }, status: :not_found
     end
 
-    cheer_status = current_user.has_cheered?(note)
+    cheer_status = current_user ? current_user.has_cheered?(note) : false
 
     render json: { has_cheered: cheer_status }, status: :ok
   rescue ActiveRecord::RecordNotFound

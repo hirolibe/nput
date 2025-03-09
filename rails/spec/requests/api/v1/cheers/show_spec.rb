@@ -10,25 +10,21 @@ RSpec.describe "Api::V1::Cheers GET /api/v1/:name/notes/:note_slug/cheer", type:
   let(:note_slug) { note.slug }
   let(:headers) { { Authorization: "Bearer token" } }
 
-  include_examples "ユーザー認証エラー"
+  before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
 
-  context "ユーザー認証に成功した場合" do
-    before { stub_token_verification.and_return({ "sub" => current_user.uid }) }
+  context  "ノートが存在しない場合" do
+    let(:note_slug) { "non_exist_slug" }
 
-    context  "ノートが存在しない場合" do
-      let(:note_slug) { "non_exist_slug" }
+    include_examples "404エラー", "ノート"
+  end
 
-      include_examples "404エラー", "ノート"
-    end
+  context "ノートが存在する場合" do
+    before { create(:cheer, note:, user: current_user) }
 
-    context "ノートが存在する場合" do
-      before { create(:cheer, note:, user: current_user) }
-
-      it "200ステータス、エール状態が返る" do
-        subject
-        expect(response).to have_http_status(:ok)
-        expect(json_response["has_cheered"]).to be true
-      end
+    it "200ステータス、エール状態が返る" do
+      subject
+      expect(response).to have_http_status(:ok)
+      expect(json_response["has_cheered"]).to be true
     end
   end
 end

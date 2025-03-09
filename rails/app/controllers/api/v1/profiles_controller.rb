@@ -1,8 +1,9 @@
 class Api::V1::ProfilesController < Api::V1::ApplicationController
-  before_action :authenticate_user!, only: [:show, :update]
+  before_action :fetch_authenticated_current_user, only: [:show]
+  before_action :authenticate_user!, only: [:update]
 
   def show
-    profile = current_user.profile
+    profile = current_user&.profile
 
     render json: profile, status: :ok
   end

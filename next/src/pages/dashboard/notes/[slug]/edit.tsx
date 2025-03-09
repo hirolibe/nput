@@ -250,7 +250,6 @@ const EditNote: NextPage = () => {
             setStatusChecked={setStatusChecked}
           />
         </AppBar>
-        <Box sx={{ backgroundColor: 'backgroundColor.page', height: '64px' }} />
 
         {/* ローカルストレージのデータ復元 */}
         {restoreContent && (
@@ -336,6 +335,8 @@ const EditNote: NextPage = () => {
                     <Box
                       sx={{
                         position: 'relative',
+                        borderRadius: '4px',
+                        overflow: 'hidden',
                         width: '100%',
                       }}
                     >

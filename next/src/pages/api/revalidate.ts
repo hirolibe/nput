@@ -1,13 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-interface RevalidateResponse {
+interface Data {
   revalidated: boolean
 }
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<RevalidateResponse | string>,
-) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   await res.revalidate(req.body.path)
   res.status(200).json({ revalidated: true })
 }

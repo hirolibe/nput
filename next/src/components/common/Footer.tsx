@@ -9,6 +9,7 @@ const Footer = () => {
   const hideHeaderPathnames = [
     '/auth/signup',
     '/auth/login',
+    '/auth/init',
     '/dashboard/notes/[slug]/edit',
     '/admin',
   ]

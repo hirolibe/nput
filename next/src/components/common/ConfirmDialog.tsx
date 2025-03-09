@@ -20,7 +20,6 @@ interface ConfirmDialogProps {
   message?: string | React.ReactNode
   confirmText?: string
   cancelText?: string
-  confirmColor?: 'error' | 'primary' | 'secondary' | 'warning'
   isLoading?: boolean
 }
 
@@ -32,11 +31,16 @@ const ConfirmDialog = ({
   message = '実行してよろしいですか？',
   confirmText = 'はい',
   cancelText = 'キャンセル',
-  confirmColor = 'error',
   isLoading = false,
 }: ConfirmDialogProps) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      disableScrollLock={true}
+      maxWidth="xs"
+      fullWidth
+    >
       <DialogTitle
         sx={{
           display: 'flex',
@@ -85,7 +89,7 @@ const ConfirmDialog = ({
           onClick={onConfirm}
           loading={isLoading}
           variant="contained"
-          color={confirmColor}
+          color="error"
           sx={{ width: '105px' }}
         >
           {confirmText}

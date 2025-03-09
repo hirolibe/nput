@@ -4,14 +4,15 @@ RSpec.describe "Api::V1::Admin::Users DELETE /api/v1/admin/users/[:id]", type: :
   subject { delete(api_v1_admin_user_path(id), headers:) }
 
   let(:headers) { { Authorization: "Bearer token" } }
-  let(:non_administrator) { create(:user, role: "user") }
-  let(:id) { non_administrator.id }
+  let(:user) { create(:user) }
+  let(:id) { user.id }
 
   include_examples "管理者認証エラー"
 
   context "管理者認証に成功した場合" do
     let(:administrator) { create(:user, role: "admin") }
-    before { login_as(administrator) }
+
+    before { stub_token_verification.and_return({ "sub" => administrator.uid }) }
 
     include_examples "リソース不在エラー", "アカウント", "id"
 
@@ -26,8 +27,6 @@ RSpec.describe "Api::V1::Admin::Users DELETE /api/v1/admin/users/[:id]", type: :
     end
 
     context "管理者以外のアカウントを削除する場合" do
-      before { stub_firebase_account_deletion }
-
       include_examples "リソースの削除成功", "アカウント"
     end
   end

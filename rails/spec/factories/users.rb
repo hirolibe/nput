@@ -3,9 +3,6 @@ FactoryBot.define do
     uid { Faker::Internet.uuid }
     email { Faker::Internet.email }
     cheer_points { Faker::Number.between(from: 0, to: 3600) }
-    terms_version { "1" }
-    privacy_version { "1" }
-    agreed_at { Time.current }
     role { "user" }
     guest { false }
 

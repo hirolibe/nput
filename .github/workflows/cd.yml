@@ -51,16 +51,13 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Deploy to AWS
-      env:
-        COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
-        COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
-
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
+        COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
+        COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_RAILS:$IMAGE_TAG -f ./rails/Dockerfile.prod ./rails
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RAILS:$IMAGE_TAG

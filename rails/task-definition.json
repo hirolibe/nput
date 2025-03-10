@@ -33,6 +33,14 @@
                 {
                     "name": "RAILS_MASTER_KEY",
                     "valueFrom": "arn:aws:ssm:ap-northeast-1:715841369727:parameter/RAILS_MASTER_KEY"
+                },
+                {
+                    "name": "COGNITO_USER_POOL_ID",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:715841369727:parameter/COGNITO_USER_POOL_ID"
+                },
+                {
+                    "name": "COGNITO_CLIENT_ID",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:715841369727:parameter/COGNITO_CLIENT_ID"
                 }
             ],
             "mountPoints": [],

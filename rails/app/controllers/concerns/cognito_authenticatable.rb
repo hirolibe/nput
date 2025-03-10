@@ -21,7 +21,7 @@ module CognitoAuthenticatable
         # キャッシュからJWKSを取得
         jwks = fetch_jwks(region, user_pool_id, use_cache: true)
         verify_token_with_jwks(token, jwks, region, user_pool_id, client_id)
-      rescue JSON::JWT::VerificationFailed, JWT::DecodeError => e
+      rescue JSON::JWT::VerificationFailed, JWT::DecodeError
         # 検証に失敗した場合、新しいJWKSを取得して再検証
         begin
           jwks = fetch_jwks(region, user_pool_id, use_cache: false)

@@ -47,7 +47,7 @@ Rails.application.configure do
 
   config.cache_store = :redis_cache_store, {
     url: ENV["REDIS_URL"],
-    expire_after: 1.day,
+    expires_in: 1.day,
   }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).

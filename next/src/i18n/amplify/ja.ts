@@ -80,13 +80,17 @@ const jaDict = {
     'We Emailed You': 'コードを送信しました',
     'Your code is on the way. To log in, enter the code we emailed to':
       'ログインするには、メールに記載されたコードを入力してください. 送信先:',
-    'Password must have at least 8 characters': '',
-    'Password must have upper case letters': '',
-    'Password must have numbers': '',
-    'Password must have special characters': '',
-    'Attempt limit exceeded, please try after some time.': '',
-    'password is required to signIn': '',
-    'Incorrect username or password.': '',
+    'Password must have at least 8 characters': 'パスワードは8文字以上必要です',
+    'Password must have upper case letters':
+      'パスワードは大文字を含む必要があります',
+    'Password must have numbers': 'パスワードは数字を含む必要があります',
+    'Password must have special characters':
+      'パスワードは特殊文字を含む必要があります',
+    'Attempt limit exceeded, please try after some time.':
+      'ログイン試行回数が上限に達しました。しばらくしてからもう一度お試しください',
+    'password is required to signIn': 'パスワードを入力してください',
+    'Incorrect username or password.':
+      'メールアドレスまたはパスワードが正しくありません',
   },
 }
 

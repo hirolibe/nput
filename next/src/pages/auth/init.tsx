@@ -15,6 +15,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { mutate } from 'swr'
 import Loading from '@/components/common/Loading'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
@@ -111,6 +112,10 @@ const Init: NextPage = () => {
 
     try {
       await createAccount(data)
+
+      // SWRのキャッシュを強制再検証
+      const profileUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`
+      mutate([profileUrl, idToken])
 
       setSnackbar({
         message: '新規登録に成功しました！',

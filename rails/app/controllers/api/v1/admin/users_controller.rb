@@ -16,6 +16,7 @@ class Api::V1::Admin::UsersController < Api::V1::ApplicationController
   def destroy
     user = User.find(params[:id])
     validate_user_deletion(user)
+    user.destroy!
     render json: { message: "アカウントを削除しました" }, status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: "アカウントにアクセスできません" }, status: :not_found

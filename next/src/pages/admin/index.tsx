@@ -153,9 +153,9 @@ const ManageUsers: NextPage = () => {
                     <TableCell sx={{ fontWeight: 'bold' }}>
                       ユーザー名
                     </TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>
+                    {/* <TableCell sx={{ fontWeight: 'bold' }}>
                       メールアドレス
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell sx={{ fontWeight: 'bold' }}>権限</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }} align="right">
                       アクション
@@ -167,7 +167,7 @@ const ManageUsers: NextPage = () => {
                     <TableRow key={user.id}>
                       <TableCell sx={{ py: 1 }}>{user.id}</TableCell>
                       <TableCell sx={{ py: 1 }}>{user.name}</TableCell>
-                      <TableCell sx={{ py: 1 }}>{user.email}</TableCell>
+                      {/* <TableCell sx={{ py: 1 }}>{user.email}</TableCell> */}
                       <TableCell sx={{ py: 1 }}>{user.role}</TableCell>
                       <TableCell align="right" sx={{ py: 1 }}>
                         <Button

@@ -4,7 +4,6 @@ FactoryBot.define do
     email { Faker::Internet.email }
     cheer_points { Faker::Number.between(from: 0, to: 3600) }
     role { "user" }
-    guest { false }
 
     name do
       loop do

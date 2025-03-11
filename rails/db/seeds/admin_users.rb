@@ -1,8 +1,3 @@
-# 既存のユーザーのroleを"user"に設定
-User.where(role: nil).find_each do |user|
-  user.update(role: "user")
-end
-
 # 管理者ユーザーを作成
-user = User.find_by!(email: "a@a.com")
-user.update!(role: "admin")
+user = User.find_by!(email: "hirolibe.nput@gmail.com")
+user.update!(uid: "57c40ae8-80d1-70c1-ab46-4f703906835a")

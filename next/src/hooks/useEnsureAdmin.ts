@@ -17,9 +17,9 @@ const useEnsureAdmin = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: '/auth/login',
+        pathname: '/',
       })
-      router.push('/auth/login')
+      router.push('/')
       return
     }
 
@@ -33,9 +33,9 @@ const useEnsureAdmin = () => {
       setSnackbar({
         message: 'アクセス権限がありません',
         severity: 'error',
-        pathname: '/auth/login',
+        pathname: '/',
       })
-      router.push('/auth/login')
+      router.push('/')
       return
     }
 

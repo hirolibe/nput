@@ -64,7 +64,7 @@ export const NoteEditorToolbar = ({
           <ArrowBackSharpIcon />
         </IconButton>
       </Box>
-      <Fade in={true} timeout={{ enter: 1000 }}>
+      <Fade in={true} timeout={{ enter: 100 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box>
             <Stack direction={'row'} spacing={2} sx={{ mr: 2 }}>

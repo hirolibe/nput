@@ -35,7 +35,7 @@ const CheerPoints = (props: CheerPointsProps) => {
   }, [cheerPoints, addPoints])
 
   return (
-    <Fade in={true} timeout={{ enter: 1000 }}>
+    <Fade in={true} timeout={{ enter: 100 }}>
       <Box
         sx={{
           display: 'flex',

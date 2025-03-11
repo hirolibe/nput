@@ -169,7 +169,7 @@ const Header = () => {
             </Box>
           )}
           {profile && (
-            <Fade in={true} timeout={1000}>
+            <Fade in={true} timeout={100}>
               <Box sx={{ display: 'flex' }}>
                 <Link href="/search">
                   <Box

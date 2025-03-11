@@ -6,7 +6,6 @@ import {
   Chip,
   Container,
   Divider,
-  Fade,
   IconButton,
   Stack,
   Tooltip,
@@ -299,7 +298,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               <Box
                 sx={{
                   position: 'sticky',
-                  top: '190px',
+                  top: '170px',
                 }}
               >
                 <Stack spacing={1}>
@@ -488,10 +487,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               </Box>
 
               {/* 目次 */}
-              <Fade
-                in={noteData?.content ? true : false}
-                timeout={{ enter: 1000 }}
-              >
+              {noteData?.content && (
                 <Box
                   sx={{
                     position: 'sticky',
@@ -499,9 +495,9 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                     zIndex: 1,
                   }}
                 >
-                  <TableOfContents content={noteData?.content ?? ''} />
+                  <TableOfContents content={noteData.content} />
                 </Box>
-              </Fade>
+              )}
             </Box>
           </Box>
         </Container>

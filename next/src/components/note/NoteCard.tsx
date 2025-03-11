@@ -98,7 +98,7 @@ const NoteCard = (props: NoteCardProps) => {
                   {isCheered === undefined ? (
                     <Box sx={{ width: '30px' }}></Box>
                   ) : (
-                    <Fade in={true} timeout={{ enter: 1000 }}>
+                    <Fade in={true} timeout={{ enter: 100 }}>
                       <Box
                         gap={0.5}
                         sx={{

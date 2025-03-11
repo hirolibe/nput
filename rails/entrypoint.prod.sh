@@ -13,7 +13,7 @@ echo "bundle exec rails db:migrate RAILS_ENV=production"
 bundle exec rails db:migrate RAILS_ENV=production
 
 echo "bundle exec rails runner db/seeds/admin_users.rb RAILS_ENV=production"
-# bundle exec rails runner db/seeds/admin_users.rb RAILS_ENV=production
+bundle exec rails runner db/seeds/admin_users.rb RAILS_ENV=production
 
 echo "bundle exec pumactl start"
 bundle exec pumactl start

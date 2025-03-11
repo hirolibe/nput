@@ -27,6 +27,10 @@
                 {
                     "name": "REDIS_URL",
                     "value": "redis://n-put-redis.3cecvj.ng.0001.apne1.cache.amazonaws.com:6379"
+                },
+                {
+                    "name": "GUEST_EMAIL",
+                    "value": "nput.guest@gmail.com"
                 }
             ],
             "secrets": [

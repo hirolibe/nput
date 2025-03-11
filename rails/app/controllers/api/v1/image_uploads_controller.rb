@@ -1,5 +1,6 @@
 class Api::V1::ImageUploadsController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:upload, :attach_avatar]
+  before_action :restrict_guest_user!, only: [:upload, :attach_avatar]
 
   def upload
     if params[:image].present? && valid_image_type?(params[:image].content_type)

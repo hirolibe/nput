@@ -40,4 +40,10 @@ class Api::V1::ApplicationController < ApplicationController
         render json: { error: "アクセス権限がありません" }, status: :forbidden
       end
     end
+
+    def restrict_guest_user!
+      if @current_user.guest?
+        render json: { error: "ゲストユーザーはこの操作を実行できません" }, status: :forbidden
+      end
+    end
 end

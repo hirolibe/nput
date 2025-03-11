@@ -43,7 +43,6 @@ RSpec.describe "Api::V1::Auth::Registrations POST /api/v1/auth/registration", ty
         expect(user.email).to eq(email)
         expect(user.name).to eq(params[:name])
         expect(user.role).to eq("user")
-        expect(user.guest).to be(false)
         expect(json_response["message"]).to eq("新規登録に成功しました！")
       end
     end

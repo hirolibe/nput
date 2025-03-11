@@ -1,6 +1,7 @@
 class Api::V1::CheersController < Api::V1::ApplicationController
   before_action :fetch_authenticated_current_user, only: [:show]
   before_action :authenticate_user!, only: [:create, :destroy]
+  before_action :restrict_guest_user!, only: [:create, :destroy]
 
   def show
     note = Note.find_by(slug: params[:note_slug])

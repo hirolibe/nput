@@ -1,5 +1,6 @@
 class Api::V1::ConsentsController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:create]
+  before_action :restrict_guest_user!, only: [:create]
 
   def create
     current_user.consents.create!(consent_params)

@@ -2,6 +2,7 @@ class Api::V1::MyNotesController < Api::V1::ApplicationController
   include Pagination
   include AttachableImages
   before_action :authenticate_user!, only: [:index, :show, :create, :update, :destroy]
+  before_action :restrict_guest_user!, only: [:update, :destroy]
 
   def index
     notes = current_user.notes.

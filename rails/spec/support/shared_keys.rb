@@ -71,7 +71,6 @@ EXPECTED_ADMIN_USER_KEYS = [
   "name",
   "email",
   "role",
-  "guest",
 ].freeze
 
 EXPECTED_TAG_KEYS = [

@@ -47,7 +47,7 @@ class User < ApplicationRecord
   end
 
   def guest?
-    email == "nput.guest@gmail.com"
+    email == ENV["GUEST_EMAIL"]
   end
 
   def admin?

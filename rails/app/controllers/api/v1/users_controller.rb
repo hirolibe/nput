@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
   before_action :authenticate_user!, only: [:destroy]
+  before_action :restrict_guest_user!, only: [:destroy]
 
   def show
     user = User.find_by!(name: params[:name])

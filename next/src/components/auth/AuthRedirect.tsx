@@ -38,11 +38,13 @@ const AuthRedirect = () => {
 
     if (redirectPath === undefined) return
 
-    setSnackbar({
-      message: 'ログインに成功しました！',
-      severity: 'success',
-      pathname: redirectPath,
-    })
+    console.log('ログイン')
+
+    // setSnackbar({
+    //   message: 'ログインに成功しました！',
+    //   severity: 'success',
+    //   pathname: '/',
+    // })
 
     router.push(redirectPath)
   }, [profileError, setSnackbar, profileData, router, redirectPath])

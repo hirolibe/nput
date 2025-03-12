@@ -74,10 +74,8 @@ URL: [https://n-put.com](https://n-put.com)
 5. メールアドレスに送信されたコードを入力
 6. 新しいパスワードを入力
 7. 「送信」ボタンを入力し、パスワードのリセットが完了
-8. 「ログイン」タブでメールアドレスとパスワードを入力
-9. 「ログイン」ボタンをクリック
 
-![Image](https://github.com/user-attachments/assets/565a19b6-4ebc-47c0-a6ad-ee9933089f00)
+![Image](https://github.com/user-attachments/assets/b79f32c2-011e-4727-848d-442eedde7e80)
 
 **◯ Googleで新規登録する場合**
 

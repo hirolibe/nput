@@ -1,30 +1,17 @@
 import { LoadingButton } from '@mui/lab'
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Container,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Avatar, Box, Button, Card, Container, Typography } from '@mui/material'
 import { deleteUser } from 'aws-amplify/auth'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { handleError } from '@/utils/handleError'
-
-interface DeleteAccountFormData {
-  password: string
-}
 
 const DeleteAccount: NextPage = () => {
   const router = useRouter()
@@ -37,17 +24,7 @@ const DeleteAccount: NextPage = () => {
   const currentUserNickname = profileData?.nickname
   const { avatarUrl } = useProfileContext()
 
-  const { handleSubmit, control } = useForm<DeleteAccountFormData>({
-    defaultValues: { password: '' },
-  })
-
-  const validationRules = {
-    password: {
-      required: 'パスワードを入力してください',
-    },
-  }
-
-  const handleDeleteUser = async () => {
+  const deleteUserData = async () => {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${currentUserName}`
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -57,10 +34,10 @@ const DeleteAccount: NextPage = () => {
     return res.data.message
   }
 
-  const onSubmit: SubmitHandler<DeleteAccountFormData> = async () => {
+  const handleDeleteUser = async () => {
     setIsLoading(true)
     try {
-      await handleDeleteUser()
+      await deleteUserData()
       await deleteUser()
       setSnackbar({
         message: 'アカウントを削除しました',
@@ -99,7 +76,6 @@ const DeleteAccount: NextPage = () => {
         <Container maxWidth="md" sx={{ pt: 5, px: { xs: 2, md: 4 } }}>
           <Card
             sx={{
-              minHeight: '578px',
               px: { xs: 2, md: 6 },
               pt: 4,
             }}
@@ -157,70 +133,49 @@ const DeleteAccount: NextPage = () => {
                 一度アカウントを削除すると、復元することはできません
               </Typography>
               <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit(onSubmit)}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  mb: 6,
+                }}
               >
-                <Typography sx={{ mb: 1 }}>
-                  パスワードを入力してください
-                </Typography>
-                <Controller
-                  name="password"
-                  control={control}
-                  rules={validationRules.password}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      type="text"
-                      error={fieldState.invalid}
-                      helperText={fieldState.error?.message}
-                      sx={{ width: '100%', mb: 3 }}
-                    />
-                  )}
-                />
-                <Box
+                <Button
+                  onClick={() => router.push('/settings/account')}
+                  variant="outlined"
                   sx={{
-                    display: 'flex',
-                    justifyContent: 'end',
-                    flexDirection: { xs: 'column', sm: 'row' },
+                    fontSize: { xs: 14, sm: 16 },
+                    fontWeight: 'bold',
+                    color: 'black',
+                    borderRadius: 2,
+                    borderColor: 'black',
+                    textTransform: 'none',
+                    mr: { xs: 0, sm: 2 },
+                    mb: { xs: 2, sm: 0 },
+                    '&:hover': {
+                      border: '1.5px solid',
+                      borderColor: 'black',
+                    },
                   }}
                 >
-                  <Button
-                    onClick={() => router.push('/settings/account')}
-                    variant="outlined"
-                    sx={{
-                      fontSize: { xs: 14, sm: 16 },
-                      fontWeight: 'bold',
-                      color: 'black',
-                      borderRadius: 2,
-                      borderColor: 'black',
-                      textTransform: 'none',
-                      mr: { xs: 0, sm: 2 },
-                      mb: { xs: 2, sm: 0 },
-                      '&:hover': {
-                        border: '1.5px solid',
-                        borderColor: 'black',
-                      },
-                    }}
-                  >
-                    キャンセル
-                  </Button>
-                  <LoadingButton
-                    color="error"
-                    variant="contained"
-                    type="submit"
-                    loading={isLoading}
-                    sx={{
-                      fontSize: { xs: 14, sm: 16 },
-                      fontWeight: 'bold',
-                      color: 'white',
-                      textTransform: 'none',
-                      borderRadius: 2,
-                    }}
-                  >
-                    アカウントを削除する
-                  </LoadingButton>
-                </Box>
+                  キャンセル
+                </Button>
+                <LoadingButton
+                  onClick={handleDeleteUser}
+                  color="error"
+                  variant="contained"
+                  type="submit"
+                  loading={isLoading}
+                  sx={{
+                    fontSize: { xs: 14, sm: 16 },
+                    fontWeight: 'bold',
+                    color: 'white',
+                    textTransform: 'none',
+                    borderRadius: 2,
+                  }}
+                >
+                  アカウントを削除する
+                </LoadingButton>
               </Box>
             </Box>
           </Card>

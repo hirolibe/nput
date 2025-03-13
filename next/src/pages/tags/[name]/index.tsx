@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter, useParams } from 'next/navigation'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
@@ -21,7 +21,8 @@ import { handleError } from '@/utils/handleError'
 
 const TaggedNotes: NextPage = () => {
   const router = useRouter()
-  const { name } = router.query
+  const params = useParams()
+  const name = params?.name
   const tagName = typeof name === 'string' ? name : undefined
 
   const { notesData, notesError } = useTaggedNotes()

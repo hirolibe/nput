@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import type { NextPage } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'

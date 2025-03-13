@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useSnackbarState } from './useSnackbarState'
 import { useAuthContext } from '@/hooks/useAuthContext'

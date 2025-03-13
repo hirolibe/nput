@@ -1,11 +1,12 @@
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import useSWR, { SWRResponse } from 'swr'
 import { PagenatedUsersData } from './useFollowings'
 import { fetcher } from '@/utils/fetcher'
 
 export const useSupporters = (page?: number) => {
-  const router = useRouter()
-  const { name, slug } = router.query
+  const params = useParams()
+  const name = params?.name
+  const slug = params?.slug
   const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )

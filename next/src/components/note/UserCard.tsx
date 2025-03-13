@@ -1,5 +1,5 @@
 import { Avatar, Box, CardContent, Stack, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { FollowButton } from '../common/FollowButton'
 import { useFollowStatus } from '@/hooks/useFollowStatus'

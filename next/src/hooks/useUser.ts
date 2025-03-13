@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import useSWR, { SWRResponse } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 
@@ -22,8 +22,8 @@ export interface UserData {
 }
 
 export const useUser = () => {
-  const router = useRouter()
-  const { name } = router.query
+  const params = useParams()
+  const name = params?.name
   const userName = typeof name === 'string' ? name : undefined
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userName}`

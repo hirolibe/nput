@@ -40,7 +40,9 @@ export const CheerButton = ({
   cheerIconSize,
 }: CheerButtonProps) => {
   const pathname = usePathname()
-  const { name, slug } = useParams()
+  const params = useParams()
+  const name = params?.name
+  const slug = params?.slug
   const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )

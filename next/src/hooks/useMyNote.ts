@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
@@ -7,8 +7,8 @@ import { fetcher } from '@/utils/fetcher'
 
 export const useMyNote = () => {
   const { idToken } = useAuthContext()
-  const router = useRouter()
-  const { slug } = router.query
+  const params = useParams()
+  const slug = params?.slug
   const noteSlug = typeof slug === 'string' ? slug : undefined
 
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteSlug}`

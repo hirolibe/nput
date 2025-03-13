@@ -1,5 +1,5 @@
 import { Box, Divider, Pagination, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import DescriptionModal from '../note/DescriptionModal'
 import NoteCard from '../note/NoteCard'
@@ -9,7 +9,7 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const CheeredNotes = () => {
-  const router = useRouter()
+  const pathname = usePathname()
 
   const [page, setPage] = useState<number>(1)
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -39,10 +39,10 @@ const CheeredNotes = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
-  }, [notesError, router.pathname, setSnackbar])
+  }, [notesError, pathname, setSnackbar])
 
   if (notesError || (!isNotesLoading && !notes?.length)) {
     return (

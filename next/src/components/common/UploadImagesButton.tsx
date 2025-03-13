@@ -2,7 +2,7 @@ import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternate
 import { IconButton, Tooltip } from '@mui/material'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { MarkdownToolbarProps } from '../note/MarkdownToolbar'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
@@ -10,7 +10,7 @@ import { handleError } from '@/utils/handleError'
 import { insertMarkdown } from '@/utils/insertMarkdown'
 
 export const UploadImagesButton = (props: MarkdownToolbarProps) => {
-  const router = useRouter()
+  const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
 
@@ -31,7 +31,7 @@ export const UploadImagesButton = (props: MarkdownToolbarProps) => {
       setSnackbar({
         message: 'アップロード中･･･',
         severity: 'info',
-        pathname: router.pathname,
+        pathname: pathname,
         autoHideDuration: null,
       })
 
@@ -50,7 +50,7 @@ export const UploadImagesButton = (props: MarkdownToolbarProps) => {
           setSnackbar({
             message: errorMessage,
             severity: 'error',
-            pathname: router.pathname,
+            pathname: pathname,
           })
           return
         }
@@ -67,7 +67,7 @@ export const UploadImagesButton = (props: MarkdownToolbarProps) => {
       setSnackbar({
         message: 'アップロードが完了しました',
         severity: 'success',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     })
   }

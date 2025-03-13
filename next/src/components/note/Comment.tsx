@@ -2,7 +2,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import { Avatar, Box, Divider, IconButton, Typography } from '@mui/material'
 import axios from 'axios'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import ConfirmDialog from '../common/ConfirmDialog'
 import CommentForm from './CommentForm'
@@ -24,7 +24,7 @@ const Comment = ({ name, slug, profileData, noteData }: CommentProps) => {
   const { idToken } = useAuthContext()
   const [open, setOpen] = useState(false)
   const [, setSnackbar] = useSnackbarState()
-  const router = useRouter()
+  const pathname = usePathname()
   const currentUserName = profileData?.user.name
 
   const [comments, setComments] = useState<CommentData[]>(
@@ -59,7 +59,7 @@ const Comment = ({ name, slug, profileData, noteData }: CommentProps) => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setOpen(false)

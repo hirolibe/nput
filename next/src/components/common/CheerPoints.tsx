@@ -1,5 +1,5 @@
 import { Box, Fade, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { CheerIcon } from '../note/CheerIcon'
 import { useCheerPointsContext } from '@/hooks/useCheerPointsContext'
@@ -12,12 +12,12 @@ const CheerPoints = (props: CheerPointsProps) => {
   const { size } = props
   const { cheerPoints } = useCheerPointsContext()
 
-  const router = useRouter()
+  const pathname = usePathname()
   const [addPoints, setAddPoints] = useState<number>(0)
   const [totalPoints, setTotalPoints] = useState<number>(0)
 
   useEffect(() => {
-    if (router.pathname !== '/dashboard/notes/[slug]/edit') return
+    if (pathname !== '/dashboard/notes/[slug]/edit') return
 
     const timer = setInterval(
       () => {
@@ -28,7 +28,7 @@ const CheerPoints = (props: CheerPointsProps) => {
     )
 
     return () => clearInterval(timer)
-  }, [router.pathname, totalPoints])
+  }, [pathname, totalPoints])
 
   useEffect(() => {
     setTotalPoints(cheerPoints + addPoints)

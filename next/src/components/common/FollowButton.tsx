@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { CustomAuthenticator } from '../auth/CustomAuthenticator'
 import { useAuthContext } from '@/hooks/useAuthContext'
@@ -25,7 +25,7 @@ export const FollowButton = ({
   setChangedFollowersCount,
   width,
 }: FollowButtonProps) => {
-  const router = useRouter()
+  const pathname = usePathname()
 
   const { idToken, isAuthLoading } = useAuthContext()
   const [, setSnackbar] = useSnackbarState()
@@ -54,7 +54,7 @@ export const FollowButton = ({
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
   }
@@ -70,7 +70,7 @@ export const FollowButton = ({
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
   }

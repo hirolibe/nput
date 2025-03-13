@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { useRouter } from 'next/router'
+import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import StopPropagationLink from '../common/StopPropagationLink'
 import { CheerIcon } from './CheerIcon'
@@ -30,6 +30,7 @@ const NoteCard = (props: NoteCardProps) => {
   })
   const [isCheered, setIsCheered] = useState<boolean | undefined>(undefined)
   const router = useRouter()
+  const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
 
   useEffect(() => {
@@ -38,10 +39,10 @@ const NoteCard = (props: NoteCardProps) => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
-  }, [cheerStatusError, router.pathname, setSnackbar])
+  }, [cheerStatusError, pathname, setSnackbar])
 
   useEffect(() => {
     setIsCheered(cheerStatusData)

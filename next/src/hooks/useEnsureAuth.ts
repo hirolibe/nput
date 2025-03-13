@@ -20,9 +20,9 @@ const useEnsureAuth = () => {
       setSnackbar({
         message: 'ログインしてください',
         severity: 'error',
-        pathname: '/auth/login',
+        pathname: '/',
       })
-      router.push('/auth/login')
+      router.push('/')
       return
     }
 

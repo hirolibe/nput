@@ -2,7 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Card, Container, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
@@ -29,7 +29,7 @@ const EditProfile: NextPage = () => {
 
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
-  const router = useRouter()
+  const pathname = usePathname()
   const { profileData, profileError } = useProfile()
 
   const [isFetched, setIsFetched] = useState<boolean>(false)
@@ -88,14 +88,14 @@ const EditProfile: NextPage = () => {
       setSnackbar({
         message: res.data.message,
         severity: 'success',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setIsLoading(false)

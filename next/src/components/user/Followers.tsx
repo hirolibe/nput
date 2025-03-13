@@ -1,5 +1,5 @@
 import { Box, Divider, Pagination, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { useFollowers } from '@/hooks/useFollowers'
@@ -8,7 +8,7 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const Followers = () => {
-  const router = useRouter()
+  const pathname = usePathname()
 
   const [page, setPage] = useState<number>(1)
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -28,10 +28,10 @@ const Followers = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
-  }, [followersError, router.pathname, setSnackbar])
+  }, [followersError, pathname, setSnackbar])
 
   if (followersError || (!isFollowersLoading && !followers?.length)) {
     return (

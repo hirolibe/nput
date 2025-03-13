@@ -10,7 +10,7 @@ import {
 import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useRef, useState } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import LoginButton from '../auth/LoginButton'
@@ -34,7 +34,7 @@ interface CommentFormData {
 }
 
 const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
-  const router = useRouter()
+  const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
   const [isLoading, setIsLoading] = useState(false)
   const [comment, setComment] = useState('')
@@ -104,7 +104,7 @@ const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setIsLoading(false)

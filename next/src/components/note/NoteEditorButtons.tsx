@@ -3,7 +3,7 @@ import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined'
 import SellOutlinedIcon from '@mui/icons-material/SellOutlined'
 import { Box, IconButton, Tooltip } from '@mui/material'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { useRouter, usePathname, useParams } from 'next/navigation'
 import { useState } from 'react'
 import ConfirmDialog from '../common/ConfirmDialog'
 import { useAuthContext } from '@/hooks/useAuthContext'
@@ -27,7 +27,8 @@ const NoteEditorButtons = ({
   const { idToken } = useAuthContext()
 
   const router = useRouter()
-  const { slug } = router.query
+  const pathname = usePathname()
+  const { slug } = useParams()
   const noteSlug = typeof slug === 'string' ? slug : undefined
 
   const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] =
@@ -48,20 +49,28 @@ const NoteEditorButtons = ({
     const headers = { Authorization: `Bearer ${idToken}` }
 
     try {
-      await axios.delete(url, { headers })
+      const res = await axios.delete(url, { headers })
+      const message = res.data.message
 
       // ノート詳細データを再検証
       await axios.post('/api/revalidate', {
         path: `/${name}/notes/${slug}`,
       })
 
+      setSnackbar({
+        message: message,
+        severity: 'success',
+        pathname: '/dashboard',
+      })
+
       router.push('/dashboard')
     } catch (err) {
       const { errorMessage } = handleError(err)
+
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setOpenDeleteConfirmDialog(false)

@@ -168,7 +168,7 @@ const Header = () => {
               <LoginButton />
             </Box>
           )}
-          {profile && (
+          {profile && !profileError && (
             <Fade in={true} timeout={100}>
               <Box sx={{ display: 'flex' }}>
                 <Link href="/search">

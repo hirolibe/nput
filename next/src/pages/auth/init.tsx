@@ -11,7 +11,7 @@ import { deleteUser } from 'aws-amplify/auth'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
@@ -63,6 +63,11 @@ const Init: NextPage = () => {
 
     if (!profileData || redirectPath === undefined) return
 
+    setSnackbar({
+      message: 'ログインに成功しました！',
+      severity: 'success',
+      pathname: redirectPath,
+    })
     router.push(redirectPath)
   }, [profileError, setSnackbar, profileData, router, redirectPath])
 

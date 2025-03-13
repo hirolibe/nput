@@ -1,19 +1,19 @@
 import { Snackbar, Alert } from '@mui/material'
 import Fade from '@mui/material/Fade'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 
 const NotificationSnackbar = () => {
-  const router = useRouter()
+  const pathname = usePathname()
   const [snackbar, setSnackbar] = useSnackbarState()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (snackbar.pathname == router.pathname) {
+    if (snackbar.pathname == pathname) {
       setOpen(true)
     }
-  }, [snackbar, router])
+  }, [snackbar, pathname])
 
   const handleClose = (
     event: React.SyntheticEvent | Event,

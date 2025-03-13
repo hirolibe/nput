@@ -5,7 +5,7 @@ import {
   Pagination,
   Typography,
 } from '@mui/material'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import UserCard from '../note/UserCard'
 import { BasicUserData } from '@/hooks/useFollowings'
@@ -14,7 +14,7 @@ import { useSupporters } from '@/hooks/useSupporters'
 import { handleError } from '@/utils/handleError'
 
 const Supporters = () => {
-  const router = useRouter()
+  const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
 
   const [page, setPage] = useState<number>(1)
@@ -33,10 +33,10 @@ const Supporters = () => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
-  }, [supportersError, router.pathname, setSnackbar])
+  }, [supportersError, pathname, setSnackbar])
 
   if (supportersError) {
     return (

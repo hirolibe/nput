@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { usePathname, useParams } from 'next/navigation'
 import { useState, Dispatch, SetStateAction } from 'react'
 import { CustomAuthenticator } from '../auth/CustomAuthenticator'
 import ConfirmDialog from '../common/ConfirmDialog'
@@ -39,8 +39,8 @@ export const CheerButton = ({
   backgroundColor = 'backgroundColor.icon',
   cheerIconSize,
 }: CheerButtonProps) => {
-  const router = useRouter()
-  const { name, slug } = router.query
+  const pathname = usePathname()
+  const { name, slug } = useParams()
   const [authorName, noteSlug] = [name, slug].map((value) =>
     typeof value === 'string' ? value : undefined,
   )
@@ -80,7 +80,7 @@ export const CheerButton = ({
         setSnackbar({
           message: errorMessage,
           severity: 'error',
-          pathname: router.pathname,
+          pathname: pathname,
         })
       }
     } else {
@@ -98,7 +98,7 @@ export const CheerButton = ({
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setOpenConfirmDialog(false)

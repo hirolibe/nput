@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Typography } from '@mui/material'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useProfile } from '@/hooks/useProfile'
 import { useProfileContext } from '@/hooks/useProfileContext'
@@ -9,7 +9,7 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 const UploadAvatarButton = () => {
-  const router = useRouter()
+  const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
   const { avatarUrl, setAvatarUrl } = useProfileContext()
@@ -31,7 +31,7 @@ const UploadAvatarButton = () => {
       setSnackbar({
         message: 'アップロード中･･･',
         severity: 'info',
-        pathname: router.pathname,
+        pathname: pathname,
         autoHideDuration: null,
       })
 
@@ -47,14 +47,14 @@ const UploadAvatarButton = () => {
         setSnackbar({
           message: message,
           severity: 'success',
-          pathname: router.pathname,
+          pathname: pathname,
         })
       } catch (err) {
         const { errorMessage } = handleError(err)
         setSnackbar({
           message: errorMessage,
           severity: 'error',
-          pathname: router.pathname,
+          pathname: pathname,
         })
       }
     })

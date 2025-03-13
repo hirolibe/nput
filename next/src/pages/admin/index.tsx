@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import axios from 'axios'
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import ConfirmDialog from '@/components/common/ConfirmDialog'
@@ -32,6 +32,7 @@ const ManageUsers: NextPage = () => {
   const isAdmin = useEnsureAdmin()
 
   const router = useRouter()
+  const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
 
@@ -73,14 +74,14 @@ const ManageUsers: NextPage = () => {
       setSnackbar({
         message: res.data.message,
         severity: 'success',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setIsLoading(false)

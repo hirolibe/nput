@@ -1,16 +1,22 @@
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import { useEffect, useState, Dispatch, SetStateAction } from 'react'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
-const AuthRedirect = () => {
+interface AuthRedirectProps {
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const AuthRedirect = (props: AuthRedirectProps) => {
+  const { setIsOpen } = props
   const router = useRouter()
   const { profileData, profileError } = useProfile()
   const [, setSnackbar] = useSnackbarState()
   const [redirectPath, setRedirectPath] = useState<string | undefined>(
     undefined,
   )
+  const pathname = usePathname()
 
   useEffect(() => {
     const storedPath = localStorage.getItem('previousPath') || '/'
@@ -38,16 +44,22 @@ const AuthRedirect = () => {
 
     if (redirectPath === undefined) return
 
-    console.log('ログイン')
+    setSnackbar({
+      message: 'ログインに成功しました！',
+      severity: 'success',
+      pathname: pathname,
+    })
 
-    // setSnackbar({
-    //   message: 'ログインに成功しました！',
-    //   severity: 'success',
-    //   pathname: '/',
-    // })
-
-    router.push(redirectPath)
-  }, [profileError, setSnackbar, profileData, router, redirectPath])
+    setIsOpen(false)
+  }, [
+    profileError,
+    setSnackbar,
+    profileData,
+    router,
+    redirectPath,
+    pathname,
+    setIsOpen,
+  ])
 
   return <></>
 }

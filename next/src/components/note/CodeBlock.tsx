@@ -1,7 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { IconButton, Tooltip, Box } from '@mui/material'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter'
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash'
@@ -27,7 +27,8 @@ interface CustomCodeProps {
 }
 
 const CodeBlock = ({ className, children }: CustomCodeProps) => {
-  const router = useRouter()
+  const pathname = usePathname()
+
   const [, setSnackbar] = useSnackbarState()
   const [isCopied, setIsCopied] = useState(false)
 
@@ -68,7 +69,7 @@ const CodeBlock = ({ className, children }: CustomCodeProps) => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     }
   }

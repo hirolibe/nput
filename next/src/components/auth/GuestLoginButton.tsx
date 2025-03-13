@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { signIn } from 'aws-amplify/auth'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
@@ -12,7 +12,7 @@ export interface AuthRedirectProps {
 const GuestLoginButton = (props: AuthRedirectProps) => {
   const { setIsOpen } = props
   const [, setSnackbar] = useSnackbarState()
-  const router = useRouter()
+  const pathname = usePathname()
 
   const [isGuestLoggingIn, setIsGuestLoggingIn] = useState(false)
 
@@ -27,7 +27,7 @@ const GuestLoginButton = (props: AuthRedirectProps) => {
       setSnackbar({
         message: 'ゲストログインに成功しました！',
         severity: 'success',
-        pathname: router.pathname,
+        pathname: pathname,
       })
       setIsOpen(false)
     } catch (err) {
@@ -35,7 +35,7 @@ const GuestLoginButton = (props: AuthRedirectProps) => {
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setIsGuestLoggingIn(false)

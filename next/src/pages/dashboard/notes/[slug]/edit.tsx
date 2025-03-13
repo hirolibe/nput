@@ -1,6 +1,7 @@
 import { AppBar, Box, Fade, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
+import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
@@ -38,6 +39,7 @@ const EditNote: NextPage = () => {
 
   // ローカルストレージからのcontentデータ取得
   const router = useRouter()
+  const pathname = usePathname()
   const { slug } = router.query
   const noteSlug = typeof slug === 'string' ? slug : undefined
   const { loadSavedContent, saveContent, removeSavedContent } = useLocalStorage(
@@ -184,14 +186,14 @@ const EditNote: NextPage = () => {
       setSnackbar({
         message: res.data.message,
         severity: 'success',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
         message: errorMessage,
         severity: 'error',
-        pathname: router.pathname,
+        pathname: pathname,
       })
     } finally {
       setIsLoading(false)

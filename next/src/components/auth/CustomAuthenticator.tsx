@@ -58,7 +58,7 @@ export const CustomAuthenticator = (props: CustomAuthenticatorProps) => {
         formFields={authFormFields}
         components={components}
       >
-        {() => <AuthRedirect setIsOpen={setIsOpen} />}
+        {() => <AuthRedirect isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Authenticator>
     </Modal>
   )

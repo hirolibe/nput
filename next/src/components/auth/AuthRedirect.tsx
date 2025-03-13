@@ -16,6 +16,8 @@ const AuthRedirect = (props: AuthRedirectProps) => {
   const [, setSnackbar] = useSnackbarState()
   const pathname = usePathname()
 
+  console.log('AuthRedirectがレンダリングされたよ')
+
   useEffect(() => {
     if (profileError) {
       const { errorMessage } = handleError(profileError)

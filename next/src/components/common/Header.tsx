@@ -108,7 +108,7 @@ const Header = () => {
         pathname: '/',
       })
 
-      await router.push('/')
+      router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
 

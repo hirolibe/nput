@@ -21,7 +21,6 @@ import {
   PagenatedNotesData,
   useNotes,
 } from '@/hooks/useNotes'
-import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { fetchNotesData } from '@/utils/fetchNotesData'
 import { handleError } from '@/utils/handleError'
@@ -81,10 +80,6 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
     setIsLoading(true)
     router.push(`/?page=${value}`)
   }
-
-  const [snackbar] = useSnackbarState()
-  console.log('index')
-  console.log(snackbar)
 
   if (notesError) {
     const { statusCode, errorMessage } = handleError(notesError)

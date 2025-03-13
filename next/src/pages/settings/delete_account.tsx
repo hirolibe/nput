@@ -44,7 +44,7 @@ const DeleteAccount: NextPage = () => {
         severity: 'success',
         pathname: '/',
       })
-      await router.push('/')
+      router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({

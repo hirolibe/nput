@@ -18,6 +18,10 @@ export default class MyDocument extends Document {
     return (
       <Html lang="ja">
         <Head>
+          <meta
+            name="google-site-verification"
+            content="27yqB9Nl4liDte_D7fFL--8BWOZw6ufQGXohbZJOqGw"
+          />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link

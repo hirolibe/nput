@@ -22,8 +22,7 @@ import {
 import { signOut } from 'aws-amplify/auth'
 import axios from 'axios'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import LoginButton from '../auth/LoginButton'
 import CheerPoints from './CheerPoints'
@@ -102,9 +101,17 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut()
+
+      setSnackbar({
+        message: 'ログアウトしました',
+        severity: 'success',
+        pathname: '/',
+      })
+
       await router.push('/')
     } catch (err) {
       const { errorMessage } = handleError(err)
+
       setSnackbar({
         message: errorMessage,
         severity: 'error',

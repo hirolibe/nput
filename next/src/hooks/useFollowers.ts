@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import useSWR, { SWRResponse } from 'swr'
 import { PagenatedUsersData } from './useFollowings'
 import { fetcher } from '@/utils/fetcher'
 
 export const useFollowers = (page: number) => {
-  const router = useRouter()
-  const { name } = router.query
+  const params = useParams()
+  const name = params?.name
   const userName = typeof name === 'string' ? name : undefined
 
   const url = page

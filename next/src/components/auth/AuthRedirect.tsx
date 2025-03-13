@@ -26,11 +26,13 @@ const AuthRedirect = (props: AuthRedirectProps) => {
   useEffect(() => {
     if (profileError) {
       const { errorMessage } = handleError(profileError)
+
       setSnackbar({
         message: errorMessage,
         severity: 'error',
         pathname: '/',
       })
+
       router.push('/')
       return
     }

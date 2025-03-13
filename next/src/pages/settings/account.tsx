@@ -1,6 +1,6 @@
 import { Box, Button, Card, Container } from '@mui/material'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Loading from '@/components/common/Loading'

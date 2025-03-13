@@ -28,7 +28,8 @@ const NoteEditorButtons = ({
 
   const router = useRouter()
   const pathname = usePathname()
-  const { slug } = useParams()
+  const params = useParams()
+  const slug = params?.slug
   const noteSlug = typeof slug === 'string' ? slug : undefined
 
   const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] =

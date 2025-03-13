@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/material'
 import { GetStaticProps, NextPage } from 'next'
+import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
@@ -37,8 +38,8 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
   const { notes: initialNotes, meta: initialMeta } = props
   const router = useRouter()
   const { notesData: pagenatedNotesData, notesError } = useNotes()
-  const page =
-    'page' in router.query ? parseInt(String(router.query.page), 10) : 1
+  const searchParams = useSearchParams()
+  const page = searchParams.get('page') || '1'
 
   const [notesData, setNotesData] = useState<BasicNoteData[] | undefined>(
     undefined,
@@ -50,7 +51,7 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
   useEffect(() => {
     if (!router.isReady) return
 
-    if (page === 1) {
+    if (page === '1') {
       setNotesData(initialNotes)
       setMeta(initialMeta)
       setIsLoading(false)

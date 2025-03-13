@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 import { useState, Dispatch, SetStateAction } from 'react'
 import { RestoreConfirmDialog } from './RestoreConfirmDialog'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
@@ -19,8 +19,8 @@ export const RestoreConfirmationBanner = ({
   restoreContent,
   setRestoreContent,
 }: RestoreConfirmationBannerProps) => {
-  const router = useRouter()
-  const { slug } = router.query
+  const params = useParams()
+  const slug = params?.slug
   const noteSlug = typeof slug === 'string' ? slug : undefined
   const { removeSavedContent } = useLocalStorage(noteSlug || '')
 

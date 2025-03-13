@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { useLocalStorage } from './useLocalStorage'
@@ -25,8 +25,8 @@ export interface UseNoteForm {
 }
 
 export const useNoteForm = (initialData?: NoteFormData) => {
-  const router = useRouter()
-  const { slug } = router.query
+  const searchParams = useSearchParams()
+  const slug = searchParams.get('slug')
   const noteSlug = typeof slug === 'string' ? slug : undefined
 
   const [content, setContent] = useState<string>(initialData?.content || '')

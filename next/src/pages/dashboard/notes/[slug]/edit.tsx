@@ -1,8 +1,7 @@
 import { AppBar, Box, Fade, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
-import { usePathname } from 'next/navigation'
-import { useRouter } from 'next/router'
+import { usePathname, useParams } from 'next/navigation'
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
@@ -38,9 +37,9 @@ const EditNote: NextPage = () => {
   const { profileData } = useProfile()
 
   // ローカルストレージからのcontentデータ取得
-  const router = useRouter()
   const pathname = usePathname()
-  const { slug } = router.query
+  const params = useParams()
+  const slug = params?.slug
   const noteSlug = typeof slug === 'string' ? slug : undefined
   const { loadSavedContent, saveContent, removeSavedContent } = useLocalStorage(
     noteSlug || '',

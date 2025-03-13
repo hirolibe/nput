@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useSearchParams } from 'next/navigation'
 import useSWR, { SWRResponse } from 'swr'
 import { BasicNoteData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
@@ -15,9 +15,9 @@ export interface PagenatedSearchedNotesData {
 }
 
 export const useSearchedNotes = () => {
-  const router = useRouter()
-  const query = 'q' in router.query ? String(router.query.q) : ''
-  const page = 'page' in router.query ? String(router.query.page) : 1
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q') || ''
+  const page = searchParams.get('page') || '1'
 
   const url = query
     ? page

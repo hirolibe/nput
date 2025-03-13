@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
@@ -22,7 +22,8 @@ import { handleError } from '@/utils/handleError'
 
 const SearchedNotes: NextPage = () => {
   const router = useRouter()
-  const query = 'q' in router.query ? String(router.query.q) : ''
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q') || ''
 
   const { notesData, notesError } = useSearchedNotes()
   const notes = notesData?.notes

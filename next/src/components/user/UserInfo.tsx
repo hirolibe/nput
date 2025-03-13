@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, RefObject } from 'react'
 import { FaGithub, FaXTwitter } from 'react-icons/fa6'
 import { FollowButton } from '../common/FollowButton'
@@ -62,7 +62,7 @@ export const UserInfo = ({
   const router = useRouter()
 
   const handleEditProfile = () => {
-    router.push({ pathname: '/settings/profile' })
+    router.push('/settings/profile')
   }
 
   return (

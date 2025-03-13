@@ -1,5 +1,5 @@
 import { AppBar, Tab, Tabs } from '@mui/material'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, SyntheticEvent } from 'react'
 
 interface SettingTabsProps {

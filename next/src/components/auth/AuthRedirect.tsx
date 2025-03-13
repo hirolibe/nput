@@ -5,16 +5,15 @@ import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
 
 interface AuthRedirectProps {
-  isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const AuthRedirect = (props: AuthRedirectProps) => {
-  const { isOpen, setIsOpen } = props
+  const { setIsOpen } = props
 
   const router = useRouter()
   const { profileData, profileError } = useProfile()
-  const [snackbar, setSnackbar] = useSnackbarState()
+  const [, setSnackbar] = useSnackbarState()
   const pathname = usePathname()
 
   useEffect(() => {
@@ -45,18 +44,7 @@ const AuthRedirect = (props: AuthRedirectProps) => {
     })
 
     setIsOpen(false)
-  }, [
-    profileError,
-    setSnackbar,
-    profileData,
-    router,
-    pathname,
-    isOpen,
-    setIsOpen,
-  ])
-
-  console.log('AuthRedirect')
-  console.log(snackbar)
+  }, [profileError, setSnackbar, profileData, router, pathname, setIsOpen])
 
   return <></>
 }

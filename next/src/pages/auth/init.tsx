@@ -148,7 +148,7 @@ const Init: NextPage = () => {
 
     try {
       await deleteUser()
-      await router.push(redirectPath)
+      router.push(redirectPath)
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({

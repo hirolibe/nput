@@ -60,15 +60,20 @@ const Init: NextPage = () => {
       router.push('/')
       return
     }
+  }, [profileError, router, setSnackbar])
 
-    if (!profileData || redirectPath === undefined) return
+  useEffect(() => {
+    if (profileError || !profileData || redirectPath === undefined) return
 
     setSnackbar({
       message: 'ログインに成功しました！',
       severity: 'success',
       pathname: redirectPath,
     })
-    router.push(redirectPath)
+
+    setTimeout(() => {
+      router.push(redirectPath)
+    }, 0)
   }, [profileError, setSnackbar, profileData, router, redirectPath])
 
   const { handleSubmit, control } = useForm<SignUpFormData>({

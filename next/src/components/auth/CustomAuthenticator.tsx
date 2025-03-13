@@ -1,5 +1,3 @@
-'use client'
-
 import { Authenticator } from '@aws-amplify/ui-react'
 import { Modal } from '@mui/material'
 import { I18n } from 'aws-amplify/utils'

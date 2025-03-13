@@ -16,8 +16,6 @@ const AuthRedirect = (props: AuthRedirectProps) => {
   const [, setSnackbar] = useSnackbarState()
   const pathname = usePathname()
 
-  console.log('AuthRedirectがレンダリングされたよ')
-
   useEffect(() => {
     if (profileError) {
       const { errorMessage } = handleError(profileError)
@@ -31,21 +29,26 @@ const AuthRedirect = (props: AuthRedirectProps) => {
       router.push('/')
       return
     }
+  }, [profileError, router, setSnackbar])
 
-    if (profileData === undefined) return
+  useEffect(() => {
+    if (profileError || profileData === undefined) return
 
-    if (profileData === null) {
+    if (profileData) {
+      setSnackbar({
+        message: 'ログインに成功しました！',
+        severity: 'success',
+        pathname: pathname,
+      })
+
+      setTimeout(() => {
+        setIsOpen(false)
+      }, 0)
+    } else {
+      // アカウント未登録の場合は登録ページにリダイレクト
       router.push('/auth/init')
       return
     }
-
-    setSnackbar({
-      message: 'ログインに成功しました！',
-      severity: 'success',
-      pathname: pathname,
-    })
-
-    setIsOpen(false)
   }, [profileError, setSnackbar, profileData, router, pathname, setIsOpen])
 
   return <></>

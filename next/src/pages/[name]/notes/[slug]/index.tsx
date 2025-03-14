@@ -248,7 +248,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               }}
             >
               <Typography
-                component="h2"
+                component="h1"
                 sx={{
                   fontSize: { xs: 24, sm: 36 },
                   fontWeight: 'bold',
@@ -392,7 +392,10 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
                 )}
 
                 {/* 本文 */}
-                <Box sx={{ fontSize: { xs: '14px', sm: '16px' }, mb: 5 }}>
+                <Box
+                  component="article"
+                  sx={{ fontSize: { xs: '14px', sm: '16px' }, mb: 5 }}
+                >
                   {markdownContent}
                 </Box>
 

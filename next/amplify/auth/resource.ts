@@ -11,7 +11,7 @@ export const auth = defineAuth({
       google: {
         clientId: secret('GOOGLE_CLIENT_ID'),
         clientSecret: secret('GOOGLE_CLIENT_SECRET'),
-        scopes: ['openid', 'https://www.googleapis.com/auth/userinfo.email'],
+        scopes: ['email'],
       },
       callbackUrls: ['https://n-put.com/auth/init/'],
       logoutUrls: ['https://n-put.com/'],

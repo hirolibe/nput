@@ -100,13 +100,8 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      setSnackbar({
-        message: 'ログアウトしました',
-        severity: 'success',
-        pathname: '/',
-      })
-
       await signOut()
+      localStorage.setItem('signOut', 'true')
     } catch (err) {
       const { errorMessage } = handleError(err)
 

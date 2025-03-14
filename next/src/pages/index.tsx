@@ -101,7 +101,7 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
       >
         <Container maxWidth="md" sx={{ pt: 4 }}>
           <Typography
-            component={'h2'}
+            component={'h1'}
             sx={{
               textAlign: 'center',
               fontSize: { xs: 18, sm: 24 },

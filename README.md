@@ -20,9 +20,9 @@ URL: [https://n-put.com](https://n-put.com)
 - エール機能、コメント機能、フォロー機能を通じて、コミュニティの活性化をサポートします。
 - また、日々の学習記録と連動させることでアウトプットの機会を増やし、コミュニティへの積極的な貢献を促します。
 
-#### エール機能
+#### 応援機能
 - 学習時間に応じて獲得できるポイントを使って、他のユーザーを応援することができます。
-- ポイント制としてエールできる回数を制限することで、通常の「いいね」以上の特別な価値を持たせています。
+- ポイント制として応援できる回数を制限することで、通常の「いいね」以上の特別な価値を持たせています。
 <br><br>
 
 ## 3. 画面操作
@@ -112,7 +112,7 @@ URL: [https://n-put.com](https://n-put.com)
 - 下書き保存・ノート公開・ノート削除
 - ノート作成時間の確認
 
-![Image](https://github.com/user-attachments/assets/ba715710-0bc8-4e7d-bfbe-b3bd6954162b)
+![Image](https://github.com/user-attachments/assets/94234abb-26e8-425c-a292-da40be7ecf4b)
 <br><br>
 
 ## 4. 機能一覧
@@ -190,39 +190,52 @@ Ruby on Railsを必要最小限の機能に絞ったAPI modeで使用してい�
 
 | 区分 | 名称 | 説明 |
 |-----|-----|------|
-| コンテナ管理  | Docker(v27.4.0, build bde2b89) | コンテナ管理ツール                 |
-|             | Docker Compose                 | コンテナのオーケストレーションツール  |
-| サーバー      | Puma                           | バックエンドサーバー               |
-| ストレージ    | ActiveStorage                  | ファイルの保存管理                 |
-| データベース  | MySQL(8.0.39)(コンテナ)          | リレーショナルデータベース管理システム |
-| キャッシュ    | Redis(コンテナ)                  | インメモリデータベース             |
+フロントエンド
+| 共通               | Docker(v27.4.0, build bde2b89) | コンテナ管理ツール                  |
+|                    | Docker Compose                 | コンテナのオーケストレーションツール   |
+| フロントエンド       | AWS Amplify Sandbox            | ローカル開発環境                    |
+| バックエンド         | Puma                           | バックエンドサーバー                |
+|                    | ActiveStorage                  | ファイルの保存管理                  |
+|                    | MySQL(8.0.39)(コンテナ)          | リレーショナルデータベース管理システム |
+|                    | Redis(コンテナ)                  | インメモリデータベース              |
 <br>
 
 **◯ 本番環境**
 
 | 区分 | 名称 | 説明 |
 |-----|-----|------|
-| コンテナ管理    | Docker          | コンテナ管理ツール                                    |
-|               | ECS Fargate     | サーバーレスコンテナ実行サービス                        |
-| ネットワーク    | VPC             | AWS上で仮想ネットワークを構築                          |
+| 共通           | Docker          | コンテナ管理ツール                                   |
+| フロントエンド  | AWS Amplify     | ローカル開発環境                                      |
+| バックエンド    | ECS Fargate     | サーバーレスコンテナ実行サービス                        |
+|               | VPC             | AWS上で仮想ネットワークを構築                          |
 |               | Public Subnet   | フロントエンド(Next.js)、バックエンド(Puma、Nginx)を配置 |
 |               | Private Subnet  | RDS(MySQL)、ElastiCache(Redis)を配置                |
-| ロードバランサー | ALB             | ドメイン名に基づくトラフィック分散                      |
-| DNS/SSL       | Route53         | ドメイン名管理とDNS設定                               |
+|               | ALB             | ドメイン名に基づくトラフィック分散                      |
+|               | Route53         | ドメイン名管理とDNS設定                               |
 |               | ACM             | SSL証明書の管理                                      |
-| ストレージ      | ECR             | コンテナイメージを保存するリポジトリ                     |
+|               | ECR             | コンテナイメージを保存するリポジトリ                     |
 |               | S3              | ファイルを保存管理するストレージサービス                  |
-| データベース    | RDS             | データベースサービス(MySQL)                            |
-| キャッシュ      | ElastiCache     | データキャッシュサービス                               |
-| 秘密情報管理    | Secrets Manager | マスターキー、Firebase_Credentialsの管理              |
-| 監視           | CloudWatch      | ログ監視                                            |
+|               | RDS             | データベースサービス(MySQL)                            |
+|               | ElastiCache     | データキャッシュサービス                               |
+|               | Systems Manager | マスターキーなどの秘密情報管理                          |
+|               | CloudWatch      | ログ監視                                            |
 <br>
 
-#### 【外部サービス】
-- Google認証（申請中）
+#### 【認証】
+| 区分 | 名称 | 説明 |
+|-----|-----|------|
+| ID管理  | AWS Cognito    | ユーザー情報の管理         |
+| 認証方法 | メール/パスワード | Cognito組み込み機能       |
+|         | Google認証     | ソーシャルログイン連携      |
+| トークン | JWT            | バックエンドでのトークン検証 |
+<br>
 
 #### 【Continuous Integration / Continuous Delivery(CI/CD)】
-- GitHub Actions
+| 区分 | 名称 | 説明 |
+|-----|-----|------|
+| フロントエンド | GitHub Actions | コード品質チェックの自動化    |
+|              | AWS Amplify | ビルド・デプロイ自動化          |
+| バックエンド   | GitHub Actions | テスト・ビルド・デプロイ自動化 |
 <br><br>
 
 ### 5-2. 図解
@@ -242,34 +255,22 @@ Ruby on Railsを必要最小限の機能に絞ったAPI modeで使用してい�
 - RDSのプライベートサブネットへの配置
 - GitHub ActionsとECRを連携した自動デプロイパイプライン
 
-![Image](https://github.com/user-attachments/assets/cb2375d9-4cfe-49a0-9e4e-0fe19a8d39c2)
+![Image](https://github.com/user-attachments/assets/efc5c1ef-e820-4ba3-b35f-41f9255efdaa)
 
 #### ER図
 - カウンターキャッシュを利用して、合計数（例: cheers_count）を効率的に取得
 - durationsテーブルを設けて、学習時間の記録と集計を効率化
 
-![Image](https://github.com/user-attachments/assets/02638772-f0fe-4bd1-88b9-acd39516fb94)
+![Image](https://github.com/user-attachments/assets/707330db-3f31-4e5e-baf5-f7bbe264e8a5)
 <br><br>
 
-## 6. 今後の展望
-### 6-1. 今後追加したい機能
-- 認証機能の改善
-- オフラインでのデータ操作（ローカルにキャッシュ → オンライン復帰時に自動同期）
+## 6. 今後の展望と課題
+### 今後追加したい機能
+- オフライン環境におけるデータ操作（ローカルにキャッシュ → オンライン復帰時に自動同期）
 <br><br>
 
-### 6-2. 課題
-**◯ 認証機能の改善**
-- 目的
-  - 新たなパスワード管理を不要とすることによるユーザー体験の向上
-- 対策
-  - Google認証の導入（申請中）
-<br><br>
-
-**◯ オフラインでのデータ操作**
-- 目的
-  - オフライン環境におけるデータ操作を可能にすることによるユーザー体験の向上
-- 対策
-  - AmplifyのDataStoreの利用
+### 課題
+  - AWS Amplify DataStoreの導入検討
 <br><br>
 
 

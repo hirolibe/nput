@@ -20,6 +20,7 @@ import '@/styles/globals.css'
 
 outputs.auth.oauth.domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN ?? ''
 Amplify.configure(outputs)
+console.log(outputs)
 
 const clientSideEmotionCache = createEmotionCache()
 

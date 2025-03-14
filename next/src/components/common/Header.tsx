@@ -22,7 +22,8 @@ import {
 import { signOut } from 'aws-amplify/auth'
 import axios from 'axios'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react'
 import LoginButton from '../auth/LoginButton'
 import CheerPoints from './CheerPoints'
@@ -102,7 +103,7 @@ const Header = () => {
   }, [userRoleError, setSnackbar, pathname, userRoleData])
 
   const hideHeaderPathnames = ['/dashboard/notes/[slug]/edit', '/auth/init']
-  if (hideHeaderPathnames.includes(pathname)) return
+  if (hideHeaderPathnames.includes(router.pathname)) return
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)

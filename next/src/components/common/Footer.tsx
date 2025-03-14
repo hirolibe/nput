@@ -1,17 +1,17 @@
 import { Box, Container, Typography } from '@mui/material'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/router'
 import Logo from './Logo'
 
 const Footer = () => {
-  const pathname = usePathname()
+  const router = useRouter()
 
-  const hideHeaderPathnames = [
+  const hideFooterPathnames = [
     '/auth/init',
     '/dashboard/notes/[slug]/edit',
     '/admin',
   ]
-  if (hideHeaderPathnames.includes(pathname)) return
+  if (hideFooterPathnames.includes(router.pathname)) return
 
   return (
     <Box component="footer" sx={{ p: 4 }}>

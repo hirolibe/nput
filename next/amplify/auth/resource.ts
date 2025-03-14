@@ -13,11 +13,8 @@ export const auth = defineAuth({
         clientSecret: secret('GOOGLE_CLIENT_SECRET'),
         scopes: ['openid', 'email'],
       },
-      callbackUrls: [
-        'http://localhost:8000/auth/init/',
-        'https://n-put.com/auth/init/',
-      ],
-      logoutUrls: ['http://localhost:8000/', 'https://n-put.com/'],
+      callbackUrls: ['https://n-put.com/auth/init/'],
+      logoutUrls: ['https://n-put.com/'],
     },
   },
 })

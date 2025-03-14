@@ -18,7 +18,9 @@ import theme from '@/styles/theme'
 import '@aws-amplify/ui-react/styles.css'
 import '@/styles/globals.css'
 
-outputs.auth.oauth.domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN ?? ''
+outputs.auth.oauth.domain =
+  process.env.NEXT_PUBLIC_COGNITO_DOMAIN ?? 'auth.n-put.com'
+outputs.auth.oauth.scopes = ['email', 'openid']
 Amplify.configure(outputs)
 console.log(outputs)
 

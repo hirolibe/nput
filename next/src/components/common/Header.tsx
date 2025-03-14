@@ -100,15 +100,13 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut()
-
       setSnackbar({
         message: 'ログアウトしました',
         severity: 'success',
         pathname: '/',
       })
 
-      router.push('/')
+      await signOut()
     } catch (err) {
       const { errorMessage } = handleError(err)
 

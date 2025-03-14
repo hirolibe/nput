@@ -64,6 +64,20 @@ const Header = () => {
     }
   }, [profileError, pathname, setSnackbar])
 
+  useEffect(() => {
+    const signOut = localStorage.getItem('signOut')
+
+    if (profileData || !signOut) return
+
+    setSnackbar({
+      message: 'ログアウトしました',
+      severity: 'success',
+      pathname: '/',
+    })
+
+    localStorage.removeItem('signOut')
+  }, [setSnackbar, profileData])
+
   const { userRoleData, userRoleError } = useUserRole()
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
 

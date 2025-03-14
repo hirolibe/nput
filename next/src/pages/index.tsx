@@ -15,14 +15,12 @@ import Error from '@/components/common/Error'
 import DescriptionModal from '@/components/note/DescriptionModal'
 import NoteCard from '@/components/note/NoteCard'
 import NoteCardSkeleton from '@/components/note/NoteCardSkeleton'
-import { useAuthContext } from '@/hooks/useAuthContext'
 import {
   BasicNoteData,
   PageData,
   PagenatedNotesData,
   useNotes,
 } from '@/hooks/useNotes'
-import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { styles } from '@/styles'
 import { fetchNotesData } from '@/utils/fetchNotesData'
 import { handleError } from '@/utils/handleError'
@@ -50,22 +48,6 @@ const PublicNotes: NextPage<PagenatedNotesData> = (props) => {
   const [meta, setMeta] = useState<PageData>(initialMeta)
 
   const [isLoading, setIsLoading] = useState(true)
-
-  const [, setSnackbar] = useSnackbarState()
-  const { idToken } = useAuthContext()
-  useEffect(() => {
-    const signOut = localStorage.getItem('signOut')
-
-    if (idToken || !signOut) return
-
-    setSnackbar({
-      message: 'ログアウトしました',
-      severity: 'success',
-      pathname: '/',
-    })
-
-    localStorage.removeItem('signOut')
-  }, [setSnackbar, idToken])
 
   useEffect(() => {
     if (!router.isReady) return

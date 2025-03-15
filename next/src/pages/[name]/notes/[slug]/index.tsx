@@ -159,7 +159,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     noteData?.content?.substring(0, 160).replace(/\*/g, '').replace(/#/g, '') ||
     `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
 
-  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/logo.png`
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>

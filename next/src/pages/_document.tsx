@@ -16,7 +16,7 @@ import theme from '@/styles/theme'
 export default class MyDocument extends Document {
   render(): JSX.Element {
     return (
-      <Html lang="ja">
+      <Html lang="ja" prefix="og: http://ogp.me/ns#">
         <Head>
           <meta
             name="google-site-verification"

@@ -255,12 +255,12 @@ URL: [https://n-put.com](https://n-put.com)
 - フロントエンドとバックエンドをAWSに統合
 - Route53によるDNS管理
 - ACMによるSSL/TLS証明書付与
-- HTTPからHTTPSへの自動リダイレクト
 
 **◯ フロントエンド（Amplify）**
 - 静的ファイルのキャッシュによる初期ロードの高速化
 - ユーザー認証ロジックの実装効率化
 - Git連携による自動デプロイパイプライン
+- HTTPからHTTPSへの自動リダイレクト
 
 **◯ バックエンド（ECS/Fargate）**
 - RDSのプライベートサブネットへの配置

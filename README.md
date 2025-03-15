@@ -40,6 +40,15 @@ URL: [https://n-put.com](https://n-put.com)
 
 最初に、ヘッダーの右側にある「ログイン」ボタンをクリックします。
 
+**◯ Googleで新規登録する場合**
+
+1. 「新規登録」タブをクリック
+2. 「Googleで新規登録」ボタンをクリック
+3. Googleアカウントのメールアドレスを入力して「次へ」ボタンをクリック
+4. Googleアカウントのパスワードを入力して「次へ」ボタンをクリック
+
+![Image](https://github.com/user-attachments/assets/9b6209dd-a269-41d6-b6e5-8d8b13c3fffc)
+
 **◯ ゲストログインする場合**
 1. 「新規登録」タブをクリック
 2. 「ゲストログイン」ボタンをクリック
@@ -75,15 +84,6 @@ URL: [https://n-put.com](https://n-put.com)
 7. 「送信」ボタンを入力し、パスワードのリセットが完了
 
 ![Image](https://github.com/user-attachments/assets/b79f32c2-011e-4727-848d-442eedde7e80)
-
-**◯ Googleで新規登録する場合**
-
-1. 「新規登録」タブをクリック
-2. 「Googleで新規登録」ボタンをクリック
-3. Googleアカウントのメールアドレスを入力して「次へ」ボタンをクリック
-4. Googleアカウントのパスワードを入力して「次へ」ボタンをクリック
-
-![Image](https://github.com/user-attachments/assets/9b6209dd-a269-41d6-b6e5-8d8b13c3fffc)
 
 
 ### 3-2. ノートページの閲覧

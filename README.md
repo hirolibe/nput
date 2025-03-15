@@ -178,7 +178,7 @@ URL: [https://n-put.com](https://n-put.com)
 |-----|-----|------|
 | UI | React(18.3.1) | UIライブラリ |
 | | MUI(Material UI) | UIコンポーネント |
-| | Marked | Markdown変換ツール  |
+| | Marked | Markdown変換ツール |
 | フォーム | React Hook Form | 状態管理ライブラリ |
 | データフェッチ | Axios | HTTPリクエストライブラリ |
 | | SWR | データフェッチとキャッシュ管理を行うライブラリ |
@@ -201,52 +201,51 @@ URL: [https://n-put.com](https://n-put.com)
 
 | 区分 | 名称 | 説明 |
 |-----|-----|------|
-フロントエンド
-| 共通               | Docker(v27.4.0, build bde2b89) | コンテナ管理ツール                  |
-|                    | Docker Compose                 | コンテナのオーケストレーションツール   |
-| フロントエンド       | AWS Amplify Sandbox            | ローカル開発環境                    |
-| バックエンド         | Puma                           | バックエンドサーバー                |
-|                    | ActiveStorage                  | ファイルの保存管理                  |
-|                    | MySQL(8.0.39)(コンテナ)          | リレーショナルデータベース管理システム |
-|                    | Redis(コンテナ)                  | インメモリデータベース              |
+| 共通 | Docker(v27.4.0, build bde2b89) | コンテナ管理ツール |
+|  | Docker Compose | コンテナのオーケストレーションツール |
+| フロントエンド | AWS Amplify Sandbox | ローカル開発環境 |
+| バックエンド | Puma | バックエンドサーバー |
+|  | ActiveStorage | ファイルの保存管理 |
+|  | MySQL(8.0.39)(コンテナ) | リレーショナルデータベース管理システム |
+|  | Redis(コンテナ) | インメモリデータベース |
 <br>
 
 **◯ 本番環境**
 
 | 区分 | 名称 | 説明 |
 |-----|-----|------|
-| 共通           | Docker          | コンテナ管理ツール                                   |
-| フロントエンド  | AWS Amplify     | ローカル開発環境                                      |
-| バックエンド    | ECS Fargate     | サーバーレスコンテナ実行サービス                        |
-|               | VPC             | AWS上で仮想ネットワークを構築                          |
-|               | Public Subnet   | フロントエンド(Next.js)、バックエンド(Puma、Nginx)を配置 |
-|               | Private Subnet  | RDS(MySQL)、ElastiCache(Redis)を配置                |
-|               | ALB             | ドメイン名に基づくトラフィック分散                      |
-|               | Route53         | ドメイン名管理とDNS設定                               |
-|               | ACM             | SSL証明書の管理                                      |
-|               | ECR             | コンテナイメージを保存するリポジトリ                     |
-|               | S3              | ファイルを保存管理するストレージサービス                  |
-|               | RDS             | データベースサービス(MySQL)                            |
-|               | ElastiCache     | データキャッシュサービス                               |
-|               | Systems Manager | マスターキーなどの秘密情報管理                          |
-|               | CloudWatch      | ログ監視                                            |
+| 共通 | Docker | コンテナ管理ツール |
+| フロントエンド | AWS Amplify | ローカル開発環境 |
+| バックエンド | ECS Fargate     | サーバーレスコンテナ実行サービス |
+|  | VPC | AWS上で仮想ネットワークを構築 |
+|  | Public Subnet | フロントエンド(Next.js)、バックエンド(Puma、Nginx)を配置 |
+|  | Private Subnet | RDS(MySQL)、ElastiCache(Redis)を配置 |
+|  | ALB | ドメイン名に基づくトラフィック分散 |
+|  | Route53 | ドメイン名管理とDNS設定 |
+|  | ACM | SSL証明書の管理 |
+|  | ECR | コンテナイメージを保存するリポジトリ |
+|  | S3 | ファイルを保存管理するストレージサービス 
+|  | RDS | データベースサービス(MySQL) |
+|  | ElastiCache | データキャッシュサービス |
+|  | Systems Manager | マスターキーなどの秘密情報管理 |
+|  | CloudWatch | ログ監視 |
 <br>
 
 #### 【認証】
 | 区分 | 名称 | 説明 |
 |-----|-----|------|
-| ID管理  | AWS Cognito    | ユーザー情報の管理         |
-| 認証方法 | メール/パスワード | Cognito組み込み機能       |
-|         | Google認証     | ソーシャルログイン連携      |
-| トークン | JWT            | バックエンドでのトークン検証 |
+| ID管理 | AWS Cognito | ユーザー情報の管理 |
+| 認証方法 | メール/パスワード | Cognito組み込み機能 |
+|  | Google認証 | ソーシャルログイン連携 |
+| トークン | JWT | バックエンドでのトークン検証 |
 <br>
 
 #### 【Continuous Integration / Continuous Delivery(CI/CD)】
 | 区分 | 名称 | 説明 |
 |-----|-----|------|
-| フロントエンド | GitHub Actions | コード品質チェックの自動化    |
-|              | AWS Amplify | ビルド・デプロイ自動化          |
-| バックエンド   | GitHub Actions | テスト・ビルド・デプロイ自動化 |
+| フロントエンド | GitHub Actions | コード品質チェックの自動化 |
+|  | AWS Amplify | ビルド・デプロイ自動化 |
+| バックエンド | GitHub Actions | テスト・ビルド・デプロイ自動化 |
 <br><br>
 
 ### 5-2. 図解

@@ -159,9 +159,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     noteData?.content?.substring(0, 160).replace(/\*/g, '').replace(/#/g, '') ||
     `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
 
-  const ogpImageUrl =
-    noteData.user.profile.avatarUrl ||
-    `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/logo.png`
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/logo.png`
 
   return (
     <>
@@ -177,8 +175,8 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
             content={`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`}
           />
           <meta property="og:image" content={ogpImageUrl} />
-          <meta property="og:site_name" content={'Nput'} />
-          <meta name="twitter:card" content="summary_large_image" />
+          <meta property="og:site_name" content="Nput" />
+          <meta name="twitter:card" content="summary" />
         </Helmet>
       </HelmetProvider>
 

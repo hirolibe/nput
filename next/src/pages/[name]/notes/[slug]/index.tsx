@@ -166,7 +166,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
       <HelmetProvider>
         <Helmet>
           <title>{noteData?.title}</title>
-          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content="summary" />
           <meta property="og:title" content={noteData?.title || ''} />
           <meta property="og:description" content={metaDescription} />
           <meta property="og:type" content="article" />

@@ -246,7 +246,7 @@ URL: [https://n-put.com](https://n-put.com)
 | フロントエンド | GitHub Actions | コード品質チェックの自動化 |
 |  | AWS Amplify | ビルド・デプロイ自動化 |
 | バックエンド | GitHub Actions | テスト・ビルド・デプロイ自動化 |
-<br><br>
+
 
 ### 5-2. 図解
 #### インフラ構成図

@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
@@ -163,21 +164,19 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   return (
     <>
       {/* タブの表示 */}
-      <HelmetProvider>
-        <Helmet>
-          <title>{noteData?.title}</title>
-          <meta name="twitter:card" content="summary" />
-          <meta property="og:title" content={noteData?.title || ''} />
-          <meta property="og:description" content={metaDescription} />
-          <meta property="og:type" content="article" />
-          <meta
-            property="og:url"
-            content={`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`}
-          />
-          <meta property="og:image" content={ogpImageUrl} />
-          <meta property="og:site_name" content="Nput" />
-        </Helmet>
-      </HelmetProvider>
+      <Head>
+        <title>{noteData?.title}</title>
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content={noteData?.title || ''} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:type" content="article" />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`}
+        />
+        <meta property="og:image" content={ogpImageUrl} />
+        <meta property="og:site_name" content="Nput" />
+      </Head>
 
       <Box
         css={styles.pageMinHeight}

@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Amplify } from 'aws-amplify'
 import { AppProps } from 'next/app'
-import Head from 'next/head'
+import { DefaultSeo } from 'next-seo'
 import { HelmetProvider } from 'react-helmet-async'
 import outputs from '../../amplify_outputs.json'
 import Footer from '@/components/common/Footer'
@@ -35,35 +35,52 @@ export default function MyApp(props: MyAppProps): JSX.Element {
   const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
-    <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={theme}>
-        <HelmetProvider>
-          <Authenticator.Provider>
-            <AuthProvider>
-              <ProfileProvider>
-                <CheerPointsProvider>
-                  <CssBaseline />
-                  <Head>
-                    <meta name="twitter:card" content="summary" />
-                    <meta name="twitter:site" content="@hirolibe0930" />
-                    <meta property="og:site_name" content="Nput" />
-                    <meta property="og:image" content={ogpImageUrl} />
-
-                    <meta property="og:type" content="article" />
-                    <meta property="og:title" content="タイトル" />
-                    <meta property="og:description" content="概要" />
-                    <meta property="og:url" content="ページURL" />
-                  </Head>
-                  <Header />
-                  <Component {...pageProps} />
-                  <Snackbar />
-                  <Footer />
-                </CheerPointsProvider>
-              </ProfileProvider>
-            </AuthProvider>
-          </Authenticator.Provider>
-        </HelmetProvider>
-      </ThemeProvider>
-    </CacheProvider>
+    <>
+      <DefaultSeo
+        defaultTitle="Nput | プログラミング学習の支援サービス"
+        description="Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。"
+        openGraph={{
+          type: 'website',
+          title: 'Nput',
+          description:
+            'Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。',
+          site_name: 'Nput',
+          url: 'https://n-put.com',
+          images: [
+            {
+              url: `${ogpImageUrl}`,
+              width: 300,
+              height: 300,
+              alt: 'Nputのロゴ',
+              type: 'image/png',
+            },
+          ],
+        }}
+        twitter={{
+          handle: '@hirolibe0930',
+          site: '@hirolibe0930',
+          cardType: 'summary',
+        }}
+      />
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider theme={theme}>
+          <HelmetProvider>
+            <Authenticator.Provider>
+              <AuthProvider>
+                <ProfileProvider>
+                  <CheerPointsProvider>
+                    <CssBaseline />
+                    <Header />
+                    <Component {...pageProps} />
+                    <Snackbar />
+                    <Footer />
+                  </CheerPointsProvider>
+                </ProfileProvider>
+              </AuthProvider>
+            </Authenticator.Provider>
+          </HelmetProvider>
+        </ThemeProvider>
+      </CacheProvider>
+    </>
   )
 }

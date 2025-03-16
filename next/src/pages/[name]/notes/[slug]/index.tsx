@@ -12,8 +12,8 @@ import {
   Typography,
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
-import Head from 'next/head'
 import Link from 'next/link'
+import { NextSeo } from 'next-seo'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -158,29 +158,21 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     initialNoteData.description?.replace(/\*/g, '').replace(/#/g, '') ||
     `${initialNoteData.user.profile.nickname || initialNoteData.user.name}さんのノート`
 
-  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
-
   return (
     <>
-      {/* タブの表示 */}
-      <Head>
-        <title>{initialNoteData.title}</title>
-        <meta name="description" content={metaDescription} />
-
-        <meta name="twitter:title" content={initialNoteData.title || ''} />
-        <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content={ogpImageUrl} />
-
-        <meta property="og:title" content={initialNoteData.title || ''} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:type" content="article" />
-        <meta
-          property="og:url"
-          content={`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`}
-        />
-        <meta property="og:image" content={ogpImageUrl} />
-        <meta property="og:site_name" content="Nput" />
-      </Head>
+      <NextSeo
+        defaultTitle={`${initialNoteData.title} | Nput`}
+        description={metaDescription}
+        openGraph={{
+          type: 'article',
+          title: initialNoteData.title,
+          description: metaDescription,
+          url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+        }}
+        twitter={{
+          handle: `@${initialNoteData.user.profile.xLink}`,
+        }}
+      />
 
       <Box
         css={styles.pageMinHeight}

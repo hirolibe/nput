@@ -4,8 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Amplify } from 'aws-amplify'
 import { AppProps } from 'next/app'
-// import { DefaultSeo } from 'next-seo'
-import { HelmetProvider } from 'react-helmet-async'
+import { DefaultSeo } from 'next-seo'
 import outputs from '../../amplify_outputs.json'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
@@ -32,11 +31,11 @@ interface MyAppProps extends AppProps {
 
 export default function MyApp(props: MyAppProps): JSX.Element {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-  // const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>
-      {/* <DefaultSeo
+      <DefaultSeo
         defaultTitle="Nput | プログラミング学習の支援サービス"
         description="Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。"
         openGraph={{
@@ -49,8 +48,6 @@ export default function MyApp(props: MyAppProps): JSX.Element {
           images: [
             {
               url: `${ogpImageUrl}`,
-              width: 300,
-              height: 300,
               alt: 'Nputのロゴ',
               type: 'image/png',
             },
@@ -60,24 +57,22 @@ export default function MyApp(props: MyAppProps): JSX.Element {
           site: '@hirolibe0930',
           cardType: 'summary',
         }}
-      /> */}
+      />
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={theme}>
-          <HelmetProvider>
-            <Authenticator.Provider>
-              <AuthProvider>
-                <ProfileProvider>
-                  <CheerPointsProvider>
-                    <CssBaseline />
-                    <Header />
-                    <Component {...pageProps} />
-                    <Snackbar />
-                    <Footer />
-                  </CheerPointsProvider>
-                </ProfileProvider>
-              </AuthProvider>
-            </Authenticator.Provider>
-          </HelmetProvider>
+          <Authenticator.Provider>
+            <AuthProvider>
+              <ProfileProvider>
+                <CheerPointsProvider>
+                  <CssBaseline />
+                  <Header />
+                  <Component {...pageProps} />
+                  <Snackbar />
+                  <Footer />
+                </CheerPointsProvider>
+              </ProfileProvider>
+            </AuthProvider>
+          </Authenticator.Provider>
         </ThemeProvider>
       </CacheProvider>
     </>

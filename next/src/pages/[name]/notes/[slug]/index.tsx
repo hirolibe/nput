@@ -153,7 +153,6 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     )
   }
 
-  // メタディスクリプションの作成 (Helmet の直前に追加)
   const metaDescription =
     initialNoteData.description?.replace(/\*/g, '').replace(/#/g, '') ||
     `${initialNoteData.user.profile.nickname || initialNoteData.user.name}さんのノート`

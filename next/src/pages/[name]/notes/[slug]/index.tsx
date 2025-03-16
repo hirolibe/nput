@@ -155,8 +155,8 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
   // メタディスクリプションの作成 (Helmet の直前に追加)
   const metaDescription =
-    noteData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
-    `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
+    initialNoteData.description?.replace(/\*/g, '').replace(/#/g, '') ||
+    `${initialNoteData.user.profile.nickname || initialNoteData.user.name}さんのノート`
 
   const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
@@ -164,15 +164,14 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     <>
       {/* タブの表示 */}
       <Head>
-        <title>{noteData?.title}</title>
+        <title>{initialNoteData.title}</title>
         <meta name="description" content={metaDescription} />
 
-        <meta name="twitter:title" content={noteData?.title || ''} />
+        <meta name="twitter:title" content={initialNoteData.title || ''} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogpImageUrl} />
-        <meta name="twitter:site" content="@hirolibe0930" />
 
-        <meta property="og:title" content={noteData?.title || ''} />
+        <meta property="og:title" content={initialNoteData.title || ''} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="article" />
         <meta

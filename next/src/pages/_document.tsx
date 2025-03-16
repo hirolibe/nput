@@ -22,13 +22,14 @@ export default class MyDocument extends Document {
             name="google-site-verification"
             content="27yqB9Nl4liDte_D7fFL--8BWOZw6ufQGXohbZJOqGw"
           />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@hirolibe0930" />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
-          <meta name="twitter:card" content="summary" />
         </Head>
         <body>
           <Main />

@@ -165,6 +165,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
       {/* タブの表示 */}
       <Head>
         <title>{noteData?.title}</title>
+        <meta name="description" content={metaDescription} />
         <meta name="twitter:card" content="summary" />
         <meta property="og:title" content={noteData?.title || ''} />
         <meta property="og:description" content={metaDescription} />

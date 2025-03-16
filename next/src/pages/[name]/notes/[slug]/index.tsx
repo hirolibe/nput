@@ -171,6 +171,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         <meta name="twitter:title" content={noteData?.title || ''} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogpImageUrl} />
+        <meta name="twitter:site" content="@hirolibe0930" />
 
         <meta property="og:title" content={noteData?.title || ''} />
         <meta property="og:description" content={metaDescription} />

@@ -154,16 +154,16 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   }
 
   // メタディスクリプションの作成 (Helmet の直前に追加)
-  const metaDescription =
-    noteData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
-    `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
+  // const metaDescription =
+  //   noteData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
+  //   `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
 
-  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+  // const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>
       {/* タブの表示 */}
-      <Head>
+      {/* <Head>
         <title>{noteData?.title}</title>
         <meta name="description" content={metaDescription} />
         <meta name="twitter:card" content="summary" />
@@ -175,6 +175,23 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           content={`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`}
         />
         <meta property="og:image" content={ogpImageUrl} />
+        <meta property="og:site_name" content="Nput" />
+      </Head> */}
+
+      <Head>
+        <title>タイトル</title>
+        <meta name="twitter:card" content="summary" />
+        <meta property="og:title" content="タイトル" />
+        <meta property="og:description" content="説明" />
+        <meta property="og:type" content="article" />
+        <meta
+          property="og:url"
+          content="https://n-put.com/HiroLibe/notes/0gDMLOSkZTcFCU"
+        />
+        <meta
+          property="og:image"
+          content="https://n-put.com/twitter-card-logo.png"
+        />
         <meta property="og:site_name" content="Nput" />
       </Head>
 

@@ -158,7 +158,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     noteData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
     `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
 
-  // const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>
@@ -167,8 +167,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         <title>{noteData?.title}</title>
         <meta name="description" content={metaDescription} />
 
-        {/* <meta name="twitter:card" content="summary" /> */}
-        {/* <meta name="twitter:title" content={noteData?.title || ''} />
+        <meta name="twitter:title" content={noteData?.title || ''} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogpImageUrl} />
         <meta name="twitter:site" content="@hirolibe0930" />
@@ -181,7 +180,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           content={`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`}
         />
         <meta property="og:image" content={ogpImageUrl} />
-        <meta property="og:site_name" content="Nput" /> */}
+        <meta property="og:site_name" content="Nput" />
       </Head>
 
       <Box

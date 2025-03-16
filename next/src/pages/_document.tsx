@@ -15,7 +15,7 @@ import theme from '@/styles/theme'
 
 export default class MyDocument extends Document {
   render(): JSX.Element {
-    const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+    // const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
     return (
       <Html lang="ja" prefix="og: http://ogp.me/ns#">
@@ -24,7 +24,7 @@ export default class MyDocument extends Document {
             name="google-site-verification"
             content="27yqB9Nl4liDte_D7fFL--8BWOZw6ufQGXohbZJOqGw"
           />
-          <meta name="twitter:card" content="summary" />
+          {/* <meta name="twitter:card" content="summary" />
           <meta name="twitter:site" content="@hirolibe0930" />
           <meta property="og:site_name" content="Nput" />
           <meta property="og:image" content={ogpImageUrl} />
@@ -32,7 +32,7 @@ export default class MyDocument extends Document {
           <meta property="og:type" content="article" />
           <meta property="og:title" content="タイトル" />
           <meta property="og:description" content="概要" />
-          <meta property="og:url" content="ページURL" />
+          <meta property="og:url" content="ページURL" /> */}
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
           <link

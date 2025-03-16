@@ -4,6 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Amplify } from 'aws-amplify'
 import { AppProps } from 'next/app'
+import Head from 'next/head'
 import { HelmetProvider } from 'react-helmet-async'
 import outputs from '../../amplify_outputs.json'
 import Footer from '@/components/common/Footer'
@@ -22,7 +23,6 @@ outputs.auth.oauth.domain =
   process.env.NEXT_PUBLIC_COGNITO_DOMAIN ?? 'auth.n-put.com'
 outputs.auth.oauth.scopes = ['email', 'openid']
 Amplify.configure(outputs)
-console.log(outputs)
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -32,6 +32,7 @@ interface MyAppProps extends AppProps {
 
 export default function MyApp(props: MyAppProps): JSX.Element {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <CacheProvider value={emotionCache}>
@@ -42,6 +43,17 @@ export default function MyApp(props: MyAppProps): JSX.Element {
               <ProfileProvider>
                 <CheerPointsProvider>
                   <CssBaseline />
+                  <Head>
+                    <meta name="twitter:card" content="summary" />
+                    <meta name="twitter:site" content="@hirolibe0930" />
+                    <meta property="og:site_name" content="Nput" />
+                    <meta property="og:image" content={ogpImageUrl} />
+
+                    <meta property="og:type" content="article" />
+                    <meta property="og:title" content="タイトル" />
+                    <meta property="og:description" content="概要" />
+                    <meta property="og:url" content="ページURL" />
+                  </Head>
                   <Header />
                   <Component {...pageProps} />
                   <Snackbar />

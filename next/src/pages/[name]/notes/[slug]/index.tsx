@@ -158,6 +158,8 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     initialNoteData.description?.replace(/\*/g, '').replace(/#/g, '') ||
     `${initialNoteData.user.profile.nickname || initialNoteData.user.name}さんのノート`
 
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+
   return (
     <>
       <NextSeo
@@ -168,9 +170,19 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
           title: initialNoteData.title,
           description: metaDescription,
           url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+          images: [
+            {
+              url: `${ogpImageUrl}`,
+              width: 300,
+              height: 300,
+              alt: 'Nputのロゴ',
+              type: 'image/png',
+            },
+          ],
         }}
         twitter={{
-          handle: `@${initialNoteData.user.profile.xLink}`,
+          site: '@hirolibe0930',
+          cardType: 'summary',
         }}
       />
 

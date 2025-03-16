@@ -54,7 +54,7 @@ module JwtVerification
     rescue JSON::JWT::InvalidFormat => e
       handle_verification_error(e, "JWT形式エラー", "トークン検証エラー: 形式が無効です")
     rescue => e
-      handle_verification_error(e, "未知のエラー", "トークン検証に失敗しました: #{e.message}")
+      handle_verification_error(e, "未知のエラー", e.message)
     end
 
     def decode_token_header(token)

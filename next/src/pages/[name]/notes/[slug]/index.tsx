@@ -154,11 +154,11 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   }
 
   // メタディスクリプションの作成 (Helmet の直前に追加)
-  const metaDescription =
-    noteData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
-    `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
+  // const metaDescription =
+  //   noteData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
+  //   `${noteData.user.profile.nickname || noteData.user.name}さんのノート`
 
-  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+  // const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>

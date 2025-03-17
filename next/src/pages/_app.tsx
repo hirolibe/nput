@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Amplify } from 'aws-amplify'
 import { AppProps } from 'next/app'
-// import { DefaultSeo } from 'next-seo'
+import { DefaultSeo } from 'next-seo'
 import outputs from '../../amplify_outputs.json'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
@@ -31,20 +31,40 @@ interface MyAppProps extends AppProps {
 
 export default function MyApp(props: MyAppProps): JSX.Element {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-  // const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
+  const { headData, ...restPageProps } = pageProps
+
+  const safeHeadData = {
+    title: 'Nput | プログラミング学習の支援サービス',
+    description:
+      'Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。',
+    user: { name: '', profile: { nickname: '' } },
+    url: 'https://n-put.com',
+    type: 'website',
+    twitterCard: 'summary',
+    ...headData, // pagePropsのheadDataで上書き
+  }
+
+  const noteDescription =
+    headData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
+    `${headData?.user.profile.nickname || headData?.user.name}さんのノート`
+
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>
-      {/* <DefaultSeo
-        defaultTitle="Nput | プログラミング学習の支援サービス"
-        description="Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。"
+      <DefaultSeo
+        defaultTitle={safeHeadData?.title}
+        description={
+          headData?.description ? noteDescription : safeHeadData.description
+        }
         openGraph={{
-          type: 'website',
-          title: 'Nput',
-          description:
-            'Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。',
+          title: safeHeadData?.title,
+          description: headData?.description
+            ? noteDescription
+            : safeHeadData.description,
+          url: safeHeadData?.url,
+          type: safeHeadData?.type,
           site_name: 'Nput',
-          url: 'https://n-put.com',
           images: [
             {
               url: `${ogpImageUrl}`,
@@ -55,9 +75,9 @@ export default function MyApp(props: MyAppProps): JSX.Element {
         }}
         twitter={{
           site: '@hirolibe0930',
-          cardType: 'summary',
+          cardType: safeHeadData?.twitterCard,
         }}
-      /> */}
+      />
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={theme}>
           <Authenticator.Provider>
@@ -66,7 +86,7 @@ export default function MyApp(props: MyAppProps): JSX.Element {
                 <CheerPointsProvider>
                   <CssBaseline />
                   <Header />
-                  <Component {...pageProps} />
+                  <Component {...restPageProps} />
                   <Snackbar />
                   <Footer />
                 </CheerPointsProvider>

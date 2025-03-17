@@ -13,7 +13,6 @@ import {
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
-import { NextSeo } from 'next-seo'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -37,10 +36,20 @@ interface Params extends ParsedUrlQuery {
   slug: string
 }
 
+interface HeadData {
+  title: string
+  description: string
+  user: string
+  url: string
+  type: string
+  twitterCard: string
+}
+
 interface NoteDetailProps {
   name: string
   slug: string
-  noteData: NoteData
+  noteData?: NoteData
+  headData?: HeadData
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -56,8 +65,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const noteData = await fetchNoteData(name, slug)
+
+    // _app.tsxへpagePropsとして渡す
+    const headData = {
+      title: noteData.title,
+      description: noteData.description ?? '',
+      user: noteData.user,
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+      type: 'article',
+      twitterCard: 'summary',
+    }
+
     return {
-      props: { name, slug, noteData },
+      props: { name, slug, noteData, headData },
       revalidate: 60 * 60 * 24 * 365, // 1年間キャッシュする
     }
   } catch {
@@ -153,37 +173,8 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     )
   }
 
-  const metaDescription =
-    initialNoteData.description?.replace(/\*/g, '').replace(/#/g, '') ||
-    `${initialNoteData.user.profile.nickname || initialNoteData.user.name}さんのノート`
-
-  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
-
   return (
     <>
-      <NextSeo
-        defaultTitle={`${initialNoteData.title} | Nput`}
-        description={metaDescription}
-        openGraph={{
-          type: 'article',
-          title: initialNoteData.title,
-          description: metaDescription,
-          site_name: 'Nput',
-          url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
-          images: [
-            {
-              url: `${ogpImageUrl}`,
-              alt: 'Nputのロゴ',
-              type: 'image/png',
-            },
-          ],
-        }}
-        twitter={{
-          site: '@hirolibe0930',
-          cardType: 'summary',
-        }}
-      />
-
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}

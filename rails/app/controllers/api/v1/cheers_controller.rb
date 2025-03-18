@@ -12,8 +12,6 @@ class Api::V1::CheersController < Api::V1::ApplicationController
     cheer_status = current_user ? current_user.has_cheered?(note) : false
 
     render json: { has_cheered: cheer_status }, status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 
   def create
@@ -54,7 +52,5 @@ class Api::V1::CheersController < Api::V1::ApplicationController
     end
   rescue ActiveRecord::RecordNotDestroyed
     render json: { error: "エールの削除に失敗しました" }, status: :unprocessable_entity
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "ノートにアクセスできません" }, status: :not_found
   end
 end

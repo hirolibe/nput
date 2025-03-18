@@ -73,7 +73,7 @@ const TaggedNotes: NextPage = () => {
               mb: 3,
             }}
           >
-            「{tagName}」のノート一覧
+            タグ「{tagName}」のノート一覧
           </Typography>
           <Grid container spacing={4}>
             {!notesData &&

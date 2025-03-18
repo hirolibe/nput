@@ -54,6 +54,18 @@ RSpec.shared_examples "アカウント管理情報とページのレスポンス
   end
 end
 
+RSpec.shared_examples "フォルダとページのレスポンス検証" do |page|
+  it "200ステータス、#{page}ページ目のフォルダとページの情報が返る" do
+    subject
+    expect(response).to have_http_status(:ok)
+    expect(json_response.keys).to eq ["folders", "meta"]
+    expect(json_response["folders"][0].keys).to eq EXPECTED_FOLDER_KEYS
+    expect(json_response["meta"].keys).to eq ["current_page", "total_pages"]
+    expect(json_response["meta"]["current_page"]).to eq page
+    expect(json_response["meta"]["total_pages"]).to eq 2
+  end
+end
+
 RSpec.shared_examples "ページネーションのテスト" do |resource_name|
   context "paramsにpageの値が含まれていない場合" do
     let(:params) { nil }

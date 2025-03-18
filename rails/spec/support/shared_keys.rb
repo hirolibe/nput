@@ -57,6 +57,7 @@ EXPECTED_USER_KEYS = [
   "total_duration",
   "profile",
   "notes",
+  "folders",
 ].freeze
 
 EXPECTED_BASIC_USER_KEYS = [
@@ -76,5 +77,11 @@ EXPECTED_ADMIN_USER_KEYS = [
 EXPECTED_TAG_KEYS = [
   "id",
   "name",
+  "notes_count",
+].freeze
+
+EXPECTED_FOLDER_KEYS = [
+  "id",
+  "folder_name",
   "notes_count",
 ].freeze

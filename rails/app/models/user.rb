@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :followers, through: :follower_relationships, source: :follower
   has_many :durations, dependent: :destroy
   has_many :consents, dependent: :destroy
+  has_many :folders, dependent: :destroy
 
   has_one :profile, dependent: :destroy
 

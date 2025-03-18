@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_11_024853) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_17_080049) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -77,6 +77,24 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_11_024853) do
     t.datetime "updated_at", null: false
     t.index ["note_id"], name: "index_durations_on_note_id"
     t.index ["user_id"], name: "index_durations_on_user_id"
+  end
+
+  create_table "folders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "folder_name", null: false, comment: "フォルダ名"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "notes_count", default: 0, null: false, comment: "フォルダ内のノート数"
+    t.index ["folder_name"], name: "index_folders_on_folder_name", unique: true
+    t.index ["user_id"], name: "index_folders_on_user_id"
+  end
+
+  create_table "note_folders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "note_id", null: false
+    t.bigint "folder_id", null: false
+    t.index ["folder_id"], name: "index_note_folders_on_folder_id"
+    t.index ["note_id", "folder_id"], name: "index_note_folders_on_note_id_and_folder_id", unique: true
+    t.index ["note_id"], name: "index_note_folders_on_note_id"
   end
 
   create_table "note_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -158,6 +176,9 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_11_024853) do
   add_foreign_key "consents", "users"
   add_foreign_key "durations", "notes"
   add_foreign_key "durations", "users"
+  add_foreign_key "folders", "users"
+  add_foreign_key "note_folders", "folders"
+  add_foreign_key "note_folders", "notes"
   add_foreign_key "note_tags", "notes"
   add_foreign_key "note_tags", "tags"
   add_foreign_key "notes", "users"

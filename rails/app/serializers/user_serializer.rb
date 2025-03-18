@@ -12,6 +12,7 @@ class UserSerializer < ActiveModel::Serializer
   has_one :profile
 
   has_many :notes
+  has_many :folders
 
   def daily_durations
     durations = (0..6).map do |i|

@@ -9,6 +9,8 @@ class Note < ApplicationRecord
   has_many :durations, dependent: :destroy
   has_many :note_tags, dependent: :destroy
   has_many :tags, through: :note_tags
+  has_many :note_folders, dependent: :destroy
+  has_many :folders, through: :note_folders
 
   has_many_attached :images
 

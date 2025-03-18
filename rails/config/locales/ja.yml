@@ -33,6 +33,10 @@ ja:
         terms_version: "利用規約"
         privacy_version: "プライバシーポリシー"
         consent_date: "同意日"
+      folder:
+        folder_name: "フォルダ名"
+      note_folder:
+        note_id: ""
   enums:
     note:
       status:

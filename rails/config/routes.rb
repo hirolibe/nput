@@ -33,6 +33,13 @@ Rails.application.routes.draw do
         resources :cheered_notes, only: [:index]
         resources :followings, only: [:index]
         resources :followers, only: [:index]
+        resources :folders, only: [:index, :show, :create, :update, :destroy], param: :folder_name do
+          member do
+            resources :filed_notes, only: [:index], param: :slug do
+              resource :file, only: [:show, :create, :destroy], param: :slug
+            end
+          end
+        end
         resource :relationship, only: [:show, :create, :destroy]
       end
 
@@ -46,6 +53,12 @@ Rails.application.routes.draw do
         collection do
           post :upload
           post :attach_avatar
+        end
+      end
+
+      resources :folders, only: [], param: :folder_name do
+        member do
+          resources :my_filed_notes, only: [:index]
         end
       end
     end

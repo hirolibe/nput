@@ -37,7 +37,6 @@ export default function MyApp(props: MyAppProps): JSX.Element {
     title: 'Nput | プログラミング学習の支援サービス',
     description:
       'Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。',
-    user: { name: '', profile: { nickname: '' } },
     url: 'https://n-put.com',
     type: 'website',
     twitterCard: 'summary',
@@ -58,14 +57,14 @@ export default function MyApp(props: MyAppProps): JSX.Element {
           headData?.description ? noteDescription : safeHeadData.description
         }
         openGraph={{
-          title: safeHeadData?.title,
+          title: safeHeadData.title,
           description: headData?.description
             ? noteDescription
             : safeHeadData.description,
           url: safeHeadData?.url,
-          type: safeHeadData?.type,
+          type: safeHeadData.type,
           site_name: 'Nput',
-          images: [
+          images: safeHeadData.images ?? [
             {
               url: `${ogpImageUrl}`,
               alt: 'Nputのロゴ',

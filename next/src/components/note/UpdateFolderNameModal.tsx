@@ -68,10 +68,19 @@ const UpdateFolderNameModal = (props: UpdateFolderNameModalProps) => {
         />
 
         <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Button variant="outlined" onClick={handleClose} sx={{ color: 'text.light', borderColor: 'text.light' }}>
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            sx={{ color: 'text.light', borderColor: 'text.light' }}
+          >
             キャンセル
           </Button>
-          <Button variant="contained" onClick={handleUpdate} color="primary" sx={{ color: 'white' }}>
+          <Button
+            variant="contained"
+            onClick={handleUpdate}
+            color="primary"
+            sx={{ color: 'white' }}
+          >
             更新する
           </Button>
         </Stack>

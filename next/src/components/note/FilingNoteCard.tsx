@@ -1,19 +1,13 @@
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import EditIcon from '@mui/icons-material/Edit'
-import {
-  Box,
-  CardContent,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { Box, CardContent, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState, Dispatch, SetStateAction } from 'react'
 import { CheerIcon } from './CheerIcon'
-import { BasicNoteData } from '@/hooks/useNotes'
-import { omit } from '@/utils/omit'
 import { FileButton } from './FileButton'
 import { useFileStatus } from '@/hooks/useFileStatus'
-import { useEffect, useState } from 'react'
-import { Dispatch, SetStateAction } from 'react'
+import { BasicNoteData } from '@/hooks/useNotes'
+import { omit } from '@/utils/omit'
 
 export interface FilingNoteCardProps {
   note: BasicNoteData
@@ -23,14 +17,7 @@ export interface FilingNoteCardProps {
 
 export const FilingNoteCard = (props: FilingNoteCardProps) => {
   const {
-    note: {
-      title,
-      fromToday,
-      cheersCount,
-      slug,
-      totalDuration,
-      user,
-    },
+    note: { title, fromToday, cheersCount, slug, totalDuration, user },
   } = props
 
   const router = useRouter()
@@ -49,15 +36,23 @@ export const FilingNoteCard = (props: FilingNoteCardProps) => {
 
   return (
     <Box onClick={handleCardClick} sx={{ cursor: 'pointer' }}>
-      <CardContent sx={{
-        height: '100%',
-        px: 4,
-        pt: 1,
-        '&:last-child': {
-          pb: 1
-        },
-      }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <CardContent
+        sx={{
+          height: '100%',
+          px: 4,
+          pt: 1,
+          '&:last-child': {
+            pb: 1,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Box>
             <Box
               sx={{

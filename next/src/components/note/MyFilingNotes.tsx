@@ -1,15 +1,14 @@
 import { Box, Divider, Pagination, Typography } from '@mui/material'
 import { usePathname, useParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import Error from '../common/Error'
+import Loading from '../common/Loading'
 import { FilingNoteCard } from './FilingNoteCard'
 import { useMyNotes } from '@/hooks/useMyNotes'
 import { BasicNoteData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/utils/handleError'
-import { Dispatch, SetStateAction } from 'react'
 import { styles } from '@/styles'
-import Loading from '../common/Loading'
-import Error from '../common/Error'
+import { handleError } from '@/utils/handleError'
 
 interface MyFilingNotesProps {
   setNotes: Dispatch<SetStateAction<BasicNoteData[] | null | undefined>>
@@ -27,7 +26,9 @@ const MyFilingNotes = (props: MyFilingNotesProps) => {
   }
 
   const { notesData, notesError } = useMyNotes(page)
-  const [myFilingNotes, setMyFilingNotes] = useState<BasicNoteData[] | null | undefined>(undefined)
+  const [myFilingNotes, setMyFilingNotes] = useState<
+    BasicNoteData[] | null | undefined
+  >(undefined)
   useEffect(() => {
     if (notesData === undefined) return
 

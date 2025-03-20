@@ -23,13 +23,13 @@ import CheeredNotes from '@/components/user/CheeredNotes'
 import DurationStatus from '@/components/user/DurationStatus'
 import Followers from '@/components/user/Followers'
 import Followings from '@/components/user/Followings'
+import UserFolders from '@/components/user/UserFolders'
 import { UserInfo } from '@/components/user/UserInfo'
 import UserNotes from '@/components/user/UserNotes'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { UserData } from '@/hooks/useUser'
 import { styles } from '@/styles'
 import { fetchUserData } from '@/utils/fetchUserData'
-import UserFolders from '@/components/user/UserFolders'
 
 interface Params extends ParsedUrlQuery {
   userName: string

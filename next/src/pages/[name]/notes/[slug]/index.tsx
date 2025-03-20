@@ -191,7 +191,9 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               color: 'white',
             }}
           >
-            <Typography sx={{ fontWeight: 'bold' }}>インプットを表示中</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>
+              インプットを表示中
+            </Typography>
           </Box>
         )}
 

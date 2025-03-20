@@ -1,14 +1,14 @@
 import { Box, Divider, Pagination, Typography } from '@mui/material'
+import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Error from '../common/Error'
+import Loading from '../common/Loading'
+import NoteCard from './NoteCard'
 import { BasicNoteData } from '@/hooks/useNotes'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
-import { handleError } from '@/utils/handleError'
-import { styles } from '@/styles'
-import Loading from '../common/Loading'
-import Error from '../common/Error'
-import NoteCard from './NoteCard'
 import { useUserFiledNotes } from '@/hooks/useUserFiledNotes'
-import { usePathname } from 'next/navigation'
+import { styles } from '@/styles'
+import { handleError } from '@/utils/handleError'
 
 interface FiledNotesProps {
   folderSlug: string
@@ -23,7 +23,9 @@ const FiledNotes = (props: FiledNotesProps) => {
   }
 
   const { notesData, notesError } = useUserFiledNotes(props.folderSlug, page)
-  const [filedNotes, setFiledNotes] = useState<BasicNoteData[] | null | undefined>(undefined)
+  const [filedNotes, setFiledNotes] = useState<
+    BasicNoteData[] | null | undefined
+  >(undefined)
   useEffect(() => {
     if (notesData === undefined) return
 

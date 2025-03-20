@@ -1,12 +1,11 @@
 import { Button } from '@mui/material'
 import axios from 'axios'
 import { usePathname } from 'next/navigation'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
+import { FilingNoteCardProps } from './FilingNoteCard'
 import { useAuthContext } from '@/hooks/useAuthContext'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
 import { handleError } from '@/utils/handleError'
-import { FilingNoteCardProps } from './FilingNoteCard'
-import { BasicNoteData } from '@/hooks/useNotes'
 
 export interface FileButtonProps extends FilingNoteCardProps {
   fileState: {
@@ -33,7 +32,7 @@ export const FileButton = (props: FileButtonProps) => {
     try {
       await axios.post(url, null, { headers })
       setIsFiled(true)
-      setNotes((prevNotes) => prevNotes ? [note, ...prevNotes] : [note])
+      setNotes((prevNotes) => (prevNotes ? [note, ...prevNotes] : [note]))
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({
@@ -48,9 +47,7 @@ export const FileButton = (props: FileButtonProps) => {
     try {
       await axios.delete(url, { headers })
       setIsFiled(false)
-      setNotes((prevNotes) =>
-        prevNotes?.filter((n) => n.slug !== note.slug),
-      )
+      setNotes((prevNotes) => prevNotes?.filter((n) => n.slug !== note.slug))
     } catch (err) {
       const { errorMessage } = handleError(err)
       setSnackbar({

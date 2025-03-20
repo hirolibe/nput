@@ -67,10 +67,19 @@ const CreateFolderModal = (props: CreateFolderModalProps) => {
         />
 
         <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Button variant="outlined" onClick={handleClose} sx={{ color: 'text.light', borderColor: 'text.light' }}>
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            sx={{ color: 'text.light', borderColor: 'text.light' }}
+          >
             キャンセル
           </Button>
-          <Button variant="contained" onClick={handleSave} color="primary" sx={{ color: 'white' }}>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            color="primary"
+            sx={{ color: 'white' }}
+          >
             新規作成
           </Button>
         </Stack>

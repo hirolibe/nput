@@ -1,3 +1,3 @@
 class FolderSerializer < ActiveModel::Serializer
-  attributes :id, :folder_name, :notes_count
+  attributes :id, :name, :notes_count, :slug
 end

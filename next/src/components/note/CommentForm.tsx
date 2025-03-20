@@ -33,7 +33,8 @@ interface CommentFormData {
   content: string
 }
 
-const CommentForm = ({ name, slug, profileData, addComment }: CommentProps) => {
+const CommentForm = (props: CommentProps) => {
+  const { name, slug, profileData, addComment } = props
   const pathname = usePathname()
   const [, setSnackbar] = useSnackbarState()
   const [isLoading, setIsLoading] = useState(false)

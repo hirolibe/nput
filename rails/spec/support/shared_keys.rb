@@ -82,6 +82,7 @@ EXPECTED_TAG_KEYS = [
 
 EXPECTED_FOLDER_KEYS = [
   "id",
-  "folder_name",
+  "name",
   "notes_count",
+  "slug",
 ].freeze

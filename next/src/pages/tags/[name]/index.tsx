@@ -55,7 +55,7 @@ const TaggedNotes: NextPage = () => {
       {/* タブの表示 */}
       <HelmetProvider>
         <Helmet>
-          <title>{`${tagName}のノート一覧 | Nput`}</title>
+          <title>{`タグ「${tagName}」のノート一覧 | Nput`}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -65,7 +65,7 @@ const TaggedNotes: NextPage = () => {
       >
         <Container maxWidth="md" sx={{ pt: 4 }}>
           <Typography
-            component={'h2'}
+            component={'h1'}
             sx={{
               textAlign: 'center',
               fontSize: { xs: 18, sm: 24 },
@@ -94,7 +94,7 @@ const TaggedNotes: NextPage = () => {
                     slug={note.slug}
                     totalDuration={note.totalDuration}
                     user={note.user}
-                    tags={note.tags.map((tag) => ({
+                    tags={note.tags?.map((tag) => ({
                       id: tag.id,
                       name: tag.name,
                     }))}

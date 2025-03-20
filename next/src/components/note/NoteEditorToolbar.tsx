@@ -81,16 +81,15 @@ export const NoteEditorToolbar = ({
               </Box>
               <Box
                 sx={{
-                  display: { xs: undefined, md: 'flex' },
                   alignItems: 'center',
                   textAlign: 'center',
                 }}
               >
                 <Typography
                   sx={{
-                    fontSize: { xs: 13, md: 15 },
-                    mr: { xs: 0, md: 1 },
-                    my: { xs: 0.5, md: 0 },
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    my: 0.7,
                   }}
                 >
                   作成時間
@@ -102,15 +101,15 @@ export const NoteEditorToolbar = ({
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box
               sx={{
-                display: { xs: undefined, md: 'flex' },
                 alignItems: 'center',
                 textAlign: 'center',
+                width: '78px',
                 mr: 2,
-                mt: { xs: 1, md: 0 },
+                mt: 1,
               }}
             >
-              <Typography sx={{ fontSize: { xs: 12, md: 15 } }}>
-                公開設定
+              <Typography sx={{ fontSize: 13, fontWeight: 'bold' }}>
+                {statusChecked ? 'アウトプット' : 'インプット'}
               </Typography>
               <Switch checked={statusChecked} onChange={onStatusChange} />
             </Box>
@@ -124,11 +123,11 @@ export const NoteEditorToolbar = ({
                 fontSize: { xs: 14, md: 16 },
                 border: statusChecked ? 'none' : '2px solid',
                 borderRadius: 2,
-                width: { xs: '115px', md: '120px' },
+                width: { xs: '105px', md: '110px' },
                 height: '40px',
               }}
             >
-              {statusChecked ? '公開する' : '下書き保存'}
+              {statusChecked ? '公開する' : '記録する'}
             </LoadingButton>
           </Box>
         </Box>

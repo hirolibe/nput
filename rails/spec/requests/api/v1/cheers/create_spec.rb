@@ -39,13 +39,13 @@ RSpec.describe "Api::V1::Cheers POST /api/v1/:name/notes/:note_slug/cheer", type
 
       include_examples "ノート非公開エラー"
 
-      context "ステータスが公開中のノートに、すでにエールしている場合" do
+      context "ステータスがアウトプットのノートに、すでにエールしている場合" do
         before { current_user.cheers.create!(note:) }
 
         include_examples "バリデーションエラーのレスポンス検証"
       end
 
-      context "ステータスが公開中のノートにエールしていない場合" do
+      context "ステータスがアウトプットのノートにエールしていない場合" do
         it "ノートにエールし、保有エールポイントが360ポイント減り、201ステータスが返る" do
           expect { subject }.to change { note.cheers.count }.by(1).
                                   and change { current_user.reload.cheer_points }.by(-360)

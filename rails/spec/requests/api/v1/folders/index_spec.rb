@@ -7,9 +7,7 @@ RSpec.describe "Api::V1::Folders GET /api/v1/:name/folders", type: :request do
   let(:name) { user.name }
   let(:params) { nil }
 
-  before do
-    create_list(:folder, 11, user:)
-  end
+  before { create_list(:folder, 11, user:) }
 
   include_examples "ページネーションのテスト", "フォルダ"
 end

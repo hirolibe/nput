@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Notes GET /api/v1/:name/notes/:slug", type: :request do
   include_examples "リソース不在エラー", "ノート", "note_slug"
   include_examples "ノート非公開エラー"
 
-  context "ステータスが公開中のノートが存在する場合" do
+  context "ステータスがアウトプットのノートが存在する場合" do
     before { create_list(:comment, 5, note:) }
 
     it "200ステータス、ノートの情報、コメントの情報が返る" do

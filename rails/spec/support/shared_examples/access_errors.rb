@@ -30,7 +30,7 @@ RSpec.shared_examples "ノート非公開エラー" do
     include_examples "404エラー", "ノート"
   end
 
-  context "ノートのステータスが下書きの場合" do
+  context "ノートのステータスがインプットの場合" do
     let(:note) { create(:note, status: :draft) }
 
     include_examples "404エラー", "ノート"

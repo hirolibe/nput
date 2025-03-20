@@ -1,14 +1,14 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Files DELETE /api/v1/:name/folders/:folder_name/filed_notes/:filed_note_slug/file", type: :request do
-  subject { delete(api_v1_user_filed_note_file_path(name, folder_name, filed_note_slug), headers:) }
+RSpec.describe "Api::V1::Files DELETE /api/v1/my_folders/:folder_slug/filed_notes/:note_slug/file", type: :request do
+  subject { delete(api_v1_file_path(folder_slug, note_slug), headers:) }
 
   let(:user) { create(:user) }
   let(:name) { user.name }
   let(:folder) { create(:folder, user:) }
-  let(:folder_name) { folder.folder_name }
+  let(:folder_slug) { folder.slug }
   let(:note) { create(:note, user:) }
-  let(:filed_note_slug) { note.slug }
+  let(:note_slug) { note.slug }
   let(:headers) { { Authorization: "Bearer token" } }
 
   include_examples "ユーザー認証エラー"
@@ -17,13 +17,13 @@ RSpec.describe "Api::V1::Files DELETE /api/v1/:name/folders/:folder_name/filed_n
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
     context  "フォルダが存在しない場合" do
-      let(:folder_name) { "non_exist_name" }
+      let(:folder_slug) { "non_exist_slug" }
 
       include_examples "404エラー", "フォルダ"
     end
 
     context "ノートが存在しない場合" do
-      let(:filed_note_slug) { "non_exist_slug" }
+      let(:note_slug) { "non_exist_slug" }
 
       include_examples "404エラー", "ノート"
     end

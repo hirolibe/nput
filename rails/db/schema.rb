@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_17_080049) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_20_124047) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -81,11 +81,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_17_080049) do
 
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "folder_name", null: false, comment: "フォルダ名"
+    t.string "name", null: false, comment: "フォルダ名"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "notes_count", default: 0, null: false, comment: "フォルダ内のノート数"
-    t.index ["folder_name"], name: "index_folders_on_folder_name", unique: true
+    t.string "slug", null: false, comment: "スラッグ（URL識別子）"
+    t.index ["name"], name: "index_folders_on_name", unique: true
+    t.index ["slug"], name: "index_folders_on_slug", unique: true
     t.index ["user_id"], name: "index_folders_on_user_id"
   end
 
@@ -110,7 +112,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_17_080049) do
     t.string "title", limit: 70, comment: "タイトル"
     t.string "description", limit: 200, comment: "概要"
     t.text "content", comment: "本文"
-    t.integer "status", default: 10, null: false, comment: "ステータス（10:未保存, 20:下書き, 30:公開中）"
+    t.integer "status", default: 10, null: false, comment: "ステータス（10:未保存, 20:インプット, 30:アウトプット）"
     t.datetime "published_at", comment: "公開日"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

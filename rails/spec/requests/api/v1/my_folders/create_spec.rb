@@ -1,12 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Folders POST /api/v1/:name/folder", type: :request do
-  subject { post(api_v1_user_folders_path(name), headers:, params:) }
+RSpec.describe "Api::V1::MyFolders POST /api/v1/my_folders", type: :request do
+  subject { post(api_v1_my_folders_path, headers:, params:) }
 
-  let(:user) { create(:user) }
-  let(:name) { user.name }
   let(:headers) { { Authorization: "Bearer token" } }
-  let(:params) { { folder: { folder_name: Faker::Lorem.sentence } } }
+  let(:params) { { folder: { name: Faker::Lorem.sentence } } }
+  let(:user) { create(:user) }
 
   include_examples "ユーザー認証エラー"
 
@@ -14,7 +13,7 @@ RSpec.describe "Api::V1::Folders POST /api/v1/:name/folder", type: :request do
     before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
     context "バリデーションに失敗した場合" do
-      let(:params) { { folder: { folder_name: "" } } }
+      let(:params) { { folder: { name: "" } } }
 
       include_examples "バリデーションエラーのレスポンス検証"
     end

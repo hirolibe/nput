@@ -34,12 +34,12 @@ ja:
         privacy_version: "プライバシーポリシー"
         consent_date: "同意日"
       folder:
-        folder_name: "フォルダ名"
+        name: "フォルダ名"
       note_folder:
         note_id: ""
   enums:
     note:
       status:
         unsaved: "未保存"
-        draft: "下書き"
-        published: "公開中"
+        draft: "インプット"
+        published: "アウトプット"

@@ -4,7 +4,7 @@ class Api::V1::MyFiledNotesController < Api::V1::ApplicationController
   before_action :restrict_guest_user!, only: [:index]
 
   def index
-    folder = current_user.folders.find_by(folder_name: params[:folder_name])
+    folder = current_user.folders.find_by(slug: params[:folder_slug])
     unless folder
       return render json: { error: "フォルダにアクセスできません" }, status: :not_found
     end
@@ -13,8 +13,7 @@ class Api::V1::MyFiledNotesController < Api::V1::ApplicationController
               includes(
                 user: { profile: { avatar_attachment: :blob } },
                 tags: {},
-              ).published.
-              order("notes.published_at DESC").
+              ).order("notes.published_at DESC").
               page(params[:page] || 1).
               per(10)
 

@@ -20,7 +20,7 @@ export interface NoteData {
   title?: string
   description?: string
   content?: string
-  statusJp: '未保存' | '下書き' | '公開中'
+  statusJp: '未保存' | 'インプット' | 'アウトプット'
   publishedDate?: string
   updatedDate: string
   cheersCount: number
@@ -49,7 +49,7 @@ export interface BasicNoteData {
   title: string
   description?: string
   fromToday: string
-  statusJp?: '未保存' | '下書き' | '公開中'
+  statusJp?: '未保存' | 'インプット' | 'アウトプット'
   cheersCount: number
   slug: string
   totalDuration: string
@@ -60,7 +60,7 @@ export interface BasicNoteData {
       avatarUrl: string
     }
   }
-  tags: {
+  tags?: {
     id: number
     name: string
   }[]

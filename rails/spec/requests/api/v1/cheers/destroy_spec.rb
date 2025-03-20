@@ -31,7 +31,7 @@ RSpec.describe "Api::V1::Cheers DELETE /api/v1/:name/notes/:note_slug/cheer", ty
       end
     end
 
-    context "ステータスが公開中のノートに、すでにエールしている場合" do
+    context "ステータスがアウトプットのノートに、すでにエールしている場合" do
       before { current_user.cheers.create!(note:) }
 
       it "エールを削除でき、200ステータスが返る" do

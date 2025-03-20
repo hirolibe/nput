@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::MyFiledNotes GET /api/v1/folders/:folder_name/my_filed_notes", type: :request do
-  subject { get(api_v1_my_filed_notes_path(folder_name), headers:, params:) }
+RSpec.describe "Api::V1::MyFiledNotes GET /api/v1/my_folders/:folder_slug/my_filed_notes", type: :request do
+  subject { get(api_v1_my_filed_notes_path(folder_slug), headers:, params:) }
 
   let(:user) { create(:user) }
   let(:folder) { create(:folder, user:) }
-  let(:folder_name) { folder.folder_name }
+  let(:folder_slug) { folder.slug }
 
   let(:headers) { { Authorization: "Bearer token" } }
   let(:params) { nil }
@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::MyFiledNotes GET /api/v1/folders/:folder_name/my_filed_
   include_examples "ユーザー認証エラー"
 
   context "ユーザー認証に成功した場合" do
-    include_examples "リソース不在エラー", "フォルダ", "folder_name"
+    include_examples "リソース不在エラー", "フォルダ", "folder_slug"
 
     context "フォルダが存在する場合" do
       include_examples "ページネーションのテスト", "ノート"

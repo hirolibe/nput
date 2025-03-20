@@ -53,13 +53,13 @@ RSpec.describe Note, type: :model do
       include_examples "バリデーション失敗", "未保存のノートは複数保有できません"
     end
 
-    context "ステータスが下書きまたは公開中であり、デュレーションレコードが存在しない場合" do
+    context "ステータスがインプットまたはアウトプットであり、デュレーションレコードが存在しない場合" do
       subject(:record) { build(:note, with_durations: false) }
 
-      include_examples "バリデーション失敗", "下書きまたは公開中のノートにはデュレーションレコードが必要です"
+      include_examples "バリデーション失敗", "インプットまたはアウトプットしたノートにはデュレーションレコードが必要です"
     end
 
-    context "ステータスが公開中の場合" do
+    context "ステータスがアウトプットの場合" do
       include_examples "ノートのバリデーションエラー"
     end
 

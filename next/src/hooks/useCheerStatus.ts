@@ -20,7 +20,7 @@ export const useCheerStatus = ({
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${authorName}/notes/${noteSlug}/cheer`
   const {
     data,
-    error,
+    error: cheerStatusError,
     isLoading: isCheerStatusLoading,
   }: SWRResponse<CheerStatusData | undefined> = useSWR(
     authorName && noteSlug && idToken ? [url, idToken] : null,
@@ -37,20 +37,6 @@ export const useCheerStatus = ({
       setCheerStatusData({ hasCheered: false })
     }
   }, [isAuthLoading, isCheerStatusLoading, data, idToken])
-
-  const [cheerStatusError, setCheerStatusError] = useState<Error | undefined>(
-    undefined,
-  )
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setCheerStatusError(error)
-      }, 10000)
-      return () => clearTimeout(timer)
-    } else {
-      setCheerStatusError(undefined)
-    }
-  }, [error])
 
   return {
     cheerStatusData: cheerStatusData?.hasCheered,

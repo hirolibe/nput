@@ -1,5 +1,5 @@
 class Note < ApplicationRecord
-  before_create :generate_slug
+  before_create :generate_note_slug
 
   belongs_to :user
 
@@ -44,7 +44,7 @@ class Note < ApplicationRecord
 
   private
 
-    def generate_slug
+    def generate_note_slug
       self.slug = loop do
         random_slug = SecureRandom.alphanumeric(14)
         break random_slug unless Note.exists?(slug: random_slug)
@@ -59,7 +59,7 @@ class Note < ApplicationRecord
 
     def validate_durations
       if !unsaved? && durations.blank?
-        errors.add(:durations, "下書きまたは公開中のノートにはデュレーションレコードが必要です")
+        errors.add(:durations, "インプットまたはアウトプットしたノートにはデュレーションレコードが必要です")
       end
     end
 

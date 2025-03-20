@@ -1,15 +1,15 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Folders GET /api/v1/:name/folders/:folder_name", type: :request do
-  subject { get(api_v1_user_folder_path(name, folder_name)) }
+RSpec.describe "Api::V1::Folders GET /api/v1/:name/folders/:slug", type: :request do
+  subject { get(api_v1_user_folder_path(name, slug)) }
 
   let(:user) { create(:user) }
   let(:name) { user.name }
   let(:folder) { create(:folder, user:) }
-  let(:folder_name) { folder.folder_name }
+  let(:slug) { folder.slug }
 
   context "フォルダ名が存在しない場合" do
-    let(:folder_name) { "non_exist_folder_name" }
+    let(:slug) { "non_exist_slug" }
 
     include_examples "404エラー", "フォルダ"
   end

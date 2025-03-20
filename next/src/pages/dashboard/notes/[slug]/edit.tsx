@@ -76,7 +76,7 @@ const EditNote: NextPage = () => {
 
     reset(note)
     setContent(note.content)
-    setStatusChecked(note.status == '公開中')
+    setStatusChecked(note.status == 'アウトプット')
     setInputTags(note.tags)
     setIsFetched(true)
     initializedRef.current = true
@@ -143,6 +143,7 @@ const EditNote: NextPage = () => {
   const [imageSignedIds, setImageSignedIds] = useState<
     string | string[] | undefined
   >(undefined)
+
   const onSubmit: SubmitHandler<NoteFormData> = async (data) => {
     setIsLoading(true)
 
@@ -251,6 +252,7 @@ const EditNote: NextPage = () => {
             setStatusChecked={setStatusChecked}
           />
         </AppBar>
+        <Box sx={{ backgroundColor: 'backgroundColor.page', height: '64px' }} />
 
         {/* ローカルストレージのデータ復元 */}
         {restoreContent && (

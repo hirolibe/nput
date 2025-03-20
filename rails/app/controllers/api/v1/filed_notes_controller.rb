@@ -34,7 +34,7 @@ class Api::V1::FiledNotesController < Api::V1::ApplicationController
         return [nil, nil]
       end
 
-      folder = user.folders.find_by(folder_name: params[:folder_name])
+      folder = user.folders.find_by(slug: params[:slug])
       unless folder
         render json: { error: "フォルダにアクセスできません" }, status: :not_found
         return [nil, nil]

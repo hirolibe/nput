@@ -87,12 +87,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   const { name, slug, noteData: initialNoteData } = props
-  const { noteData: myNoteData, noteError: myNoteError } = useMyNote() // 下書きのノートデータを取得
+  const { noteData: myNoteData, noteError: myNoteError } = useMyNote() // インプットのノートデータを取得
   const [noteData, setNoteData] = useState<NoteData | undefined>(undefined)
   const [isDraft, setIsDraft] = useState<boolean | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
 
-  // 公開ノートの場合
+  // アウトプットのノートの場合
   useEffect(() => {
     if (initialNoteData) {
       setNoteData(initialNoteData)
@@ -103,7 +103,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   useEffect(() => {
     if (initialNoteData) return
 
-    // 下書きかつログインユーザーのノートの場合
+    // インプットかつログインユーザーのノートの場合
     if (myNoteData) {
       setNoteData(myNoteData)
       setIsDraft(true)
@@ -179,7 +179,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}
       >
-        {/* 下書き表示 */}
+        {/* インプット表示 */}
         {isDraft && (
           <Box
             sx={{
@@ -191,7 +191,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               color: 'white',
             }}
           >
-            <Typography sx={{ fontWeight: 'bold' }}>下書きを表示中</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>インプットを表示中</Typography>
           </Box>
         )}
 
@@ -472,7 +472,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
               ) : (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Typography sx={{ fontWeight: 'bold', color: 'text.light' }}>
-                    このノートは下書きです
+                    このノートはインプットです
                   </Typography>
                 </Box>
               )}

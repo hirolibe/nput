@@ -29,6 +29,7 @@ import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { UserData } from '@/hooks/useUser'
 import { styles } from '@/styles'
 import { fetchUserData } from '@/utils/fetchUserData'
+import UserFolders from '@/components/user/UserFolders'
 
 interface Params extends ParsedUrlQuery {
   userName: string
@@ -271,20 +272,7 @@ const UsersIndex: NextPage<UsersIndexProps> = (props) => {
                 variant="fullWidth"
               >
                 <Tab
-                  label={
-                    <>
-                      <Box
-                        sx={{ display: { sm: 'none' }, textAlign: 'center' }}
-                      >
-                        投稿した
-                        <br />
-                        ノート
-                      </Box>
-                      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        投稿したノート
-                      </Box>
-                    </>
-                  }
+                  label="ノート"
                   sx={{
                     fontSize: { xs: 10, sm: 14 },
                     fontWeight: 'bold',
@@ -299,20 +287,21 @@ const UsersIndex: NextPage<UsersIndexProps> = (props) => {
                   }}
                 />
                 <Tab
-                  label={
-                    <>
-                      <Box
-                        sx={{ display: { sm: 'none' }, textAlign: 'center' }}
-                      >
-                        エールした
-                        <br />
-                        ノート
-                      </Box>
-                      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        エールしたノート
-                      </Box>
-                    </>
-                  }
+                  label="フォルダ"
+                  sx={{
+                    fontSize: { xs: 10, sm: 14 },
+                    fontWeight: 'bold',
+                    backgroundColor: 'white',
+                    '&:hover': {
+                      backgroundColor: 'backgroundColor.hover',
+                    },
+                    minWidth: 'unset',
+                    p: 'unset',
+                    px: 1,
+                  }}
+                />
+                <Tab
+                  label="エール"
                   sx={{
                     fontSize: { xs: 10, sm: 14 },
                     fontWeight: 'bold',
@@ -340,7 +329,7 @@ const UsersIndex: NextPage<UsersIndexProps> = (props) => {
                   }}
                 />
                 <Tab
-                  label="フォロワー"
+                  label="フォロワ"
                   sx={{
                     fontSize: { xs: 10, sm: 14 },
                     fontWeight: 'bold',
@@ -361,14 +350,17 @@ const UsersIndex: NextPage<UsersIndexProps> = (props) => {
                 <UserNotes />
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
-                <CheeredNotes />
+                <UserFolders />
               </TabPanel>
               <TabPanel value={tabIndex} index={2}>
+                <CheeredNotes />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={3}>
                 <Followings
                   setChangedFollowingsCount={setChangedFollowingsCount}
                 />
               </TabPanel>
-              <TabPanel value={tabIndex} index={3}>
+              <TabPanel value={tabIndex} index={4}>
                 <Followers />
               </TabPanel>
             </CardContent>

@@ -1,6 +1,7 @@
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import EditIcon from '@mui/icons-material/Edit'
+import FolderCopyIcon from '@mui/icons-material/FolderCopy'
 import Logout from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import SearchIcon from '@mui/icons-material/Search'
@@ -279,6 +280,14 @@ const Header = () => {
                         <AutoStoriesIcon fontSize="small" />
                       </ListItemIcon>
                       ノートの管理
+                    </MenuItem>
+                  </Link>
+                  <Link href="/dashboard/folders">
+                    <MenuItem>
+                      <ListItemIcon>
+                        <FolderCopyIcon fontSize="small" />
+                      </ListItemIcon>
+                      フォルダの管理
                     </MenuItem>
                   </Link>
                   <Link href="/settings/account">

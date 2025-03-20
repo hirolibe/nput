@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Comments POST /api/v1/:name/notes/:note_slug/comments",
 
     include_examples "ノート非公開エラー"
 
-    context "ステータスが公開中のノートが存在する場合" do
+    context "ステータスがアウトプットのノートが存在する場合" do
       context "バリデーションに失敗した場合" do
         let(:params) { { comment: { content: "" } } }
 

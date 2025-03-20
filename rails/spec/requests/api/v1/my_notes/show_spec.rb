@@ -11,9 +11,7 @@ RSpec.describe "Api::V1::MyNotes GET /api/v1/my_notes/:slug", type: :request do
   include_examples "ユーザー認証エラー"
 
   context "ユーザー認証に成功した場合" do
-    before do
-      stub_token_verification.and_return({ "sub" => user.uid })
-    end
+    before { stub_token_verification.and_return({ "sub" => user.uid }) }
 
     context "ノートが存在しない場合" do
       let(:note_slug) { "non_exist_slug" }
@@ -21,7 +19,7 @@ RSpec.describe "Api::V1::MyNotes GET /api/v1/my_notes/:slug", type: :request do
       include_examples "404エラー", "ノート"
     end
 
-    context "ステータスが公開中のノートが存在する場合" do
+    context "ステータスがアウトプットのノートが存在する場合" do
       before { create_list(:comment, 5, note:) }
 
       it "200ステータス、ノートの情報、コメントの情報が返る" do

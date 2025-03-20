@@ -20,7 +20,7 @@ import { handleError } from '@/utils/handleError'
 import { omit } from '@/utils/omit'
 
 interface NoteCardProps extends BasicNoteData {
-  handleOpenDescription: (slug: string) => void
+  handleOpenDescription?: (slug: string) => void
 }
 
 const NoteCard = (props: NoteCardProps) => {
@@ -131,7 +131,7 @@ const NoteCard = (props: NoteCardProps) => {
                 },
               }}
             >
-              {props.tags.map((tag, i: number) => (
+              {props.tags?.map((tag, i: number) => (
                 <StopPropagationLink key={i} href={`/tags/${tag.name}`}>
                   <Chip
                     label={tag.name}
@@ -166,7 +166,7 @@ const NoteCard = (props: NoteCardProps) => {
           >
             {omit(props.title)(36)('...')}
           </Typography>
-          {props.description && (
+          {props.handleOpenDescription && props.description && (
             <Box onClick={(e) => e.stopPropagation()}>
               <Typography
                 sx={{
@@ -181,6 +181,8 @@ const NoteCard = (props: NoteCardProps) => {
                   '&:hover': { textDecoration: 'underline' },
                 }}
                 onClick={(e) => {
+                  if (!props.handleOpenDescription) return
+
                   props.handleOpenDescription(props.slug)
                   e.stopPropagation()
                 }}

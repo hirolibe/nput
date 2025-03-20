@@ -14,10 +14,10 @@ RSpec.describe Folder, type: :model do
   describe "バリデーション" do
     subject(:record) { build(:folder) }
 
-    include_examples "入力必須項目のバリデーションエラー", "folder", "folder_name", "フォルダ名"
+    include_examples "入力必須項目のバリデーションエラー", "folder", "name", "フォルダ名"
 
     context "フォルダ名が40文字を超える場合" do
-      before { record.folder_name = Faker::Lorem.paragraph(sentence_count: 10) }
+      before { record.name = Faker::Lorem.paragraph(sentence_count: 10) }
 
       it "バリデーションが失敗し、エラーメッセージが返る" do
         expect(subject).not_to be_valid

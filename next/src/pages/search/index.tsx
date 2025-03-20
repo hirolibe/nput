@@ -115,7 +115,7 @@ const SearchedNotes: NextPage = () => {
                     slug={note.slug}
                     totalDuration={note.totalDuration}
                     user={note.user}
-                    tags={note.tags.map((tag) => ({
+                    tags={note.tags?.map((tag) => ({
                       id: tag.id,
                       name: tag.name,
                     }))}

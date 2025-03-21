@@ -1,13 +1,11 @@
-export const shareToX = () =>
-  openLink(`https://x.com/intent/tweet?url=${window.location.href}`)
+export const shareToX = (url: string) =>
+  openLink(`https://x.com/intent/tweet?url=${url}`)
 
-export const shareToFacebook = () =>
-  openLink(
-    `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`,
-  )
+export const shareToFacebook = (url: string) =>
+  openLink(`https://www.facebook.com/sharer/sharer.php?u=${url}`)
 
-export const shareToHatena = () =>
-  openLink(`https://b.hatena.ne.jp/entry/${window.location.href}`)
+export const shareToHatena = (url: string) =>
+  openLink(`https://b.hatena.ne.jp/entry/${url}`)
 
 export const goToUserX = (xLink: string) => () =>
   openLink(`https://x.com/${xLink}`)

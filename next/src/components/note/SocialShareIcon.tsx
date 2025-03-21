@@ -13,22 +13,36 @@ export const SocialShareIcon = () => {
     height: '50px',
   }
 
+  const url = window.location.href
+
+  const handleClickX = () => {
+    shareToX(url)
+  }
+
+  const handleClickFacebook = () => {
+    shareToFacebook(url)
+  }
+
+  const handleClickHatena = () => {
+    shareToHatena(url)
+  }
+
   return (
     <>
       <Tooltip title="Xでシェア">
-        <IconButton onClick={shareToX} sx={iconButtonParams}>
+        <IconButton onClick={handleClickX} sx={iconButtonParams}>
           <FaXTwitter size={24} />
         </IconButton>
       </Tooltip>
 
       <Tooltip title="Facebookでシェア">
-        <IconButton onClick={shareToFacebook} sx={iconButtonParams}>
+        <IconButton onClick={handleClickFacebook} sx={iconButtonParams}>
           <FaFacebook size={24} />
         </IconButton>
       </Tooltip>
 
       <Tooltip title="はてなブックマークでシェア">
-        <IconButton onClick={shareToHatena} sx={iconButtonParams}>
+        <IconButton onClick={handleClickHatena} sx={iconButtonParams}>
           <Image src={'/hatena.svg'} alt="Cheer Icon" width={28} height={28} />
         </IconButton>
       </Tooltip>

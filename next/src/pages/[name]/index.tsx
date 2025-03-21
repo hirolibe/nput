@@ -53,7 +53,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const userData = await fetchUserData(userName)
-    const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/study-log.png`
 
     // _app.tsxへpagePropsとして渡す
     const headData = {
@@ -65,14 +64,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       description: userData.profile.bio ?? '',
       url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${userName}`,
       type: 'article',
-      images: [
-        {
-          url: `${ogpImageUrl}`,
-          alt: '学習記録',
-          type: 'image/png',
-        },
-      ],
-      twitterCard: 'summary_large_image',
+      twitterCard: 'summary',
     }
 
     return {

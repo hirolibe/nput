@@ -1,4 +1,11 @@
-import { AppBar, Box, Tab, Tabs } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Tab,
+  Tabs,
+  Tooltip as MuiToolTip,
+} from '@mui/material'
 import {
   ArcElement,
   BarElement,
@@ -12,8 +19,11 @@ import {
   Tooltip,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { useRouter, useParams } from 'next/navigation'
 import { useState } from 'react'
 import { Bar } from 'react-chartjs-2'
+import { FaXTwitter } from 'react-icons/fa6'
+import { generateRandomSlug } from '@/utils/generateRandomSlug'
 
 Chart.register(
   ArcElement,
@@ -146,6 +156,17 @@ const DurationStatus = ({
     : 0
   const monthlyStepSize = dynamicStepSize(maxMonthlyDuration)
 
+  const router = useRouter()
+  const params = useParams()
+  const name = params?.name
+  const userName = typeof name === 'string' ? name : undefined
+
+  const handleClick = () => {
+    const slug = generateRandomSlug()
+
+    router.push(`/${userName}/${slug}`)
+  }
+
   return (
     <Box
       sx={{
@@ -218,81 +239,99 @@ const DurationStatus = ({
       </AppBar>
       <Box
         sx={{
+          position: 'relative',
           height: { xs: '250px', sm: '300px' },
           px: 2,
           py: 2,
         }}
       >
         {tabIndex === 0 && (
-          <Bar
-            data={dailyData}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                x: {
-                  grid: {
+          <>
+            <MuiToolTip
+              title="学習記録をXでシェア"
+              sx={{
+                position: 'absolute',
+                right: '20px',
+                backgroundColor: 'backgroundColor.icon',
+                '&:hover': { backgroundColor: 'backgroundColor.hover' },
+              }}
+            >
+              <IconButton onClick={handleClick}>
+                <FaXTwitter size={24} />
+              </IconButton>
+            </MuiToolTip>
+            <Bar
+              data={dailyData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    grid: {
+                      display: false,
+                    },
+                    ticks: {
+                      callback: (tickValue: string | number) => {
+                        if (typeof tickValue === 'number') {
+                          const dateString = getRecentDays()[tickValue]
+                          const [month, day] = dateString.split('/').map(Number)
+                          const date = new Date(
+                            new Date().getFullYear(),
+                            month - 1,
+                            day,
+                          )
+
+                          const weekdayIndex = date.getDay()
+                          const weekdayKanji = getWeekdayInKanji(weekdayIndex)
+                          return `${dateString} ${weekdayKanji}`
+                        }
+                        return tickValue
+                      },
+                    },
+                  },
+                  y: {
+                    ticks: {
+                      callback: (value) => {
+                        if (typeof value === 'number') {
+                          const hours = Math.floor(value / 3600)
+                          return `${hours}時間`
+                        }
+                        return value
+                      },
+                      stepSize: dailyStepSize,
+                    },
+                  },
+                },
+                plugins: {
+                  legend: {
                     display: false,
                   },
-                  ticks: {
-                    callback: (tickValue: string | number) => {
-                      if (typeof tickValue === 'number') {
-                        const dateString = getRecentDays()[tickValue]
-                        const [month, day] = dateString.split('/').map(Number)
-                        const date = new Date(
-                          new Date().getFullYear(),
-                          month - 1,
-                          day,
-                        )
-
-                        const weekdayIndex = date.getDay()
-                        const weekdayKanji = getWeekdayInKanji(weekdayIndex)
-                        return `${dateString} ${weekdayKanji}`
+                  tooltip: {
+                    enabled: false,
+                  },
+                  datalabels: {
+                    color: '#000',
+                    font: (context) => {
+                      const width = context.chart.width
+                      if (width < 300) {
+                        return { size: 8 }
+                      } else {
+                        return { size: 12 }
                       }
-                      return tickValue
+                    },
+                    textAlign: 'center',
+                    formatter: (value: number) => {
+                      const hours = Math.floor(value / 3600)
+                      const minutes = Math.floor((value % 3600) / 60)
+                      return hours
+                        ? `${hours}時間\n${minutes}分`
+                        : `${minutes}分`
                     },
                   },
                 },
-                y: {
-                  ticks: {
-                    callback: (value) => {
-                      if (typeof value === 'number') {
-                        const hours = Math.floor(value / 3600)
-                        return `${hours}時間`
-                      }
-                      return value
-                    },
-                    stepSize: dailyStepSize,
-                  },
-                },
-              },
-              plugins: {
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  enabled: false,
-                },
-                datalabels: {
-                  color: '#000',
-                  font: (context) => {
-                    const width = context.chart.width
-                    if (width < 300) {
-                      return { size: 8 }
-                    } else {
-                      return { size: 12 }
-                    }
-                  },
-                  textAlign: 'center',
-                  formatter: (value: number) => {
-                    const hours = Math.floor(value / 3600)
-                    const minutes = Math.floor((value % 3600) / 60)
-                    return hours ? `${hours}時間\n${minutes}分` : `${minutes}分`
-                  },
-                },
-              },
-            }}
-          />
+              }}
+            />
+          </>
         )}
         {tabIndex === 1 && (
           <Bar

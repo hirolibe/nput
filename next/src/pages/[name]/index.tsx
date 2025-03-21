@@ -16,7 +16,6 @@ import {
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import { useState, useEffect, useRef } from 'react'
-import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Loading from '@/components/common/Loading'
 import TabPanel from '@/components/common/TabPanel'
 import CheeredNotes from '@/components/user/CheeredNotes'
@@ -54,8 +53,30 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const userData = await fetchUserData(userName)
+    const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/daily-log.png`
+
+    // _app.tsxへpagePropsとして渡す
+    const headData = {
+      user: {
+        name: userData.name,
+        profile: { nickname: userData.profile.nickname },
+      },
+      title: `${userData.profile.nickname || userData.name} | Nput`,
+      description: userData.profile.bio ?? '',
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${userName}`,
+      type: 'article',
+      images: [
+        {
+          url: `${ogpImageUrl}`,
+          alt: '学習記録',
+          type: 'image/png',
+        },
+      ],
+      twitterCard: 'summary_large_image',
+    }
+
     return {
-      props: { userName, userData },
+      props: { userName, userData, headData },
       revalidate: 60 * 60 * 24, // 24時間キャッシュする
     }
   } catch {
@@ -122,13 +143,6 @@ const UsersIndex: NextPage<UsersIndexProps> = (props) => {
 
   return (
     <>
-      {/* タブの表示 */}
-      <HelmetProvider>
-        <Helmet>
-          <title>{`${userData.profile.nickname || userName} | Nput`}</title>
-        </Helmet>
-      </HelmetProvider>
-
       <Box
         sx={{ backgroundColor: 'backgroundColor.page', minHeight: '1126px' }}
       >

@@ -16,28 +16,9 @@ interface Params extends ParsedUrlQuery {
   slug: string
 }
 
-interface headData {
-  user: {
-    name?: string
-    profile: {
-      nickname?: string
-    }
-  }
-  title: string
-  description: string
-  url: string
-  type: string
-  images: {
-    url: string
-    alt: string
-    type: string
-  }[]
-  twitterCard: string
-}
-
 interface ProfileRedirectProps {
   userName: string
-  headData?: headData
+  pageUrl: string
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -55,6 +36,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const userData = await fetchUserData(userName)
+    const pageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${userName}/${logSlug}`
     const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/study-log.png`
 
     // _app.tsxへpagePropsとして渡す
@@ -65,7 +47,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       },
       title: `${userData.profile.nickname || userData.name} | Nput`,
       description: userData.profile.bio ?? '',
-      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${userName}/${logSlug}`,
+      url: pageUrl,
       type: 'article',
       images: [
         {
@@ -78,7 +60,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
 
     return {
-      props: { userName, headData },
+      props: { userName, pageUrl, headData },
       revalidate: 60 * 60 * 24 * 365, // 1年間キャッシュする
     }
   } catch {
@@ -87,8 +69,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 const ProfileRedirect: NextPage<ProfileRedirectProps> = (props) => {
-  const { userName, headData } = props
-  console.log(headData)
+  const { userName, pageUrl } = props
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
 
@@ -109,12 +90,12 @@ const ProfileRedirect: NextPage<ProfileRedirectProps> = (props) => {
     if (profileData === undefined) return
 
     if (profileData?.user.name === userName) {
-      shareToX(headData?.url ?? '')
+      shareToX(pageUrl)
       router.push(`/${userName}`)
     } else {
       router.push(`/${userName}`)
     }
-  }, [profileError, setSnackbar, profileData, headData?.url, router, userName])
+  }, [profileError, setSnackbar, profileData, pageUrl, router, userName])
 
   return (
     <Box

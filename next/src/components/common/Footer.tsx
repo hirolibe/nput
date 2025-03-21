@@ -10,6 +10,7 @@ const Footer = () => {
     '/auth/init',
     '/dashboard/notes/[slug]/edit',
     '/admin',
+    '/[name]/[slug]',
   ]
   if (hideFooterPathnames.includes(router.pathname)) return
 

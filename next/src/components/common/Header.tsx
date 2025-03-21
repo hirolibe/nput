@@ -103,7 +103,11 @@ const Header = () => {
     setIsAdmin(true)
   }, [userRoleError, setSnackbar, pathname, userRoleData])
 
-  const hideHeaderPathnames = ['/dashboard/notes/[slug]/edit', '/auth/init']
+  const hideHeaderPathnames = [
+    '/dashboard/notes/[slug]/edit',
+    '/auth/init',
+    '/[name]/[slug]',
+  ]
   if (hideHeaderPathnames.includes(router.pathname)) return
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

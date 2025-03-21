@@ -1,9 +1,12 @@
 import { ParsedUrlQuery } from 'querystring'
+import { Box } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import Loading from '@/components/common/Loading'
 import { useProfile } from '@/hooks/useProfile'
 import { useSnackbarState } from '@/hooks/useSnackbarState'
+import { styles } from '@/styles'
 import { fetchUserData } from '@/utils/fetchUserData'
 import { handleError } from '@/utils/handleError'
 import { shareToX } from '@/utils/socialLinkHandlers'
@@ -98,16 +101,29 @@ const ProfileRedirect: NextPage<ProfileRedirectProps> = (props) => {
         severity: 'error',
         pathname: `/${userName}`,
       })
+      router.push(`/${userName}`)
     }
 
-    if (profileData === undefined) return
+    if (profileData === undefined || !headData?.url) return
 
-    if (profileData && headData?.url) {
+    if (profileData?.user.name === userName) {
       shareToX(headData.url)
+      router.push(`/${userName}`)
+    } else {
+      router.push(`/${userName}`)
     }
-
-    router.push(`/${userName}`)
   }, [profileError, setSnackbar, profileData, headData?.url, router, userName])
+
+  if (profileData === undefined) {
+    return (
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <Loading />
+      </Box>
+    )
+  }
 
   return <></>
 }

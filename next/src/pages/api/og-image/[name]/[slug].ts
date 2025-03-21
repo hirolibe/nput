@@ -32,11 +32,17 @@ export default async function handler(
     )
 
     // フォントの登録
-    const boldRegistered = GlobalFonts.registerFromPath(fontPathBold, 'NotoSansJP-Bold')
+    const boldRegistered = GlobalFonts.registerFromPath(
+      fontPathBold,
+      'NotoSansJP-Bold',
+    )
     console.log(fontPathBold)
     console.log('フォント登録結果（Bold）:', boldRegistered)
 
-    const regularRegistered = GlobalFonts.registerFromPath(fontPathRegular, 'NotoSansJP-Regular')
+    const regularRegistered = GlobalFonts.registerFromPath(
+      fontPathRegular,
+      'NotoSansJP-Regular',
+    )
     console.log(fontPathRegular)
     console.log('フォント登録結果（Regular）:', regularRegistered)
 
@@ -71,7 +77,6 @@ export default async function handler(
     const titleText = `${name}さんの学習記録あああ`
     const titleWidth = ctx.measureText(titleText).width
     ctx.fillText(titleText, (width - titleWidth) / 2, 100)
-
 
     // 表のデータ（実際のデータに合わせて調整）
     const tableData = [

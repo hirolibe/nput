@@ -1,7 +1,7 @@
 export const generateRandomSlug = () => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const length = 14
+  const length = 3
   let result = ''
 
   // 14文字のランダムな文字列を生成

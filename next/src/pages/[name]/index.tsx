@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const userData = await fetchUserData(userName)
-    const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/daily-log.png`
+    const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/study-log.png`
 
     // _app.tsxへpagePropsとして渡す
     const headData = {

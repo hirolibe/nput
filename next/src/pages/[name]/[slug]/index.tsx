@@ -88,6 +88,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 const ProfileRedirect: NextPage<ProfileRedirectProps> = (props) => {
   const { userName, headData } = props
+  console.log(headData)
   const router = useRouter()
   const [, setSnackbar] = useSnackbarState()
 
@@ -102,30 +103,27 @@ const ProfileRedirect: NextPage<ProfileRedirectProps> = (props) => {
         pathname: `/${userName}`,
       })
       router.push(`/${userName}`)
+      return
     }
 
-    if (profileData === undefined || !headData?.url) return
+    if (profileData === undefined) return
 
     if (profileData?.user.name === userName) {
-      shareToX(headData.url)
+      shareToX(headData?.url ?? '')
       router.push(`/${userName}`)
     } else {
       router.push(`/${userName}`)
     }
   }, [profileError, setSnackbar, profileData, headData?.url, router, userName])
 
-  if (profileData === undefined) {
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <Loading />
-      </Box>
-    )
-  }
-
-  return <></>
+  return (
+    <Box
+      css={styles.pageMinHeight}
+      sx={{ display: 'flex', justifyContent: 'center' }}
+    >
+      <Loading />
+    </Box>
+  )
 }
 
 export default ProfileRedirect

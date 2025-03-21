@@ -272,7 +272,7 @@ URL: [https://n-put.com](https://n-put.com)
 - カウンターキャッシュを利用して、合計数（例: cheers_count）を効率的に取得
 - durationsテーブルを設けて、学習時間の記録と集計を効率化
 
-![Image](https://github.com/user-attachments/assets/cccdd4f1-c5c5-4fb7-9ad5-3bd6b70feece)
+![Image](https://github.com/user-attachments/assets/9119e6f9-e7bc-499a-8d64-0a3b6ee7b641)
 <br><br>
 
 ## 6. 今後の展望と課題

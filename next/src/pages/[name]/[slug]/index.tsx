@@ -34,7 +34,7 @@ interface headData {
 
 interface ProfileRedirectProps {
   userName: string
-  headData: headData
+  headData?: headData
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -75,7 +75,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
 
     return {
-      props: { userName, logSlug, userData, headData },
+      props: { userName, headData },
       revalidate: 60 * 60 * 24 * 365, // 1年間キャッシュする
     }
   } catch {
@@ -102,12 +102,12 @@ const ProfileRedirect: NextPage<ProfileRedirectProps> = (props) => {
 
     if (profileData === undefined) return
 
-    if (profileData) {
+    if (profileData && headData?.url) {
       shareToX(headData.url)
     }
 
     router.push(`/${userName}`)
-  }, [profileError, setSnackbar, profileData, headData.url, router, userName])
+  }, [profileError, setSnackbar, profileData, headData?.url, router, userName])
 
   return <></>
 }

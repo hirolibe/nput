@@ -91,6 +91,7 @@ const jaDict = {
     'password is required to signIn': 'パスワードを入力してください',
     'Incorrect username or password.':
       'メールアドレスまたはパスワードが正しくありません',
+    'A network error has occurred.': 'ネットワークエラーが発生しました',
   },
 }
 

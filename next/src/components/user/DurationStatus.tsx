@@ -19,10 +19,11 @@ import {
   Tooltip,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Bar } from 'react-chartjs-2'
 import { FaXTwitter } from 'react-icons/fa6'
+import { useProfile } from '@/hooks/useProfile'
 import { generateRandomSlug } from '@/utils/generateRandomSlug'
 
 Chart.register(
@@ -39,16 +40,22 @@ Chart.register(
 )
 
 interface DurationStatusProps {
+  name?: string
   dailyDurations?: number[]
   weeklyDurations?: number[]
   monthlyDurations?: number[]
 }
 
-const DurationStatus = ({
-  dailyDurations,
-  weeklyDurations,
-  monthlyDurations,
-}: DurationStatusProps) => {
+const DurationStatus = (props: DurationStatusProps) => {
+  const { name, dailyDurations, weeklyDurations, monthlyDurations } = props
+  const router = useRouter()
+
+  const { profileData } = useProfile()
+
+  const handleClick = () => {
+    const slug = generateRandomSlug()
+    router.push(`/${name}/${slug}`)
+  }
   const [tabIndex, setTabIndex] = useState(0)
 
   const getRecentDays = () => {
@@ -156,17 +163,6 @@ const DurationStatus = ({
     : 0
   const monthlyStepSize = dynamicStepSize(maxMonthlyDuration)
 
-  const router = useRouter()
-  const params = useParams()
-  const name = params?.name
-  const userName = typeof name === 'string' ? name : undefined
-
-  const handleClick = () => {
-    const slug = generateRandomSlug()
-
-    router.push(`/${userName}/${slug}`)
-  }
-
   return (
     <Box
       sx={{
@@ -247,19 +243,22 @@ const DurationStatus = ({
       >
         {tabIndex === 0 && (
           <>
-            <MuiToolTip
-              title="学習記録をXでシェア"
-              sx={{
-                position: 'absolute',
-                right: '20px',
-                backgroundColor: 'backgroundColor.icon',
-                '&:hover': { backgroundColor: 'backgroundColor.hover' },
-              }}
-            >
-              <IconButton onClick={handleClick}>
-                <FaXTwitter size={24} />
-              </IconButton>
-            </MuiToolTip>
+            {profileData?.user.name === name && (
+              <MuiToolTip
+                title="学習記録をXでシェア"
+                sx={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  backgroundColor: 'backgroundColor.icon',
+                  '&:hover': { backgroundColor: 'backgroundColor.hover' },
+                }}
+              >
+                <IconButton onClick={handleClick}>
+                  <FaXTwitter size={24} />
+                </IconButton>
+              </MuiToolTip>
+            )}
             <Bar
               data={dailyData}
               options={{

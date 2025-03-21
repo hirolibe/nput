@@ -72,7 +72,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           type: 'image/png',
         },
       ],
-      twitterCard: 'summary',
+      twitterCard: 'summary_large_image',
     }
 
     return {

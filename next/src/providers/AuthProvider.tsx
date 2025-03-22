@@ -58,9 +58,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // 画面フォーカス時のトークン取得
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setupAuth()
+      }
+    }
+
     window.addEventListener('online', setupAuth)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
     return () => {
       window.removeEventListener('online', setupAuth)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [setupAuth])
 

@@ -6,6 +6,7 @@ import {
   SKRSContext2D,
 } from '@napi-rs/canvas'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import getRandomQuote from '@/utils/getRandomQuote'
 
 export default async function handler(
   req: NextApiRequest,
@@ -125,18 +126,18 @@ export default async function handler(
       15, // 角の丸みの半径
     )
 
-    // 名言
+    // 名言の描画
+    const { quoteText, quoteAuthor } = getRandomQuote()
+
+    // 文章
     ctx.font = '30px NotoSerifJP-Bold'
     ctx.textAlign = 'left'
-    const quoteText =
-      '小さいことを重ねることが、とんでもないところに行くただひとつの道'
     renderAdaptiveTextBox(ctx, quoteText, width / 2, 440, width - 200, 40, 0)
 
-    // 名言の作者名
+    // 作者名
     ctx.font = 'italic 24px NotoSerifJP-Regular'
     ctx.fillStyle = '#666666'
     ctx.textAlign = 'center'
-    const quoteAuthor = 'イチロー'
     renderAdaptiveTextBox(ctx, quoteAuthor, 1090, 530, width - 200, 40, 0)
 
     // 出力するファイル形式をPNGに設定

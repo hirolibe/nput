@@ -87,7 +87,7 @@ export const NoteEditorToolbar = ({
               >
                 <Typography
                   sx={{
-                    fontSize: 13,
+                    fontSize: { xs: 11, sm: 13 },
                     fontWeight: 'bold',
                     my: 0.7,
                   }}
@@ -108,7 +108,9 @@ export const NoteEditorToolbar = ({
                 mt: 1,
               }}
             >
-              <Typography sx={{ fontSize: 13, fontWeight: 'bold' }}>
+              <Typography
+                sx={{ fontSize: { xs: 11, sm: 13 }, fontWeight: 'bold' }}
+              >
                 {statusChecked ? 'アウトプット' : 'インプット'}
               </Typography>
               <Switch checked={statusChecked} onChange={onStatusChange} />
@@ -123,7 +125,7 @@ export const NoteEditorToolbar = ({
                 fontSize: { xs: 14, md: 16 },
                 border: statusChecked ? 'none' : '2px solid',
                 borderRadius: 2,
-                width: { xs: '105px', md: '110px' },
+                width: { xs: '100px', md: '110px' },
                 height: '40px',
               }}
             >

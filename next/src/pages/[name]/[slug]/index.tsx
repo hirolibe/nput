@@ -36,9 +36,24 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const userData = await fetchUserData(userName)
+    const todayHours = encodeURIComponent(
+      String(Math.floor((userData?.dailyDurations?.[6] ?? 0) / 3600)),
+    )
+    const todayMinutes = encodeURIComponent(
+      String(Math.floor(((userData?.dailyDurations?.[6] ?? 0) % 3600) / 60)),
+    )
+    const thisMonthHours = encodeURIComponent(
+      String(Math.floor((userData?.monthlyDurations?.[6] ?? 0) / 3600)),
+    )
+    const totalHours = encodeURIComponent(
+      String(Math.floor((userData?.totalDuration ?? 0) / 3600)),
+    )
+
     const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_BASE_URL
     const pageUrl = `${baseUrl}/${userName}/${logSlug}`
     const ogpImageUrl = `${baseUrl}/api/og-image/${userName}/${logSlug}`
+    const params = `?todayHours=${todayHours}&todayMinutes=${todayMinutes}&thisMonthHours=${thisMonthHours}&totalHours=${totalHours}`
+    const ogpImageUrlWithUserData = `${ogpImageUrl}${params}`
 
     // _app.tsxへpagePropsとして渡す
     const headData = {
@@ -52,7 +67,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       type: 'article',
       images: [
         {
-          url: `${ogpImageUrl}`,
+          url: ogpImageUrlWithUserData,
           alt: '学習記録',
           type: 'image/png',
         },

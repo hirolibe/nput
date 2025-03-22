@@ -13,10 +13,16 @@ export default async function handler(
 ) {
   try {
     // URLからユーザー名とスラグを取得
-    const { name, todayHours, todayMinutes, thisMonthHours, totalHours } =
-      req.query
+    const {
+      displayName,
+      todayHours,
+      todayMinutes,
+      thisMonthHours,
+      totalHours,
+    } = req.query
 
     // パラメータをデコードして使用
+    const name = decodeURIComponent(displayName as string)
     const todayHoursNumber = parseInt(
       decodeURIComponent(todayHours as string),
       10,

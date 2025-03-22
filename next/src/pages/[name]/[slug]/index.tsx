@@ -36,6 +36,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   try {
     const userData = await fetchUserData(userName)
+    const displayName = encodeURIComponent(
+      userData?.profile.nickname || userName || 'ユーザー',
+    )
     const todayHours = encodeURIComponent(
       String(Math.floor((userData?.dailyDurations?.[6] ?? 0) / 3600)),
     )
@@ -52,7 +55,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_BASE_URL
     const pageUrl = `${baseUrl}/${userName}/${logSlug}`
     const ogpImageUrl = `${baseUrl}/api/og-image/${userName}/${logSlug}`
-    const params = `?todayHours=${todayHours}&todayMinutes=${todayMinutes}&thisMonthHours=${thisMonthHours}&totalHours=${totalHours}`
+    const params = `?displayName=${displayName}&todayHours=${todayHours}&todayMinutes=${todayMinutes}&thisMonthHours=${thisMonthHours}&totalHours=${totalHours}`
     const ogpImageUrlWithUserData = `${ogpImageUrl}${params}`
 
     // _app.tsxへpagePropsとして渡す

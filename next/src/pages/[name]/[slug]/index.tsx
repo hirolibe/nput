@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     )
 
     const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_BASE_URL
-    const pageUrl = `${baseUrl}/${userName}/${logSlug}`
+    const pageUrl = `${baseUrl}/${userName}`
     const ogpImageUrl = `${baseUrl}/api/og-image/${userName}/${logSlug}`
     const params = `?displayName=${displayName}&todayHours=${todayHours}&todayMinutes=${todayMinutes}&thisMonthHours=${thisMonthHours}&totalHours=${totalHours}`
     const ogpImageUrlWithUserData = `${ogpImageUrl}${params}`

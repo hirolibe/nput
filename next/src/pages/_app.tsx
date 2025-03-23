@@ -21,7 +21,7 @@ import '@/styles/globals.css'
 
 outputs.auth.oauth.domain =
   process.env.NEXT_PUBLIC_COGNITO_DOMAIN ?? 'auth.n-put.com'
-outputs.auth.oauth.scopes = ['email', 'openid']
+outputs.auth.oauth.scopes = ['email', 'openid', 'aws.cognito.signin.user.admin']
 Amplify.configure(outputs)
 
 const clientSideEmotionCache = createEmotionCache()

@@ -51,6 +51,9 @@
 
 1. 運営者が利用目的の達成に必要な範囲内において個人情報の取扱いの全部または一部を委託する場合
 2. 合併その他の事由による事業の承継に伴って個人情報が提供される場合
+
+本サービスでは利用状況を把握し、サービスを改善するためにGoogle LLCが提供するGoogle Analyticsを利用しています。Google Analyticsは閲覧ページ毎のアクセス回数や滞在時間、利用環境や地域毎の利用者数、流入経路や検索語句等を分析する機能を提供しています。Google AnalyticsにはCookieなどデバイスに記録されている識別子や、IPアドレス、閲覧したサイトのURLやアプリの画面名等の情報が送信されます。Google Analyticsに関する詳しい説明は[https://policies.google.com/technologies/partner-sites?gl=jp](Google のサービスを使用するサイトやアプリから収集した情報の Googleによる使用)をご覧ください。
+Google AnalyticsによるCookieの利用を停止する方法は[https://tools.google.com/dlpage/gaoptout?hl=ja](Google Analyticsオプトアウトアドオン)をご確認ください。
 <br><br>
 
 ## 第6条（個人情報の訂正および削除）

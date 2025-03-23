@@ -4,6 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Amplify } from 'aws-amplify'
 import { AppProps } from 'next/app'
+import Script from 'next/script'
 import { DefaultSeo } from 'next-seo'
 import outputs from '../../amplify_outputs.json'
 import Footer from '@/components/common/Footer'
@@ -85,6 +86,19 @@ export default function MyApp(props: MyAppProps): JSX.Element {
                 <CheerPointsProvider>
                   <CssBaseline />
                   <Header />
+                  {/* Google Analytics */}
+                  <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-RLWW0VGGNE"
+                    strategy="afterInteractive"
+                  />
+                  <Script id="google-analytics" strategy="afterInteractive">
+                    {`
+                      window.dataLayer = window.dataLayer || [];
+                      function gtag(){dataLayer.push(arguments);}
+                      gtag('js', new Date());
+                      gtag('config', 'G-RLWW0VGGNE');
+                    `}
+                  </Script>
                   <Component {...restPageProps} />
                   <Snackbar />
                   <Footer />

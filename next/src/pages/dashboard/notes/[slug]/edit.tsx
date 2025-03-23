@@ -5,7 +5,6 @@ import { usePathname, useParams } from 'next/navigation'
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
-import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
 import ContentBox from '@/components/note/ContentBox'
 import { MarkdownToolbar } from '@/components/note/MarkdownToolbar'
@@ -32,8 +31,9 @@ export interface NoteFormData {
 }
 
 const EditNote: NextPage = () => {
-  const isAuthorized = useEnsureAuth()
+  const [, setSnackbar] = useSnackbarState()
 
+  const isAuthorized = useEnsureAuth()
   const { profileData } = useProfile()
 
   // ローカルストレージからのcontentデータ取得
@@ -81,6 +81,17 @@ const EditNote: NextPage = () => {
     setIsFetched(true)
     initializedRef.current = true
   }, [note, reset])
+
+  useEffect(() => {
+    if (noteError) {
+      const { errorMessage } = handleError(noteError)
+      setSnackbar({
+        message: errorMessage,
+        severity: 'error',
+        pathname: pathname,
+      })
+    }
+  }, [noteError, setSnackbar, pathname])
 
   // 編集有無のチェック
   const { isDirty } = formState
@@ -136,7 +147,6 @@ const EditNote: NextPage = () => {
 
   // ノート保存処理
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [, setSnackbar] = useSnackbarState()
   const { idToken } = useAuthContext()
   const { getElapsedSeconds } = useDuration()
   const [previousSeconds, setPreviousSeconds] = useState<number>(0)
@@ -198,11 +208,6 @@ const EditNote: NextPage = () => {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  if (noteError) {
-    const { statusCode, errorMessage } = handleError(noteError)
-    return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
   if (!isAuthorized || !isFetched) {

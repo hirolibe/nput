@@ -2,7 +2,7 @@ import { AppBar, Box, Fade, Stack, TextField } from '@mui/material'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import { usePathname, useParams } from 'next/navigation'
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import Loading from '@/components/common/Loading'
@@ -154,61 +154,78 @@ const EditNote: NextPage = () => {
     string | string[] | undefined
   >(undefined)
 
-  const onSubmit: SubmitHandler<NoteFormData> = async (data) => {
-    setIsLoading(true)
+  const onSubmit: SubmitHandler<NoteFormData> = useCallback(
+    async (data) => {
+      setIsLoading(true)
 
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
-    const headers = { Authorization: `Bearer ${idToken}` }
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
+      const headers = { Authorization: `Bearer ${idToken}` }
 
-    // 送信するデータ
-    const status = statusChecked ? 'published' : 'draft'
-    const currentSeconds = getElapsedSeconds()
-    const workDuration = currentSeconds - previousSeconds
-    const patchData = {
-      note: {
-        ...data,
-        content: content,
-        status: status,
-      },
-      image_signed_ids: imageSignedIds,
-      tag_names: inputTags,
-      duration: workDuration,
-    }
+      // 送信するデータ
+      const status = statusChecked ? 'published' : 'draft'
+      const currentSeconds = getElapsedSeconds()
+      const workDuration = currentSeconds - previousSeconds
+      const patchData = {
+        note: {
+          ...data,
+          content: content,
+          status: status,
+        },
+        image_signed_ids: imageSignedIds,
+        tag_names: inputTags,
+        duration: workDuration,
+      }
 
-    try {
-      const res = await axios.patch(url, patchData, { headers })
-      setPreviousSeconds(currentSeconds)
-      setIsChanged(false)
-      removeSavedContent()
-      setRestoreContent('')
-      reset(data)
+      try {
+        const res = await axios.patch(url, patchData, { headers })
+        setPreviousSeconds(currentSeconds)
+        setIsChanged(false)
+        removeSavedContent()
+        setRestoreContent('')
+        reset(data)
 
-      // ノート詳細データを再検証
-      await axios.post('/api/revalidate', {
-        path: `/${profileData?.user.name}/notes/${slug}`,
-      })
+        // ノート詳細データを再検証
+        await axios.post('/api/revalidate', {
+          path: `/${profileData?.user.name}/notes/${slug}`,
+        })
 
-      // ユーザー詳細データを再検証
-      await axios.post('/api/revalidate', {
-        path: `/${profileData?.user.name}`,
-      })
+        // ユーザー詳細データを再検証
+        await axios.post('/api/revalidate', {
+          path: `/${profileData?.user.name}`,
+        })
 
-      setSnackbar({
-        message: res.data.message,
-        severity: 'success',
-        pathname: pathname,
-      })
-    } catch (err) {
-      const { errorMessage } = handleError(err)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: pathname,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+        setSnackbar({
+          message: res.data.message,
+          severity: 'success',
+          pathname: pathname,
+        })
+      } catch (err) {
+        const { errorMessage } = handleError(err)
+        setSnackbar({
+          message: errorMessage,
+          severity: 'error',
+          pathname: pathname,
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [
+      content,
+      getElapsedSeconds,
+      idToken,
+      imageSignedIds,
+      inputTags,
+      pathname,
+      previousSeconds,
+      profileData?.user.name,
+      removeSavedContent,
+      reset,
+      setSnackbar,
+      slug,
+      statusChecked,
+    ],
+  )
 
   if (!isAuthorized || !isFetched) {
     return (

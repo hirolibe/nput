@@ -1,6 +1,6 @@
-import { Box } from '@mui/material'
+import { Box, Modal } from '@mui/material'
 import Image from 'next/image'
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import type { Components } from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -21,28 +21,44 @@ interface HeadingCounts {
 
 const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
   const headingCounts = useRef<HeadingCounts>({}) // 同じ文字列の出現回数を管理
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<{
+    src: string
+    alt: string
+  } | null>(null)
+
+  const handleImageClick = (src: string, alt: string) => {
+    setSelectedImage({ src, alt })
+    setModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setModalOpen(false)
+  }
 
   const customComponents: Components = useMemo(
     () => ({
       code: CodeBlock,
       img: ({ src, alt = 'image', width }) => {
         if (!src) return null
-        if (typeof width !== 'number') return null
 
         return (
-          <Image
-            src={src}
-            alt={alt}
-            width={Number(width)}
-            height={1}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-              borderRadius: 2,
-              margin: '16px 0',
-            }}
-            unoptimized
-          />
+          <Box sx={{ cursor: 'pointer' }}>
+            <Image
+              src={src}
+              alt={alt}
+              width={Number(width) || 700}
+              height={1}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                borderRadius: 2,
+                margin: '16px 0',
+              }}
+              onClick={() => handleImageClick(src, alt)}
+              unoptimized
+            />
+          </Box>
         )
       },
       a: ({ href, children }) => {
@@ -74,6 +90,48 @@ const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
       >
         {content}
       </ReactMarkdown>
+
+      <Modal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="image-modal"
+        aria-describedby="fullscreen-image-view"
+        onClick={handleCloseModal}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '60vw',
+            height: '80vh',
+            bgcolor: 'background.paper',
+            border: 'none',
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {selectedImage && (
+            <Image
+              src={selectedImage.src}
+              alt={selectedImage.alt}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                objectFit: 'contain',
+              }}
+              width={1000}
+              height={1000}
+              unoptimized
+            />
+          )}
+        </Box>
+      </Modal>
     </Box>
   )
 }

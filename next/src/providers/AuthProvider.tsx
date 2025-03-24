@@ -17,6 +17,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const pathname = usePathname()
 
   const fetchToken = useCallback(async () => {
+    setIsAuthLoading(true)
+
     try {
       const session = await fetchAuthSession()
       const token = session.tokens?.idToken?.toString()

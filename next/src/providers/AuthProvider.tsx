@@ -1,4 +1,4 @@
-import { fetchAuthSession, getCurrentUser } from 'aws-amplify/auth'
+import { fetchAuthSession } from 'aws-amplify/auth'
 import { Hub } from 'aws-amplify/utils'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState, useCallback } from 'react'
@@ -34,44 +34,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [pathname, setSnackbar])
 
-  const setupAuth = useCallback(async () => {
-    try {
-      await getCurrentUser()
-      await fetchToken()
-    } catch (err) {
-      setIdToken(null)
-      setIsAuthLoading(false)
-    }
-  }, [fetchToken])
-
   // 初回マウント時のトークン取得
   useEffect(() => {
-    setupAuth()
-  }, [setupAuth])
+    fetchToken()
+  }, [fetchToken])
 
   // トークンの定期更新（55分ごと）
   useEffect(() => {
-    const refreshToken = setInterval(setupAuth, 55 * 60 * 1000)
+    const refreshToken = setInterval(fetchToken, 55 * 60 * 1000)
 
     return () => clearInterval(refreshToken)
-  }, [setupAuth])
+  }, [fetchToken])
 
   // 画面フォーカス時のトークン取得
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        setupAuth()
+        fetchToken()
       }
     }
 
-    window.addEventListener('online', setupAuth)
+    window.addEventListener('online', fetchToken)
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      window.removeEventListener('online', setupAuth)
+      window.removeEventListener('online', fetchToken)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [setupAuth])
+  }, [fetchToken])
 
   // 認証状態変更時の処理
   useEffect(() => {

@@ -65,11 +65,12 @@ export const FilingNoteCard = (props: FilingNoteCardProps) => {
                 component="h3"
                 sx={{
                   fontSize: { xs: 16, sm: 20 },
+                  color: title ? 'black' : 'text.placeholder',
                   fontWeight: 'bold',
-                  lineHeight: '40px',
+                  lineHeight: '30px',
                 }}
               >
-                {omit(title)(36)('...')}
+                {omit(title)(36)('...') || 'No title'}
               </Typography>
             </Box>
             <Box sx={{ display: { md: 'flex' }, mb: 1 }}>
@@ -77,7 +78,6 @@ export const FilingNoteCard = (props: FilingNoteCardProps) => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  mr: 5,
                   mb: { xs: 2, md: 0 },
                 }}
               >

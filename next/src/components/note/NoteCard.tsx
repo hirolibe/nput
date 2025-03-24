@@ -60,7 +60,6 @@ const NoteCard = (props: NoteCardProps) => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              mr: 5,
               mb: { xs: 2, md: 0 },
             }}
           >
@@ -71,7 +70,7 @@ const NoteCard = (props: NoteCardProps) => {
                 sx={{ mr: 2 }}
               />
             </StopPropagationLink>
-            <Stack>
+            <Stack sx={{ minWidth: '220px' }}>
               <Typography sx={{ fontSize: 12 }}>
                 <StopPropagationLink href={`/${props.user.name}`}>
                   {props.user.profile.nickname || props.user.name}
@@ -105,7 +104,7 @@ const NoteCard = (props: NoteCardProps) => {
                         sx={{
                           display: 'flex',
                           alignItems: 'center',
-                          width: '30px',
+                          minWidth: '30px',
                         }}
                       >
                         <CheerIcon isCheered={isCheered} size={16} />
@@ -119,7 +118,7 @@ const NoteCard = (props: NoteCardProps) => {
               </Stack>
             </Stack>
           </Box>
-          <Box sx={{ mt: 1 }}>
+          <Box sx={{ mt: 1, overflow: 'hidden' }}>
             <Stack
               direction="row"
               spacing={1}
@@ -161,7 +160,7 @@ const NoteCard = (props: NoteCardProps) => {
             sx={{
               fontSize: { xs: 16, sm: 20 },
               fontWeight: 'bold',
-              lineHeight: '40px',
+              lineHeight: '30px',
             }}
           >
             {omit(props.title)(36)('...')}

@@ -75,13 +75,20 @@ const FolderCard = (props: FolderData) => {
             overflowY: 'auto',
           }}
         >
-          <Box sx={{ position: 'relative', my: 2 }}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              justifyContent: 'center',
+              my: 2,
+            }}
+          >
             <CloseIcon
               onClick={handleClose}
               sx={{
                 cursor: 'pointer',
                 position: 'absolute',
-                right: '30px',
+                right: '20px',
                 textAlign: 'end',
                 opacity: 0.7,
                 '&:hover': { opacity: 1 },
@@ -92,6 +99,7 @@ const FolderCard = (props: FolderData) => {
                 textAlign: 'center',
                 fontSize: { xs: 16, sm: 18 },
                 fontWeight: 'bold',
+                width: '75%',
               }}
             >
               {`フォルダ「${props.name}」のノート一覧`}

@@ -115,7 +115,11 @@ const Dashboard: NextPage = () => {
                     <Link
                       href={`/${note.user.name}/notes/${note.slug}`}
                       css={styles.noUnderline}
-                      style={{ display: 'block', width: '100%' }}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        overflow: 'hidden',
+                      }}
                     >
                       <Box sx={{ width: '100%', pr: { sm: 3 }, mb: 1 }}>
                         <Typography
@@ -142,6 +146,7 @@ const Dashboard: NextPage = () => {
                               '&::-webkit-scrollbar': {
                                 display: 'none',
                               },
+                              width: '100%',
                               mb: 1,
                             }}
                           >

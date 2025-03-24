@@ -78,7 +78,7 @@ const FiledNotes = (props: FiledNotesProps) => {
             color: 'text.placeholder',
           }}
         >
-          ノートがありません
+          アウトプットされたノートがありません
         </Typography>
       </Box>
     )

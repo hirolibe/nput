@@ -81,7 +81,7 @@ const MyFilingNotes = (props: MyFilingNotesProps) => {
             color: 'text.placeholder',
           }}
         >
-          投稿したノートがありません
+          ノートがありません
         </Typography>
       </Box>
     )

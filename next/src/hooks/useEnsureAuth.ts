@@ -11,7 +11,6 @@ const useEnsureAuth = () => {
 
   useEffect(() => {
     if (isAuthLoading) {
-      setIsAuthorized(false)
       return
     }
 

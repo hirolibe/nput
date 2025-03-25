@@ -24,7 +24,7 @@ export const useProfile = () => {
 
   const {
     data,
-    error: profileError,
+    error,
     isLoading: isProfileLoading,
   }: SWRResponse<ProfileData | null | undefined> = useSWR(
     idToken ? [url, idToken] : null,
@@ -43,6 +43,18 @@ export const useProfile = () => {
       setProfileData(null)
     }
   }, [isAuthLoading, isProfileLoading, data])
+
+  const [profileError, setProfileError] = useState<Error | undefined>(undefined)
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setProfileError(error)
+      }, 10000)
+      return () => clearTimeout(timer)
+    } else {
+      setProfileError(undefined)
+    }
+  }, [error])
 
   return {
     profileData,

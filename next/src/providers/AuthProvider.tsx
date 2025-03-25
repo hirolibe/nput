@@ -42,18 +42,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [fetchToken])
 
   const periodicallyFetchToken = useCallback(async () => {
-    console.log('トークンを定期更新しました')
-    fetchToken()
-  }, [fetchToken])
-
-  const focusFetchToken = useCallback(async () => {
-    console.log('トークンを定期更新しました')
     fetchToken()
   }, [fetchToken])
 
   // トークンの定期更新（55分ごと）
   useEffect(() => {
-    const refreshToken = setInterval(periodicallyFetchToken, 55 * 60 * 1000)
+    const refreshToken = setInterval(periodicallyFetchToken, 45 * 60 * 1000)
 
     return () => clearInterval(refreshToken)
   }, [fetchToken])
@@ -62,18 +56,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        console.log('ページが表示されました')
         fetchToken()
       }
     }
 
     window.addEventListener('online', fetchToken)
-    document.addEventListener('focus', focusFetchToken)
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
       window.removeEventListener('online', fetchToken)
-      document.removeEventListener('focus', focusFetchToken)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [fetchToken])

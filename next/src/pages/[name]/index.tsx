@@ -69,7 +69,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     return {
       props: { userName, userData, headData },
-      revalidate: 60 * 60 * 24, // 24時間キャッシュする
+      revalidate: 60 * 60, // 1時間キャッシュする
     }
   } catch {
     return { props: { userName } }

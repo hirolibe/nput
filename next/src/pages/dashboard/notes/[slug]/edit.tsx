@@ -184,15 +184,12 @@ const EditNote: NextPage = () => {
         setRestoreContent('')
         reset(data)
 
-        // ノート詳細データを再検証
-        await axios.post('/api/revalidate', {
-          path: `/${profileData?.user.name}/notes/${slug}`,
-        })
-
-        // ユーザー詳細データを再検証
-        await axios.post('/api/revalidate', {
-          path: `/${profileData?.user.name}`,
-        })
+        // アウトプットする場合、ノート詳細データを再検証
+        if (statusChecked) {
+          await axios.post('/api/revalidate', {
+            path: `/${profileData?.user.name}/notes/${slug}`,
+          })
+        }
 
         setSnackbar({
           message: res.data.message,

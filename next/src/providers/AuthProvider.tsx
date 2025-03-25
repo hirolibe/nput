@@ -57,10 +57,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     window.addEventListener('online', fetchToken)
+    document.addEventListener('focus', fetchToken)
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
       window.removeEventListener('online', fetchToken)
+      document.removeEventListener('focus', fetchToken)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [fetchToken])

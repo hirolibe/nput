@@ -16,11 +16,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [, setSnackbar] = useSnackbarState()
   const pathname = usePathname()
 
-  const fetchToken = useCallback(async () => {
-    setIsAuthLoading(true)
-
+  const fetchToken = async (forceRefresh = false) => {
     try {
-      const session = await fetchAuthSession()
+      const session = await fetchAuthSession({ forceRefresh })
       const token = session.tokens?.idToken?.toString()
       setIdToken(token)
     } catch (err) {
@@ -34,7 +32,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setIsAuthLoading(false)
     }
-  }, [pathname, setSnackbar])
+  }
 
   // 初回マウント時のトークン取得
   useEffect(() => {
@@ -42,8 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [fetchToken])
 
   const periodicallyFetchToken = useCallback(async () => {
-    console.log('定期更新したよ')
-    fetchToken()
+    fetchToken(true)
   }, [fetchToken])
 
   // トークンの定期更新（55分ごと）
@@ -53,19 +50,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => clearInterval(refreshToken)
   }, [fetchToken])
 
-  // 画面フォーカス時のトークン取得
   useEffect(() => {
+    // オンライン復帰時のトークン取得
+    const handleOnline = () => {
+      fetchToken() // オンラインに戻った時も強制的に更新
+    }
+
+    // 画面フォーカス時のトークン取得
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         fetchToken()
       }
     }
 
-    window.addEventListener('online', fetchToken)
+    window.addEventListener('online', handleOnline)
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      window.removeEventListener('online', fetchToken)
+      window.removeEventListener('online', handleOnline)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [fetchToken])

@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // トークンの定期更新（55分ごと）
   useEffect(() => {
-    const refreshToken = setInterval(periodicallyFetchToken, 60 * 1000)
+    const refreshToken = setInterval(periodicallyFetchToken, 55 * 60 * 1000)
 
     return () => clearInterval(refreshToken)
   }, [periodicallyFetchToken])

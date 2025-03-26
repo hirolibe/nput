@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [fetchToken])
 
   const periodicallyFetchToken = useCallback(async () => {
+    console.log('定期更新したよ')
     fetchToken()
   }, [fetchToken])
 

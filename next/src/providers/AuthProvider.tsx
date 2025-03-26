@@ -16,23 +16,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [, setSnackbar] = useSnackbarState()
   const pathname = usePathname()
 
-  const fetchToken = async (forceRefresh = false) => {
-    try {
-      const session = await fetchAuthSession({ forceRefresh })
-      const token = session.tokens?.idToken?.toString()
-      setIdToken(token)
-    } catch (err) {
-      const { errorMessage } = handleError(err)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: pathname,
-      })
-      setIdToken(null)
-    } finally {
-      setIsAuthLoading(false)
-    }
-  }
+  const fetchToken = useCallback(
+    async (forceRefresh = false) => {
+      try {
+        const session = await fetchAuthSession({ forceRefresh })
+        const token = session.tokens?.idToken?.toString()
+        setIdToken(token)
+      } catch (err) {
+        const { errorMessage } = handleError(err)
+        setSnackbar({
+          message: errorMessage,
+          severity: 'error',
+          pathname: pathname,
+        })
+        setIdToken(null)
+      } finally {
+        setIsAuthLoading(false)
+      }
+    },
+    [pathname, setSnackbar],
+  )
 
   // 初回マウント時のトークン取得
   useEffect(() => {
@@ -45,10 +48,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // トークンの定期更新（55分ごと）
   useEffect(() => {
-    const refreshToken = setInterval(periodicallyFetchToken, 55 * 60 * 1000)
+    const refreshToken = setInterval(periodicallyFetchToken, 60 * 1000)
 
     return () => clearInterval(refreshToken)
-  }, [fetchToken])
+  }, [periodicallyFetchToken])
 
   useEffect(() => {
     // オンライン復帰時のトークン取得

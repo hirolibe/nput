@@ -46,7 +46,7 @@ URL: [https://n-put.com](https://n-put.com)
 
 ![Image](https://github.com/user-attachments/assets/0f9a9c71-2cf6-4681-b693-e314b0be3692)
 
-<br><br>
+<br>
 
 ### 3-2. ノートページの閲覧
 ノート一覧・詳細ページでは、以下の操作ができます。（UI/UXは「Zenn」や「Qiita」などの既存のサービスを参考に設計しています）
@@ -57,7 +57,7 @@ URL: [https://n-put.com](https://n-put.com)
 
 ![Image](https://github.com/user-attachments/assets/08aa14ec-9947-47f4-90cf-6128fc00e495)
 
-<br><br>
+<br>
 
 ### 3-3. ユーザーページの閲覧
 ユーザーページでは、以下の情報を閲覧できます。
@@ -67,7 +67,7 @@ URL: [https://n-put.com](https://n-put.com)
 
 ![Image](https://github.com/user-attachments/assets/56f954f0-0e4a-4dca-b3da-55f6e3919631)
 
-<br><br>
+<br>
 
 ### 3-4. ノート作成・編集
 ノート作成・編集ページでは、以下の操作ができます。（UI/UXは「Zenn」や「Qiita」などの既存のサービスを参考に設計しています）
@@ -77,7 +77,8 @@ URL: [https://n-put.com](https://n-put.com)
 - ノート作成時間の確認
 
 ![Image](https://github.com/user-attachments/assets/94234abb-26e8-425c-a292-da40be7ecf4b)
-<br><br>
+
+<br>
 
 ## 4. 技術スタック
 ### 4-1. 使用技術

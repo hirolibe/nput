@@ -50,7 +50,7 @@
 }
 
 .markdownText li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
 }
 
 .markdownText ul li ul {
@@ -110,5 +110,5 @@
 
 .markdownText p {
   margin-bottom: 1rem;
-  line-height: 23px;
+  line-height: 30px;
 }

@@ -229,7 +229,7 @@ Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開�
 
 ## 7. アプリ開発の振り返り
 
-次の事柄に関して、[Nputのアプリ開発の振り返り](https://n-put.com/dashboard/notes/j0If5O0doSs4KD/edit)にまとめています。
+次の事柄に関して、[Nputのアプリ開発の振り返り](https://n-put.com/HiroLibe/notes/j0If5O0doSs4KD)にまとめています。
 
 - 良かった点
 - 苦労した点

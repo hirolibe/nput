@@ -218,16 +218,12 @@ URL: [https://n-put.com](https://n-put.com)
 ![Image](https://github.com/user-attachments/assets/150d25dc-83a6-448c-9792-08faa6adf6f7)
 <br><br>
 
-## 5. ライセンス
-Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。詳細は [LICENSE.md](https://github.com/hirolibe/nput/blob/main/LICENSE.md) をご覧ください。
-<br><br>
-
-## 6. 本アプリの開発背景について
+## 5. 本アプリの開発背景について
 
 [Nputの開発背景](https://n-put.com/HiroLibe/notes/8o1JzaLHvsUeav)に、本アプリを開発しようと考えた背景についてまとめています。
 <br><br>
 
-## 7. アプリ開発の振り返り
+## 6. アプリ開発の振り返り
 
 次の事柄に関して、[Nputのアプリ開発の振り返り](https://n-put.com/HiroLibe/notes/j0If5O0doSs4KD)にまとめています。
 
@@ -237,7 +233,7 @@ Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開�
 - 反省点
 <br><br>
 
-## 8. 今後の展望
+## 7. 今後の展望
 
 ### オフライン環境下におけるデータ保存機能の実装
 
@@ -252,10 +248,14 @@ Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開�
 Nputを少しでも多くの方に利用していただき、貴重なフィードバックを得るために、自分自身もNputを積極的に使いながらXなどのSNSで情報発信を行っています。
 <br><br>
 
-## 9. まとめ
+## 8. まとめ
 
 今回、「Nput」というアプリをポートフォリオとして開発してきました。
 
 開発過程では、単に機能を実装するだけではなく、「どうすれば使いやすいか」「学習のモチベーションを維持するにはどうするべきか」というユーザー視点に立ち続けることを常に意識して取り組んできました。
 
 今後も「Nput」の運用を続けながら、ユーザーからのフィードバックを大切にし、実際に使われるWebサービスとして育てていく経験を積んでいきたいと思います。
+<br><br>
+
+## 9. ライセンス
+Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。詳細は [LICENSE.md](https://github.com/hirolibe/nput/blob/main/LICENSE.md) をご覧ください。

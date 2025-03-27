@@ -10,13 +10,13 @@ export const useMyNote = () => {
   const params = useParams()
   const slug = params?.slug
   const noteSlug = typeof slug === 'string' ? slug : undefined
-
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${noteSlug}`
 
   const {
     data,
     error: noteError,
     isLoading: isNoteLoading,
+    mutate: refreshNote,
   }: SWRResponse<NoteData> = useSWR(!idToken ? null : [url, idToken], fetcher)
 
   const [noteData, setNoteData] = useState<NoteData | undefined>(undefined)
@@ -31,5 +31,6 @@ export const useMyNote = () => {
     noteData,
     noteError,
     isNoteLoading,
+    refreshNote,
   }
 }

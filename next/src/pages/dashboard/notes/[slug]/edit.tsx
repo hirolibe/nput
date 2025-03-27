@@ -51,7 +51,7 @@ const EditNote: NextPage = () => {
   }, [loadedContent, setRestoreContent])
 
   // ノートデータの取得
-  const { noteData, noteError } = useMyNote()
+  const { noteData, noteError, refreshNote } = useMyNote()
   const note: NoteFormData | undefined = useMemo(() => {
     if (noteData === undefined) return
 
@@ -182,6 +182,7 @@ const EditNote: NextPage = () => {
       removeSavedContent()
       setRestoreContent('')
       reset(data)
+      refreshNote()
 
       // アウトプットする場合、ノート詳細データを再検証
       if (statusChecked) {

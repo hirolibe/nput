@@ -43,7 +43,13 @@ const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
         if (!src) return null
 
         return (
-          <Box sx={{ cursor: 'pointer' }}>
+          <Box
+            sx={{
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             <Image
               src={src}
               alt={alt}

@@ -85,8 +85,7 @@ export const TableOfContents = (props: TableOfContentsProps) => {
         width: '100%',
         maxHeight: 'calc(100vh - 48px)',
         overflowY: 'auto',
-        py: 3,
-        pl: 3,
+        p: 3,
       }}
     >
       <Typography fontWeight="bold" mb={2}>

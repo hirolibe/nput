@@ -37,7 +37,7 @@ URL: [https://n-put.com](https://n-put.com)
 ここでは、「① ゲストログイン」の方法についてのみ記述いたします。
 
 その他の②〜④の新規登録・ログイン方法については、「[Nputの新規登録・ログイン方法](https://n-put.com/Administrator/notes/vJpOQVfSl505Ln)」に手順を記述しております。
-<br>
+<br><br>
 
 **① ゲストログインする場合**
 1. ヘッダーの右側にある「ログイン」ボタンをクリック

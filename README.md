@@ -220,10 +220,12 @@ URL: [https://n-put.com](https://n-put.com)
 
 ## 5. ライセンス
 Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。詳細は [LICENSE.md](https://github.com/hirolibe/nput/blob/main/LICENSE.md) をご覧ください。
+<br><br>
 
 ## 6. 本アプリの開発背景について
 
 [Nputの開発背景](https://n-put.com/HiroLibe/notes/8o1JzaLHvsUeav)に、本アプリを開発しようと考えた背景についてまとめています。
+<br><br>
 
 ## 7. アプリ開発の振り返り
 
@@ -233,6 +235,7 @@ Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開�
 - 苦労した点
 - 工夫した点
 - 反省点
+<br><br>
 
 ## 8. 今後の展望
 
@@ -247,6 +250,7 @@ Nput は [MIT License](https://opensource.org/licenses/MIT) のもとで公開�
 「Nput」を通じて、アプリの保守・運用の経験も積みたいと考えています。
 
 Nputを少しでも多くの方に利用していただき、貴重なフィードバックを得るために、自分自身もNputを積極的に使いながらXなどのSNSで情報発信を行っています。
+<br><br>
 
 ## 9. まとめ
 

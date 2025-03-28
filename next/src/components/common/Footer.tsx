@@ -29,6 +29,20 @@ const Footer = () => {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 4 }}>
+            {/* About */}
+            <Box>
+              <Typography sx={{ fontWeight: 'bold', mb: 2 }}>About</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  fontSize: 14,
+                }}
+              >
+                <Link href="/about">Nputについて</Link>
+              </Box>
+            </Box>
             {/* Guides */}
             <Box>
               <Typography sx={{ fontWeight: 'bold', mb: 2 }}>Guides</Typography>

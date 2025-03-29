@@ -12,7 +12,6 @@ import {
   Typography,
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
-import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
@@ -56,7 +55,7 @@ interface NoteDetailProps {
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
@@ -67,8 +66,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const noteData = await fetchNoteData(name, slug)
 
+    // _app.tsxへpagePropsとして渡す
+    const headData = {
+      title: noteData.title,
+      description: noteData.description ?? '',
+      user: noteData.user,
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+      type: 'article',
+      twitterCard: 'summary',
+    }
+
     return {
-      props: { name, slug, noteData },
+      props: { name, slug, noteData, headData },
       revalidate: 60 * 60, // 1時間キャッシュする
     }
   } catch {
@@ -166,17 +175,6 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
   return (
     <>
-      <Head>
-        <title key="title">NextSeoのタイトル</title>
-        <meta key="twitter-card" name="twitter:card" content="summary" />
-        <meta key="og-url" property="og:url" content={'https://n-put.com'} />
-        <meta key="og-title" property="og:title" content="NextSeoのタイトル" />
-        <meta
-          key="og-description"
-          property="og:description"
-          content="NextSeoの概要"
-        />
-      </Head>
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}

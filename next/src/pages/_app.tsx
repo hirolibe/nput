@@ -59,20 +59,6 @@ export default function MyApp(props: MyAppProps): JSX.Element {
               <ProfileProvider>
                 <CheerPointsProvider>
                   <CssBaseline />
-                  <Header />
-                  {/* Google Analytics */}
-                  <Script
-                    src="https://www.googletagmanager.com/gtag/js?id=G-RLWW0VGGNE"
-                    strategy="afterInteractive"
-                  />
-                  <Script id="google-analytics" strategy="afterInteractive">
-                    {`
-                      window.dataLayer = window.dataLayer || [];
-                      function gtag(){dataLayer.push(arguments);}
-                      gtag('js', new Date());
-                      gtag('config', 'G-RLWW0VGGNE');
-                    `}
-                  </Script>
                   <DefaultSeo
                     defaultTitle={safeHeadData?.title}
                     description={
@@ -101,6 +87,20 @@ export default function MyApp(props: MyAppProps): JSX.Element {
                       cardType: safeHeadData?.twitterCard,
                     }}
                   />
+                  <Header />
+                  {/* Google Analytics */}
+                  <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-RLWW0VGGNE"
+                    strategy="afterInteractive"
+                  />
+                  <Script id="google-analytics" strategy="afterInteractive">
+                    {`
+                      window.dataLayer = window.dataLayer || [];
+                      function gtag(){dataLayer.push(arguments);}
+                      gtag('js', new Date());
+                      gtag('config', 'G-RLWW0VGGNE');
+                    `}
+                  </Script>
                   <Component {...restPageProps} />
                   <Snackbar />
                   <Footer />

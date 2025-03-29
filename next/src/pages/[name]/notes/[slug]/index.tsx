@@ -13,7 +13,6 @@ import {
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
-import { NextSeo } from 'next-seo'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -56,7 +55,7 @@ interface NoteDetailProps {
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
@@ -67,40 +66,24 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const noteData = await fetchNoteData(name, slug)
 
+    // _app.tsxへpagePropsとして渡す
+    const headData = {
+      title: noteData.title,
+      description: noteData.description ?? '',
+      user: noteData.user,
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+      type: 'article',
+      twitterCard: 'summary',
+    }
+
     return {
-      props: { name, slug, noteData },
+      props: { name, slug, noteData, headData },
       revalidate: 60 * 60, // 1時間キャッシュする
     }
   } catch {
     return { props: { name, slug } }
   }
 }
-
-// // ISRによるノートデータ取得
-// export const getStaticProps: GetStaticProps = async ({ params }) => {
-//   const { name, slug } = params as Params
-
-//   try {
-//     const noteData = await fetchNoteData(name, slug)
-
-//     // _app.tsxへpagePropsとして渡す
-//     const headData = {
-//       title: noteData.title,
-//       description: noteData.description ?? '',
-//       user: noteData.user,
-//       url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
-//       type: 'article',
-//       twitterCard: 'summary',
-//     }
-
-//     return {
-//       props: { name, slug, noteData, headData },
-//       revalidate: 60 * 60, // 1時間キャッシュする
-//     }
-//   } catch {
-//     return { props: { name, slug } }
-//   }
-// }
 
 const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   const { name, slug, noteData: initialNoteData } = props
@@ -192,12 +175,6 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
   return (
     <>
-      <NextSeo
-        openGraph={{
-          title: 'NextSeoのタイトル',
-          description: 'NextSeoの概要',
-        }}
-      />
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}

@@ -31,11 +31,10 @@ interface SignUpFormData {
 const Init: NextPage = () => {
   const { idToken } = useAuthContext()
 
-  const [isTermsChecked, setIsTermsChecked] = useState<boolean>(false)
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState<boolean>(false)
+  const [isChecked, setIsChecked] = useState<boolean>(false)
 
   const [isRegistering, setIsRegistering] = useState(false)
-  const [isCanceling, setIsCanceling] = useState(false)
+  // const [isCanceling, setIsCanceling] = useState(false)
 
   const [, setSnackbar] = useSnackbarState()
   const router = useRouter()
@@ -147,24 +146,24 @@ const Init: NextPage = () => {
     }
   }
 
-  const handleCancel = async () => {
-    if (redirectPath === undefined) return
-    setIsCanceling(true)
+  // const handleCancel = async () => {
+  //   if (redirectPath === undefined) return
+  //   setIsCanceling(true)
 
-    try {
-      await deleteUser()
-      router.push(redirectPath)
-    } catch (err) {
-      const { errorMessage } = handleError(err)
-      setSnackbar({
-        message: errorMessage,
-        severity: 'error',
-        pathname: '/auth/init',
-      })
-    } finally {
-      setIsCanceling(false)
-    }
-  }
+  //   try {
+  //     await deleteUser()
+  //     router.push(redirectPath)
+  //   } catch (err) {
+  //     const { errorMessage } = handleError(err)
+  //     setSnackbar({
+  //       message: errorMessage,
+  //       severity: 'error',
+  //       pathname: '/auth/init',
+  //     })
+  //   } finally {
+  //     setIsCanceling(false)
+  //   }
+  // }
 
   if (profileData !== null) {
     return (
@@ -229,11 +228,12 @@ const Init: NextPage = () => {
               />
             )}
           />
+          <Typography sx={{ color: 'text.light' }}>新規登録には、利用規約とプライバシーポリシーへの同意が必要です。</Typography>
           <Stack>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Checkbox
-                checked={isTermsChecked}
-                onChange={(e) => setIsTermsChecked(e.target.checked)}
+                checked={isChecked}
+                onChange={(e) => setIsChecked(e.target.checked)}
               />
               <Link href={'/terms'} target="_blank" rel="noopener noreferrer">
                 <Typography
@@ -245,14 +245,7 @@ const Init: NextPage = () => {
                   利用規約
                 </Typography>
               </Link>
-              <Typography>に同意する</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Checkbox
-                checked={isPrivacyChecked}
-                onChange={(e) => setIsPrivacyChecked(e.target.checked)}
-                sx={{ py: 0 }}
-              />
+              <Typography>と</Typography>
               <Link href={'/privacy'} target="_blank" rel="noopener noreferrer">
                 <Typography
                   sx={{
@@ -269,7 +262,7 @@ const Init: NextPage = () => {
           <LoadingButton
             variant="contained"
             type="submit"
-            disabled={!isTermsChecked || !isPrivacyChecked}
+            disabled={!isChecked}
             loading={isRegistering}
             sx={{
               fontSize: { xs: 14, sm: 16 },
@@ -277,11 +270,16 @@ const Init: NextPage = () => {
               color: 'white',
               width: '170px',
               borderRadius: 2,
+              '&.Mui-disabled': {
+                backgroundColor: '#50A0B4',
+                opacity: 0.6,
+                color: 'white',
+              }
             }}
           >
             新規登録する
           </LoadingButton>
-          <LoadingButton
+          {/* <LoadingButton
             onClick={handleCancel}
             variant="outlined"
             type="submit"
@@ -296,7 +294,7 @@ const Init: NextPage = () => {
             }}
           >
             登録をキャンセル
-          </LoadingButton>
+          </LoadingButton> */}
         </Stack>
       </Container>
     </>

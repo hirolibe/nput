@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { deleteUser } from 'aws-amplify/auth'
+// import { deleteUser } from 'aws-amplify/auth'
 import axios from 'axios'
 import type { NextPage } from 'next'
 import Link from 'next/link'
@@ -228,7 +228,9 @@ const Init: NextPage = () => {
               />
             )}
           />
-          <Typography sx={{ color: 'text.light' }}>新規登録には、利用規約とプライバシーポリシーへの同意が必要です。</Typography>
+          <Typography sx={{ color: 'text.light' }}>
+            新規登録には、利用規約とプライバシーポリシーへの同意が必要です。
+          </Typography>
           <Stack>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Checkbox
@@ -274,7 +276,7 @@ const Init: NextPage = () => {
                 backgroundColor: '#50A0B4',
                 opacity: 0.6,
                 color: 'white',
-              }
+              },
             }}
           >
             新規登録する

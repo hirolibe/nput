@@ -20,7 +20,8 @@ export const CustomAuthenticator = (props: CustomAuthenticatorProps) => {
   const { isOpen, setIsOpen } = props
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const currentPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '')
+  const currentPath =
+    pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '')
   const previousPath = pathname !== '/about' ? currentPath : '/'
 
   useEffect(() => {

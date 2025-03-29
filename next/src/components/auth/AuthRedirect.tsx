@@ -34,7 +34,15 @@ const AuthRedirect = (props: AuthRedirectProps) => {
   useEffect(() => {
     if (profileError || profileData === undefined) return
 
-    if (profileData) {
+    if (profileData && pathname === '/about') {
+      setSnackbar({
+        message: 'ログインに成功しました！',
+        severity: 'success',
+        pathname: '/',
+      })
+
+      router.push('/')
+    } else if (profileData) {
       setSnackbar({
         message: 'ログインに成功しました！',
         severity: 'success',

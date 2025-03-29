@@ -1,6 +1,8 @@
-import { Box, Container, Grid, Stack, Typography } from '@mui/material'
+import { Box, Container, Divider, Grid, Stack, Typography } from '@mui/material'
 import { GetStaticProps, NextPage } from 'next'
 import Image from 'next/image'
+import LoginButton from '@/components/auth/LoginButton'
+import { useProfile } from '@/hooks/useProfile'
 
 // SSGによるAboutページのmeta情報取得
 export const getStaticProps: GetStaticProps = async () => {
@@ -21,6 +23,8 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const About: NextPage = () => {
+  const { profileData } = useProfile()
+
   const features = [
     {
       title: '記録する',
@@ -163,31 +167,35 @@ const About: NextPage = () => {
           ))}
         </Stack>
       </Container>
+      {profileData && <Divider />}
 
       {/* CTAセクション */}
-      <Box
-        sx={{
-          backgroundColor: 'backgroundColor.cta',
-          py: { xs: 6, md: 8 },
-        }}
-      >
-        <Container maxWidth="md">
-          <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: { xs: 22, md: 28 },
-                fontWeight: 'bold',
-              }}
-            >
-              さあ、一緒に始めよう
-            </Typography>
-            <Typography sx={{ maxWidth: 'sm', px: { xs: 4, sm: 0 } }}>
-              Nputコミュニティで、仲間と共に学び、成長する喜びを体験しましょう！
-            </Typography>
-          </Stack>
-        </Container>
-      </Box>
+      {!profileData && (
+        <Box
+          sx={{
+            backgroundColor: 'backgroundColor.cta',
+            py: { xs: 6, md: 8 },
+          }}
+        >
+          <Container maxWidth="md">
+            <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center' }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: 24, md: 32 },
+                  fontWeight: 'bold',
+                }}
+              >
+                Join Nput
+              </Typography>
+              <Typography sx={{ maxWidth: 'sm', px: { xs: 4, sm: 0 } }}>
+                Nputコミュニティで、仲間と共に学び、成長する喜びを体験しましょう！
+              </Typography>
+              <LoginButton text={'今すぐはじめる'} />
+            </Stack>
+          </Container>
+        </Box>
+      )}
     </>
   )
 }

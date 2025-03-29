@@ -2,7 +2,11 @@ import { Box, Button } from '@mui/material'
 import { useState } from 'react'
 import { CustomAuthenticator } from './CustomAuthenticator'
 
-const LoginButton = () => {
+interface LoginButtonProps {
+  text?: string
+}
+
+const LoginButton = (props: LoginButtonProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleOpenModal = () => {
@@ -22,7 +26,7 @@ const LoginButton = () => {
           fontWeight: 'bold',
         }}
       >
-        ログイン
+        {props.text || 'ログイン'}
       </Button>
 
       <CustomAuthenticator isOpen={isOpen} setIsOpen={setIsOpen} />

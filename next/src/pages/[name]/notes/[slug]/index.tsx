@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
+import { NextSeo } from 'next-seo'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -175,6 +176,12 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
   return (
     <>
+      <NextSeo
+        openGraph={{
+          title: 'NextSeoのタイトル',
+          description: 'NextSeoの概要',
+        }}
+      />
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}

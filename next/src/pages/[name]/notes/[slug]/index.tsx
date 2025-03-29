@@ -12,8 +12,8 @@ import {
   Typography,
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
-import { NextSeo } from 'next-seo'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -166,21 +166,17 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
   return (
     <>
-      <NextSeo
-        title={'NextSeoのタイトル'}
-        description={'NextSeoの概要'}
-        openGraph={{
-          title: 'NextSeoのタイトル',
-          description: 'NextSeoの概要',
-          url: `https://n-put.com`,
-          type: 'article',
-        }}
-        twitter={{
-          handle: '@hirolibe0930',
-          site: '@hirolibe0930',
-          cardType: 'summary_large_image',
-        }}
-      />
+      <Head>
+        <title key="title">NextSeoのタイトル</title>
+        <meta key="twitter-card" name="twitter:card" content="summary" />
+        <meta key="og-url" property="og:url" content={'https://n-put.com'} />
+        <meta key="og-title" property="og:title" content="NextSeoのタイトル" />
+        <meta
+          key="og-description"
+          property="og:description"
+          content="NextSeoの概要"
+        />
+      </Head>
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}

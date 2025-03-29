@@ -52,32 +52,6 @@ export default function MyApp(props: MyAppProps): JSX.Element {
 
   return (
     <>
-      <DefaultSeo
-        defaultTitle={safeHeadData?.title}
-        description={
-          headData?.description ? noteDescription : safeHeadData.description
-        }
-        openGraph={{
-          title: safeHeadData.title,
-          description: headData?.description
-            ? noteDescription
-            : safeHeadData.description,
-          url: safeHeadData?.url,
-          type: safeHeadData.type,
-          site_name: 'Nput',
-          images: safeHeadData.images ?? [
-            {
-              url: `${ogpImageUrl}`,
-              alt: 'Nputのロゴ',
-              type: 'image/png',
-            },
-          ],
-        }}
-        twitter={{
-          site: '@hirolibe0930',
-          cardType: safeHeadData?.twitterCard,
-        }}
-      />
       <CacheProvider value={emotionCache}>
         <ThemeProvider theme={theme}>
           <Authenticator.Provider>
@@ -99,6 +73,34 @@ export default function MyApp(props: MyAppProps): JSX.Element {
                       gtag('config', 'G-RLWW0VGGNE');
                     `}
                   </Script>
+                  <DefaultSeo
+                    defaultTitle={safeHeadData?.title}
+                    description={
+                      headData?.description
+                        ? noteDescription
+                        : safeHeadData.description
+                    }
+                    openGraph={{
+                      title: safeHeadData.title,
+                      description: headData?.description
+                        ? noteDescription
+                        : safeHeadData.description,
+                      url: safeHeadData?.url,
+                      type: safeHeadData.type,
+                      site_name: 'Nput',
+                      images: safeHeadData.images ?? [
+                        {
+                          url: `${ogpImageUrl}`,
+                          alt: 'Nputのロゴ',
+                          type: 'image/png',
+                        },
+                      ],
+                    }}
+                    twitter={{
+                      site: '@hirolibe0930',
+                      cardType: safeHeadData?.twitterCard,
+                    }}
+                  />
                   <Component {...restPageProps} />
                   <Snackbar />
                   <Footer />

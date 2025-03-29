@@ -13,7 +13,6 @@ import {
 } from '@mui/material'
 import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
-import { NextSeo } from 'next-seo'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -68,18 +67,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const noteData = await fetchNoteData(name, slug)
 
     // _app.tsxへpagePropsとして渡す
-    // const headData = {
-    //   title: noteData.title,
-    //   description: noteData.description ?? '',
-    //   user: noteData.user,
-    //   url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
-    //   type: 'article',
-    //   twitterCard: 'summary',
-    // }
+    const headData = {
+      title: noteData.title,
+      description: noteData.description ?? '',
+      user: noteData.user,
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+      type: 'article',
+      twitterCard: 'summary',
+    }
 
     return {
-      props: { name, slug, noteData },
-      // props: { name, slug, noteData, headData },
+      props: { name, slug, noteData, headData },
       revalidate: 60 * 60, // 1時間キャッシュする
     }
   } catch {
@@ -164,7 +162,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!initialNoteData && !myNoteData) {
+  if (!noteData) {
     return (
       <Box
         css={styles.pageMinHeight}
@@ -177,11 +175,6 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
 
   return (
     <>
-      <NextSeo
-        openGraph={{
-          title: 'NextSeoのタイトル！',
-        }}
-      />
       <Box
         css={styles.pageMinHeight}
         sx={{ backgroundColor: 'backgroundColor.page', pb: 6 }}

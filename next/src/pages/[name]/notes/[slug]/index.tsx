@@ -167,9 +167,18 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   return (
     <>
       <NextSeo
-        defaultTitle={'NextSeoのタイトル'}
+        title={'NextSeoのタイトル'}
+        description={'NextSeoの概要'}
         openGraph={{
           title: 'NextSeoのタイトル',
+          description: 'NextSeoの概要',
+          url: `https://n-put.com`,
+          type: 'article',
+        }}
+        twitter={{
+          handle: '@hirolibe0930',
+          site: '@hirolibe0930',
+          cardType: 'summary_large_image',
         }}
       />
       <Box

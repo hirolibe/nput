@@ -192,7 +192,7 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
             }}
           >
             <Typography sx={{ fontWeight: 'bold' }}>
-              インプットを表示中
+              インプット（非公開）ノートを表示中
             </Typography>
           </Box>
         )}

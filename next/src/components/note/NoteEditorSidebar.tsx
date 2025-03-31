@@ -58,7 +58,7 @@ const NoteEditorSidebar = ({
       return
     }
 
-    const formatRegex = /^[a-zA-Z0-9ａ-ｚＡ-Ｚ０-９ぁ-んァ-ン一-龯]+$/
+    const formatRegex = /^[a-zA-Z0-9ａ-ｚＡ-Ｚ０-９ぁ-んァ-ン一-龯\-ー－—]+$/
     if (!formatRegex.test(newInputValue)) {
       setFormatError(true)
       return

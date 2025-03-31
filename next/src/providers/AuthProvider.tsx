@@ -100,6 +100,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         idToken,
         setIdToken,
         isAuthLoading,
+        fetchToken,
       }}
     >
       {children}

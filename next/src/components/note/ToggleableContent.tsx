@@ -1,9 +1,6 @@
+import { Box, Paper, Collapse } from '@mui/material'
 import React, { useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import rehypeSanitize from 'rehype-sanitize'
-import remarkGfm from 'remark-gfm'
-import CodeBlock from './CodeBlock'
+import MarkdownText from './MarkdownText'
 import styles from '@/styles/MarkdownText.module.css'
 
 interface ToggleableContentProps {
@@ -16,42 +13,41 @@ export const ToggleableContent = (props: ToggleableContentProps) => {
   const { summary, children, markdownContent } = props
   const [isOpen, setIsOpen] = useState(false)
 
-  // markdownContentが提供されている場合は、ReactMarkdownを使用して直接レンダリング
-  const renderContent = () => {
-    if (markdownContent) {
-      return (
-        <ReactMarkdown
-          components={{ code: CodeBlock }}
-          className={styles.markdownText}
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw, rehypeSanitize]}
-        >
-          {markdownContent}
-        </ReactMarkdown>
-      )
-    }
-    return children
-  }
+  // トグル内のコンテンツ
+  const toggleContent = markdownContent ? (
+    <MarkdownText content={markdownContent} className={styles.markdownText} />
+  ) : (
+    children
+  )
 
   return (
-    <div className="toggleable-content">
-      <div
-        className="toggle-summary"
+    <Box sx={{ mb: 2 }}>
+      <Paper
+        elevation={0}
         onClick={() => setIsOpen(!isOpen)}
-        style={{
+        sx={{
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          padding: '8px',
-          backgroundColor: '#f5f5f5',
-          borderRadius: '4px',
-          marginBottom: isOpen ? '8px' : '0',
+          p: 1,
+          backgroundColor: 'grey.100',
         }}
       >
-        <span style={{ marginRight: '8px' }}>{isOpen ? '▼' : '▶'}</span>
-        <strong>{summary}</strong>
-      </div>
-      {isOpen && <div className="toggle-content">{renderContent()}</div>}
-    </div>
+        <Box
+          sx={{
+            mr: 1,
+            fontFamily: 'monospace',
+            fontSize: '1rem',
+            lineHeight: 1,
+          }}
+        >
+          {isOpen ? '▼' : '▶'}
+        </Box>
+        <Box fontWeight="bold">{summary}</Box>
+      </Paper>
+      <Collapse in={isOpen}>
+        <Box sx={{ py: 1 }}>{toggleContent}</Box>
+      </Collapse>
+    </Box>
   )
 }

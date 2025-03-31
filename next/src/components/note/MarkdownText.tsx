@@ -1,6 +1,6 @@
 import { Box, Modal } from '@mui/material'
 import Image from 'next/image'
-import { useRef, useMemo, useState } from 'react'
+import { useRef, useMemo, useState, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import type { Components } from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -8,6 +8,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
 import CodeBlock from './CodeBlock'
 import { H1, H2 } from './Heading'
+import { ToggleableContent } from './ToggleableContent'
 import styles from '@/styles/MarkdownText.module.css'
 
 interface MarkdownTextProps {
@@ -19,22 +20,48 @@ interface HeadingCounts {
   [level: number]: { [text: string]: number }
 }
 
+interface ToggleSection {
+  summary: string
+  content: string
+}
+
 const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
-  const headingCounts = useRef<HeadingCounts>({}) // 同じ文字列の出現回数を管理
+  const headingCounts = useRef<HeadingCounts>({})
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState<{
     src: string
     alt: string
   } | null>(null)
 
-  const handleImageClick = (src: string, alt: string) => {
+  const handleImageClick = useCallback((src: string, alt: string) => {
     setSelectedImage({ src, alt })
     setModalOpen(true)
-  }
+  }, [])
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setModalOpen(false)
-  }
+  }, [])
+
+  // トグルセクションの抽出と処理
+  const processedContent = useMemo(() => {
+    const togglePattern = /:::toggle\s+(.*?)\n([\s\S]*?):::/g
+    let processedText = content
+    const toggleSections: ToggleSection[] = []
+    let match
+
+    // 正規表現でトグルセクションを抽出
+    while ((match = togglePattern.exec(content)) !== null) {
+      const summary = match[1].trim()
+      const toggleContent = match[2].trim()
+      const id = `toggle-${toggleSections.length}`
+      toggleSections.push({ summary, content: toggleContent })
+
+      // トグルセクションをプレースホルダーに置き換え
+      processedText = processedText.replace(match[0], `{{${id}}}`)
+    }
+
+    return { text: processedText, toggles: toggleSections }
+  }, [content])
 
   const customComponents: Components = useMemo(
     () => ({
@@ -76,8 +103,29 @@ const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
       },
       h1: (props) => <H1 {...props} headingCounts={headingCounts} />,
       h2: (props) => <H2 {...props} headingCounts={headingCounts} />,
+      p: ({ children }) => {
+        // トグルセクションのプレースホルダーを検出
+        if (
+          typeof children === 'string' &&
+          children.match(/^\{\{toggle-\d+\}\}$/)
+        ) {
+          const id = children.slice(2, -2)
+          const index = parseInt(id.split('-')[1])
+          const toggleData = processedContent.toggles[index]
+
+          if (toggleData) {
+            return (
+              <ToggleableContent
+                summary={toggleData.summary}
+                markdownContent={toggleData.content}
+              />
+            )
+          }
+        }
+        return <p>{children}</p>
+      },
     }),
-    [],
+    [processedContent.toggles, handleImageClick],
   )
 
   return (
@@ -94,7 +142,7 @@ const MarkdownText = ({ content, className = '' }: MarkdownTextProps) => {
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeSanitize]}
       >
-        {content}
+        {processedContent.text}
       </ReactMarkdown>
 
       <Modal

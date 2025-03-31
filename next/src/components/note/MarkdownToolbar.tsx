@@ -1,6 +1,6 @@
 import Code from '@mui/icons-material/Code'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FormatBold from '@mui/icons-material/FormatBold'
-import FormatListBulleted from '@mui/icons-material/FormatListBulleted'
 import TableChart from '@mui/icons-material/TableChart'
 import FormatHeader from '@mui/icons-material/Title'
 import { IconButton, Stack, Tooltip, useMediaQuery } from '@mui/material'
@@ -33,9 +33,9 @@ export const MarkdownToolbar = (props: MarkdownToolbarProps) => {
       action: () => insertMarkdown(props, '**', '**'),
     },
     {
-      title: 'リスト',
-      icon: <FormatListBulleted />,
-      action: () => insertMarkdown(props, '- '),
+      title: 'トグル',
+      icon: <ExpandMoreIcon />,
+      action: () => insertMarkdown(props, ':::toggle タイトル\n', '\n:::'),
     },
   ]
 

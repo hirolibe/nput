@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { fetcher } from '@/utils/fetcher'
 
 export interface ProfileData {
@@ -24,7 +25,7 @@ export const useProfile = () => {
 
   const {
     data,
-    error: profileError,
+    error,
     isLoading: isProfileLoading,
   }: SWRResponse<ProfileData | null | undefined> = useSWR(
     idToken ? [url, idToken] : null,
@@ -43,6 +44,10 @@ export const useProfile = () => {
       setProfileData(null)
     }
   }, [isAuthLoading, isProfileLoading, data])
+
+  const { authError: profileError } = useAuthError({
+    error,
+  })
 
   return {
     profileData,

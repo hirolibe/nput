@@ -147,7 +147,7 @@ const EditNote: NextPage = () => {
 
   // ノート保存処理
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { idToken } = useAuthContext()
+  const { fetchToken } = useAuthContext()
   const { getElapsedSeconds } = useDuration()
   const [previousSeconds, setPreviousSeconds] = useState<number>(0)
   const [imageSignedIds, setImageSignedIds] = useState<
@@ -158,7 +158,9 @@ const EditNote: NextPage = () => {
     setIsLoading(true)
 
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_notes/${slug}`
-    const headers = { Authorization: `Bearer ${idToken}` }
+
+    const token = await fetchToken()
+    const headers = { Authorization: `Bearer ${token}` }
 
     // 送信するデータ
     const status = statusChecked ? 'published' : 'draft'

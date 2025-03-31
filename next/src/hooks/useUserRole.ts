@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { fetcher } from '@/utils/fetcher'
 
 interface UserRoleData {
@@ -13,7 +14,7 @@ export const useUserRole = () => {
 
   const {
     data,
-    error: userRoleError,
+    error,
     isLoading: isUserRoleLoading,
   }: SWRResponse<UserRoleData | null | undefined> = useSWR(
     idToken ? [url, idToken] : null,
@@ -30,6 +31,10 @@ export const useUserRole = () => {
       setUserRoleData(null)
     }
   }, [isAuthLoading, isUserRoleLoading, data, idToken])
+
+  const { authError: userRoleError } = useAuthError({
+    error,
+  })
 
   return {
     userRoleData,

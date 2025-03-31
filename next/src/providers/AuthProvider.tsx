@@ -16,11 +16,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [, setSnackbar] = useSnackbarState()
   const pathname = usePathname()
 
-  const fetchToken = useCallback(
+  const fetchToken = async (forceRefresh = false) => {
+    const session = await fetchAuthSession({ forceRefresh })
+    return session.tokens?.idToken?.toString()
+  }
+
+  const setToken = useCallback(
     async (forceRefresh = false) => {
       try {
-        const session = await fetchAuthSession({ forceRefresh })
-        const token = session.tokens?.idToken?.toString()
+        const token = await fetchToken(forceRefresh)
         setIdToken(token)
       } catch (err) {
         const { errorMessage } = handleError(err)
@@ -39,30 +43,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // 初回マウント時のトークン取得
   useEffect(() => {
-    fetchToken()
-  }, [fetchToken])
+    setToken()
+  }, [setToken])
 
-  const periodicallyFetchToken = useCallback(async () => {
-    fetchToken(true)
-  }, [fetchToken])
+  const periodicallysetToken = useCallback(async () => {
+    setToken(true)
+  }, [setToken])
 
   // トークンの定期更新（55分ごと）
   useEffect(() => {
-    const refreshToken = setInterval(periodicallyFetchToken, 55 * 60 * 1000)
+    const refreshToken = setInterval(periodicallysetToken, 55 * 60 * 1000)
 
     return () => clearInterval(refreshToken)
-  }, [periodicallyFetchToken])
+  }, [periodicallysetToken])
 
   useEffect(() => {
     // オンライン復帰時のトークン取得
     const handleOnline = () => {
-      fetchToken() // オンラインに戻った時も強制的に更新
+      setToken() // オンラインに戻った時も強制的に更新
     }
 
     // 画面フォーカス時のトークン取得
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        fetchToken()
+        setToken()
       }
     }
 
@@ -73,7 +77,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       window.removeEventListener('online', handleOnline)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [fetchToken])
+  }, [setToken])
 
   // 認証状態変更時の処理
   useEffect(() => {
@@ -81,7 +85,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { payload } = data
 
       if (payload.event === 'signedIn') {
-        await fetchToken()
+        await setToken()
       } else if (
         payload.event === 'signedOut' ||
         payload.event === 'tokenRefresh_failure'
@@ -92,7 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     })
 
     return () => unsubscribe()
-  }, [fetchToken])
+  }, [setToken])
 
   return (
     <AuthContext.Provider

@@ -16,25 +16,28 @@ export const useAuthError = ({ error }: UseAuthErrorParams) => {
       return
     }
 
-    const handleRefreshToken = async () => {
-      try {
-        const token = await fetchToken(true)
-        if (token) {
-          setIdToken(token)
-          setAuthError(undefined)
-        } else {
-          setAuthError(new Error('トークンを更新できませんでした'))
-        }
-      } catch (err) {
-        setAuthError(
-          err instanceof Error ? err : new Error('不明なエラーが発生しました'),
-        )
-      }
-    }
-
     const { errorMessage } = handleError(error)
 
-    if (errorMessage?.includes('トークンの有効期限が切れています')) {
+    if (errorMessage?.includes('認証トークンの有効期限が切れています')) {
+      setAuthError(undefined)
+
+      const handleRefreshToken = async () => {
+        try {
+          const token = await fetchToken(true)
+          if (token) {
+            setIdToken(token)
+          } else {
+            setAuthError(new Error('トークンを更新できませんでした'))
+          }
+        } catch (err) {
+          setAuthError(
+            err instanceof Error
+              ? err
+              : new Error('トークン更新時に不明なエラーが発生しました'),
+          )
+        }
+      }
+
       handleRefreshToken()
     } else {
       setAuthError(error)

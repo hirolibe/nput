@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import { Amplify } from 'aws-amplify'
 import { AppProps } from 'next/app'
 import Script from 'next/script'
+import { DefaultSeo } from 'next-seo'
 import outputs from '../../amplify_outputs.json'
 import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
@@ -31,7 +32,23 @@ interface MyAppProps extends AppProps {
 
 export default function MyApp(props: MyAppProps): JSX.Element {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-  const { ...restPageProps } = pageProps
+  const { headData, ...restPageProps } = pageProps
+
+  const safeHeadData = {
+    title: 'Nput | プログラミング学習の支援サービス',
+    description:
+      'Nputはプログラミング初学者がモチベーションを高めながら学習を継続し、効率的に知識を深められるように支援します。',
+    url: 'https://n-put.com',
+    type: 'website',
+    twitterCard: 'summary',
+    ...headData, // pagePropsのheadDataで上書き
+  }
+
+  const noteDescription =
+    headData?.description?.replace(/\*/g, '').replace(/#/g, '') ||
+    `${headData?.user.profile.nickname || headData?.user.name}さんのノート`
+
+  const ogpImageUrl = `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/twitter-card-logo.png`
 
   return (
     <>
@@ -42,6 +59,34 @@ export default function MyApp(props: MyAppProps): JSX.Element {
               <ProfileProvider>
                 <CheerPointsProvider>
                   <CssBaseline />
+                  <DefaultSeo
+                    defaultTitle={safeHeadData?.title}
+                    description={
+                      headData?.description
+                        ? noteDescription
+                        : safeHeadData.description
+                    }
+                    openGraph={{
+                      title: safeHeadData.title,
+                      description: headData?.description
+                        ? noteDescription
+                        : safeHeadData.description,
+                      url: safeHeadData?.url,
+                      type: safeHeadData.type,
+                      site_name: 'Nput',
+                      images: safeHeadData.images ?? [
+                        {
+                          url: `${ogpImageUrl}`,
+                          alt: 'Nputのロゴ',
+                          type: 'image/png',
+                        },
+                      ],
+                    }}
+                    twitter={{
+                      site: '@hirolibe0930',
+                      cardType: safeHeadData?.twitterCard,
+                    }}
+                  />
                   <Header />
                   {/* Google Analytics */}
                   <Script

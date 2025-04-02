@@ -22,6 +22,7 @@ import Comment from '@/components/note/Comment'
 import MarkdownText from '@/components/note/MarkdownText'
 import { SocialShareIcon } from '@/components/note/SocialShareIcon'
 import { TableOfContents } from '@/components/note/TableOfContents'
+import { useAuthContext } from '@/hooks/useAuthContext'
 import { useCheerStatus } from '@/hooks/useCheerStatus'
 import { useFollowStatus } from '@/hooks/useFollowStatus'
 import { useMyNote } from '@/hooks/useMyNote'
@@ -88,9 +89,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 const NoteDetail: NextPage<NoteDetailProps> = (props) => {
   const { name, slug, noteData: initialNoteData } = props
   const { noteData: myNoteData, noteError: myNoteError } = useMyNote() // インプットのノートデータを取得
-  const [noteData, setNoteData] = useState<NoteData | undefined>(undefined)
+  const [noteData, setNoteData] = useState<NoteData | null | undefined>(
+    undefined,
+  )
   const [isDraft, setIsDraft] = useState<boolean | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
+
+  const { idToken, isAuthLoading } = useAuthContext()
 
   // アウトプットのノートの場合
   useEffect(() => {
@@ -113,7 +118,11 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     if (myNoteError) {
       setError(myNoteError)
     }
-  }, [initialNoteData, myNoteData, myNoteError])
+
+    if (!isAuthLoading && !idToken) {
+      setNoteData(null)
+    }
+  }, [initialNoteData, myNoteData, myNoteError, isAuthLoading, idToken])
 
   const { profileData } = useProfile()
   const [currentUserName, setCurrrentUserName] = useState<string | undefined>(
@@ -162,7 +171,24 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     return <Error statusCode={statusCode} errorMessage={errorMessage} />
   }
 
-  if (!noteData) {
+  if (noteData === null) {
+    return (
+      <Error statusCode={404} errorMessage={'ノートにアクセスできません'} />
+    )
+  }
+
+  if (noteData === undefined) {
+    return (
+      <Box
+        css={styles.pageMinHeight}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <Loading />
+      </Box>
+    )
+  }
+
+  if (noteData === undefined) {
     return (
       <Box
         css={styles.pageMinHeight}

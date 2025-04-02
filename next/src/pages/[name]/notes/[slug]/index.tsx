@@ -188,17 +188,6 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
     )
   }
 
-  if (noteData === undefined) {
-    return (
-      <Box
-        css={styles.pageMinHeight}
-        sx={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <Loading />
-      </Box>
-    )
-  }
-
   return (
     <>
       <Box

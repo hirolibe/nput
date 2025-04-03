@@ -2,9 +2,9 @@ import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { PageData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
-import { useAuthError } from './useAuthError'
 
 export interface UserSystemData {
   id: number

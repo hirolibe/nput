@@ -2,9 +2,9 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { NoteData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
-import { useAuthError } from './useAuthError'
 
 export const useMyNote = () => {
   const { idToken } = useAuthContext()

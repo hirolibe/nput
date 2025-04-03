@@ -2,6 +2,7 @@ import { useParams, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { PagenatedNotesData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
 
@@ -20,7 +21,7 @@ export const useMyFiledNotes = () => {
 
   const {
     data,
-    error: notesError,
+    error,
     isLoading: isNotesLoading,
   }: SWRResponse<PagenatedNotesData> = useSWR(
     idToken ? [url, idToken] : null,
@@ -38,6 +39,10 @@ export const useMyFiledNotes = () => {
       setNotesData(null)
     }
   }, [isAuthLoading, isNotesLoading, data, idToken])
+
+  const { authError: notesError } = useAuthError({
+    error,
+  })
 
   return {
     notesData,

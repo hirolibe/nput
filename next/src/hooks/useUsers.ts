@@ -4,6 +4,7 @@ import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
 import { PageData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
+import { useAuthError } from './useAuthError'
 
 export interface UserSystemData {
   id: number
@@ -29,7 +30,7 @@ export const useUsers = () => {
 
   const {
     data,
-    error: usersError,
+    error,
     isLoading: isUsersLoading,
   }: SWRResponse<PagenatedUsersSystemData> = useSWR(
     idToken ? [url, idToken] : null,
@@ -47,6 +48,10 @@ export const useUsers = () => {
       setUsersData(null)
     }
   }, [isAuthLoading, isUsersLoading, data, idToken])
+
+  const { authError: usersError } = useAuthError({
+    error,
+  })
 
   return {
     usersData,

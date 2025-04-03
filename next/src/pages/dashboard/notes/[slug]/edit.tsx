@@ -147,7 +147,7 @@ const EditNote: NextPage = () => {
 
   // ノート保存処理
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { fetchToken } = useAuthContext()
+  const { setIdToken, fetchToken } = useAuthContext()
   const { getElapsedSeconds } = useDuration()
   const [previousSeconds, setPreviousSeconds] = useState<number>(0)
   const [imageSignedIds, setImageSignedIds] = useState<
@@ -161,6 +161,7 @@ const EditNote: NextPage = () => {
 
     const token = await fetchToken()
     const headers = { Authorization: `Bearer ${token}` }
+    setIdToken(token)
 
     // 送信するデータ
     const status = statusChecked ? 'published' : 'draft'

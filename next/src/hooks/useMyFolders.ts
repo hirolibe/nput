@@ -4,6 +4,7 @@ import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
 import { PagenatedFoldersData } from './useFolders'
 import { fetcher } from '@/utils/fetcher'
+import { useAuthError } from './useAuthError'
 
 export const useMyFolders = () => {
   const { idToken, isAuthLoading } = useAuthContext()
@@ -17,7 +18,7 @@ export const useMyFolders = () => {
 
   const {
     data,
-    error: foldersError,
+    error,
     isLoading: isFoldersLoading,
   }: SWRResponse<PagenatedFoldersData> = useSWR(
     idToken && url ? [url, idToken] : null,
@@ -35,6 +36,10 @@ export const useMyFolders = () => {
       setFoldersData(null)
     }
   }, [isAuthLoading, isFoldersLoading, data, idToken])
+
+  const { authError: foldersError } = useAuthError({
+    error,
+  })
 
   return {
     foldersData,

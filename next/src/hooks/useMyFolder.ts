@@ -2,6 +2,7 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { FolderData } from './useFolders'
 import { fetcher } from '@/utils/fetcher'
 
@@ -16,7 +17,7 @@ export const useMyFolder = () => {
 
   const {
     data,
-    error: folderError,
+    error,
     isLoading: isFolderLoading,
   }: SWRResponse<FolderData> = useSWR(!idToken ? null : [url, idToken], fetcher)
 
@@ -29,6 +30,10 @@ export const useMyFolder = () => {
 
     setFolderData(data)
   }, [data])
+
+  const { authError: folderError } = useAuthError({
+    error,
+  })
 
   return {
     folderData,

@@ -4,6 +4,7 @@ import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
 import { PagenatedNotesData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
+import { useAuthError } from './useAuthError'
 
 export const useMyNotes = (pageNumber?: number) => {
   const { idToken, isAuthLoading } = useAuthContext()
@@ -17,7 +18,7 @@ export const useMyNotes = (pageNumber?: number) => {
 
   const {
     data,
-    error: notesError,
+    error,
     isLoading: isNotesLoading,
   }: SWRResponse<PagenatedNotesData> = useSWR(
     idToken ? [url, idToken] : null,
@@ -35,6 +36,10 @@ export const useMyNotes = (pageNumber?: number) => {
       setNotesData(null)
     }
   }, [isAuthLoading, isNotesLoading, data, idToken])
+
+  const { authError: notesError } = useAuthError({
+    error,
+  })
 
   return {
     notesData,

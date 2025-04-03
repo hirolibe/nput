@@ -4,6 +4,7 @@ import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
 import { NoteData } from './useNotes'
 import { fetcher } from '@/utils/fetcher'
+import { useAuthError } from './useAuthError'
 
 export const useMyNote = () => {
   const { idToken } = useAuthContext()
@@ -14,7 +15,7 @@ export const useMyNote = () => {
 
   const {
     data,
-    error: noteError,
+    error,
     isLoading: isNoteLoading,
     mutate: refreshNote,
   }: SWRResponse<NoteData> = useSWR(!idToken ? null : [url, idToken], fetcher)
@@ -26,6 +27,10 @@ export const useMyNote = () => {
 
     setNoteData(data)
   }, [data])
+
+  const { authError: noteError } = useAuthError({
+    error,
+  })
 
   return {
     noteData,

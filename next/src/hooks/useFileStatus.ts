@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import useSWR, { SWRResponse } from 'swr'
 import { useAuthContext } from './useAuthContext'
+import { useAuthError } from './useAuthError'
 import { FilingNoteCardProps } from '@/components/note/FilingNoteCard'
 import { fetcher } from '@/utils/fetcher'
 
@@ -18,7 +19,7 @@ export const useFileStatus = (props: FilingNoteCardProps) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/my_folders/${folderSlug}/my_filed_notes/${slug}/file`
   const {
     data,
-    error: fileStatusError,
+    error,
     isLoading: isFileStatusLoading,
   }: SWRResponse<FileStatusData | undefined> = useSWR(
     folderSlug && slug && idToken ? [url, idToken] : null,
@@ -35,6 +36,10 @@ export const useFileStatus = (props: FilingNoteCardProps) => {
       setFileStatusData({ isFiled: false })
     }
   }, [isAuthLoading, isFileStatusLoading, data, idToken])
+
+  const { authError: fileStatusError } = useAuthError({
+    error,
+  })
 
   return {
     fileStatusData: fileStatusData?.isFiled,

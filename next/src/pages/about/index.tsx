@@ -55,7 +55,7 @@ const About: NextPage = () => {
       <Box
         sx={{
           py: { xs: 8, md: 14 },
-          mb: 10,
+          mb: { xs: 8, md: 10 },
           backgroundImage: 'url("/hero.svg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -97,13 +97,13 @@ const About: NextPage = () => {
             textAlign: 'center',
             fontSize: { xs: 24, md: 32 },
             fontWeight: 'bold',
-            mb: { xs: 6 },
+            mb: { xs: 4 },
           }}
         >
           学習サポート機能
         </Typography>
 
-        <Stack spacing={{ xs: 6, md: 10 }}>
+        <Stack spacing={{ xs: 6, md: 6 }}>
           {features.map((feature, index) => (
             <Grid
               key={index}

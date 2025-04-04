@@ -333,7 +333,7 @@ const EditNote: NextPage = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   width: '100%',
-                  maxWidth: '1400px',
+                  maxWidth: '1800px',
                   mb: 8,
                 }}
               >

@@ -1,3 +1,4 @@
+import { ParsedUrlQuery } from 'querystring'
 import EditIcon from '@mui/icons-material/Edit'
 import {
   Avatar,
@@ -10,9 +11,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { NextPage } from 'next'
+import { GetStaticProps, GetStaticPaths, NextPage } from 'next'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import Error from '@/components/common/Error'
 import Loading from '@/components/common/Loading'
@@ -29,7 +29,13 @@ import { useMyNote } from '@/hooks/useMyNote'
 import { NoteData } from '@/hooks/useNotes'
 import { useProfile } from '@/hooks/useProfile'
 import { styles } from '@/styles'
+import { fetchNoteData } from '@/utils/fetchNoteData'
 import { handleError } from '@/utils/handleError'
+
+interface Params extends ParsedUrlQuery {
+  name: string
+  slug: string
+}
 
 interface HeadData {
   title: string
@@ -47,13 +53,41 @@ interface NoteDetailProps {
   headData?: HeadData
 }
 
-const NoteDetail: NextPage<NoteDetailProps> = () => {
-  const params = useParams()
-  const name = params?.name
-  const slug = params?.slug
-  const [authorName, noteSlug] = [name, slug].map((value) =>
-    typeof value === 'string' ? value : undefined,
-  )
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  }
+}
+
+// ISRによるノートデータ取得
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { name, slug } = params as Params
+
+  try {
+    const noteData = await fetchNoteData(name, slug)
+
+    // _app.tsxへpagePropsとして渡す
+    const headData = {
+      title: noteData.title,
+      description: noteData.description ?? '',
+      user: noteData.user,
+      url: `${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/${name}/notes/${slug}`,
+      type: 'article',
+      twitterCard: 'summary',
+    }
+
+    return {
+      props: { name, slug, noteData, headData },
+      revalidate: 60 * 60, // 1時間キャッシュする
+    }
+  } catch {
+    return { props: { name, slug } }
+  }
+}
+
+const NoteDetail: NextPage<NoteDetailProps> = (props) => {
+  const { name, slug, noteData: initialNoteData } = props
   const { noteData: myNoteData, noteError: myNoteError } = useMyNote() // インプットのノートデータを取得
   const [noteData, setNoteData] = useState<NoteData | null | undefined>(
     undefined,
@@ -63,7 +97,17 @@ const NoteDetail: NextPage<NoteDetailProps> = () => {
 
   const { idToken, isAuthLoading } = useAuthContext()
 
+  // アウトプットのノートの場合
   useEffect(() => {
+    if (initialNoteData) {
+      setNoteData(initialNoteData)
+      setIsDraft(false)
+    }
+  }, [initialNoteData])
+
+  useEffect(() => {
+    if (initialNoteData) return
+
     // インプットかつログインユーザーのノートの場合
     if (myNoteData) {
       setNoteData(myNoteData)
@@ -78,7 +122,7 @@ const NoteDetail: NextPage<NoteDetailProps> = () => {
     if (!isAuthLoading && !idToken) {
       setNoteData(null)
     }
-  }, [myNoteData, myNoteError, isAuthLoading, idToken])
+  }, [initialNoteData, myNoteData, myNoteError, isAuthLoading, idToken])
 
   const { profileData } = useProfile()
   const [currentUserName, setCurrrentUserName] = useState<string | undefined>(
@@ -89,8 +133,8 @@ const NoteDetail: NextPage<NoteDetailProps> = () => {
   }, [profileData])
 
   const { cheerStatusData } = useCheerStatus({
-    authorName,
-    noteSlug,
+    authorName: name,
+    noteSlug: slug,
   })
   const [isCheered, setIsCheered] = useState<boolean | undefined>(false)
   const [cheersCount, setCheersCount] = useState<number | undefined>(undefined)
@@ -105,7 +149,7 @@ const NoteDetail: NextPage<NoteDetailProps> = () => {
     setCheersCount(noteData?.cheersCount)
   }, [cheerStatusData, noteData?.cheersCount])
 
-  const { followStatusData } = useFollowStatus(authorName)
+  const { followStatusData } = useFollowStatus(name)
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(false)
   const followState = {
     isFollowed,
@@ -437,8 +481,8 @@ const NoteDetail: NextPage<NoteDetailProps> = () => {
               {/* コメント */}
               {!isDraft ? (
                 <Comment
-                  name={authorName}
-                  slug={noteSlug}
+                  name={name}
+                  slug={slug}
                   profileData={profileData}
                   noteData={noteData}
                 />

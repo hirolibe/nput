@@ -97,11 +97,11 @@ export default async function handler(
     ctx.drawImage(logo, 50, 50, 120, 50)
 
     // タイトルの描画
-    ctx.font = '50px NotoSansJP-Bold'
+    ctx.font = '35px NotoSansJP-Bold'
     ctx.fillStyle = '#333333'
     const titleText = `${name}さんの学習記録`
     const titleWidth = ctx.measureText(titleText).width
-    ctx.fillText(titleText, (width - titleWidth) / 2, 160)
+    ctx.fillText(titleText, (width - titleWidth) / 2, 140)
 
     // 表のデータ（実際のデータに合わせて調整）
     const tableData = [
@@ -114,15 +114,15 @@ export default async function handler(
     ]
 
     // 表の描画（角丸版）
-    const tableWidth = 800
+    const tableWidth = 600
     drawRoundedTable(
       ctx,
       tableData,
       (width - tableWidth) / 2,
-      200,
+      170,
       tableWidth,
-      100,
-      60,
+      50,
+      40,
       15, // 角の丸みの半径
     )
 
@@ -130,15 +130,15 @@ export default async function handler(
     const { quoteText, quoteAuthor } = getRandomQuote()
 
     // 文章
-    ctx.font = '30px NotoSerifJP-Bold'
+    ctx.font = '55px NotoSerifJP-Bold'
     ctx.textAlign = 'left'
-    renderAdaptiveTextBox(ctx, quoteText, width / 2, 440, width - 200, 40, 0)
+    renderAdaptiveTextBox(ctx, quoteText, width / 2, 380, width - 200, 65, 0)
 
     // 作者名
-    ctx.font = 'italic 24px NotoSerifJP-Regular'
+    ctx.font = 'italic 35px NotoSerifJP-Regular'
     ctx.fillStyle = '#666666'
     ctx.textAlign = 'center'
-    renderAdaptiveTextBox(ctx, quoteAuthor, 1090, 530, width - 200, 40, 0)
+    renderAdaptiveTextBox(ctx, quoteAuthor, 1090, 510, width - 200, 40, 0)
 
     // 出力するファイル形式をPNGに設定
     const buffer = await canvas.encode('png')
@@ -304,7 +304,7 @@ function drawRoundedTable(
 
   // データ行のテキスト色
   ctx.fillStyle = '#333333'
-  ctx.font = '40px NotoSansJP-Bold' // データ行のフォントサイズを調整
+  ctx.font = '26px NotoSansJP-Bold' // データ行のフォントサイズを調整
 
   // データ行を描画
   let currentY = y + firstRowHeight
@@ -348,7 +348,7 @@ function drawRoundedTable(
 
       // セルの中央座標を計算
       const cellCenterX = cellX + colWidth / 2
-      const cellCenterY = currentY + rowHeight / 2 - 5 // 文字の位置を微調整
+      const cellCenterY = currentY + rowHeight / 2 - 2 // 文字の位置を微調整
 
       // 文字を中央に描画（textAlign と textBaseline を使用）
       ctx.fillText(data[j][i], cellCenterX, cellCenterY)

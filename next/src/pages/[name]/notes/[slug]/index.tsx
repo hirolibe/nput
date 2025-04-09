@@ -316,57 +316,55 @@ const NoteDetail: NextPage<NoteDetailProps> = (props) => {
         {/* ボタン・コンテンツ */}
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
           {/* エールボタン・シェアボタン（画面大） */}
-          {!isDraft && (
+          <Box
+            sx={{
+              position: 'absolute',
+              height: '100%',
+              left: '-50px',
+              display: { xs: 'none', xl: 'block' },
+            }}
+          >
             <Box
               sx={{
-                position: 'absolute',
-                height: '100%',
-                left: '-50px',
-                display: { xs: 'none', xl: 'block' },
+                position: 'sticky',
+                top: '170px',
               }}
             >
-              <Box
-                sx={{
-                  position: 'sticky',
-                  top: '170px',
-                }}
-              >
-                <Stack spacing={1}>
-                  {name !== currentUserName ? (
-                    <CheerButton
-                      cheerState={cheerState}
-                      backgroundColor="white"
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        width: '100%',
-                      }}
-                    >
-                      <Link href={`/dashboard/notes/${slug}/edit/`}>
-                        <Avatar sx={{ width: '50px', height: '50px' }}>
-                          <Tooltip title="編集する">
-                            <IconButton
-                              sx={{
-                                backgroundColor: 'white',
-                                width: '100%',
-                                height: '100%',
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Avatar>
-                      </Link>
-                    </Box>
-                  )}
-                  <SocialShareIcon />
-                </Stack>
-              </Box>
+              <Stack spacing={1}>
+                {name !== currentUserName ? (
+                  <CheerButton
+                    cheerState={cheerState}
+                    backgroundColor="white"
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    <Link href={`/dashboard/notes/${slug}/edit/`}>
+                      <Avatar sx={{ width: '50px', height: '50px' }}>
+                        <Tooltip title="編集する">
+                          <IconButton
+                            sx={{
+                              backgroundColor: 'white',
+                              width: '100%',
+                              height: '100%',
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Avatar>
+                    </Link>
+                  </Box>
+                )}
+                {!isDraft && <SocialShareIcon />}
+              </Stack>
             </Box>
-          )}
+          </Box>
 
           {/* コンテンツ */}
           <Box

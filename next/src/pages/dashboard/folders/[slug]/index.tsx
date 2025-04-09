@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 import type { NextPage } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import Error from '@/components/common/Error'
@@ -48,8 +48,12 @@ const MyFiledNotes: NextPage = () => {
   }, [notesData])
   const meta = notesData?.meta
 
+  const params = useParams()
+  const slug = params?.slug
+  const folderSlug = typeof slug === 'string' ? slug : undefined
+
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`/dashboard/?page=${value}`)
+    router.push(`/dashboard/folders/${folderSlug}/?page=${value}`)
   }
 
   const onBackClick = () => {

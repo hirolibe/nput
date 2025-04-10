@@ -129,7 +129,7 @@ export const NoteEditorToolbar = ({
                 height: '40px',
               }}
             >
-              {statusChecked ? '公開する' : '記録する'}
+              {statusChecked ? '共有する' : '記録する'}
             </LoadingButton>
           </Box>
         </Box>

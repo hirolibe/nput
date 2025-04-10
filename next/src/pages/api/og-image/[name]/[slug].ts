@@ -130,7 +130,7 @@ export default async function handler(
     const { quoteText, quoteAuthor } = getRandomQuote()
 
     // 文章
-    ctx.font = '55px NotoSerifJP-Bold'
+    ctx.font = '45px NotoSerifJP-Bold'
     ctx.textAlign = 'left'
     renderAdaptiveTextBox(ctx, quoteText, width / 2, 380, width - 200, 65, 0)
 

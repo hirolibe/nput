@@ -84,6 +84,7 @@ export default function MyApp(props: MyAppProps): JSX.Element {
                     }}
                     twitter={{
                       site: '@hirolibe0930',
+                      handle: '@hirolibe0930',
                       cardType: safeHeadData?.twitterCard,
                     }}
                   />

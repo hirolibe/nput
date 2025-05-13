@@ -224,7 +224,7 @@ URL: [https://n-put.com](https://n-put.com)
 - RDSのプライベートサブネットへの配置
 - GitHub ActionsとECRを連携した自動デプロイパイプライン
 
-![Image](https://github.com/user-attachments/assets/254271cd-17f9-4d04-901d-10025532df39)
+![Image](https://github.com/user-attachments/assets/ed89044d-8dfb-4c94-88ec-f8b7aa4c2659)
 
 #### ER図
 - カウンターキャッシュを利用して、合計数（例: cheers_count）を効率的に取得
